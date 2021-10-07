@@ -1,8 +1,9 @@
 import React from "react";
 import { Button, Container, Grid } from "@material-ui/core";
 import TextInput from "../../../components/TextInput";
+import { Address } from "ergo-lib-wasm-browser";
 
-class Address extends React.Component {
+class ReadOnlyAddress extends React.Component {
     state = {
         address: '',
     }
@@ -21,7 +22,12 @@ class Address extends React.Component {
     }
 
     validateAddress = () => {
-        return (this.state.address === '') ? "Please enter a valid address" : ''
+        try{
+            const addr = Address.from_base58(this.state.address)
+            return ""
+        }catch (exp){
+            return "Invalid address. please enter a valid ergo address"
+        }
     }
 
     goBack = () => {
@@ -66,4 +72,4 @@ class Address extends React.Component {
 }
 
 
-export default Address;
+export default ReadOnlyAddress;

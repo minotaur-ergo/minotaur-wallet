@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import WalletAddHeader from './WalletAddHeader';
 import AddWalletBody from "./AddWalletBody";
 import WithAppBar from "../../layout/WithAppBar";

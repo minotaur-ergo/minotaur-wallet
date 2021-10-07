@@ -3,7 +3,6 @@ import { AppBar, makeStyles, Toolbar } from "@material-ui/core";
 
 
 const useStyles = makeStyles(theme => {
-    console.log(theme);
     return {
         offset: theme.mixins.toolbar,
     }

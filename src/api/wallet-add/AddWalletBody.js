@@ -6,7 +6,7 @@ import WalletInsertOption from "./WalletInsertOption";
 import NewWalletMnemonic from "./new-wallet/Mnemonic";
 import MnemonicConfirm from "./new-wallet/MnemonicConfirm";
 import Name from "./Name";
-import Address from "./readonly-wallet/Address";
+import ReadOnlyAddress from "./readonly-wallet/ReadOnlyAddress";
 
 
 class AddWalletBody extends React.Component {
@@ -73,7 +73,7 @@ class AddWalletBody extends React.Component {
             )
         }else if(this.state.walletType === "readonly"){
             return (
-                <Address {...this.state.payload} setStep={this.gotoStep}/>
+                <ReadOnlyAddress {...this.state.payload} setStep={this.gotoStep}/>
             )
         }
     }

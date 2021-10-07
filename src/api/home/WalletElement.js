@@ -1,11 +1,16 @@
 import React from "react";
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
 import Erg from '../../components/Erg';
+import { getRoute, RouteMap } from "../../router/WalletRouter";
+import { withRouter } from "react-router-dom";
 
 
 const walletElement = props => {
+    const gotoWallet = () => {
+        props.history.push(getRoute(RouteMap.WalletTransaction, {"id": props.id}))
+    }
     return (
-        <ListItem>
+        <ListItem onClick={gotoWallet}>
             <ListItemAvatar>
                 <Avatar>
             {/*        <ImageIcon />*/}
@@ -16,4 +21,4 @@ const walletElement = props => {
     )
 }
 
-export default walletElement;
+export default withRouter(walletElement);

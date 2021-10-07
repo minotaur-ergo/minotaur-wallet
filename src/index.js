@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './app/App';
 import reportWebVitals from './reportWebVitals';
+import { chunk } from 'react-chunk';
 
+const App = chunk(() => import('./app/App'))();
 ReactDOM.render(
   <React.StrictMode>
     <App />
