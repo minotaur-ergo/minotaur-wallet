@@ -1,0 +1,6 @@
+{
+  "appId": "tk.minotaur.wallet",
+  "appName": "minotaur",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}

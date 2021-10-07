@@ -5,7 +5,13 @@ import MnemonicView from "./MnemonicView";
 const MnemonicConfirm = props => {
     const [createdMnemonic, setCreatedMnemonic] = useState("")
     const goBack = () => {props.setStep(2, {})}
-    const mnemonicWords = props.mnemonic.split(" ").filter(item => createdMnemonic.split(" ").indexOf(item) === -1).sort()
+    const mnemonicWords = props.mnemonic.split(" ").sort()
+    createdMnemonic.split(" ").forEach(item => {
+        const index = mnemonicWords.indexOf(item);
+        if(index >= 0){
+            mnemonicWords.splice(index, 1)
+        }
+    })
     const handleMnemonicClick = index => {
         if(index < mnemonicWords.length && index >= 0) {
             setCreatedMnemonic((createdMnemonic + " " + mnemonicWords[index]).trim())
