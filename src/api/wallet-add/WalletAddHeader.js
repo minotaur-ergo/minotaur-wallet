@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,14 +26,14 @@ const WalletAddHeader = props => {
     }
     const classes = useStyles();
     return (
-            <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={back}>
-                    <ArrowBack />
-                </IconButton>
-                <Typography variant="h6" className={classes.title}>
-                    Add Wallet
-                </Typography>
-            </Toolbar>
+        <Toolbar>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={back}>
+                <ArrowBack/>
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+                {props.title}
+            </Typography>
+        </Toolbar>
     )
 }
 

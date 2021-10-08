@@ -36,11 +36,11 @@ class Mnemonic extends React.Component {
     }
 
     goBack = () => {
-        this.props.setStep(1, {mnemonic: ''})
+        this.props.goBack()
     }
 
     goConfirm = () => {
-        this.props.setStep(3, {mnemonic: this.state.mnemonic})
+        this.props.goForward(this.state.mnemonic)
     }
 
     render = () => {

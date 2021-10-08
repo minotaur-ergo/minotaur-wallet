@@ -49,11 +49,11 @@ class Name extends React.Component {
     }
 
     goBack = () => {
-        this.props.setStep(0, {name: '', password: ''})
+        this.props.goBack()
     }
 
     goMnemonic = () => {
-        this.props.setStep(2, {name: this.state.name, password: this.state.password})
+        this.props.goForward({name: this.state.name, password: this.state.password})
     }
 
     render = () => {

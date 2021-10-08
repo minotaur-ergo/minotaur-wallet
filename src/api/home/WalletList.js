@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Divider, List } from "@material-ui/core";
 import WalletElement from './WalletElement';
-import {Wallets} from "../../const";
+import { selectWallet } from "../../db/commands";
 
-const walletList = props => {
+const WalletList = props => {
+    const [wallets, setWallets] = useState([]);
+    useEffect(() => {
+        selectWallet().then(wallets => {
+            setWallets(wallets)
+        })
+    }, [])
     return (
         <List>
-            {Wallets.map(wallet => (
+            {wallets.map(wallet => (
                 <React.Fragment>
                     <WalletElement {...wallet}/>
                     <Divider/>
@@ -17,4 +23,4 @@ const walletList = props => {
 }
 
 
-export default walletList;
+export default WalletList;

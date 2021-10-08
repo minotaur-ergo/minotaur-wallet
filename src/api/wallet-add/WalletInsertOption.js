@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddBox from '@material-ui/icons/AddBox';
 import Restore from '@material-ui/icons/RestorePage';
 import Search from '@material-ui/icons/Search';
+import { withRouter } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,7 +21,7 @@ const WalletInsertOption = (props) => {
 
     return (
         <List className={classes.root}>
-            <ListItem onClick={() => props.setWalletType("new")}>
+            <ListItem onClick={() => props.setWalletType("new_normal")}>
                 <ListItemAvatar>
                     <Avatar>
                         <AddBox />
@@ -51,4 +52,4 @@ const WalletInsertOption = (props) => {
 }
 
 
-export default WalletInsertOption;
+export default withRouter(WalletInsertOption);

@@ -4,16 +4,15 @@ import MnemonicView from "./MnemonicView";
 
 const MnemonicConfirm = props => {
     const [createdMnemonic, setCreatedMnemonic] = useState("")
-    const goBack = () => {props.setStep(2, {})}
     const mnemonicWords = props.mnemonic.split(" ").sort()
     createdMnemonic.split(" ").forEach(item => {
         const index = mnemonicWords.indexOf(item);
-        if(index >= 0){
+        if (index >= 0) {
             mnemonicWords.splice(index, 1)
         }
     })
     const handleMnemonicClick = index => {
-        if(index < mnemonicWords.length && index >= 0) {
+        if (index < mnemonicWords.length && index >= 0) {
             setCreatedMnemonic((createdMnemonic + " " + mnemonicWords[index]).trim())
         }
     }
@@ -36,12 +35,17 @@ const MnemonicConfirm = props => {
             </Grid>
             <Grid container spacing={2} justifyContent="space-between">
                 <Grid item spacing={2}>
-                    <Button variant="contained" color="primary" onClick={goBack}>
+                    <Button variant="contained" color="primary" onClick={props.goBack}>
                         Back
                     </Button>
                 </Grid>
                 <Grid item spacing={2}>
-                    <Button variant="contained" color="primary" disabled={createdMnemonic !== props.mnemonic}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        // disabled={createdMnemonic !== props.mnemonic}
+                        onClick={props.goForward}
+                    >
                         OK
                     </Button>
                 </Grid>

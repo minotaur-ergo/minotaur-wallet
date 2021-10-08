@@ -6,7 +6,7 @@ import WithAppBar from "../../layout/WithAppBar";
 
 const WalletAdd = props => {
     return (
-        <WithAppBar header={<WalletAddHeader/>}>
+        <WithAppBar header={<WalletAddHeader title="Add Wallet"/>}>
             <AddWalletBody/>
         </WithAppBar>
     )

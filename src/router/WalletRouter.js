@@ -6,6 +6,12 @@ import TransactionPage from "../api/wallet/TransactionPage";
 const RouteMap = {
     Home: "/",
     WalletAdd: "/wallet/add/",
+    WalletAddNewHot: "/wallet/add/new/hot/",
+    WalletAddNewCold: "/wallet/add/new/cold/",
+    WalletAddNewNormal: "/wallet/add/new/normal/",
+    WalletAddNewReadOnly: "/wallet/add/new/readonly/",
+    WalletAddRestoreCold: "/wallet/add/restore/cold/",
+    WalletAddRestoreNormal: "/wallet/add/restore/normal/",
     WalletTransaction: "/wallet/:id/transaction/"
 }
 

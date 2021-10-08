@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Database from "../db/Database";
 import WalletRouter from "../router/WalletRouter";
-import { Address } from "ergo-lib-wasm-browser";
 
 function App() {
     return (
-        <WalletRouter/>
+        <Database>
+            <WalletRouter/>
+        </Database>
     );
 }
 

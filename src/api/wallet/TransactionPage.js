@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Divider, List } from "@material-ui/core";
+import { Divider, List } from "@material-ui/core";
 import InWalletPage from "../../hoc/InWalletPage";
 import TransactionElement from "./TransactionElement";
 

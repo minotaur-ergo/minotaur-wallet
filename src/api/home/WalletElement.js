@@ -16,7 +16,7 @@ const walletElement = props => {
             {/*        <ImageIcon />*/}
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={props.name} secondary={<Erg value={props.amount.value} showUnit={true}/>}/>
+            <ListItemText primary={props.name} secondary={<Erg value={props.amount} showUnit={true}/>}/>
         </ListItem>
     )
 }

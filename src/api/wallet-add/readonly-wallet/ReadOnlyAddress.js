@@ -24,7 +24,7 @@ class ReadOnlyAddress extends React.Component {
     validateAddress = () => {
         try{
             const addr = Address.from_base58(this.state.address)
-            return ""
+            return addr
         }catch (exp){
             return "Invalid address. please enter a valid ergo address"
         }

@@ -1,15 +1,8 @@
 import React from "react";
-import { AppBar, makeStyles, Toolbar } from "@material-ui/core";
+import { AppBar, Toolbar } from "@material-ui/core";
 
-
-const useStyles = makeStyles(theme => {
-    return {
-        offset: theme.mixins.toolbar,
-    }
-})
 
 const WithAppBar = props => {
-    const classes = useStyles();
     return (
         <React.Fragment>
             <AppBar position="fixed">
