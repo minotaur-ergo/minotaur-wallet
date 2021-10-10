@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 
 const walletElement = props => {
     const gotoWallet = () => {
-        props.history.push(getRoute(RouteMap.WalletTransaction, {"id": props.id}))
+        props.history.push(getRoute(RouteMap.WalletRoute, {"id": props.id}))
     }
     return (
         <ListItem onClick={gotoWallet}>

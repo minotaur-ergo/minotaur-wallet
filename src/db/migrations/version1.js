@@ -1,8 +1,16 @@
 const version = 1;
 
+/**
+ *  config contains
+ *  db version
+  * @type {string}
+ */
 const sql = `
-CREATE TABLE "db_version" (
-    "name"  INTEGER
+CREATE TABLE "config" (
+    "id"                    INTEGER NOT NULL,
+    "name"                  TEXT DEFAULT "",
+    "value"                 TEXT DEFAULT "",
+    PRIMARY KEY("id" AUTOINCREMENT)
 );
 
 CREATE TABLE "wallet" (
@@ -10,7 +18,8 @@ CREATE TABLE "wallet" (
     "name"                  TEXT DEFAULT "",
     "mnemonic"              TEXT DEFAULT "",
     "type"                  INTEGER DEFAULT 0,
-    "extended_public_key"   TEXT DEFAULT "",
+    "last_height"           INTEGER DEFAULT 0,
+    "last_update"           INTEGER DEFAULT 0,
     PRIMARY KEY("id" AUTOINCREMENT)
 );
 
@@ -51,6 +60,7 @@ CREATE TABLE "box" (
     "spend_index"       INTEGER DEFAULT 0,
     "address"           INTEGER NOT NULL,
     "box_id"            TEXT NOT NULL,
+    "json"            TEXT NOT NULL,
     FOREIGN KEY("address") REFERENCES "address"("id"),
     PRIMARY KEY("id" AUTOINCREMENT),
     FOREIGN KEY("tx_id") REFERENCES "transaction"("id"),
@@ -66,20 +76,19 @@ CREATE TABLE "box_content" (
     FOREIGN KEY("box_id") REFERENCES "box"("id")
 );
 
-DELETE FROM db_version;
-INSERT INTO db_version VALUES (${version})
+INSERT INTO config (name, value) VALUES ('db_version', '${version}')
 `;
 
 const checkTableExists = async (database, table) => {
     const query = `SELECT name FROM sqlite_master
-                    WHERE type='table' AND name='${table}' 
+                    WHERE type='table' AND name='${table}'
                     ORDER BY name;`
     const cursor = await database.query(query);
     return cursor.values.length !== 0
 }
 
 const version1 = async database => {
-    if(!await checkTableExists(database, "db_version")){
+    if(!await checkTableExists(database, "config")){
         await database.execute(sql);
         await database.createSyncTable()
     }

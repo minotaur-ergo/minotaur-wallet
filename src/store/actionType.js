@@ -1,0 +1,6 @@
+export const SET_WALLETS = "SET_WALLETS";
+export const SET_ADDRESSES = "SET_ADDRESSES";
+export const SET_TRANSACTIONS = "SET_TRANSACTIONS";
+export const SET_BOXES = "SET_BOXES";
+export const SET_ASSETS = "SET_ASSETS";
+export const SELECT_WALLET = "SELECT_WALLET"
