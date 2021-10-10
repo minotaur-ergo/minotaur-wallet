@@ -1,19 +1,15 @@
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from "../api/home/Home";
 import WalletAdd from "../api/wallet-add/WalletAdd"
-import TransactionPage from "../api/wallet/TransactionTab";
+import TransactionPage from "../api/wallet/transaction-tab/TransactionTab";
 import WalletPage from "../api/wallet/WalletPage";
+import AddressView from "../api/address/AddressView";
 
 const RouteMap = {
   Home: "/",
   WalletAdd: "/wallet/add/",
-  WalletAddNewHot: "/wallet/add/new/hot/",
-  WalletAddNewCold: "/wallet/add/new/cold/",
-  WalletAddNewNormal: "/wallet/add/new/normal/",
-  WalletAddNewReadOnly: "/wallet/add/new/readonly/",
-  WalletAddRestoreCold: "/wallet/add/restore/cold/",
-  WalletAddRestoreNormal: "/wallet/add/restore/normal/",
-  WalletRoute: "/wallet/:id/"
+  WalletRoute: "/wallet/:id/",
+  WalletAddressRoute: "/wallet/:id/address/:address_id",
 }
 
 const getRoute = (route, args) => {
@@ -29,6 +25,9 @@ function WalletRouter() {
       <Switch>
         <Route path={RouteMap.WalletAdd}>
           <WalletAdd/>
+        </Route>
+        <Route path={RouteMap.WalletAddressRoute}>
+          <AddressView/>
         </Route>
         <Route path={RouteMap.WalletRoute}>
           <WalletPage/>

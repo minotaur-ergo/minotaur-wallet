@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
-import Erg from "../../components/Erg";
+import Erg from "../../../components/Erg";
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
@@ -16,7 +16,7 @@ const TransactionElement = props => {
                     {props.type==='in' ? <AddCircleOutlineIcon/> : <AccountBalanceWalletIcon/>}
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={props.name} secondary={<Erg value={props.amount.erg} showUnit={true}/>}/>
+            <ListItemText primary={props.name} secondary={<Erg erg={props.amount.erg} nano_erg={props.amount.nano_erg} showUnit={true}/>}/>
         </ListItem>
     )
 }

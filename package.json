@@ -9,6 +9,11 @@
     "@capacitor/core": "^3.2.3",
     "@capacitor/ios": "^3.2.3",
     "@ergolabs/ergo-sdk": "^0.1.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.4",
@@ -21,6 +26,7 @@
     "ergo-lib-wasm-browser": "file:./ergo-lib-wasm-browser",
     "jeep-sqlite": "^1.3.0",
     "json-bigint": "^1.0.0",
+    "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.8",
     "react-chunk": "^7.3.0",
@@ -46,7 +52,6 @@
     ]
   },
   "browser": {
-    "./src/db/commands/index.js": "./src/db/web/index.js",
     "./src/db/commands/wallet.js": "./src/db/web/wallet.js"
   },
   "browserslist": {

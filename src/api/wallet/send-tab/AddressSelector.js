@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { getAddress } from "../../../db/web/address";
 import WithWallet from "../../../hoc/WithWallet";
-
+import Erg from '../../../components/Erg';
 
 const AddressSelector = props => {
   const [addresses, setAddresses] = useState([])
@@ -39,7 +39,7 @@ const AddressSelector = props => {
         </Select>
       </FormControl>
       <div style={{marginTop: 20, marginBottom: 20}}>
-        Balance: {erg}.{nano_erg} Ergs
+        Balance: <Erg erg={erg} nano_erg={nano_erg} showUnit={true}/>
       </div>
     </React.Fragment>
   )

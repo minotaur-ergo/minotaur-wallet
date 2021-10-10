@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Divider, List } from "@material-ui/core";
 import WalletElement from './WalletElement';
-import { loadWallets } from "../../db/commands";
+import { loadWallets } from "../../db/commands/wallet";
 import { connect } from "react-redux";
 import * as actionTypes from '../../store/actionType';
 

@@ -6,7 +6,7 @@ import Name from "../Name";
 import NewWalletMnemonic from "../new-wallet/Mnemonic";
 import MnemonicConfirm from "../new-wallet/MnemonicConfirm";
 import { withRouter } from "react-router-dom";
-import { createNormalWallet } from "../../../db/commands";
+import { createNormalWallet } from "../../../db/commands/wallet";
 
 class WalletNormalNew extends React.Component {
     state = {

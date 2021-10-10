@@ -7,13 +7,13 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { makeStyles } from "@material-ui/core";
 import { FormatListBulleted } from "@material-ui/icons";
-import TransactionTab from "./TransactionTab";
+import TransactionTab from "./transaction-tab/TransactionTab";
 import WalletHeader from "../../hoc/WalletHeader";
 import { RouteMap } from "../../router/WalletRouter";
 import * as actionTypes from "../../store/actionType";
 import { connect } from "react-redux";
-import AddressTab from "./AddressTab";
-import SendTab from "./SendTab";
+import AddressTab from "./address-tab/AddressTab";
+import SendTab from "./send-tab/SendTab";
 import DAppsTab from "./DAppsTab";
 
 const useStyles = makeStyles(theme => ({

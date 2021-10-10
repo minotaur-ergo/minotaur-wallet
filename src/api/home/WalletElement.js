@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
+import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import Erg from '../../components/Erg';
 import { getRoute, RouteMap } from "../../router/WalletRouter";
 import { withRouter } from "react-router-dom";
@@ -16,7 +16,7 @@ const walletElement = props => {
             {/*        <ImageIcon />*/}
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={props.name} secondary={<Erg value={props.amount} showUnit={true}/>}/>
+            <ListItemText primary={props.name} secondary={<Erg erg={props.erg} nano_erg={props.nano_erg} showUnit={true}/>}/>
         </ListItem>
     )
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Divider, Grid } from "@material-ui/core";
-import AddressSelector from "./send-part/AddressSelector";
-import ReceiverRow from "./send-part/ReceiverRow";
+import AddressSelector from "./AddressSelector";
+import ReceiverRow from "./ReceiverRow";
 
 const SendTab = props => {
   const [receivers, setReceivers] = useState([{}])
