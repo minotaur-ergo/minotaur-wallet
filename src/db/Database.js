@@ -43,8 +43,14 @@ const Database = props => {
       })
     }
   }, []);
+  console.log(Capacitor.getPlatform());
   if (existConn || Capacitor.getPlatform() === "web") {
-    return props.children;
+    return (
+      <React.Fragment>
+        {Capacitor.getPlatform()}
+        {props.children}
+      </React.Fragment>
+    )
   }
   return <div>Loading ... </div>
 }

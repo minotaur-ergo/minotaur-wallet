@@ -1,6 +1,7 @@
 import {database} from "../Database";
+import { deriveAddress } from "../../actions/address";
 
-export const createNormalWallet = async (name, mnemonic, address, path) => {
+export const createNormalWallet = async (name, mnemonic, password) => {
     const walletType = 'normal'
     const query = `
             INSERT INTO wallet (name, mnemonic, type)
@@ -9,18 +10,14 @@ export const createNormalWallet = async (name, mnemonic, address, path) => {
     await database.execute(query);
     const cursor = await database.query('SELECT id FROM wallet Where mnemonic = ? AND type = ?', [mnemonic, walletType]);
     const walletId = cursor.values[0].id;
-    const addressQuery = `
-            INSERT INTO address (wallet, readonly, address, path)
-            VALUES (${walletId}, 0, '${address}', '${path}');
-    `
-    await database.execute(addressQuery)
+    await deriveAddress(walletId, mnemonic, password, "Main Address")
 }
 
 
 export const loadWallets = async () => {
     const query = `
             SELECT wallet.*, SUM(box.erg) AS erg, SUM(box.nano_erg) AS nano_erg  FROM wallet
-            LEFT OUTER JOIN address ON wallet.id = address.wallet
+            INNER JOIN address ON wallet.id = address.wallet
             LEFT OUTER  JOIN box ON box.address = address.id
             GROUP By wallet.id
         `

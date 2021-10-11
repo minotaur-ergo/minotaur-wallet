@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { getAddress } from "../../../db/web/address";
+import { getWalletAddresses } from "../../../db/commands/address";
 import WithWallet from "../../../hoc/WithWallet";
 import Erg from '../../../components/Erg';
 
@@ -8,7 +8,7 @@ const AddressSelector = props => {
   const [addresses, setAddresses] = useState([])
   const [selectedAddress, setSelectedAddress] = useState(-1)
   useEffect(() => {
-    getAddress(props.wallet).then(addresses => {
+    getWalletAddresses(props.wallet).then(addresses => {
       setAddresses(addresses)
     })
   }, [])

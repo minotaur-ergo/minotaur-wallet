@@ -18,17 +18,18 @@ CREATE TABLE "wallet" (
     "name"                  TEXT DEFAULT "",
     "mnemonic"              TEXT DEFAULT "",
     "type"                  INTEGER DEFAULT 0,
-    "last_height"           INTEGER DEFAULT 0,
-    "last_update"           INTEGER DEFAULT 0,
     PRIMARY KEY("id" AUTOINCREMENT)
 );
 
 CREATE TABLE "address" (
     "id"                    INTEGER NOT NULL,
-    "wallet"        INTEGER,
-    "readonly"      INTEGER NOT NULL DEFAULT 0,
-    "address"       TEXT UNIQUE,
-    "path"          TEXT,
+    "wallet"                INTEGER,
+    "name"                  TEXT DEFAULT "",
+    "readonly"              INTEGER NOT NULL DEFAULT 0,
+    "address"               TEXT UNIQUE,
+    "path"                  TEXT,
+    "last_height"           INTEGER DEFAULT 0,
+    "last_update"           INTEGER DEFAULT 0,
     PRIMARY KEY("id" AUTOINCREMENT)
     FOREIGN KEY("wallet") REFERENCES "wallet"("id")
 );
@@ -41,7 +42,7 @@ CREATE TABLE "asset" (
     PRIMARY KEY("id" AUTOINCREMENT)
 );
 
-CREATE TABLE "transaction" (
+CREATE TABLE "tx" (
     "id"        INTEGER NOT NULL,
     "tx_id"     INTEGER NOT NULL UNIQUE,
     "height"    INTEGER NOT NULL,
@@ -63,8 +64,8 @@ CREATE TABLE "box" (
     "json"            TEXT NOT NULL,
     FOREIGN KEY("address") REFERENCES "address"("id"),
     PRIMARY KEY("id" AUTOINCREMENT),
-    FOREIGN KEY("tx_id") REFERENCES "transaction"("id"),
-    FOREIGN KEY("spend_tx_id") REFERENCES "transaction"("id")
+    FOREIGN KEY("tx_id") REFERENCES "tx"("id"),
+    FOREIGN KEY("spend_tx_id") REFERENCES "tx"("id")
 );
 
 CREATE TABLE "box_content" (
@@ -76,7 +77,7 @@ CREATE TABLE "box_content" (
     FOREIGN KEY("box_id") REFERENCES "box"("id")
 );
 
-INSERT INTO config (name, value) VALUES ('db_version', '${version}')
+INSERT INTO config (name, value) VALUES ('db_version', '${version}');
 `;
 
 const checkTableExists = async (database, table) => {

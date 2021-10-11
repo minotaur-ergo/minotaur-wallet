@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 import WithAppBar from "../../layout/WithAppBar";
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import AddressTab from "./address-tab/AddressTab";
 import SendTab from "./send-tab/SendTab";
 import DAppsTab from "./DAppsTab";
+import { importAddressTransactions, importWalletTransactions } from "../../actions/transaction";
 
 const useStyles = makeStyles(theme => ({
   stickToBottom: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 const InWalletPage = (props) => {
   const [page, setPage] = useState("transaction")
+  const [req, setReq] = useState(false);
   const wallets = props.wallets.filter(item => '' + item.id === '' + props.match.params.id);
   const [value, setValue] = React.useState(0);
 

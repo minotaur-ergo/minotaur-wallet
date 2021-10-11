@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, List } from "@material-ui/core";
 import TransactionElement from "./TransactionElement";
+import { getWalletTransactions } from "../../../db/commands/transaction";
+import WithWallet from "../../../hoc/WithWallet";
 
-const transactions = [
-    {"id": "1", "time": "1631682089", "type": "in", "amount": {"erg": 1000000000, "SigUSD": 1900}},
-    {"id": "1", "time": "1631682089", "type": "out", "amount": {"erg": 1200000000, "SigUSD": 1900}},
-]
-class TransactionTab extends React.Component {
-    render = () => {
-        return (
-            <List>
-                {transactions.map(transaction => (
-                    <React.Fragment key={transaction.id}>
-                        <TransactionElement {...transaction}/>
-                        <Divider/>
-                    </React.Fragment>
-                ))}
-            </List>
-        )
-    }
+
+const TransactionTab = props => {
+  const [transactions, setTransactions] = useState([])
+  useEffect(() => {
+    getWalletTransactions(props.wallet.id).then(txs => setTransactions(txs))
+  }, [])
+  return (
+    <List>
+      {transactions.map(transaction => (
+        <React.Fragment key={transaction.id}>
+          <TransactionElement {...transaction}/>
+          <Divider/>
+        </React.Fragment>
+      ))}
+    </List>
+  )
 }
 
-export default TransactionTab;
+
+export default WithWallet(TransactionTab);

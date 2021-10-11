@@ -4,10 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 
 const AddressInput = props => {
-  const [value, setValue] = useState("");
-  const validateAddress = () => {
-
-  }
+  // const [value, setValue] = useState("");
   const displayQrCodeScanner = () => {}
   return (
     <FormControl fullWidth variant="outlined">
@@ -15,8 +12,8 @@ const AddressInput = props => {
       <OutlinedInput
         label="Receiver Address"
         type="text"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
+        value={props.value}
+        onChange={(event) => props.setValue(event.target.value)}
         autoComplete="off"
         endAdornment={
           <InputAdornment position="end">

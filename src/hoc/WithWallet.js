@@ -1,16 +1,22 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { Wallets } from "../const";
+import * as actionTypes from "../store/actionType";
+import { connect } from "react-redux";
 
 const WithWallet = (Component) => {
   const WithWalletComponent = props => {
-    const wallets = Wallets.filter(item => '' + item.id === '' + props.match.params.id);
-    const wallet = wallets[0]
+    const wallets = props.wallets.filter(item => '' + item.id === '' + props.match.params.id);
+    const wallet = wallets[0];
     return (
       <Component {...props} wallet={wallet}/>
     )
   }
-  return withRouter(WithWalletComponent)
+  return connect(mapStateToProps)(withRouter(WithWalletComponent))
+
 }
 
-export default WithWallet;
+const mapStateToProps = state => ({
+  wallets: state.wallets,
+});
+
+export default WithWallet

@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
 import Erg from '../../components/Erg';
 import { getRoute, RouteMap } from "../../router/WalletRouter";
 import { withRouter } from "react-router-dom";

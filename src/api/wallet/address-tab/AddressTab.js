@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Divider, List } from "@material-ui/core";
 import AddressElement from "./AddressElement";
-import { getAddress } from "../../../db/web/address";
+import { getWalletAddresses } from "../../../db/commands/address";
 import DriveAddress from './DriveAddress';
 
 const AddressTab = props => {
   const [addresses, setAddresses] = useState([])
   useEffect(() => {
     if (addresses.length === 0) {
-      getAddress(props.wallet).then(addresses => {
+      getWalletAddresses(props.wallet).then(addresses => {
         setAddresses(addresses)
       })
     }

@@ -4,10 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 const ErgoAmount = props => {
-  const [value, setValue] = useState("");
-  const validateAddress = () => {
-
-  }
   const displayQrCodeScanner = () => {}
   return (
     <FormControl fullWidth style={{marginTop: 20}} variant="outlined">
@@ -15,8 +11,8 @@ const ErgoAmount = props => {
       <OutlinedInput
         label="Amount"
         type="text"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
+        value={props.value}
+        onChange={(event) => props.setValue(event.target.value)}
         autoComplete="off"
         endAdornment={
           <InputAdornment position="end">

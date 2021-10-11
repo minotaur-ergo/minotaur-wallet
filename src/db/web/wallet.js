@@ -1,7 +1,8 @@
 import {database} from "../Database";
 import { addAddress } from "./address";
+import { deriveAddress } from "../../actions/address";
 
-export const createNormalWallet = async (name, mnemonic, address, path) => {
+export const createNormalWallet = async (name, mnemonic, password) => {
   let wallets = JSON.parse(localStorage.getItem("wallets")) || {seq: 1, wallets:[]}
   const wallet = {
     name: name,
@@ -16,7 +17,7 @@ export const createNormalWallet = async (name, mnemonic, address, path) => {
   wallets.seq += 1;
   wallets.wallets.push(wallet);
   localStorage.setItem("wallets", JSON.stringify(wallets))
-  addAddress(wallet, address, path);
+  await deriveAddress(wallet.id, mnemonic, password, "Main Address");
 }
 
 
