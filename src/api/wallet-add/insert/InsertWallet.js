@@ -23,14 +23,13 @@ class WalletNormalNew extends React.Component {
         'Confirm',
     ];
 
-    gotoMnemonic = (name, mnemonic) => {
+    gotoMnemonic = (name, password) => {
         this.setState({
             name: name,
-            mnemonic: mnemonic,
+            password: password,
             step: 1
         })
     }
-
     saveWallet = () => {
         createWallet(this.state.name, this.state.type, this.state.mnemonic, this.state.password).then(() => {
             this.props.history.goBack();
@@ -49,7 +48,7 @@ class WalletNormalNew extends React.Component {
                 </Stepper>
                 {this.state.step === 0 ? (
                     <WalletName {...this.state} goBack={this.props.back}
-                                goForward={({name, mnemonic}) => this.gotoMnemonic(name, mnemonic)} confirm={true}>
+                                goForward={({name, password}) => this.gotoMnemonic(name, password)} confirm={true}>
                         Enter new wallet name and password.
                         <p style={{color: "red"}}>
                             Be careful if you lose your password you will not be able to recover the ergs in your wallet

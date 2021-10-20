@@ -6,15 +6,7 @@ import * as actionTypes from '../../store/actionType';
 import { loadWallet } from "../../db/action/Wallet";
 
 const WalletList = props => {
-    const [walletLoading, setWalletLoading] = useState(false);
-    useEffect(() => {
-        if (!props.walletsValid && !walletLoading) {
-            setWalletLoading(true);
-            loadWallet().then(() => {
-                setWalletLoading(false)
-            })
-        }
-    }, [walletLoading]);
+    useEffect(() => loadWallet);
     return (
         <List>
             {props.wallets.map((wallet, index) => (

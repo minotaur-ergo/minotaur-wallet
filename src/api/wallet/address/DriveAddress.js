@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Grid } from "@material-ui/core";
 import TextInput from "../../../components/TextInput";
 // import { deriveAddress } from "../../../actions/address";
 import WithWallet from "../../../layout/WithWallet";
+import { deriveNewAddress, validateWalletPassword } from "../../../db/action/Address";
 // import WithWallet from "../../../hoc/WithWallet";
 
 const DriveAddress = props => {
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
-
-  const deriveNewAddress = () => {
-    // deriveAddress(props.wallet.id, props.wallet.mnemonic, password, name);
+  const [passwordError, setPasswordError] = useState("")
+  useEffect(() => {
+    if(password) {
+      validateWalletPassword(props.wallet, password).then(isValid => setPasswordError(isValid ? "" : "Password is incorrect"))
+    }else{
+      setPasswordError("Password is required")
+    }
+  }, [password])
+  const deriveAddress = () => {
+    deriveNewAddress(props.wallet, password, name).then(() => {
+    })
   }
   return (
     <Container style={{marginTop: 20, marginBottom: 20}}>
@@ -18,7 +27,7 @@ const DriveAddress = props => {
         <Grid item xs={12}>
           <TextInput
             label="New Address Name"
-            // error={this.validateName()}
+            error={name === '' ? "Name is required" : ""}
             value={name}
             setValue={setName}/>
         </Grid>
@@ -26,12 +35,17 @@ const DriveAddress = props => {
           <TextInput
             label="Wallet password"
             type="password"
-            // error={this.validateName()}
-            value={name}
-            setValue={setName}/>
+            error={passwordError}
+            value={password}
+            setValue={setPassword}/>
         </Grid>
         <Grid item xs={12}>
-          <Button variant="contained" color="primary" fullWidth onClick={() => deriveNewAddress()}>
+          <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={passwordError !== "" && name !== ""}
+              onClick={() => deriveAddress()}>
             Derive new address
           </Button>
         </Grid>

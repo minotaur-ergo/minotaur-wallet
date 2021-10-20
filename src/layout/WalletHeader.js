@@ -29,7 +29,7 @@ const WalletHeader = props => {
                 <ArrowBack />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
-                {props.walletName}
+                {props.title}
             </Typography>
         </Toolbar>
     )

@@ -18,6 +18,10 @@ module.exports = new EntitySchema({
         path: {
             type: "text"
         },
+        index: {
+            type: "int",
+            default: -1
+        },
         last_height: {
             type: "int",
             default: 0

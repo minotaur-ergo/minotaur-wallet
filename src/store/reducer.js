@@ -1,12 +1,14 @@
 import * as actionTypes from './actionType';
+import { INVALIDATE_ADDRESS } from "./actionType";
 
 export const apiInitialState = {
   wallets: [],
   selectedWalletId: null,
   valid: {
     wallet: false,
+    address: null
   },
-  addresses: [],
+  address: [],
   transactions: [],
   boxes: [],
   assets: [],
@@ -31,11 +33,23 @@ export const reducer = (state = apiInitialState, action) => {
           wallet: false
         }
       }
-    case actionTypes.SET_ADDRESSES:
+    case actionTypes.SET_ADDRESS:
       return {
         ...state,
-        addresses: action.payload
+        address: action.payload.address,
+        valid: {
+          ...state.valid,
+          address: action.payload.wallet,
+        }
       };
+    case actionTypes.INVALIDATE_ADDRESS:
+      return {
+        ...state,
+        valid: {
+          ...state.valid,
+          address: null
+        }
+      }
     case actionTypes.SET_TRANSACTIONS:
       return {
         ...state,

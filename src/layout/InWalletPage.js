@@ -58,10 +58,9 @@ const InWalletPage = tab => {
                     setWallet(wallets[0]);
                 }
             }, [walletLoading]);
-            console.log(wallet);
             const classes = useStyles()
             return (
-                <WithAppBar header={<WalletHeader walletName={wallet.name}/>}>
+                <WithAppBar header={<WalletHeader title={wallet.name}/>}>
                     <div className={classes.content}>
                         <WrappedComponent {...props} wallet={wallet}/>
                     </div>

@@ -8,7 +8,7 @@ import WithWallet from "../../../layout/WithWallet";
 
 const AddressElement = props => {
   const gotoWallet = () => {
-    props.history.push(getRoute(RouteMap.WalletAddressRoute, {"id": props.wallet.id, address_id: props.id}))
+    props.history.push(getRoute(RouteMap.WalletAddressView, {"id": props.wallet.id, address_id: props.id}))
   }
   const [showAddress, setShowAddress] = useState(false)
   const address = props.address.length > 30 ? props.address.substr(0, 15) + "..." + props.address.substr(props.address.length - 15) : props.address

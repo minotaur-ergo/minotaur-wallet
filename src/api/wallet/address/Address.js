@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Divider, List } from "@material-ui/core";
 import AddressElement from "./AddressElement";
 import DriveAddress from './DriveAddress';
 import InWalletPage from "../../../layout/InWalletPage";
-import { loadWalletAddress } from "../../../db/action/Address";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { loadAddresses } from "../../../store/action";
 
 const Address = props => {
-    const [addresses, setAddresses] = useState([])
-    useEffect(() => {
-        if (addresses.length === 0) {
-            loadWalletAddress(props.match.params.id).then(dbAddresses => {
-                console.log(dbAddresses)
-                setAddresses(dbAddresses)
-            })
-            // getWalletAddresses(props.wallet).then(addresses => {
-            //   setAddresses(addresses)
-            // })
-        }
-    }, [])
-    addresses.map(item => console.log(item));
+    useEffect(() => loadAddresses(props.wallet))
     return (
         <React.Fragment>
             <DriveAddress/>
             <List>
-                {addresses.map(address => (
+                {props.address.map(address => (
                     <React.Fragment key={address.id}>
                         <Divider/>
                         <AddressElement {...address}/>
@@ -35,4 +24,9 @@ const Address = props => {
     )
 }
 
-export default InWalletPage("address")(withRouter(Address));
+const mapStateToProps = state => ({
+    address: state.address,
+});
+export default connect(mapStateToProps)(InWalletPage("address")(withRouter(Address)))
+
+

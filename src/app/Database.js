@@ -5,6 +5,7 @@ import { createConnection, getConnection } from 'typeorm'
 import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
 import { entities } from "../db/entities";
+import { getLastAddress } from "../db/action/Address";
 
 const connectSqlJs = async () => {
     window.SQL = await initSqlJs({

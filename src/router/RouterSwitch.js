@@ -5,6 +5,7 @@ import Home from "../api/home/Home";
 import {App} from '@capacitor/app';
 import DApps from "../api/wallet/dapps/DApps";
 import Address from "../api/wallet/address/Address";
+import AddressView from "../api/wallet/address/AddressView";
 
 const RouteMap = {
     Home: "/",
@@ -30,9 +31,9 @@ const RouterSwitch = props => {
             <Route path={RouteMap.WalletAdd} exact>
                 <WalletAdd/>
             </Route>
-            {/*<Route path={RouteMap.WalletAddressRoute}>*/}
-            {/*  <AddressView/>*/}
-            {/*</Route>*/}
+            <Route path={RouteMap.WalletAddressView}>
+              <AddressView/>
+            </Route>
             <Route path={RouteMap.WalletAddress} exact>
               <Address/>
             </Route>
