@@ -4,10 +4,10 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { chunk } from 'react-chunk';
 
-const App = chunk(() => import('./app/App'))();
+const MinotaurApp = chunk(() => import('./app/MinotaurApp'))();
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MinotaurApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

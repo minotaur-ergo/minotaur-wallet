@@ -2,7 +2,10 @@ import * as actionTypes from './actionType';
 
 export const apiInitialState = {
   wallets: [],
-  selectedWallet: null,
+  selectedWalletId: null,
+  valid: {
+    wallet: false,
+  },
   addresses: [],
   transactions: [],
   boxes: [],
@@ -14,8 +17,20 @@ export const reducer = (state = apiInitialState, action) => {
     case actionTypes.SET_WALLETS:
       return {
         ...state,
-        wallets: action.payload
+        wallets: action.payload,
+        valid: {
+          ...state.valid,
+          wallet: true
+        }
       };
+    case actionTypes.INVALIDATE_WALLETS:
+      return {
+        ...state,
+        valid: {
+          ...state.valid,
+          wallet: false
+        }
+      }
     case actionTypes.SET_ADDRESSES:
       return {
         ...state,

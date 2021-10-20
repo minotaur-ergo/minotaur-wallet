@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Divider, List } from "@material-ui/core";
 import WalletElement from './WalletElement';
-import { loadWallets } from "../../db/commands/wallet";
 import { connect } from "react-redux";
 import * as actionTypes from '../../store/actionType';
+import { loadWallet } from "../../db/action/Wallet";
 
 const WalletList = props => {
+    const [walletLoading, setWalletLoading] = useState(false);
     useEffect(() => {
-        loadWallets().then(wallets=>props.setWallets(wallets))
-    }, [])
+        if (!props.walletsValid && !walletLoading) {
+            setWalletLoading(true);
+            loadWallet().then(() => {
+                setWalletLoading(false)
+            })
+        }
+    }, [walletLoading]);
     return (
         <List>
             {props.wallets.map((wallet, index) => (
@@ -22,10 +28,8 @@ const WalletList = props => {
 }
 
 const mapStateToProps = state => ({
-  wallets: state.wallets,
+    wallets: state.wallets,
+    walletsValid: state.valid.wallet,
 });
 
-const mapDispatchToProps = dispatch => ({
-  setWallets: wallets => dispatch({type: actionTypes.SET_WALLETS, payload: wallets})
-})
-export default connect(mapStateToProps, mapDispatchToProps)(WalletList);
+export default connect(mapStateToProps)(WalletList);
