@@ -1,0 +1,70 @@
+.card-container {
+    position: fixed;
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 9999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+
+}
+.card-container.hide{
+    visibility: hidden;
+}
+
+.card-container .overlay {
+    position: fixed;
+    content: ' ';
+    z-index: 100;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    visibility: visible;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+
+.card-container.hide .overlay {
+    /*opacity: 0;*/
+    visibility: hidden;
+}
+
+.card-container .content {
+    position: absolute;
+    bottom: 0;
+    background: white;
+    padding-top: 20px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    border: 1px solid #CDCDCD;
+    border-bottom: 0;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+    overflow: scroll;
+}
+
+.card-container.hide .content {
+    max-height: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+    border: 0;
+}

@@ -1,0 +1,30 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+enum WalletType {
+    Cold = 'COLD',
+    ReadOnly = 'READ_ONLY',
+    Normal = 'NORMAL'
+}
+
+@Entity({name:"wallet"})
+class Wallet {
+
+    @PrimaryGeneratedColumn()
+    id: number = 0;
+
+    @Column('text')
+    name: string = '';
+
+    @Column('text')
+    mnemonic: string = '';
+
+    @Column('text')
+    type: WalletType = WalletType.Normal;
+}
+
+
+export default Wallet;
+
+export {
+    WalletType,
+};
