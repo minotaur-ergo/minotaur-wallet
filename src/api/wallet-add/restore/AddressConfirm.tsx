@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Container, Grid, makeStyles, Typography } from "@material-ui/core";
-import { deriveAddress } from "../../../action/address";
+import { deriveAddressFromMnemonic } from "../../../action/address";
 import CopyableAddress from "../../../components/CopyableAddress";
 
 interface PropsType {
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 const AddressConfirm = (props: PropsType) => {
     const [address, setAddress] = useState();
     const classes = useStyles();
-    deriveAddress(props.mnemonic, props.password, 0).then(derivedAddress => setAddress(derivedAddress.address));
+    deriveAddressFromMnemonic(props.mnemonic, props.password, 0).then(derivedAddress => setAddress(derivedAddress.address));
     return (
         <Container>
             <Grid container>

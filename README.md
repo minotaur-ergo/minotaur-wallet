@@ -1,44 +1,85 @@
-This project was bootstrapped with [Create React MinotaurApp](https://github.com/facebook/create-react-app).
+# Minotaur wallet for ergo
 
-## Available Scripts
+This is the first multi-platform wallet for ergo.
 
-In the project directory, you can run:
 
-### `yarn start`
+Features:
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [X] generating wallets, restoring wallets in a way compatible to Yoroi and Ergo node and ergo android app
+- [X] mnemonic passphrase
+- [X] read only wallet support
+- [X] [cold wallet devices](https://github.com/ergoplatform/ergo-wallet-app/wiki/Cold-wallet)
+- [X] Displays and sends tokens and NFT
+  - [X] Display Token Names according to [EIP-04](https://github.com/ergoplatform/eips/blob/master/eip-0004.md)
+  - [X] Send Tokens in transactions.
+  - [X] Issue new tokens in dApp part
+- [X] Display Transaction in wallet.
+- [X] Display generated transaction before signing
+- [X] DApp support: Any dApp can embed directly in app. we currently create two dapp. one for issue token and one for sigma-usd.
+- [ ] Dynamic DApp setup: We're working to generate a dynamic protocol to add new dApp to wallet without an update.
+- [X] Support Android and IOS mobile.
+- [X] Support Desktop build for windows, max os X and linux
+- [X] Wallet password to encrypt secret.
+- [ ] ErgoPay support
+- [ ] MultiLingual wallet support
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+[comment]: <> (You need at least Android 7 or iOS 13 to run Ergo Wallet.)
 
-### `yarn test`
+[comment]: <> (Visit the [Ergo Discord]&#40;https://discord.gg/kj7s7nb&#41; to give feedback.)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Build wallet from source
 
-### `yarn build`
+* First you must clone repo using this command:
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+git clone git@github.com:minotaur-ergo/minotaur-wallet.git
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+* Then in cloned directory install dependency using commands below
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+cd minotaur-wallet
 
-### `yarn eject`
+npm i
+```
+ * Then you must build project using command below:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+npm run build;
+npx cap sync
+npx cap update
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+two last commands are synced code for android and ios.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Android
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+for android build you can use android studio and open `android` directory in project. then build it with android studio or any other tool you want.
 
-## Learn More
 
-You can learn more in the [Create React MinotaurApp documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### IOS
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+IOS users can open ios project in code, open it in xcode and build any version they want.
+
+### Desktop systems
+
+for desktop systems you can use electron use command below 
+
+```
+npm run build:electron:<your platform choices are: linux/win/mac>
+```
+
+Either send me the translated file on Discord or Telegram, or open a PR here. For this, move the
+file to a values-xx directory where xx is your language's ISO code.
+([Spanish example](https://github.com/ergoplatform/ergo-wallet-app/tree/develop/android/src/main/res/values-es))
+
+Thanks in advance!
+
+### Tip the developer
+
+If you want to tip the developer for making this app, thanks in advance! Send your tips to
+[9hpYEvB9PejeMVv9fBskWeWQdhLHNtwf79BY2jhpFQPcZbtNjaH](https://explorer.ergoplatform.com/payment-request?address=9hpYEvB9PejeMVv9fBskWeWQdhLHNtwf79BY2jhpFQPcZbtNjaH&amount=0&description=)
+
+### Testing on Testnet
+You can test the testnet Android debug build on testnet or build the iOS version yourself for testnet. Generate a new wallet and send
+yourself some test Ergos by visiting https://testnet.ergofaucet.org/

@@ -13,9 +13,10 @@ class ReadOnlyWallet extends WalletCreate {
     renderName = () => (
         <WalletName
             hidePassword={true}
+            hideDbPassword={true}
             name={this.state.name}
             goBack={this.props.back}
-            goForward={(name, password) => this.gotoMnemonic(name, password)}>
+            goForward={(name, password,dbPassword) => this.gotoMnemonic(name, password, dbPassword)}>
             <>
                 Enter new wallet name.
                 <p style={{ color: "red" }}>
@@ -28,10 +29,10 @@ class ReadOnlyWallet extends WalletCreate {
     saveWallet = () => {
         if (!this.state.saving) {
             this.setState({ saving: true });
-            walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic).then(() => {
-                this.props.history.goBack();
-                this.setState({ saving: false });
-            });
+            // walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic).then(() => {
+            //     this.props.history.goBack();
+            //     this.setState({ saving: false });
+            // });
         }
     };
 
@@ -39,7 +40,9 @@ class ReadOnlyWallet extends WalletCreate {
     renderMnemonic = () => (
         <ReadOnlyWalletAddress
             address={this.state.mnemonic}
+            network={this.state.network_type}
             setAddress={address => this.setState({ mnemonic: address })}
+            setNetwork={network => this.setState({network_type: network})}
             goBack={() => this.goBackName()}
             goForward={() => this.saveWallet()} />
     );

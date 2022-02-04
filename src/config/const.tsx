@@ -1,7 +1,6 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 
-
-export const PASSWORD_LENGTH = 1;
+export const PASSWORD_LENGTH = 8;
 // export const NETWORK_TYPE = wasm.NetworkPrefix.Testnet;
 // export const EXPLORER_URL = "https://api-testnet.ergoplatform.com"
 // export const EXPLORER_FRONT_URL = "https://testnet.ergoplatform.com"

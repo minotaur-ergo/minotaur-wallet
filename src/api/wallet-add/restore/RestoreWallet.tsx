@@ -12,9 +12,10 @@ class RestoreWallet extends WalletCreate {
 
     renderMnemonic = () => (
         <Mnemonic
+            network={this.state.network_type}
             mnemonic={this.state.mnemonic}
             goBack={() => this.goBackName()}
-            goForward={mnemonic => this.goConfirm(mnemonic)} />
+            goForward={(mnemonic: string, network: string) => this.goConfirm(mnemonic, network)} />
     );
     renderConfirm = () => (
         <AddressConfirm

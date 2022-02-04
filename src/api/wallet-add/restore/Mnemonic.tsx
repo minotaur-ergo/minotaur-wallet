@@ -3,11 +3,13 @@ import { Container, Grid, Button, FormControl, TextField, FormHelperText } from 
 import MnemonicView from "../elements/MnemonicView";
 import { wordlists, getDefaultWordlist, mnemonicToEntropy } from "bip39";
 import { Autocomplete } from "@material-ui/lab";
+import WalletNetworkSelect from "../elements/WalletNetworkSelect";
 
 interface PropsType {
     mnemonic?: string;
     goBack: () => any;
-    goForward: (mnemonic: string) => any;
+    goForward: (mnemonic: string, network: string) => any;
+    network: string;
 }
 
 const words = wordlists[getDefaultWordlist()];
@@ -16,6 +18,7 @@ const Mnemonic = (props: PropsType) => {
     const [mnemonic, setMnemonic] = useState(props.mnemonic ? props.mnemonic : "");
     const [mnemonicValid, setMnemonicValid] = useState(true);
     const [selected, setSelected] = useState("");
+    const [network, setNetwork] = useState(props.network);
     const selectElement = (element: string) => {
         if (words.indexOf(element) !== -1) {
             setMnemonic(mnemonic ? mnemonic + " " + element : element);
@@ -45,6 +48,9 @@ const Mnemonic = (props: PropsType) => {
     return (
         <Container>
             <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <WalletNetworkSelect network={network} setNetworkType={(newNetwork) => setNetwork(newNetwork)}/>
+                </Grid>
                 <Grid item xs={12}>
                     <h2>Restore Wallet</h2>
                 </Grid>
@@ -109,7 +115,7 @@ const Mnemonic = (props: PropsType) => {
                 </Grid>
                 <Grid item>
                     <Button variant="contained" color="primary" disabled={wordCount < 15}
-                            onClick={() => props.goForward(mnemonic)}>
+                            onClick={() => props.goForward(mnemonic, network)}>
                         OK
                     </Button>
                 </Grid>

@@ -10,11 +10,16 @@ const useStyles = makeStyles((theme: any) => ({
     },
     chip: {
         margin: 5
+    },
+    hideChip: {
+        opacity: 0,
+        margin: 5
     }
 }));
 
 interface PropsType {
     mnemonic: string;
+    hideIndex?: Array<number>;
     handleClick?: (index: number) => any
 }
 
@@ -35,7 +40,7 @@ const MnemonicView = (props: PropsType) => {
                             key={index}
                             onClick={() => handleClick(index)}
                             label={item}
-                            className={classes.chip}
+                            className={(props.hideIndex && props.hideIndex.indexOf(index) >= 0) ? classes.hideChip : classes.chip}
                         />
                     )
                 )

@@ -11,9 +11,10 @@ class InsertWallet extends WalletCreate {
         <WalletName
             name={this.state.name}
             password={this.state.mnemonicPassPhrase}
+            dbPassword={this.state.password}
             goBack={this.props.back}
             confirm={true}
-            goForward={(name, password) => this.gotoMnemonic(name, password)}>
+            goForward={(name, password, dbPassword) => this.gotoMnemonic(name, password, dbPassword)}>
             <>
                 Enter new wallet name and password.
                 <p style={{ color: "red" }}>
@@ -28,7 +29,8 @@ class InsertWallet extends WalletCreate {
         <Mnemonic
             mnemonic={this.state.mnemonic}
             goBack={() => this.goBackName()}
-            goForward={mnemonic => this.goConfirm(mnemonic)} />
+            network={this.state.network_type}
+            goForward={(mnemonic: string, network: string) => this.goConfirm(mnemonic, network)} />
 
     );
 

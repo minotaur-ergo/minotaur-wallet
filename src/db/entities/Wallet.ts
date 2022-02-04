@@ -15,8 +15,14 @@ class Wallet {
     @Column('text')
     name: string = '';
 
-    @Column('text')
-    mnemonic: string = '';
+    @Column("text")
+    network_type: string = '';
+
+    @Column("text")
+    seed: string = '';
+
+    @Column("text")
+    extended_public_key: string = '';
 
     @Column('text')
     type: WalletType = WalletType.Normal;

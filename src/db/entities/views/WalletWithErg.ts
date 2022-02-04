@@ -6,7 +6,9 @@ import { WalletType } from '../Wallet';
     expression: (connection: Connection) => connection.createQueryBuilder()
         .select('Wallet.id', 'id')
         .addSelect('Wallet.name', 'name')
-        .addSelect('Wallet.mnemonic', 'mnemonic')
+        .addSelect('Wallet.seed', 'seed')
+        .addSelect('Wallet.network_type', 'network_type')
+        .addSelect('Wallet.extended_public_key', 'extended_public_key')
         .addSelect('Wallet.type', 'type')
         .addSelect('CAST(SUM(CAST(Box.erg AS INT)) AS TEXT)', 'erg_str')
         .addSelect('Count(DISTINCT BoxContent.token_id)', 'token_count')
@@ -26,7 +28,13 @@ export class WalletWithErg {
     name: string = '';
 
     @ViewColumn()
-    mnemonic: string = '';
+    network_type: string = '';
+
+    @ViewColumn()
+    seed: string = '';
+
+    @ViewColumn()
+    extended_public_key: string = '';
 
     @ViewColumn()
     type: WalletType = WalletType.Normal;
