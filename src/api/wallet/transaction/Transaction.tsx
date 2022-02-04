@@ -6,12 +6,14 @@ import WalletTx from "../../../db/entities/views/WalletTx";
 import { WalletPagePropsType } from "../WalletPage";
 import * as wasm from "ergo-lib-wasm-browser";
 import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
+import { InputBox } from "../../../network/models";
+import { JsonBI } from "../../../config/json";
 
 interface StateType {
     transactions: Array<WalletTx>;
     addressValid: boolean;
     displayTx: boolean;
-    inputs: Array<wasm.ErgoBox>;
+    inputs: Array<InputBox>;
     outputs: Array<wasm.ErgoBox>;
 }
 
@@ -37,12 +39,13 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
 
     selectTransaction = (index: number) => {
         if (index < this.state.transactions.length && index >= 0) {
-            const txJson = JSON.parse(this.state.transactions[index].json);
-            // const inputs = txJson.inputs.map((item: any) => wasm.ErgoBox.from_json(JSON.stringify(item)));
-            const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JSON.stringify(item)));
+            debugger
+            const txJson = JsonBI.parse(this.state.transactions[index].json);
+            const inputs = txJson.inputs as Array<InputBox>;
+            const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonBI.stringify(item)));
             this.setState({
                 displayTx: true,
-                // inputs: inputs,
+                inputs: inputs,
                 outputs: outputs
             });
         }
@@ -71,7 +74,7 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
                 </List>
                 <TxBoxDisplay
                     show={this.state.displayTx}
-                    inputs={[]}
+                    inputsJs={this.state.inputs}
                     close={() => this.setState({ displayTx: false })}
                     outputs={this.state.outputs}
                 />

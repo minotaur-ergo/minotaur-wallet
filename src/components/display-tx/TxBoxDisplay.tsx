@@ -4,10 +4,12 @@ import { Divider, Grid, List, ListItem, ListItemText } from "@material-ui/core";
 import RawBox from "./RawBox";
 import BottomSheet from "../bottom-sheet/BottomSheet";
 import { ErgoBoxCandidate } from "ergo-lib-wasm-browser";
+import { InputBox } from "../../network/models";
 
 interface PropsType {
     show: boolean;
-    inputs: Array<wasm.ErgoBox>;
+    inputs?: Array<wasm.ErgoBox>;
+    inputsJs?: Array<InputBox>
     close: () => any;
     outputs: Array<wasm.ErgoBox | ErgoBoxCandidate>;
     allowedAssets?: Array<string>;
@@ -22,9 +24,11 @@ const TxBoxDisplay = (props: PropsType) => {
                         <ListItem>
                             <ListItemText primary="Transaction Inputs" secondary="These element spent in transaction" />
                         </ListItem>
-                        {props.inputs.map((item, index) => (
+                        {props.inputs ? props.inputs.map((item, index) => (
                             <RawBox allowedAssets={props.allowedAssets} box={item} key={index}/>
-                        ))}
+                        )) : props.inputsJs ? props.inputsJs.map((item, index) => (
+                            <RawBox allowedAssets={props.allowedAssets} boxJs={item} key={index}/>
+                        )) : null}
                         <Divider />
                         <ListItem>
                             <ListItemText

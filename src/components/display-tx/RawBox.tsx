@@ -4,18 +4,33 @@ import Erg from "../Erg";
 import * as wasm from "ergo-lib-wasm-browser";
 import DisplayId from "../DisplayId";
 import { NETWORK_TYPE } from "../../config/const";
+import { InputBox } from "../../network/models";
 
 interface PropsType {
-    box: wasm.ErgoBox | wasm.ErgoBoxCandidate;
+    boxJs?: InputBox;
+    box?: wasm.ErgoBox | wasm.ErgoBoxCandidate;
     allowedAssets?: Array<string>;
 }
 
-const RawBox = (props: PropsType) => {
-    const tokens = props.box.tokens();
-    const assets = Array(tokens.len()).fill("").map(
+const getAssetJsonFromWasm = (box: wasm.ErgoBox | wasm.ErgoBoxCandidate, allowedAssets?: Array<string>): Array<{id: string, amount: bigint}> => {
+    const tokens = box.tokens();
+    return Array(tokens.len()).fill("").map(
         (item, index) => tokens.get(index)
-    ).filter(item=> props.allowedAssets ? props.allowedAssets.indexOf(item.id().to_str())>= 0 : true);
-    const address = wasm.Address.recreate_from_ergo_tree(props.box.ergo_tree()).to_base58(NETWORK_TYPE);
+    ).filter(item=> allowedAssets ? allowedAssets.indexOf(item.id().to_str())>= 0 : true).map(token => {
+        return {id: token.id().to_str(), amount: BigInt(token.amount().as_i64().to_str())}
+    });
+}
+
+const getAssetJsonFromExplorer = (boxJs: InputBox, allowedAssets?: Array<string>): Array<{id: string, amount: bigint}> => {
+    return boxJs.assets.filter(item => allowedAssets ? allowedAssets.indexOf(item.tokenId) >= 0 : true).map(token => {
+        return {id: token.tokenId, amount: token.amount}
+    })
+}
+
+const RawBox = (props: PropsType) => {
+    const assets = props.box ? getAssetJsonFromWasm(props.box) : props.boxJs ? getAssetJsonFromExplorer(props.boxJs) : [];
+    const boxValue = props.box ? BigInt(props.box.value().as_i64().to_str()) : props.boxJs ? props.boxJs.value : BigInt("0")
+    const address = props.box ?  wasm.Address.recreate_from_ergo_tree(props.box.ergo_tree()).to_base58(NETWORK_TYPE) : props.boxJs ? props.boxJs.address : "";
     return (
         <ListItem>
             <ListItemText
@@ -23,15 +38,15 @@ const RawBox = (props: PropsType) => {
                 secondary={<React.Fragment>
                     <span style={{display: "block"}}>
                         <Erg
-                            erg={BigInt(props.box.value().as_i64().to_str())}
+                            erg={boxValue}
                             showUnit={true} />
                     </span>
                     {assets.map((item, index) => (
                         <span style={{display: "block"}} key={index}>
                             <Erg
-                                erg={BigInt(item.amount().as_i64().to_str())}
+                                erg={item.amount}
                                 showUnit={true}
-                                token={item.id().to_str()} />
+                                token={item.id} />
                         </span>
                     ))}
                 </React.Fragment>} />
