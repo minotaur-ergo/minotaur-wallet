@@ -68,6 +68,7 @@
     "react-scripts": "4.0.3",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
+    "safe-area-insets": "^1.4.1",
     "sql.js": "^1.6.2",
     "sqlite3": "^5.0.2",
     "thread-loader": "^2.1.3",

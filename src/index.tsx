@@ -4,6 +4,7 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import 'reflect-metadata';
 import Splash from './app/Splash'
+import safeAreaInsets from "safe-area-insets";
 const MinotaurApp = lazy(() => import('./app/MinotaurApp'));
 
 declare global {
@@ -12,6 +13,7 @@ declare global {
   }
 }
 
+safeAreaInsets.onChange((style: any) => null);
 ReactDOM.render((
   <Suspense fallback={<Splash/>}>
     <MinotaurApp />
