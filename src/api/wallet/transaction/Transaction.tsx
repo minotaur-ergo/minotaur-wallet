@@ -7,7 +7,7 @@ import { WalletPagePropsType } from "../WalletPage";
 import * as wasm from "ergo-lib-wasm-browser";
 import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
 import { InputBox } from "../../../network/models";
-import { JsonAllBI, JsonBI } from "../../../config/json";
+import { JsonAllBI } from "../../../config/json";
 
 interface StateType {
     transactions: Array<WalletTx>;

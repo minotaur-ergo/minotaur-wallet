@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Button, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import { deriveAddressFromMnemonic } from "../../../action/address";
 import CopyableAddress from "../../../components/CopyableAddress";
+import { getNetworkType } from "../../../config/network_type";
 
 interface PropsType {
     mnemonic: string,
     password: string,
+    network_type: string,
     goBack: () => any,
     goForward: () => any,
 }
@@ -19,7 +21,8 @@ const useStyles = makeStyles(theme => ({
 const AddressConfirm = (props: PropsType) => {
     const [address, setAddress] = useState();
     const classes = useStyles();
-    deriveAddressFromMnemonic(props.mnemonic, props.password, 0).then(derivedAddress => setAddress(derivedAddress.address));
+    const network_type = getNetworkType(props.network_type)
+    deriveAddressFromMnemonic(props.mnemonic, props.password, network_type.prefix, 0).then(derivedAddress => setAddress(derivedAddress.address));
     return (
         <Container>
             <Grid container>

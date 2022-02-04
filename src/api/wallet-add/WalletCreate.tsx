@@ -56,6 +56,7 @@ class WalletCreate extends React.Component<PropsType, StateType> {
 
     saveWallet = () => {
         if (!this.state.saving) {
+            debugger
             this.setState({ saving: true });
             walletActions.createWallet(
                 this.state.name,

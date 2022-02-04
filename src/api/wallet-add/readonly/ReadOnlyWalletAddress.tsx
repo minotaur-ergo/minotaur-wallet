@@ -15,7 +15,6 @@ interface PropsType {
 
 const ReadOnlyWalletAddress = (props: PropsType) => {
     const [addresses, setAddresses] = useState<Array<string>>([])
-    const [network, setNetwork] = useState(props.network)
     useEffect(() => {
         dbAddressAction.getAllAddresses().then(addresses => {
             setAddresses(addresses.map(item => item.address))
@@ -26,7 +25,7 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
         <Container>
             <Grid container style={{ marginBottom: 10 }} spacing={2}>
                 <Grid item xs={12}>
-                    <WalletNetworkSelect network={network} setNetworkType={(newNetwork) => props.setNetwork(newNetwork)}/>
+                    <WalletNetworkSelect network={props.network} setNetworkType={(newNetwork) => props.setNetwork(newNetwork)}/>
                 </Grid>
                 <Grid item xs={12}>
                     <br />

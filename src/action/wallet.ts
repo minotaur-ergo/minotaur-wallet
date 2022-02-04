@@ -8,10 +8,9 @@ import { mnemonicToSeedSync } from "bip39";
 import { RootPathWithoutIndex } from "./address";
 import { fromSeed } from "bip32";
 import { encrypt } from "./enc";
-import * as wasm from 'ergo-lib-wasm-browser';
 
 const createWallet = async (name: string, type: WalletType, mnemonic: string, password: string, network_type: string, encryptionPassword: string) => {
-    const seed = mnemonicToSeedSync(mnemonic, "")
+    const seed = mnemonicToSeedSync(mnemonic, password)
     const master = fromSeed(seed);
     const extended_public_key = master.derivePath(RootPathWithoutIndex).neutered();
     const storedSeed = encryptionPassword ? encrypt(seed, encryptionPassword) : seed.toString("hex");
@@ -20,7 +19,7 @@ const createWallet = async (name: string, type: WalletType, mnemonic: string, pa
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
 };
 
-const createReadOnlyWallet = async (name: string, address: string, encryptionPassword?: string, network_type: string) => {
+const createReadOnlyWallet = async (name: string, address: string, network_type: string, encryptionPassword?: string) => {
     const walletEntity = await dbWalletAction.createWallet(name, WalletType.ReadOnly, ' ', ' ', network_type);
     await dbAddressAction.saveAddress(walletEntity, 'Main Address', address, '--', 0);
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });

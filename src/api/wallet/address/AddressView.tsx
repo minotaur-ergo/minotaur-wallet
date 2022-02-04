@@ -41,8 +41,9 @@ const AddressView = (props: PropsType) => {
                     {props.address.address ? <QrCode value={props.address.address} size={256} /> : null}
                 </Grid>
                 <Grid item xs={12}>
-                    <CopyToClipboard text={props.address.address}
-                                     onCopy={() => show_notification("Copied")}>
+                    <CopyToClipboard
+                        text={props.address.address}
+                        onCopy={() => show_notification("Copied")}>
                         <div style={{ margin: 20, wordWrap: "break-word" }}>{props.address.address}</div>
                     </CopyToClipboard>
                 </Grid>

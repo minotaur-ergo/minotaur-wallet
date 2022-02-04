@@ -3,7 +3,6 @@ import WalletCreate from "../WalletCreate";
 import WalletName from "../WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
-import * as walletActions from "../../../action/wallet";
 
 class ReadOnlyWallet extends WalletCreate {
     steps = [

@@ -103,7 +103,7 @@ const Database = (props: PropsType) => {
     }, [connecting, connected]);
     return (
         <>
-            <a onClick={() => downloadDb()}>download database</a>
+            <button onClick={() => downloadDb()}>download database</button>
             {connected ? props.children : <Splash />}
         </>
     );

@@ -19,6 +19,7 @@ class RestoreWallet extends WalletCreate {
     );
     renderConfirm = () => (
         <AddressConfirm
+            network_type={this.state.network_type}
             mnemonic={this.state.mnemonic}
             password={this.state.mnemonicPassPhrase}
             goBack={() => this.setState({ step: 1 })}

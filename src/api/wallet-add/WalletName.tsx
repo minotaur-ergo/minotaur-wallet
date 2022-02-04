@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Container, Divider, Grid } from "@material-ui/core";
+import { Button, Container, Grid } from "@material-ui/core";
 import PasswordInput from "../../components/PasswordInput";
 import TextInput from "../../components/TextInput";
 import { PASSWORD_LENGTH } from "../../config/const";

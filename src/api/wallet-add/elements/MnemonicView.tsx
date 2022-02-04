@@ -31,6 +31,7 @@ const MnemonicView = (props: PropsType) => {
             props.handleClick(index);
         }
     };
+    const hideIndex = props.hideIndex ? props.hideIndex : []
     return (
         <Grid item xs={12} className={classes.grid}>
             {
@@ -38,9 +39,9 @@ const MnemonicView = (props: PropsType) => {
                     (item, index) => (
                         <Chip
                             key={index}
-                            onClick={() => handleClick(index)}
+                            onClick={() => hideIndex.indexOf(index) < 0 ? handleClick(index) : null}
                             label={item}
-                            className={(props.hideIndex && props.hideIndex.indexOf(index) >= 0) ? classes.hideChip : classes.chip}
+                            className={hideIndex.indexOf(index) >= 0 ? classes.hideChip : classes.chip}
                         />
                     )
                 )
