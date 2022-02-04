@@ -7,7 +7,7 @@ import { WalletPagePropsType } from "../WalletPage";
 import * as wasm from "ergo-lib-wasm-browser";
 import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
 import { InputBox } from "../../../network/models";
-import { JsonBI } from "../../../config/json";
+import { JsonAllBI, JsonBI } from "../../../config/json";
 
 interface StateType {
     transactions: Array<WalletTx>;
@@ -39,10 +39,9 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
 
     selectTransaction = (index: number) => {
         if (index < this.state.transactions.length && index >= 0) {
-            debugger
-            const txJson = JsonBI.parse(this.state.transactions[index].json);
+            const txJson = JsonAllBI.parse(this.state.transactions[index].json);
             const inputs = txJson.inputs as Array<InputBox>;
-            const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonBI.stringify(item)));
+            const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonAllBI.stringify(item)));
             this.setState({
                 displayTx: true,
                 inputs: inputs,
