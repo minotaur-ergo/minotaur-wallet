@@ -69,11 +69,6 @@ for desktop systems you can use electron use command below
 npm run build:electron:<your platform choices are: linux/win/mac>
 ```
 
-Either send me the translated file on Discord or Telegram, or open a PR here. For this, move the
-file to a values-xx directory where xx is your language's ISO code.
-([Spanish example](https://github.com/ergoplatform/ergo-wallet-app/tree/develop/android/src/main/res/values-es))
-
-Thanks in advance!
 
 ### Tip the developer
 
