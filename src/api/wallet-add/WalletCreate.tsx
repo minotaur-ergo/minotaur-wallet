@@ -8,6 +8,7 @@ import StepLabel from "@material-ui/core/StepLabel";
 import WalletName from "./WalletName";
 import WalletTypeSelect from "./elements/WalletTypeSelect";
 import { NETWORK_TYPES } from "../../config/network_type";
+import WalletPassword from "./WalletPassword";
 
 interface PropsType extends RouteComponentProps {
     back: () => any;
@@ -21,7 +22,6 @@ interface StateType {
     type: WalletType;
     saving: boolean;
     network_type: string;
-    password: string;
 }
 
 
@@ -33,18 +33,22 @@ class WalletCreate extends React.Component<PropsType, StateType> {
         name: "",
         type: WalletType.Normal,
         saving: false,
-        network_type: NETWORK_TYPES[0].label,
-        password: ""
+        network_type: NETWORK_TYPES[0].label
     };
     steps = [
         "Name",
         "Mnemonic",
-        "Confirm"
+        "Confirm",
+        "Password"
     ];
 
-    gotoMnemonic = (name: string, password: string, dbPassword: string) => {
-        this.setState({ name: name, mnemonicPassPhrase: password, password: dbPassword, step: 1 });
+    gotoMnemonic = (name: string, password: string) => {
+        this.setState({ name: name, mnemonicPassPhrase: password, step: 1 });
     };
+
+    goPassword = () => {
+        this.setState({step: 3});
+    }
 
     goBackName = () => {
         this.setState({ step: 0 });
@@ -54,9 +58,8 @@ class WalletCreate extends React.Component<PropsType, StateType> {
         this.setState({ mnemonic: mnemonic, step: 2, network_type: network });
     };
 
-    saveWallet = () => {
+    saveWallet = (password: string) => {
         if (!this.state.saving) {
-            debugger
             this.setState({ saving: true });
             walletActions.createWallet(
                 this.state.name,
@@ -64,7 +67,7 @@ class WalletCreate extends React.Component<PropsType, StateType> {
                 this.state.mnemonic,
                 this.state.mnemonicPassPhrase,
                 this.state.network_type,
-                this.state.password
+                password
             ).then(() => {
                 this.props.history.goBack();
                 this.setState({ saving: false });
@@ -76,10 +79,9 @@ class WalletCreate extends React.Component<PropsType, StateType> {
         <WalletName
             name={this.state.name}
             password={this.state.mnemonicPassPhrase}
-            dbPassword={this.state.password}
             goBack={this.props.back}
             confirm={false}
-            goForward={(name, password, dbPassword) => this.gotoMnemonic(name, password, dbPassword)}>
+            goForward={(name, password) => this.gotoMnemonic(name, password)}>
             <>
                 <p>Enter wallet name and password.</p>
                 <WalletTypeSelect value={this.state.type} setValue={value => this.setState({ type: value })} />
@@ -87,9 +89,16 @@ class WalletCreate extends React.Component<PropsType, StateType> {
         </WalletName>
     );
 
+    renderPassword = () => (
+        <WalletPassword
+            goForward={(password) => this.saveWallet(password)}
+            goBack={() => this.goConfirm(this.state.mnemonic, this.state.network_type)}
+        />)
+
     renderMnemonic = (): ReactNode | null => null;
 
     renderConfirm = (): ReactNode | null => null;
+
 
     render = () => (
         <React.Fragment>
@@ -103,6 +112,7 @@ class WalletCreate extends React.Component<PropsType, StateType> {
             {this.state.step === 0 ? this.renderName() : null}
             {this.state.step === 1 ? this.renderMnemonic() : null}
             {this.state.step === 2 ? this.renderConfirm() : null}
+            {this.state.step === 3 ? this.renderPassword() : null}
         </React.Fragment>
     );
 

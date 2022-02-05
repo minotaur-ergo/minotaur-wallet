@@ -3,6 +3,7 @@ import WalletCreate from "../WalletCreate";
 import WalletName from "../WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
+import * as walletActions from '../../../action/wallet';
 
 class ReadOnlyWallet extends WalletCreate {
     steps = [
@@ -28,10 +29,10 @@ class ReadOnlyWallet extends WalletCreate {
     saveWallet = () => {
         if (!this.state.saving) {
             this.setState({ saving: true });
-            // walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic).then(() => {
-            //     this.props.history.goBack();
-            //     this.setState({ saving: false });
-            // });
+            walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
+                this.props.history.goBack();
+                this.setState({ saving: false });
+            });
         }
     };
 

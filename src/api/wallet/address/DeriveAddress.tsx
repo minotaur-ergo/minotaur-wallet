@@ -7,6 +7,7 @@ import AddressInput from "../../../components/AddressInput";
 import { is_valid_address } from "../../../utils/utils";
 import * as dbAddressAction from "../../../db/action/address";
 
+
 interface PropsType {
     wallet: Wallet;
     index: number;
@@ -17,14 +18,14 @@ const DeriveAddress = (props: PropsType) => {
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [addressError, setAddressError] = useState("");
-    const [addresses, setAddresses] = useState<Array<string>>([])
+    const [addresses, setAddresses] = useState<Array<string>>([]);
     useEffect(() => {
-        if(props.wallet.type === WalletType.ReadOnly) {
+        if (props.wallet.type === WalletType.ReadOnly) {
             dbAddressAction.getAllAddresses().then(addresses => {
-                setAddresses(addresses.map(item => item.address))
-            })
+                setAddresses(addresses.map(item => item.address));
+            });
         }
-    }, [props.wallet.type])
+    }, [props.wallet.type]);
     useEffect(() => {
         if (props.wallet.type === WalletType.ReadOnly) {
             const addressError = !is_valid_address(address) ? "Invalid address" : addresses.indexOf(address) >= 0 ? "Address already exists on a wallet" : "";
@@ -39,24 +40,25 @@ const DeriveAddress = (props: PropsType) => {
         }
     };
     return (
-        <Container style={{ marginTop: 20, marginBottom: 20 }}>
+        <Container>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextInput
+                        size={"small"}
                         label="New Address Name"
                         error={name === "" ? "Name is required" : ""}
                         value={name}
                         setValue={setName} />
                 </Grid>
-                <Grid item xs={12}>
-                    {props.wallet.type === WalletType.ReadOnly ? (
+                {props.wallet.type === WalletType.ReadOnly ? (
+                    <Grid item xs={12}>
                         <AddressInput
                             address={address}
                             setAddress={setAddress}
                             error={addressError}
                             label="Enter address below" />
-                    ) : null}
-                </Grid>
+                    </Grid>
+                ) : null}
                 <Grid item xs={12}>
                     <Button
                         variant="contained"

@@ -23,7 +23,7 @@ class RestoreWallet extends WalletCreate {
             mnemonic={this.state.mnemonic}
             password={this.state.mnemonicPassPhrase}
             goBack={() => this.setState({ step: 1 })}
-            goForward={this.saveWallet} />
+            goForward={this.goPassword} />
     );
 }
 

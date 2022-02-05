@@ -19,7 +19,7 @@ const createWallet = async (name: string, type: WalletType, mnemonic: string, pa
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
 };
 
-const createReadOnlyWallet = async (name: string, address: string, network_type: string, encryptionPassword?: string) => {
+const createReadOnlyWallet = async (name: string, address: string, network_type: string) => {
     const walletEntity = await dbWalletAction.createWallet(name, WalletType.ReadOnly, ' ', ' ', network_type);
     await dbAddressAction.saveAddress(walletEntity, 'Main Address', address, '--', 0);
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });

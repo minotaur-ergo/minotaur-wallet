@@ -5,6 +5,7 @@ import Wallet from "../db/entities/Wallet";
 import Address from "../db/entities/Address";
 import * as addressAction from "../action/address";
 import AddressWithErg from "../db/entities/views/AddressWithErg";
+import { getNetworkType } from "../config/network_type";
 
 
 interface PropsType {
@@ -20,13 +21,14 @@ const MnemonicPassPhrase = (props: PropsType) => {
     const [validating, setValidating] = useState(false);
     const [lastPassword, setLastPassword] = useState<null | string>(null);
     useEffect(() => {
-        if (lastPassword !== props.password && !validating) {
+        if (lastPassword !== props.password && !validating && props.wallet) {
             setValidating(true);
             const password = props.password;
             const wallet = props.wallet;
             const walletAddress = props.address;
+            const network_type = getNetworkType(wallet.network_type);
             if (wallet && walletAddress) {
-                addressAction.deriveAddress(wallet.mnemonic, props.password, walletAddress.idx).then(address => {
+                addressAction.deriveAddress(wallet.extended_public_key, network_type.prefix, walletAddress.idx).then(address => {
                     if (address.address === walletAddress.address) {
                         setPasswordValid(true);
                     } else {

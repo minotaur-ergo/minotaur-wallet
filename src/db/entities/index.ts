@@ -5,7 +5,7 @@ import Asset from './Asset';
 import Box from "./Box";
 import BoxContent from './BoxContent';
 import WalletTx from './views/WalletTx';
-import WalletWithErg from './views/WalletWithErg';
+import WalletWithErg, { AddressTokenId } from "./views/WalletWithErg";
 import BoxContentView from './views/BoxContentView';
 import AddressWithErg from './views/AddressWithErg';
 import Block from "./Block";
@@ -20,6 +20,7 @@ const Entities = [
     Box,
     BoxContent,
     BoxContentView,
+    AddressTokenId,
     AddressWithErg,
     WalletWithErg,
     TokenWithAddress,

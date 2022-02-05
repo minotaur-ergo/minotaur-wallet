@@ -54,6 +54,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     closeModal = () => this.setState({ showModal: false });
     generateAndSendTx = async () => {
         try {
+            debugger
             const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress)
             this.setState({
                 showModal: true,
