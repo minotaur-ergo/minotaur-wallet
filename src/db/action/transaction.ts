@@ -36,6 +36,14 @@ const getWalletTx = async (wallet_id: number) => {
     return await getWalletTxRepository().find({ create_wallet_id: wallet_id });
 };
 
+const getNetworkTxs = async (network_type: string, from_height: number, to_height: number) => {
+    return getTxRepository()
+        .createQueryBuilder()
+        .where("network_type=:network_type", {network_type: network_type})
+        .andWhere("height >= :from_height", {from_height: from_height})
+        .andWhere("height <= :to_height", {to_height: to_height})
+        .getMany()
+}
 const forkTxs = async (height: number, network_type: string) => {
     await getTxRepository()
         .createQueryBuilder()
@@ -50,4 +58,5 @@ export {
     getTxById,
     getWalletTx,
     forkTxs,
+    getNetworkTxs,
 };

@@ -11,22 +11,24 @@ import { getAssetByAssetId } from "../db/action/asset";
 import { getNode } from "../network/node";
 
 class ReceiverToken {
-    readonly token_id: string = "";
-    amount_str: string = "";
+    readonly token_id: string;
+    amount_str: string;
     private asset?: Asset;
+    private readonly network_type: string;
 
-    constructor(token_id: string, amount: string, asset?: Asset) {
+    constructor(token_id: string, amount: string, network_type: string, asset?: Asset) {
         this.token_id = token_id;
         this.amount_str = amount;
+        this.network_type = network_type;
         if (asset) {
             this.asset = asset;
         } else {
-            getAssetByAssetId(this.token_id).then(asset => this.asset = asset);
+            getAssetByAssetId(this.token_id, this.network_type).then(asset => this.asset = asset);
         }
     }
 
     clone = () => {
-        return new ReceiverToken(this.token_id, this.amount_str, this.asset);
+        return new ReceiverToken(this.token_id, this.amount_str, this.network_type, this.asset);
     };
 
     amount = () => {

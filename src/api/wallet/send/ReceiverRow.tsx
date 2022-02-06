@@ -45,7 +45,7 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
     addToken = (tokenId: string) => {
         if (this.props.value.tokens.filter(item => item.token_id === tokenId).length === 0) {
             const newReceiver = this.props.value.clone();
-            newReceiver.tokens.push(new ReceiverToken(tokenId, ""));
+            newReceiver.tokens.push(new ReceiverToken(tokenId, "", this.props.network_type));
             this.props.setValue(newReceiver);
         }
     }

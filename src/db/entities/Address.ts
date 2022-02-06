@@ -30,8 +30,14 @@ class Address {
     @ManyToOne(() => Wallet)
     wallet: Wallet | null = null;
 
-    @Column('boolean', {default: false})
-    is_new: boolean = false;
+    @Column('int', { default: 0 })
+    tx_load_height: number = 0;
+
+    @Column('int', { default: 0 })
+    tx_create_box_height: number = 0;
+
+    @Column('int', { default: 0 })
+    tx_spent_box_height: number = 0;
 }
 
 export default Address;

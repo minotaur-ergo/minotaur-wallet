@@ -7,7 +7,6 @@ import { decrypt } from "./enc";
 import { mnemonicToSeedSync } from "bip39";
 import { getNetworkType } from "../config/network_type";
 import { getExplorer } from "../network/explorer";
-
 const RootPathWithoutIndex = "m/44'/429'/0'/0"
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
@@ -91,6 +90,7 @@ const getWalletAddresses = async (walletId: number) => {
 const updateAddressName = async (walletId: number, newName: string) => {
     return dbAddressAction.updateAddressName(walletId, newName);
 };
+
 export {
     deriveAddress,
     deriveAddressFromMnemonic,
