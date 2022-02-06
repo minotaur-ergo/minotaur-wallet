@@ -2,11 +2,11 @@ import * as dbAddressAction from "../db/action/address";
 import { fromBase58, fromSeed } from "bip32";
 import * as wasm from "ergo-lib-wasm-browser";
 import Wallet from "../db/entities/Wallet";
-import explorer from "../network/explorer";
 import Address from "../db/entities/Address";
 import { decrypt } from "./enc";
 import { mnemonicToSeedSync } from "bip39";
 import { getNetworkType } from "../config/network_type";
+import { getExplorer } from "../network/explorer";
 
 const RootPathWithoutIndex = "m/44'/429'/0'/0"
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
@@ -19,7 +19,7 @@ const addWalletAddresses = async (wallet: Wallet) => {
         let index = 1;
         while (true) {
             addressObject = await deriveAddress(wallet.extended_public_key, network_type.prefix, index);
-            const txs = (await explorer.getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
+            const txs = (await getExplorer(wallet.network_type).getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
             if (txs.total > 0) {
                 await dbAddressAction.saveAddress(wallet, `Derive Address ${index}`, addressObject.address, addressObject.path, index);
             } else {

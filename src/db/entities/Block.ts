@@ -1,13 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 
 @Entity({name: 'block'})
+@Unique("block_id_in_network", ["block_id", "network_type"])
 class Block {
     @PrimaryGeneratedColumn()
     id: number = 0;
 
-    @Column('text', { unique: true })
+    @Column('text')
     block_id: string = '';
+
+    @Column('text')
+    network_type: string = '';
 
     @Column('int', {unique: true})
     height: number = 0;

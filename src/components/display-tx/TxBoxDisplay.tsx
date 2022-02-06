@@ -13,6 +13,7 @@ interface PropsType {
     close: () => any;
     outputs: Array<wasm.ErgoBox | ErgoBoxCandidate>;
     allowedAssets?: Array<string>;
+    network_type: string;
 }
 
 const TxBoxDisplay = (props: PropsType) => {
@@ -25,9 +26,17 @@ const TxBoxDisplay = (props: PropsType) => {
                             <ListItemText primary="Transaction Inputs" secondary="These element spent in transaction" />
                         </ListItem>
                         {props.inputs ? props.inputs.map((item, index) => (
-                            <RawBox allowedAssets={props.allowedAssets} box={item} key={index}/>
+                            <RawBox
+                                allowedAssets={props.allowedAssets}
+                                box={item}
+                                key={index}
+                                network_type={props.network_type} />
                         )) : props.inputsJs ? props.inputsJs.map((item, index) => (
-                            <RawBox allowedAssets={props.allowedAssets} boxJs={item} key={index}/>
+                            <RawBox
+                                allowedAssets={props.allowedAssets}
+                                boxJs={item}
+                                key={index}
+                                network_type={props.network_type} />
                         )) : null}
                         <Divider />
                         <ListItem>
@@ -36,7 +45,11 @@ const TxBoxDisplay = (props: PropsType) => {
                                 secondary="These element will be created in transaction" />
                         </ListItem>
                         {props.outputs.map((item, index) => (
-                            <RawBox allowedAssets={props.allowedAssets} box={item} key={index}/>
+                            <RawBox
+                                allowedAssets={props.allowedAssets}
+                                box={item}
+                                key={index}
+                                network_type={props.network_type} />
                         ))}
                     </List>
                 </Grid>

@@ -12,7 +12,7 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Container, Divider, Grid } from "@material-ui/core";
 import DisplayId from "../../../components/DisplayId";
 import Wallet from "../../../db/entities/Wallet";
-import MnemonicPassPhrase from "../../../components/MnemonicPassPhrase";
+import WalletPassword from "../../../components/WalletPassword";
 import Address from "../../../db/entities/Address";
 import AddressWithErg from "../../../db/entities/views/AddressWithErg";
 import { signTx, UnsignedGeneratedTx } from "../../../action/blockchain";
@@ -24,7 +24,7 @@ interface PropsType extends RouteComponentProps<{ id: string }> {
     tx: { reducedTx: string, sender: string, inputs: Array<string> }
 }
 
-interface stateType {
+interface StateType {
     reducedTx?: wasm.ReducedTransaction;
     boxes: Array<wasm.ErgoBox>;
     loading: boolean;
@@ -37,8 +37,8 @@ interface stateType {
     signed: string;
 }
 
-class TransactionSignRequest extends React.Component<PropsType, stateType> {
-    state = {
+class TransactionSignRequest extends React.Component<PropsType, StateType> {
+    state: StateType = {
         loading: false,
         loadedSender: "",
         addresses: [],
@@ -116,7 +116,7 @@ class TransactionSignRequest extends React.Component<PropsType, stateType> {
         this.loadTx();
     }
 
-    componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<stateType>, snapshot?: any) {
+    componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<StateType>, snapshot?: any) {
         this.loadTx();
     }
 
@@ -128,12 +128,13 @@ class TransactionSignRequest extends React.Component<PropsType, stateType> {
                 {reduced !== undefined ? (
                     <React.Fragment>
                         <UnsignedTxView
+                            network_type={this.state.wallet ? this.state.wallet.network_type : ""}
                             tx={(reduced as wasm.ReducedTransaction).unsigned_tx()}
                             boxes={this.state.boxes}
                             addresses={this.state.addresses} />
                         <Divider />
                         {this.state.wallet !== undefined && this.state.walletAddress !== undefined ? (
-                            <MnemonicPassPhrase
+                            <WalletPassword
                                 password={this.state.password}
                                 setPassword={password => this.setState({ password: password })}
                                 complete={() => this.signTx()}

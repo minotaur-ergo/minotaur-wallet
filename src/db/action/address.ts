@@ -14,6 +14,7 @@ const saveAddress = async (wallet: Wallet, name: string, address: string, path: 
         path: path,
         idx: index,
         is_new: true,
+        network_type: wallet.network_type,
         wallet: wallet
     };
     return await (getAddressRepository().insert(entity));
@@ -67,11 +68,12 @@ const getAllAddresses = async () => {
     return await getAddressRepository().find();
 };
 
-const getSyncingAddresses = async () => {
+const getSyncingAddresses = async (network_type: string) => {
     return await getAddressRepository()
         .createQueryBuilder()
         .innerJoin("wallet", "Wallet", "walletId = Wallet.id")
         .where("Wallet.type <> :type", { type: WalletType.Cold })
+        .andWhere("Wallet.network_type = :network_type", {network_type: network_type})
         .getMany();
 };
 

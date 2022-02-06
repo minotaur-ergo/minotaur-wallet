@@ -1,12 +1,12 @@
 import React from "react";
 import QrReader from "react-qr-reader";
-import { qrCodePropsType } from "./PropsType";
+import { QrCodePropsType } from "./propsType";
 import AppHeader from "../../header/AppHeader";
 import { connect, MapDispatchToProps } from "react-redux";
 import { hideQrCodeScanner } from "../../store/actions";
 import WithAppBar from "../../layout/WithAppBar";
 
-interface QrCodeWebPropsType extends qrCodePropsType {
+interface QrCodeWebPropsType extends QrCodePropsType {
     closeQrcode: () => any;
 }
 

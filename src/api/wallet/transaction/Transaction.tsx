@@ -65,13 +65,15 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
                 <List>
                     {this.state.transactions.map((transaction: WalletTx, index: number) => (
                         <React.Fragment key={transaction.id}>
-                            <TransactionElement transaction={transaction}
-                                                handleClick={() => this.selectTransaction(index)} />
+                            <TransactionElement
+                                transaction={transaction}
+                                handleClick={() => this.selectTransaction(index)} />
                             <Divider />
                         </React.Fragment>
                     ))}
                 </List>
                 <TxBoxDisplay
+                    network_type={this.state.transactions.length ? this.state.transactions[0].network_type : ""}
                     show={this.state.displayTx}
                     inputsJs={this.state.inputs}
                     close={() => this.setState({ displayTx: false })}

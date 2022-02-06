@@ -11,27 +11,29 @@ import { Container, Divider, Grid, ListItem, ListItemIcon, ListItemText } from "
 import DisplayId from "../../../components/DisplayId";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
 import { Inbox } from "@material-ui/icons";
-import node from "../../../network/node";
 import { Browser } from "@capacitor/browser";
-import { EXPLORER_FRONT_URL } from "../../../config/const";
+import { getNode } from "../../../network/node";
+import { getNetworkType, NetworkType } from "../../../config/network_type";
 
 interface PropsType {
     closeQrcode: () => any;
     tx: { signedTx: string }
 }
+
 interface stateType {
     tx?: wasm.Transaction;
     loading: boolean;
     loadedTx: string;
     addresses: Array<string>;
     txId?: string;
+    network_type?: NetworkType;
 }
 
-class TransactionPublishRequest extends React.Component<PropsType, stateType>{
+class TransactionPublishRequest extends React.Component<PropsType, stateType> {
     state: stateType = {
         loading: false,
         loadedTx: "",
-        addresses: [],
+        addresses: []
     };
     _base64ToArrayBuffer = (base64: string): Uint8Array => {
         const binary_string = window.atob(base64);
@@ -55,9 +57,10 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType>{
                     tx: tx,
                     loading: false,
                     loadedTx: signedTx,
-                    addresses: addresses.map(item => item.address)
-                })
-            })
+                    addresses: addresses.map(item => item.address),
+                    network_type: addresses.length > 0 ? getNetworkType(addresses[0].network_type) : undefined
+                });
+            });
         }
     };
 
@@ -70,12 +73,19 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType>{
     }
 
     sendTx = () => {
-        if(this.state.tx) {
+        if (this.state.tx && this.state.network_type) {
+            const node = getNode(this.state.network_type.label);
             node.sendTx(this.state.tx).then(result => {
-                this.setState({txId: result.txId});
+                this.setState({ txId: result.txId });
             }).catch(exp => {
                 console.log(exp);
             });
+        }
+    };
+
+    openTxInExplorer = () => {
+        if(this.state.network_type) {
+            Browser.open({ url: `${this.state.network_type.explorer_front}/en/transactions/${this.state.txId}` }).then(() => null)
         }
     }
 
@@ -87,10 +97,11 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType>{
                 {tx !== undefined ? (
                     <React.Fragment>
                         <UnsignedTxView
+                            network_type={this.state.network_type? this.state.network_type.label : ""}
                             tx={tx}
                             boxes={[]}
                             addresses={this.state.addresses}>
-                            <Divider/>
+                            <Divider />
                             <ListItem button onClick={() => this.sendTx()}>
                                 <ListItemIcon>
                                     <Inbox />
@@ -108,11 +119,12 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType>{
                                 <h3>Your transaction submitted to network.</h3>
                                 <br />
                                 <div
-                                    onClick={() => Browser.open({ url: `${EXPLORER_FRONT_URL}/en/transactions/${this.state.txId}` })}>
+                                    onClick={this.openTxInExplorer}>
                                     <DisplayId id={this.state.txId} />
                                 </div>
                                 <br />
-                                It can take about 2 minutes to mine your transaction. also syncing your wallet may be slow
+                                It can take about 2 minutes to mine your transaction. also syncing your wallet may be
+                                slow
                                 <br />
                                 <br />
                                 <br />
@@ -128,6 +140,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType>{
 }
 
 const mapStateToProps = (state: GlobalStateType) => ({
+    wallets: state.wallet
     // scan: state.qrcode.chunks
 });
 

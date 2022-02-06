@@ -1,4 +1,6 @@
 import * as wasm from 'ergo-lib-wasm-browser';
+import { Explorer } from "../network/explorer";
+import { Node } from "../network/node";
 
 interface NetworkTypeInterface {
     readonly node: string;
@@ -16,6 +18,8 @@ class NetworkType implements NetworkTypeInterface{
     readonly node: string;
     readonly prefix: wasm.NetworkPrefix;
     readonly label: string;
+    private nodeApi: Node | undefined;
+    private explorerApi: Explorer | undefined;
 
     constructor(node: string, explorer: string, explorer_front: string, prefix: wasm.NetworkPrefix, color: string, label: string) {
         this.color = color;
@@ -24,6 +28,20 @@ class NetworkType implements NetworkTypeInterface{
         this.node = node
         this.prefix = prefix;
         this.label = label
+    }
+
+    getNode = () => {
+        if(!this.nodeApi){
+            this.nodeApi = new Node(this.node)
+        }
+        return this.nodeApi
+    }
+
+    getExplorer = () => {
+        if(!this.explorerApi){
+            this.explorerApi = new Explorer(this.explorer)
+        }
+        return this.explorerApi;
     }
 }
 
@@ -60,7 +78,7 @@ const NETWORK_TYPES = [
     TestNet,
 ]
 
-const getNetworkType = (networkName: string) => {
+const getNetworkType = (networkName: string): NetworkType => {
     const selected = NETWORK_TYPES.filter(item => item.label === networkName)
     return selected.length > 0 ? selected[0] : NETWORK_TYPES[0]
 }
@@ -68,4 +86,5 @@ const getNetworkType = (networkName: string) => {
 export {
     NETWORK_TYPES,
     getNetworkType,
+    NetworkType,
 }

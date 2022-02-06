@@ -41,9 +41,9 @@ class AssetList extends React.Component<WalletPagePropsType, StateType> {
                             <ListItemText primary={(
                                 <React.Fragment>
                                 <span style={{ float: "right", display: "block" }}>
-                                    <Erg token={item.tokenId} erg={BigInt(item.total)} />
+                                    <Erg token={item.tokenId} erg={BigInt(item.total)} network_type={this.props.wallet.network_type}/>
                                 </span>
-                                    <TokenName token_id={item.tokenId} />
+                                    <TokenName token_id={item.tokenId} network_type={this.props.wallet.network_type}/>
                                 </React.Fragment>
                             )} secondary={(
                                 <DisplayId id={item.tokenId} />
@@ -59,7 +59,6 @@ class AssetList extends React.Component<WalletPagePropsType, StateType> {
                     </ListItem>
                 )}
             </List>
-
         );
     };
 };

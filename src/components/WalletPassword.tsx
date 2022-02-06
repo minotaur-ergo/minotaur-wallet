@@ -16,7 +16,7 @@ interface PropsType {
     address?: Address | AddressWithErg;
 }
 
-const MnemonicPassPhrase = (props: PropsType) => {
+const WalletPassword = (props: PropsType) => {
     const [passwordValid, setPasswordValid] = useState(false);
     const [validating, setValidating] = useState(false);
     const [lastPassword, setLastPassword] = useState<null | string>(null);
@@ -45,11 +45,11 @@ const MnemonicPassPhrase = (props: PropsType) => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <br />
-                    Please enter your mnemonic passphrase
+                    Please enter your wallet's password
                 </Grid>
                 <Grid item xs={12}>
                     <PasswordInput
-                        label="Mnemonic passphrase"
+                        label="Wallet Password"
                         error=""
                         password={props.password}
                         setPassword={props.setPassword} />
@@ -65,4 +65,4 @@ const MnemonicPassPhrase = (props: PropsType) => {
     );
 };
 
-export default MnemonicPassPhrase;
+export default WalletPassword;

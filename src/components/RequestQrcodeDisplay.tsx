@@ -12,7 +12,6 @@ const RequestQrcodeDisplay = (props: PropsType) => {
     const [chunkSize, setChunkSize] = useState(QRCODE_SIZE_DEFAULT);
     const [chunk, setChunk] = useState(0);
     const chunks = Math.ceil((props.requestData.length) / chunkSize);
-    console.log(chunks, props.requestData.length, chunkSize)
     const req = chunks === 1 ? `${props.requestType}-${props.requestData}` :
         `${props.requestType}/${chunk + 1}/${chunks}-` + props.requestData.substr(chunk * chunkSize, chunkSize);
     const gotoNext = () => {

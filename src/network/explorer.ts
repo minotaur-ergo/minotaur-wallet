@@ -3,7 +3,7 @@ import { ErgoBox, ErgoTx, HeadersBlockExplorer, Items, TokenInfo } from "./model
 import { Paging } from "./paging";
 
 import { JsonBI } from "../config/json";
-import { EXPLORER_URL } from "../config/const";
+import { getNetworkType } from "../config/network_type";
 
 export class Explorer {
     readonly backend: AxiosInstance;
@@ -56,7 +56,11 @@ export class Explorer {
     }
 }
 
+const getExplorer = (network_type: string) => {
+    const networkTypeClass = getNetworkType(network_type)
+    return new Explorer(networkTypeClass.explorer);
+}
 
-const explorer = new Explorer(EXPLORER_URL);
-
-export default explorer;
+export {
+    getExplorer,
+}

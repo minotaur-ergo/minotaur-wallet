@@ -10,7 +10,6 @@ import * as dbAddressAction from "../../../db/action/address";
 
 interface PropsType {
     wallet: Wallet;
-    index: number;
     addressDerived: () => any;
 }
 
@@ -31,7 +30,7 @@ const DeriveAddress = (props: PropsType) => {
             const addressError = !is_valid_address(address) ? "Invalid address" : addresses.indexOf(address) >= 0 ? "Address already exists on a wallet" : "";
             setAddressError(addressError);
         }
-    }, [props.wallet, props.index, address, addresses]);
+    }, [props.wallet, address, addresses]);
     const deriveAddress = () => {
         if (props.wallet.type === WalletType.ReadOnly) {
             deriveReadOnlyAddress(props.wallet, address, name).then(() => props.addressDerived());

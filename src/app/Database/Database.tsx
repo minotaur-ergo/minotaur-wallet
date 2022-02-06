@@ -5,7 +5,6 @@ import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
 import Splash from "../Splash";
 import entities from "../../db/entities";
-// import { Toast } from "@capacitor/toast";
 // import isElectron from 'is-electron';
 // import sqlite3 from 'sqlite3';
 
@@ -103,7 +102,7 @@ const Database = (props: PropsType) => {
     }, [connecting, connected]);
     return (
         <>
-            <button onClick={() => downloadDb()}>download database</button>
+            {/*<button onClick={() => downloadDb()}>download database</button>*/}
             {connected ? props.children : <Splash />}
         </>
     );

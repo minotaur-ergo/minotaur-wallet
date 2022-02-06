@@ -3,11 +3,11 @@ import { Button, Container, Grid } from "@material-ui/core";
 import PasswordInput from "./PasswordInput";
 import Wallet from "../db/entities/Wallet";
 import { signTx, UnsignedGeneratedTx } from "../action/blockchain";
-import node from "../network/node";
 import { Browser } from "@capacitor/browser";
-import { EXPLORER_FRONT_URL } from "../config/const";
 import DisplayId from "./DisplayId";
 import { show_notification } from "../utils/utils";
+import { getNode } from "../network/node";
+import { getNetworkType } from "../config/network_type";
 
 interface PropsType {
     close: () => any;
@@ -22,6 +22,7 @@ const SendConfirm = (props: PropsType) => {
     const sendTx = () => {
         if (props.transaction) {
             signTx(props.wallet, props.transaction, password).then(signedTx => {
+                const node = getNode(props.wallet.network_type)
                 node.sendTx(signedTx).then(result => {
                     setTxResponse(result.txId);
                 }).catch(exp => {
@@ -35,6 +36,7 @@ const SendConfirm = (props: PropsType) => {
     const passwordValid = () => {
         return true;
     };
+    const network_type = getNetworkType(props.wallet.network_type);
     return (
         <Container>
             <Grid container spacing={2}>
@@ -45,7 +47,7 @@ const SendConfirm = (props: PropsType) => {
                         <br />
                         <br />
                         <div
-                            onClick={() => Browser.open({ url: `${EXPLORER_FRONT_URL}/en/transactions/${txResponse}` })}>
+                            onClick={() => Browser.open({ url: `${network_type.explorer_front}/en/transactions/${txResponse}` })}>
                             <DisplayId id={txResponse} />
                         </div>
                         <br />

@@ -13,6 +13,7 @@ interface PropsType {
     remaining: bigint;
     setValue: (value: Receiver) => any;
     tokens: Array<TokenWithAddress>;
+    network_type: string;
 }
 
 interface StateType {
@@ -72,9 +73,9 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
                         key={index}
                         value={token.amount_str}
                         setValue={amount => this.updateTokenAt(index, amount)}
-                        label={<TokenName token_id={token.token_id} />} />
+                        label={<TokenName token_id={token.token_id} network_type={this.props.network_type}/>} />
                 ))}
-                <TokenSelect tokens={availableTokens} addToken={this.addToken} />
+                <TokenSelect tokens={availableTokens} addToken={this.addToken} network_type={this.props.network_type}/>
                 <Divider style={{ marginTop: 10 }} />
             </React.Fragment>
         );

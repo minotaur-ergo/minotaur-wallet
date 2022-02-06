@@ -1,12 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity({name: "asset"})
+@Unique('asset_id_network_type', ['asset_id', 'network_type'])
 class Asset{
   @PrimaryGeneratedColumn()
   id: number = 0;
 
-  @Column("text", {unique: true})
+  @Column("text")
   asset_id: string = "";
+
+  @Column("text")
+  network_type: string = '';
 
   @Column("text", {nullable: true})
   box_id?: string = "";

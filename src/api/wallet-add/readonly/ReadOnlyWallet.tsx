@@ -16,7 +16,7 @@ class ReadOnlyWallet extends WalletCreate {
             hideDbPassword={true}
             name={this.state.name}
             goBack={this.props.back}
-            goForward={(name, password,dbPassword) => this.gotoMnemonic(name, password, dbPassword)}>
+            goForward={(name, password) => this.gotoMnemonic(name, password)}>
             <>
                 Enter new wallet name.
                 <p style={{ color: "red" }}>

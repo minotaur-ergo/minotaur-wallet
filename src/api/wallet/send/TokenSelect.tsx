@@ -5,7 +5,8 @@ import TokenName from "../../../components/TokenName";
 
 interface PropsType {
     tokens: Array<TokenWithAddress>;
-    addToken: (tokenId: string) => any
+    addToken: (tokenId: string) => any;
+    network_type: string
 }
 
 const TokenSelect = (props: PropsType) => {
@@ -21,7 +22,7 @@ const TokenSelect = (props: PropsType) => {
                     {props.tokens.map(item => <MenuItem
                         key={item.token_id}
                         value={item.token_id}>
-                        <TokenName token_id={item.token_id} />
+                        <TokenName token_id={item.token_id} network_type={props.network_type}/>
                     </MenuItem>)}
                 </Select>
             </FormControl>

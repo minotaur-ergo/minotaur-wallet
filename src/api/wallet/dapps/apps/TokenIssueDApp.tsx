@@ -4,7 +4,6 @@ import ErgoAmount from "../../send/ErgoAmount";
 import { DAppPropsType } from "../../../../utils/interface";
 import * as wasm from 'ergo-lib-wasm-browser'
 import * as constants from '../../../../config/const';
-import ApiNetwork from '../../../../network/node';
 import { show_notification } from "../../../../utils/utils";
 
 const encodeString = (msg: string): Uint8Array => {
@@ -17,11 +16,10 @@ const TokenIssueDApp = (props: DAppPropsType) => {
     const [decimal, setDecimal] = useState("");
     const issueToken = async () => {
         const addresses = await props.getAddresses();
-        const height = await ApiNetwork.getHeight();
+        const height = await props.network_type.getNode().getHeight()
         const box_value = BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str()) + constants.FEE;
         const coveringBox = await props.getCoveringForErgAndToken(box_value,[]);
         if(coveringBox.covered){
-            debugger
             const boxes = coveringBox.boxes;
             let remainingTokens: {[id: string]: bigint} = {}
             const totalErg: bigint = Array(boxes.len()).fill("").map((item, index) => {

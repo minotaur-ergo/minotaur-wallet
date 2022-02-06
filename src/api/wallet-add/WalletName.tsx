@@ -63,13 +63,19 @@ const WalletName = (props: PropsType) => {
             </Grid>
             <Grid container spacing={2} justifyContent="space-between">
                 <Grid item>
-                    <Button variant="contained" color="primary" onClick={props.goBack}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={props.goBack}>
                         Back
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" color="primary" onClick={() => props.goForward(name, password)}
-                            disabled={!formValid()}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => props.goForward(name, password)}
+                        disabled={!formValid()}>
                         Next
                     </Button>
                 </Grid>

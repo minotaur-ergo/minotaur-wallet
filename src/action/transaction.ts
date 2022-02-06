@@ -1,4 +1,3 @@
-import explorer from "../network/explorer";
 import { PAGE_SIZE } from "../config/const";
 import * as dbTxAction from "../db/action/transaction";
 import * as dbBoxAction from "../db/action/box";
@@ -8,9 +7,10 @@ import Tx, { TxStatus } from "../db/entities/Tx";
 import { ErgoTx } from "../network/models";
 import { makeAddressAsProceed } from "../db/action/address";
 import { Paging } from "../network/paging";
+import { getExplorer } from "../network/explorer";
 
 const processTransaction = async (txJson: ErgoTx, address: Address, type: TxStatus) => {
-    const { status, tx } = await dbTxAction.updateOrCreateTx(txJson, type);
+    const { status, tx } = await dbTxAction.updateOrCreateTx(txJson, type, address.network_type);
     if (tx) {
         await processTxOutputBoxes(txJson, tx, address);
     }
@@ -33,6 +33,7 @@ const processTxOutputBoxes = async (txJson: ErgoTx, tx: Tx, address: Address) =>
 };
 
 const processSpentTransaction = async (txJson: ErgoTx, tx: Tx, address: Address) => {
+    debugger
     let index = 0;
     for (let input of txJson.inputs) {
         if (input.address === address.address) {
@@ -43,6 +44,7 @@ const processSpentTransaction = async (txJson: ErgoTx, tx: Tx, address: Address)
 };
 
 const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks: { [height: number]: string }) => {
+    const explorer = getExplorer(address.network_type)
     let txList: Array<ErgoTx> = [];
     const heights = Object.keys(blocks).map(item => Number(item));
     const maxBlockHeight = Math.max(...heights);

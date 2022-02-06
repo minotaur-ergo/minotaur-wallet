@@ -6,9 +6,9 @@ import { getCoveringBoxFor } from "../db/action/box";
 import Wallet from "../db/entities/Wallet";
 import Address from "../db/entities/Address";
 import { getWalletAddressSecret } from "./address";
-import node from "../network/node";
 import Asset from "../db/entities/Asset";
 import { getAssetByAssetId } from "../db/action/asset";
+import { getNode } from "../network/node";
 
 class ReceiverToken {
     readonly token_id: string = "";
@@ -34,7 +34,7 @@ class ReceiverToken {
         const decimal_point = this.asset && this.asset.decimal ? this.asset.decimal : 0;
         const count_str = parts[0];
         let decimal_count = parts[1] ? parts[1] : "0";
-        decimal_count = decimal_count.padEnd(decimal_point, "0").substr(0, decimal_point)
+        decimal_count = decimal_count.padEnd(decimal_point, "0").substr(0, decimal_point);
         return BigInt(count_str + decimal_count);
     };
 
@@ -87,7 +87,8 @@ const bigintToBoxValue = (num: bigint) => wasm.BoxValue.from_i64(wasm.I64.from_s
 
 const getReceiverAmount = (receivers: Array<Receiver>) => receivers.map(receiver => receiver.erg()).reduce((a, b) => a + b);
 
-const createContext = async () => {
+const createContext = async (network_type: string) => {
+    const node = getNode(network_type);
     const networkContext = await node.getNetworkContext();
     const blockHeaders = wasm.BlockHeaders.from_json(networkContext.lastBlocks);
     const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
@@ -95,6 +96,7 @@ const createContext = async () => {
 };
 
 const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress?: Address): Promise<UnsignedGeneratedTx> => {
+    const node = getNode(wallet.network_type);
     const height = await node.getHeight();
     let totalRequired = getReceiverAmount(receivers) + FEE;
     let candidates: wasm.ErgoBoxCandidates = wasm.ErgoBoxCandidates.empty();
@@ -103,9 +105,9 @@ const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress
         const contract = wasm.Contract.pay_to_address(wasm.Address.from_base58(receiver.address));
         const boxBuilder = new wasm.ErgoBoxCandidateBuilder(bigintToBoxValue(receiver.erg()), contract, height);
         receiver.tokens.forEach(item => {
-            if(tokens.hasOwnProperty(item.token_id)){
+            if (tokens.hasOwnProperty(item.token_id)) {
                 tokens[item.token_id] = tokens[item.token_id] + item.amount();
-            }else{
+            } else {
                 tokens[item.token_id] = item.amount();
             }
             boxBuilder.add_token(wasm.TokenId.from_str(item.token_id), wasm.TokenAmount.from_i64(wasm.I64.from_str(item.amount().toString())));
@@ -118,8 +120,8 @@ const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress
     if (coveringBoxes.covered) {
         const tokenSelection = new wasm.Tokens();
         Object.keys(tokens).forEach(token_id => tokenSelection.add(
-            new wasm.Token(wasm.TokenId.from_str(token_id), wasm.TokenAmount.from_i64(wasm.I64.from_str(tokens[token_id].toString()))),
-        ))
+            new wasm.Token(wasm.TokenId.from_str(token_id), wasm.TokenAmount.from_i64(wasm.I64.from_str(tokens[token_id].toString())))
+        ));
         const boxSelector = new wasm.SimpleBoxSelector();
         const selected = boxSelector.select(coveringBoxes.boxes, wasm.BoxValue.from_i64(wasm.I64.from_str(totalRequired.toString())), tokenSelection);
         const tx = wasm.TxBuilder.new(
@@ -138,8 +140,8 @@ const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress
     throw Error("Insufficient erg or token to generate transaction");
 };
 
-const reduceTransaction = async (tx: wasm.UnsignedTransaction, boxes: wasm.ErgoBoxes, data_boxes: wasm.ErgoBoxes) => {
-    const ctx = await createContext();
+const reduceTransaction = async (tx: wasm.UnsignedTransaction, boxes: wasm.ErgoBoxes, data_boxes: wasm.ErgoBoxes, network_type: string) => {
+    const ctx = await createContext(network_type);
     const reduced_transaction = wasm.ReducedTransaction.from_unsigned_tx(tx, boxes, data_boxes, ctx);
     return reduced_transaction.sigma_serialize_bytes();
 };
@@ -167,7 +169,7 @@ const signTx = async (dbWallet: Wallet, tx: UnsignedGeneratedTx, password: strin
     if (tx.tx instanceof wasm.ReducedTransaction) {
         return wallet.sign_reduced_transaction(tx.tx);
     } else {
-        return wallet.sign_transaction(await createContext(), tx.tx, tx.boxes, wasm.ErgoBoxes.from_boxes_json([]));
+        return wallet.sign_transaction(await createContext(dbWallet.network_type), tx.tx, tx.boxes, wasm.ErgoBoxes.from_boxes_json([]));
     }
 };
 export {

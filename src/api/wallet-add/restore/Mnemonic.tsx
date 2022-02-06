@@ -49,7 +49,7 @@ const Mnemonic = (props: PropsType) => {
         <Container>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <WalletNetworkSelect network={network} setNetworkType={(newNetwork) => setNetwork(newNetwork)}/>
+                    <WalletNetworkSelect network={network} setNetworkType={(newNetwork) => setNetwork(newNetwork)} />
                 </Grid>
                 <Grid item xs={12}>
                     <h2>Restore Wallet</h2>
@@ -114,8 +114,11 @@ const Mnemonic = (props: PropsType) => {
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" color="primary" disabled={wordCount < 15}
-                            onClick={() => props.goForward(mnemonic, network)}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={wordCount < 15}
+                        onClick={() => props.goForward(mnemonic, network)}>
                         OK
                     </Button>
                 </Grid>

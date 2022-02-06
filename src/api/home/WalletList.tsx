@@ -20,6 +20,7 @@ const WalletList = (props: PropsType) => {
             {props.wallets.map((wallet, index) => (
                 <React.Fragment key={index}>
                     <WalletElement
+                        network_type={wallet.network_type}
                         type={wallet.type}
                         id={wallet.id}
                         name={wallet.name}

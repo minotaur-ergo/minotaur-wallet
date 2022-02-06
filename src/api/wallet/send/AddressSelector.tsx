@@ -22,7 +22,7 @@ interface StateType {
 }
 
 class AddressSelector extends React.Component<PropsType, StateType> {
-    state = {
+    state: StateType = {
         addresses: [],
         totalTokens: [],
         selectedAddress: -1,
@@ -88,11 +88,11 @@ class AddressSelector extends React.Component<PropsType, StateType> {
                         onChange={event => this.setSelectedAddress(event.target.value as number)}
                     >
                         <MenuItem value={-1}>All {this.state.addresses.length} Addresses</MenuItem>
-                        {this.state.addresses.map((address: Address, index: number) =>
+                        {this.state.addresses.map((address: AddressWithErg, index: number) =>
                             <MenuItem key={index} value={index}>{address.name}</MenuItem>
                         )}
                     </Select>
-                    <FormHelperText>Balance: <Erg erg={this.getTotalErg()} showUnit={true} /></FormHelperText>
+                    <FormHelperText>Balance: <Erg erg={this.getTotalErg()} showUnit={true} network_type={this.state.addresses.length ? this.state.addresses[0].network_type : ""}/></FormHelperText>
                 </FormControl>
             </React.Fragment>
         );

@@ -3,13 +3,14 @@ import { ListItem, ListItemText } from "@material-ui/core";
 import Erg from "../Erg";
 import * as wasm from "ergo-lib-wasm-browser";
 import DisplayId from "../DisplayId";
-import { NETWORK_TYPE } from "../../config/const";
 import { InputBox } from "../../network/models";
+import { getNetworkType } from "../../config/network_type";
 
 interface PropsType {
     boxJs?: InputBox;
     box?: wasm.ErgoBox | wasm.ErgoBoxCandidate;
     allowedAssets?: Array<string>;
+    network_type: string;
 }
 
 const getAssetJsonFromWasm = (box: wasm.ErgoBox | wasm.ErgoBoxCandidate, allowedAssets?: Array<string>): Array<{id: string, amount: bigint}> => {
@@ -28,9 +29,10 @@ const getAssetJsonFromExplorer = (boxJs: InputBox, allowedAssets?: Array<string>
 }
 
 const RawBox = (props: PropsType) => {
+    const network_type = getNetworkType(props.network_type);
     const assets = props.box ? getAssetJsonFromWasm(props.box) : props.boxJs ? getAssetJsonFromExplorer(props.boxJs) : [];
     const boxValue = props.box ? BigInt(props.box.value().as_i64().to_str()) : props.boxJs ? props.boxJs.value : BigInt("0")
-    const address = props.box ?  wasm.Address.recreate_from_ergo_tree(props.box.ergo_tree()).to_base58(NETWORK_TYPE) : props.boxJs ? props.boxJs.address : "";
+    const address = props.box ?  wasm.Address.recreate_from_ergo_tree(props.box.ergo_tree()).to_base58(network_type.prefix) : props.boxJs ? props.boxJs.address : "";
     return (
         <ListItem>
             <ListItemText
@@ -38,12 +40,14 @@ const RawBox = (props: PropsType) => {
                 secondary={<React.Fragment>
                     <span style={{display: "block"}}>
                         <Erg
+                            network_type={props.network_type}
                             erg={boxValue}
                             showUnit={true} />
                     </span>
                     {assets.map((item, index) => (
                         <span style={{display: "block"}} key={index}>
                             <Erg
+                                network_type={props.network_type}
                                 erg={item.amount}
                                 showUnit={true}
                                 token={item.id} />
