@@ -39,7 +39,7 @@ const DeriveAddress = (props: PropsType) => {
         }
     };
     return (
-        <Container>
+        <Container style={{marginTop: "20px"}}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextInput
@@ -52,6 +52,7 @@ const DeriveAddress = (props: PropsType) => {
                 {props.wallet.type === WalletType.ReadOnly ? (
                     <Grid item xs={12}>
                         <AddressInput
+                            size={"small"}
                             address={address}
                             setAddress={setAddress}
                             error={addressError}

@@ -6,7 +6,7 @@ import {
     IconButton,
     InputAdornment,
     InputLabel,
-    OutlinedInput
+    OutlinedInput, TextField
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
@@ -15,6 +15,7 @@ interface PropsType {
     label: string
     error?: string;
     setPassword: (password: string) => any;
+    size?: "small" | "medium";
 }
 
 const PasswordInput = (props: PropsType) => {
@@ -24,8 +25,9 @@ const PasswordInput = (props: PropsType) => {
     return (
         <Grid item xs={12}>
             <FormControl fullWidth variant="outlined">
-                <InputLabel>{props.label}</InputLabel>
-                <OutlinedInput
+                <TextField
+                    variant="outlined"
+                    size={props.size ? props.size : "medium"}
                     label={props.label}
                     error={props.error !== "" && blurred}
                     onBlur={() => setBlurred(true)}
@@ -33,18 +35,20 @@ const PasswordInput = (props: PropsType) => {
                     value={props.password}
                     onChange={(event) => props.setPassword(event.target.value)}
                     autoComplete="off"
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={toggleShowPassword}
-                                onMouseDown={(event) => event.preventDefault()}
-                                edge="end"
-                            >
-                                {showPassword ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={toggleShowPassword}
+                                    onMouseDown={(event) => event.preventDefault()}
+                                    edge="end"
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
                 />
             </FormControl>
             {blurred ? (

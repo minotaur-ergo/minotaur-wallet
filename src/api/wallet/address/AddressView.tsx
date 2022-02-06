@@ -26,7 +26,7 @@ const AddressView = (props: PropsType) => {
         }
     }, [name.id, props.address.id, props.address.name]);
     return (
-        <Container style={{ textAlign: "center", marginTop: 20 }}>
+        <Container style={{ textAlign: "center" }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextInput

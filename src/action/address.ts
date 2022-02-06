@@ -71,12 +71,13 @@ const deriveReadOnlyAddress = async (wallet: Wallet, address: string, name: stri
     await dbAddressAction.saveAddress(wallet, name, address, "no-path", -1);
 };
 
-const validatePassword = async (wallet: Wallet, password: string, address: string, index: number) => {
-    const network_type = getNetworkType(wallet.network_type)
-    const seed = decrypt(wallet.seed, password)
-    const master = fromSeed(seed).derivePath(calcPathFromIndex(index));
-    const secret = wasm.SecretKey.dlog_from_bytes(Uint8Array.from(master.privateKey!))
-    return secret.get_address().to_base58(network_type.prefix) === address;
+const validatePassword = (wallet: Wallet, password: string) => {
+    try {
+        decrypt(wallet.seed, password);
+        return true;
+    }catch (e) {
+        return false
+    }
 };
 
 const getAddress = async (addressId: number) => {

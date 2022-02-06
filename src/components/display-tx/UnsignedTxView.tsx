@@ -1,16 +1,11 @@
 import React from "react";
 import * as wasm from "ergo-lib-wasm-browser";
-import {
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText
-} from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import { Inbox } from "@material-ui/icons";
 import TotalAmount from "./TotalAmount";
 import TxBoxDisplay from "./TxBoxDisplay";
-import { show_notification } from "../../utils/utils";
 import { getNetworkType } from "../../config/network_type";
+import { JsonBI } from "../../config/json";
 
 interface PropsType {
     tx: wasm.UnsignedTransaction | wasm.Transaction;
@@ -80,7 +75,8 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
                 if (boxes.hasOwnProperty(input.box_id().to_str())) {
                     input_boxes.push(boxes[input.box_id().to_str()]);
                 } else {
-                    show_notification("invalid box id found")
+                    const boxJson = await network_type.getExplorer().getBoxById(input.box_id().to_str());
+                    input_boxes.push(wasm.ErgoBox.from_json(JsonBI.stringify(boxJson)));
                 }
             }
             input_boxes.forEach(box => {

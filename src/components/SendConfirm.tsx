@@ -8,6 +8,7 @@ import DisplayId from "./DisplayId";
 import { show_notification } from "../utils/utils";
 import { getNode } from "../network/node";
 import { getNetworkType } from "../config/network_type";
+import { validatePassword } from "../action/address";
 
 interface PropsType {
     close: () => any;
@@ -34,7 +35,7 @@ const SendConfirm = (props: PropsType) => {
         }
     };
     const passwordValid = () => {
-        return true;
+        return validatePassword(props.wallet, password)
     };
     const network_type = getNetworkType(props.wallet.network_type);
     return (
@@ -58,10 +59,12 @@ const SendConfirm = (props: PropsType) => {
                 ) : (
                     <React.Fragment>
                         <Grid item xs={12}>
+                            <br/>
                             Please enter your mnemonic passphrase to send transaction
                         </Grid>
                         <Grid item xs={12}>
                             <PasswordInput
+                                size={"small"}
                                 label="Wallet password"
                                 error=""
                                 password={password}
@@ -69,7 +72,7 @@ const SendConfirm = (props: PropsType) => {
                         </Grid>
                         <Grid item xs={12}>
                             <Button variant="contained" fullWidth color="primary" onClick={sendTx}
-                                    disabled={!props.transaction && passwordValid()}>
+                                    disabled={!(props.transaction && passwordValid())}>
                                 Send
                             </Button>
                         </Grid>
