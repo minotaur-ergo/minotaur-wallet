@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { ErgoBox, ErgoTx, HeadersBlockExplorer, Items, TokenInfo } from "./models";
 import { Paging } from "./paging";
-
+import * as wasm from 'ergo-lib-wasm-browser';
 import { JsonBI } from "../config/json";
 import { getNetworkType } from "../config/network_type";
 
@@ -41,12 +41,25 @@ export class Explorer {
         }).then(response => response.data as ErgoBox);
     }
 
+    getUnspentBoxByTokenId = async (tokenId: string) : Promise<{total: number, items: Array<wasm.ErgoBox>}> => {
+        return this.backend.request<Items<ErgoBox>>({
+            url: `/api/v1/boxes/unspent/byTokenId/${tokenId}`,
+            transformResponse: data => JsonBI.parse(data)
+        }).then((response: any) => {
+            const converted = response.data.items.map((item: ErgoBox) => wasm.ErgoBox.from_json(JsonBI.stringify(item)))
+            return {
+                total: response.data.total,
+                items: converted
+            }
+        })
+    }
     getBlocksHeaders = async (paging:Paging) => {
         return this.backend
             .request<Items<HeadersBlockExplorer>>({
                 url: `api/v1/blocks?offset=${paging.offset}&limit=${paging.limit}`
             }).then(res => res.data)
     }
+
     getFullTokenInfo = async (tokenId: string): Promise<TokenInfo | undefined> => {
       return this.backend
         .request<TokenInfo>({

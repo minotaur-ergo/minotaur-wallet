@@ -52,10 +52,6 @@ const calcForkPoint = async (height: number, network_type: NetworkType): Promise
     return processResult(height, dbHeight, forkPoint, needProcessBlocks, network_type.label);
 };
 
-const processBlockOutputs = () => {
-
-}
-
 export {
     calcForkPoint
 };

@@ -16,6 +16,8 @@ import Loading from "../../../components/Loading";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
 import { UnsignedGeneratedTx } from "../../../action/blockchain";
 import { getNetworkType } from "../../../config/network_type";
+import SigmaUSD from "./apps/sigmausd/SigmaUSD";
+import * as wasm from 'ergo-lib-wasm-browser';
 
 interface PropsType extends RouteComponentProps<{ id: string, dAppId: string }> {
     wallets_valid: boolean;
@@ -85,18 +87,25 @@ class DAppView extends React.Component<PropsType, StateType> {
         this.setState({display: false});
     }
 
+    getProps = () => {
+        return {
+            network_type: getNetworkType(this.state.wallet ? this.state.wallet?.network_type : ""),
+            getAddresses: this.getAddresses,
+            getCoveringForErgAndToken:this.getCoveringForErgAndToken,
+            signAndSendTx:this.signAndSendTx,
+        }
+    }
+
     render = () => {
         const dApp = this.getDApp();
-        if(dApp) {
+        if(dApp && this.state.wallet) {
             return (
                 <WithAppBar header={<AppHeader title={dApp.name} hideQrCode={true}/>}>
                     {dApp.id === "issueToken" ? (
-                        <TokenIssueDApp
-                            network_type={getNetworkType(this.state.wallet ? this.state.wallet?.network_type : "")}
-                            getAddresses={this.getAddresses}
-                            getCoveringForErgAndToken={this.getCoveringForErgAndToken}
-                            signAndSendTx={this.signAndSendTx}
-                        />
+                        <TokenIssueDApp {...this.getProps()}/>
+                    ) : null}
+                    {dApp.id === "sigmaUsd" ? (
+                        <SigmaUSD {...this.getProps()}/>
                     ) : null}
                     {this.state.wallet ? (
                     <GenerateTransactionBottomSheet

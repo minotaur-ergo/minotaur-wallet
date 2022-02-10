@@ -83,6 +83,7 @@ class Receiver {
 export type UnsignedGeneratedTx = {
     tx: wasm.UnsignedTransaction | wasm.ReducedTransaction;
     boxes: wasm.ErgoBoxes;
+    data_inputs?: wasm.ErgoBoxes;
 }
 
 const bigintToBoxValue = (num: bigint) => wasm.BoxValue.from_i64(wasm.I64.from_str(num.toString()));
@@ -171,7 +172,8 @@ const signTx = async (dbWallet: Wallet, tx: UnsignedGeneratedTx, password: strin
     if (tx.tx instanceof wasm.ReducedTransaction) {
         return wallet.sign_reduced_transaction(tx.tx);
     } else {
-        return wallet.sign_transaction(await createContext(dbWallet.network_type), tx.tx, tx.boxes, wasm.ErgoBoxes.from_boxes_json([]));
+        const data_inputs = tx.data_inputs ? tx.data_inputs : wasm.ErgoBoxes.from_boxes_json([])
+        return wallet.sign_transaction(await createContext(dbWallet.network_type), tx.tx, tx.boxes, data_inputs);
     }
 };
 export {

@@ -5,8 +5,7 @@ import {
     Grid,
     IconButton,
     InputAdornment,
-    InputLabel,
-    OutlinedInput, TextField
+    TextField
 } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 
