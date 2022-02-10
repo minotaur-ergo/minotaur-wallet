@@ -6,6 +6,7 @@ interface PropsType {
     sign: -1 | 1;
     title: string;
     description: string;
+    network_type: string;
 }
 const TotalAmount = (props: PropsType) => {
     const signBigInt = BigInt(props.sign)
@@ -22,6 +23,7 @@ const TotalAmount = (props: PropsType) => {
             {Object.entries(props.assets).map(([key, value]) => value * signBigInt > 0 ? (
                 <ListItem>
                     <Erg
+                        network_type={props.network_type}
                         erg={signBigInt * value}
                         showUnit={true}
                         token={key === "erg" ? undefined : key} />

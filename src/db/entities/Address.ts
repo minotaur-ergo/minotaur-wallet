@@ -2,11 +2,12 @@ import {
     Column,
     Entity,
     ManyToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+    PrimaryGeneratedColumn, Unique
+} from "typeorm";
 import Wallet from './Wallet';
 
 @Entity({name: "address"})
+@Unique('address_network_type', ['address', 'network_type'])
 class Address {
     @PrimaryGeneratedColumn()
     id: number = 0;
@@ -14,8 +15,11 @@ class Address {
     @Column('text')
     name: string = '';
 
-    @Column('text', { unique: true })
+    @Column('text')
     address: string = '';
+
+    @Column("text")
+    network_type: string = '';
 
     @Column('text')
     path: string = '';
@@ -26,8 +30,14 @@ class Address {
     @ManyToOne(() => Wallet)
     wallet: Wallet | null = null;
 
-    @Column('boolean', {default: false})
-    is_new: boolean = false;
+    @Column('int', { default: 0 })
+    tx_load_height: number = 0;
+
+    @Column('int', { default: 0 })
+    tx_create_box_height: number = 0;
+
+    @Column('int', { default: 0 })
+    tx_spent_box_height: number = 0;
 }
 
 export default Address;

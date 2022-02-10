@@ -60,14 +60,11 @@ class AddressList extends React.Component<WalletPagePropsType, StateType> {
 
     render = () => {
         const selectedAddress: AddressWithErg | null = this.state.selectedAddr;
-        const firstAddress = this.state.addresses.length > 0 ? (this.state.addresses[0] as AddressWithErg) : undefined
         return (
             <React.Fragment>
                 {this.state.addressValid && this.props.wallet && this.props.wallet.type ? (
                     <DeriveAddress
                         wallet={this.props.wallet}
-                        address={firstAddress ? firstAddress.address : undefined}
-                        index={firstAddress ? firstAddress.idx : -1}
                         addressDerived={this.addressDerived} />
                 ) : null}
                 <List>
@@ -75,6 +72,7 @@ class AddressList extends React.Component<WalletPagePropsType, StateType> {
                         <React.Fragment key={address.id}>
                             <Divider />
                             <AddressElement
+                                network_type={address.network_type}
                                 handleClick={() => this.showAddress(address)}
                                 address={address.address}
                                 id={address.id}

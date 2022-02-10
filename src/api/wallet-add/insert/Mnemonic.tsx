@@ -2,19 +2,25 @@ import React, { useState } from "react";
 import { generateMnemonic } from "bip39";
 import { Container, Grid, Button } from "@material-ui/core";
 import MnemonicView from "../elements/MnemonicView";
+import WalletNetworkSelect from "../elements/WalletNetworkSelect";
 
 interface PropsType {
     mnemonic?: string;
     goBack: () => any;
-    goForward: (mnemonic: string) => any;
+    goForward: (mnemonic: string, network: string) => any;
+    network: string;
 }
 
 const Mnemonic = (props: PropsType) => {
     const initialMnemonic = props.mnemonic ? props.mnemonic : generateMnemonic(160);
     const [mnemonic] = useState(initialMnemonic);
+    const [network, setNetwork] = useState(props.network);
     return (
         <Container>
             <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <WalletNetworkSelect network={network} setNetworkType={(newNetwork) => setNetwork(newNetwork)}/>
+                </Grid>
                 <Grid item xs={12}>
                     <h2>Create Wallet</h2>
                 </Grid>
@@ -34,7 +40,7 @@ const Mnemonic = (props: PropsType) => {
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" color="primary" onClick={() => props.goForward(mnemonic)}>
+                    <Button variant="contained" color="primary" onClick={() => props.goForward(mnemonic, network)}>
                         Yes. I've write it down
                     </Button>
                 </Grid>

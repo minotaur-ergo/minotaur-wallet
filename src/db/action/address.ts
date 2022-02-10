@@ -13,7 +13,7 @@ const saveAddress = async (wallet: Wallet, name: string, address: string, path: 
         address: address,
         path: path,
         idx: index,
-        is_new: true,
+        network_type: wallet.network_type,
         wallet: wallet
     };
     return await (getAddressRepository().insert(entity));
@@ -57,24 +57,24 @@ const updateAddressName = async (addressId: number, newName: string) => {
     ).where("id=:id", { id: addressId }).execute();
 };
 
-const makeAddressAsProceed = async (address: Address) => {
-    return await getAddressRepository().createQueryBuilder().update().set(
-        {is_new: false}
-    ).where("id=:id", {id: address.id}).execute()
-}
-
 const getAllAddresses = async () => {
     return await getAddressRepository().find();
 };
 
-const getSyncingAddresses = async () => {
+const getSyncingAddresses = async (network_type: string) => {
     return await getAddressRepository()
         .createQueryBuilder()
         .innerJoin("wallet", "Wallet", "walletId = Wallet.id")
         .where("Wallet.type <> :type", { type: WalletType.Cold })
+        .andWhere("Wallet.network_type = :network_type", {network_type: network_type})
         .getMany();
 };
 
+const setAddressHeight = async (addressId: number, height: number, height_type: "tx_load" | "tx_create_box" | "tx_spent_box") => {
+    return await getAddressRepository().createQueryBuilder().update().set(
+        {[height_type + "_height"]: height}
+    ).where("id=:id", {id: addressId}).execute();
+}
 export {
     saveAddress,
     getAddress,
@@ -85,5 +85,5 @@ export {
     updateAddressName,
     getAddressByAddressString,
     getSyncingAddresses,
-    makeAddressAsProceed
+    setAddressHeight
 };

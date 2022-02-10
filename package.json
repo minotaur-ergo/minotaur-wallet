@@ -40,6 +40,7 @@
     "babel-plugin-import": "^1.12.1",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
+    "blakejs": "^1.1.1",
     "buffer-to-uint8array": "^1.1.0",
     "customize-cra": "^0.6.1",
     "ergo-lib-wasm-browser": "^0.15.0-alpha-c2a87c8",
@@ -65,7 +66,7 @@
     "react-qr-reader": "^2.2.1",
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.13",
     "safe-area-insets": "^1.4.1",
@@ -121,9 +122,10 @@
     "electron": "^16.0.2",
     "electron-builder": "^22.14.5",
     "electronmon": "^2.0.2",
+    "react-error-overlay": "^6.0.9",
     "rimraf": "^3.0.2",
     "wait-on": "^6.0.0"
   },
-  "main": "./public/electron.js",
+  "main": "electron/electron.js",
   "homepage": "./"
 }

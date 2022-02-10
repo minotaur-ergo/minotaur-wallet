@@ -11,13 +11,14 @@ interface PropsType extends RouteComponentProps<{ id: string }> {
     erg: bigint;
     handleClick: () => any;
     token_count: number;
+    network_type: string
 }
 
 const RenderName = (props: PropsType) => {
     return (
         <div>
             <div style={{ float: "right" }}>
-                <Erg erg={props.erg} showUnit={true} />
+                <Erg erg={props.erg} showUnit={true} network_type={props.network_type}/>
                 <div>
                     <div style={{ float: "right", marginRight: 10 }}>
                         {props.token_count ? <Badge badgeContent={"+" + props.token_count} color="primary" /> : ""}

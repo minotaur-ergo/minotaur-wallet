@@ -1,24 +1,24 @@
 import * as dbAddressAction from "../db/action/address";
-import { mnemonicToSeedSync } from "bip39";
-import { fromSeed } from "bip32";
+import { fromBase58, fromSeed } from "bip32";
 import * as wasm from "ergo-lib-wasm-browser";
-import { NETWORK_TYPE } from "../config/const";
 import Wallet from "../db/entities/Wallet";
-import explorer from "../network/explorer";
 import Address from "../db/entities/Address";
+import { decrypt } from "./enc";
+import { mnemonicToSeedSync } from "bip39";
+import { getNetworkType } from "../config/network_type";
+import { getExplorer } from "../network/explorer";
+const RootPathWithoutIndex = "m/44'/429'/0'/0"
+const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
-const calcPathFromIndex = (index: number) => `m/44'/429'/0'/0/${index}`;
-
-const addWalletAddresses = async (wallet: Wallet, mnemonic: string, password: string) => {
-    let addressObject = await deriveAddress(mnemonic, password, 0);
-    let address = await dbAddressAction.saveAddress(wallet, "Main Address", addressObject.address, addressObject.path, 0);
+const addWalletAddresses = async (wallet: Wallet) => {
+    const network_type = getNetworkType(wallet.network_type)
+    let addressObject = await deriveAddress(wallet.extended_public_key, network_type.prefix, 0);
+    await dbAddressAction.saveAddress(wallet, "Main Address", addressObject.address, addressObject.path, 0);
     try {
-        let address2 = await dbAddressAction.getAddress(address.identifiers[0].id);
-        console.log(address2);
         let index = 1;
         while (true) {
-            addressObject = await deriveAddress(mnemonic, password, index);
-            const txs = (await explorer.getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
+            addressObject = await deriveAddress(wallet.extended_public_key, network_type.prefix, index);
+            const txs = (await getExplorer(wallet.network_type).getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
             if (txs.total > 0) {
                 await dbAddressAction.saveAddress(wallet, `Derive Address ${index}`, addressObject.address, addressObject.path, index);
             } else {
@@ -32,28 +32,38 @@ const addWalletAddresses = async (wallet: Wallet, mnemonic: string, password: st
 };
 
 const getWalletAddressSecret = async (wallet: Wallet, password: string, address: Address) => {
-    const tou8 = require("buffer-to-uint8array");
-    const seed = mnemonicToSeedSync(wallet.mnemonic, password);
+    const seed = decrypt(wallet.seed, password)
     const path = address.idx === -1 ? address.path : calcPathFromIndex(address.idx);
     const extended = fromSeed(seed).derivePath(path);
-    return wasm.SecretKey.dlog_from_bytes(tou8(extended.privateKey));
+    return wasm.SecretKey.dlog_from_bytes(Uint8Array.from(extended.privateKey!));
 };
 
-const deriveAddress = async (mnemonic: string, password: string, index: number) => {
-    const tou8 = require("buffer-to-uint8array");
+const deriveAddress = async (extended_public_key: string, NETWORK_TYPE: wasm.NetworkPrefix, index: number) => {
+    const pub = fromBase58(extended_public_key);
+    const derived1 = pub.derive(index);
+    const address = wasm.Address.from_public_key(Uint8Array.from(derived1.publicKey));
+    const path = calcPathFromIndex(index);
+    return {
+        address: address.to_base58(NETWORK_TYPE),
+        path: path
+    };
+};
+
+const deriveAddressFromMnemonic = async (mnemonic: string, password: string, NETWORK_TYPE: wasm.NetworkPrefix, index: number) => {
     const seed = mnemonicToSeedSync(mnemonic, password);
     const path = calcPathFromIndex(index);
     const extended = fromSeed(seed).derivePath(path);
-    const secret = wasm.SecretKey.dlog_from_bytes(tou8(extended.privateKey));
+    const secret = wasm.SecretKey.dlog_from_bytes(Buffer.from(extended.privateKey!));
     return {
         address: secret.get_address().to_base58(NETWORK_TYPE),
         path: path
     };
 };
 
-const deriveNewAddress = async (wallet: Wallet, password: string, name: string) => {
+const deriveNewAddress = async (wallet: Wallet, name: string) => {
+    const network_type = getNetworkType(wallet.network_type)
     const index = await dbAddressAction.getLastAddress(wallet.id) + 1;
-    const address = await deriveAddress(wallet.mnemonic, password, index ? index : 0);
+    const address = await deriveAddress(wallet.extended_public_key, network_type.prefix, index ? index : 0);
     await dbAddressAction.saveAddress(wallet, name, address.address, address.path, index ? index : 0);
 };
 
@@ -61,9 +71,13 @@ const deriveReadOnlyAddress = async (wallet: Wallet, address: string, name: stri
     await dbAddressAction.saveAddress(wallet, name, address, "no-path", -1);
 };
 
-const validatePassword = async (wallet: Wallet, password: string, address: string, index: number) => {
-    const derivedAddress = await deriveAddress(wallet.mnemonic, password, index);
-    return derivedAddress.address === address;
+const validatePassword = (wallet: Wallet, password: string) => {
+    try {
+        decrypt(wallet.seed, password);
+        return true;
+    }catch (e) {
+        return false
+    }
 };
 
 const getAddress = async (addressId: number) => {
@@ -77,8 +91,10 @@ const getWalletAddresses = async (walletId: number) => {
 const updateAddressName = async (walletId: number, newName: string) => {
     return dbAddressAction.updateAddressName(walletId, newName);
 };
+
 export {
     deriveAddress,
+    deriveAddressFromMnemonic,
     addWalletAddresses,
     getAddress,
     getWalletAddresses,
@@ -86,5 +102,7 @@ export {
     deriveNewAddress,
     updateAddressName,
     getWalletAddressSecret,
-    deriveReadOnlyAddress
+    deriveReadOnlyAddress,
+    calcPathFromIndex,
+    RootPathWithoutIndex
 };

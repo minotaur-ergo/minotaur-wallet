@@ -11,10 +11,14 @@ interface PropsType {
 const MnemonicConfirm = (props: PropsType) => {
     const [createdMnemonic, setCreatedMnemonic] = useState("");
     const mnemonicWords = props.mnemonic.split(" ").sort();
+    const createdIndex: Array<number> = []
     createdMnemonic.split(" ").forEach(item => {
-        const index = mnemonicWords.indexOf(item);
+        let index = mnemonicWords.indexOf(item);
+        while (createdIndex.indexOf(index) >= 0 && index >= 0){
+            index = mnemonicWords.indexOf(item, index)
+        }
         if (index >= 0) {
-            mnemonicWords.splice(index, 1);
+            createdIndex.push(index)
         }
     });
     const handleMnemonicClick = (index: number) => {
@@ -30,7 +34,7 @@ const MnemonicConfirm = (props: PropsType) => {
         <Container>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <MnemonicView mnemonic={mnemonic} handleClick={handleMnemonicClick} />
+                    <MnemonicView hideIndex={createdIndex} mnemonic={mnemonic} handleClick={handleMnemonicClick} />
                 </Grid>
                 <Grid item xs={12}>
                     <p>Use above words to create your written mnemonic</p>

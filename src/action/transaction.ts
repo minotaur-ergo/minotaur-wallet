@@ -1,4 +1,3 @@
-import explorer from "../network/explorer";
 import { PAGE_SIZE } from "../config/const";
 import * as dbTxAction from "../db/action/transaction";
 import * as dbBoxAction from "../db/action/box";
@@ -6,19 +5,25 @@ import * as dbBoxContentAction from "../db/action/boxContent";
 import Address from "../db/entities/Address";
 import Tx, { TxStatus } from "../db/entities/Tx";
 import { ErgoTx } from "../network/models";
-import { makeAddressAsProceed } from "../db/action/address";
 import { Paging } from "../network/paging";
+import { getExplorer } from "../network/explorer";
+import { setAddressHeight } from "../db/action/address";
+import * as dbTransactionActions from "../db/action/transaction";
 
-const processTransaction = async (txJson: ErgoTx, address: Address, type: TxStatus) => {
-    const { status, tx } = await dbTxAction.updateOrCreateTx(txJson, type);
-    if (tx) {
-        await processTxOutputBoxes(txJson, tx, address);
+
+const processAddressOutputBoxes = async (address: Address, height: number) => {
+    const txs = await dbTransactionActions.getNetworkTxs(address.network_type, address.tx_create_box_height, height);
+    for(let tx of txs) {
+        if(tx.height <= height) {
+            await processTxOutputBoxes(tx, address)
+        }
     }
-    return status === TxStatus.Mined ? txJson.inclusionHeight : 0;
-};
+    await setAddressHeight(address.id, height, 'tx_create_box')
+}
 
-const processTxOutputBoxes = async (txJson: ErgoTx, tx: Tx, address: Address) => {
+const processTxOutputBoxes = async ( tx: Tx, address: Address) => {
     let index = 0;
+    const txJson: ErgoTx = JSON.parse(tx.json);
     for (let box of txJson.outputs) {
         if (box.address === address.address) {
             const boxEntity = await dbBoxAction.createOrUpdateBox(box, address, tx, index);
@@ -32,8 +37,19 @@ const processTxOutputBoxes = async (txJson: ErgoTx, tx: Tx, address: Address) =>
     }
 };
 
-const processSpentTransaction = async (txJson: ErgoTx, tx: Tx, address: Address) => {
+const processAddressInputBoxes = async (address: Address, height: number) => {
+    const txs = await dbTransactionActions.getNetworkTxs(address.network_type, address.tx_spent_box_height, height);
+    for(let tx of txs) {
+        if(tx.height <= height) {
+            await processSpentTransaction(tx, address)
+        }
+    }
+    await setAddressHeight(address.id, height, 'tx_spent_box')
+}
+
+const processSpentTransaction = async (tx: Tx, address: Address) => {
     let index = 0;
+    const txJson: ErgoTx = JSON.parse(tx.json);
     for (let input of txJson.inputs) {
         if (input.address === address.address) {
             await dbBoxAction.spentBox(input.boxId, tx, index);
@@ -43,6 +59,7 @@ const processSpentTransaction = async (txJson: ErgoTx, tx: Tx, address: Address)
 };
 
 const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks: { [height: number]: string }) => {
+    const explorer = getExplorer(address.network_type)
     let txList: Array<ErgoTx> = [];
     const heights = Object.keys(blocks).map(item => Number(item));
     const maxBlockHeight = Math.max(...heights);
@@ -53,7 +70,7 @@ const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks
     while (!breakProcess) {
         const txs = (await explorer.getTxsByAddress(address.address, paging)).items;
         for (let tx of txs) {
-            if (tx.inclusionHeight >= fromHeight || address.is_new) {
+            if (tx.inclusionHeight >= fromHeight || tx.inclusionHeight > address.tx_load_height) {
                 if (tx.inclusionHeight >= maxBlockHeight) continue;
                 if(tx.inclusionHeight >= minBlockHeight && blocks[tx.inclusionHeight] !== tx.blockId) continue;// forked transaction arrived
                 txList.push(tx);
@@ -69,15 +86,9 @@ const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks
         paging.limit = Math.min(PAGE_SIZE, paging.limit + 5)
     }
     for (let tx of txList) {
-        await processTransaction(tx, address, TxStatus.Mined);
+        await dbTxAction.updateOrCreateTx(tx, TxStatus.Mined, address.network_type);
     }
-    for (let txJson of txList) {
-        let tx = await dbTxAction.getTxByTxId(txJson.id);
-        if (tx) {
-            await processSpentTransaction(txJson, tx, address);
-        }
-    }
-    if(address.is_new) await makeAddressAsProceed(address)
+    await setAddressHeight(address.id, maxBlockHeight, 'tx_load')
 };
 
 // const getMemPoolTxForAddress = async (address: Address) => {
@@ -88,6 +99,9 @@ const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks
 //     }
 // };
 
+
 export {
-    getMinedTxForAddress
+    getMinedTxForAddress,
+    processAddressOutputBoxes,
+    processAddressInputBoxes
 };

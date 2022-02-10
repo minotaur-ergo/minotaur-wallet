@@ -3,7 +3,7 @@ import WalletCreate from "../WalletCreate";
 import WalletName from "../WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
-import * as walletActions from "../../../action/wallet";
+import * as walletActions from '../../../action/wallet';
 
 class ReadOnlyWallet extends WalletCreate {
     steps = [
@@ -13,6 +13,7 @@ class ReadOnlyWallet extends WalletCreate {
     renderName = () => (
         <WalletName
             hidePassword={true}
+            hideDbPassword={true}
             name={this.state.name}
             goBack={this.props.back}
             goForward={(name, password) => this.gotoMnemonic(name, password)}>
@@ -28,7 +29,7 @@ class ReadOnlyWallet extends WalletCreate {
     saveWallet = () => {
         if (!this.state.saving) {
             this.setState({ saving: true });
-            walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic).then(() => {
+            walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
                 this.props.history.goBack();
                 this.setState({ saving: false });
             });
@@ -39,7 +40,9 @@ class ReadOnlyWallet extends WalletCreate {
     renderMnemonic = () => (
         <ReadOnlyWalletAddress
             address={this.state.mnemonic}
+            network={this.state.network_type}
             setAddress={address => this.setState({ mnemonic: address })}
+            setNetwork={network => this.setState({network_type: network})}
             goBack={() => this.goBackName()}
             goForward={() => this.saveWallet()} />
     );

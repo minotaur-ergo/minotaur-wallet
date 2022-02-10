@@ -12,7 +12,8 @@ interface propType extends RouteComponentProps {
     id: number;
     name: string;
     erg: bigint;
-    tokens: number
+    tokens: number;
+    network_type: string;
 }
 
 const walletElement = (props: propType) => {
@@ -32,10 +33,10 @@ const walletElement = (props: propType) => {
                 primary={props.name}
                 secondary={(
                     <React.Fragment>
-                        <Erg erg={props.erg} showUnit={true} />
+                        <Erg erg={props.erg} showUnit={true} network_type={props.network_type} />
                         <span style={{ float: "right", marginRight: 10 }}>
-                                  {props.tokens ? <Badge badgeContent={"+" + props.tokens} color="primary" /> : ""}
-                                  </span>
+                            {props.tokens ? <Badge badgeContent={"+" + props.tokens} color="primary" /> : ""}
+                        </span>
                     </React.Fragment>
                 )}
             />

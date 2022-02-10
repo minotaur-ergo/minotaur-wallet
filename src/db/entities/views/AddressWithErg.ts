@@ -7,6 +7,7 @@ import Address from "../Address";
         .select('Address.id', 'id')
         .addSelect('Address.name', 'name')
         .addSelect('Address.address', 'address')
+        .addSelect('Address.network_type', 'network_type')
         .addSelect('Address.path', 'path')
         .addSelect('Address.idx', 'idx')
         .addSelect('Address.walletId', 'walletId')
@@ -23,6 +24,9 @@ class AddressWithErg{
 
     @ViewColumn()
     address: string = '';
+
+    @ViewColumn()
+    network_type: string = '';
 
     @ViewColumn()
     path: string = '';

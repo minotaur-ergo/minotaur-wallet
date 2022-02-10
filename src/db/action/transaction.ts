@@ -6,25 +6,26 @@ import { JsonBI } from "../../config/json";
 const getTxRepository = () => getConnection().getRepository(Tx);
 const getWalletTxRepository = () => getConnection().getRepository(WalletTx);
 
-const updateOrCreateTx = async (tx: ErgoTx, status: TxStatus) => {
-    const dbTx = await getTxByTxId(tx.id);
+const updateOrCreateTx = async (tx: ErgoTx, status: TxStatus, network_type: string) => {
+    const dbTx = await getTxByTxId(tx.id, network_type);
     const entity = {
         tx_id: tx.id,
         height: tx.inclusionHeight,
         date: tx.timestamp,
         status: status,
+        network_type: network_type,
         json: JsonBI.stringify(tx)
     };
     if (dbTx) {
         await getTxRepository().createQueryBuilder().update().set(entity).where("id=:id", { id: dbTx.id }).execute();
-        return { status: dbTx.status, tx: await getTxByTxId(tx.id) };
+        return { status: dbTx.status, tx: await getTxByTxId(tx.id, network_type) };
     } else {
         return { status: TxStatus.New, tx: await getTxRepository().save(entity) as Tx };
     }
 };
 
-const getTxByTxId = async (txId: string) => {
-    return await getTxRepository().findOne({ tx_id: txId });
+const getTxByTxId = async (txId: string, network_type: string) => {
+    return await getTxRepository().findOne({ tx_id: txId, network_type: network_type });
 };
 
 const getTxById = async (id: number) => {
@@ -35,10 +36,19 @@ const getWalletTx = async (wallet_id: number) => {
     return await getWalletTxRepository().find({ create_wallet_id: wallet_id });
 };
 
-const forkTxs = async (height: number) => {
+const getNetworkTxs = async (network_type: string, from_height: number, to_height: number) => {
+    return getTxRepository()
+        .createQueryBuilder()
+        .where("network_type=:network_type", {network_type: network_type})
+        .andWhere("height >= :from_height", {from_height: from_height})
+        .andWhere("height <= :to_height", {to_height: to_height})
+        .getMany()
+}
+const forkTxs = async (height: number, network_type: string) => {
     await getTxRepository()
         .createQueryBuilder()
         .where("height >= :height", {height: height})
+        .andWhere('network_type = :network_type', {network_type: network_type})
         .delete()
         .execute()
 }
@@ -48,4 +58,5 @@ export {
     getTxById,
     getWalletTx,
     forkTxs,
+    getNetworkTxs,
 };

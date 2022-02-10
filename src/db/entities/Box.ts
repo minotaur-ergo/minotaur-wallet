@@ -2,8 +2,10 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Address from "./Address";
 import Tx from "./Tx";
 import BigIntValueTransformer from "./Transformer";
+import { Unique } from "typeorm/browser";
 
 @Entity({ name: "box" })
+@Unique('box_id_in_network', ['network_type', 'box_id'])
 class Box {
     @PrimaryGeneratedColumn()
     id: number = 0;
@@ -17,8 +19,11 @@ class Box {
     @ManyToOne(type => Tx, { nullable: true })
     spend_tx: Tx | null = null;
 
-    @Column("text", { unique: true })
+    @Column("text")
     box_id: string = "";
+
+    @Column("text")
+    network_type: string = '';
 
     @Column("text", { transformer: new BigIntValueTransformer() })
     erg: bigint = BigInt(0);

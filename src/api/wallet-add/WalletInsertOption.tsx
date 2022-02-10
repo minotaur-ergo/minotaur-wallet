@@ -29,8 +29,9 @@ const WalletInsertOption = (props: PropsType) => {
                         <FontAwesomeIcon icon={faPlus} />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="New wallet"
-                              secondary="Generate a random mnemonic and create a wallet with it. It can be a cold wallet or normal wallet" />
+                <ListItemText
+                    primary="New wallet"
+                    secondary="Generate a random mnemonic and create a wallet with it. It can be a cold wallet or normal wallet" />
             </ListItem>
             <Divider />
             <ListItem onClick={() => props.setWalletType(WalletCreateType.Restore)}>
@@ -39,8 +40,9 @@ const WalletInsertOption = (props: PropsType) => {
                         <Restore />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Restore wallet"
-                              secondary="Restore a wallet from an existing mnemonic. It can be a cold wallet or normal wallet" />
+                <ListItemText
+                    primary="Restore wallet"
+                    secondary="Restore a wallet from an existing mnemonic. It can be a cold wallet or normal wallet" />
             </ListItem>
             <Divider />
             <ListItem onClick={() => props.setWalletType(WalletCreateType.ReadOnly)}>
@@ -49,8 +51,9 @@ const WalletInsertOption = (props: PropsType) => {
                         <FontAwesomeIcon icon={faCoffee} />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Add read only wallet"
-                              secondary="this is a read only wallet. do not store any secret. only track incomes. if you want to send transaction you must use a cold wallet to sign it." />
+                <ListItemText
+                    primary="Add read only wallet"
+                    secondary="this is a read only wallet. do not store any secret. only track incomes. if you want to send transaction you must use a cold wallet to sign it." />
             </ListItem>
         </List>
     );

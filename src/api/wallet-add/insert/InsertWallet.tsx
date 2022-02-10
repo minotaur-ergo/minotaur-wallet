@@ -28,7 +28,8 @@ class InsertWallet extends WalletCreate {
         <Mnemonic
             mnemonic={this.state.mnemonic}
             goBack={() => this.goBackName()}
-            goForward={mnemonic => this.goConfirm(mnemonic)} />
+            network={this.state.network_type}
+            goForward={(mnemonic: string, network: string) => this.goConfirm(mnemonic, network)} />
 
     );
 
@@ -36,7 +37,7 @@ class InsertWallet extends WalletCreate {
         <MnemonicConfirm
             mnemonic={this.state.mnemonic}
             goBack={() => this.setState({ step: 1 })}
-            goForward={this.saveWallet} />
+            goForward={this.goPassword} />
 
     );
 }

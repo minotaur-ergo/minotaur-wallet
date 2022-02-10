@@ -1,23 +1,18 @@
 import React from "react";
 import * as wasm from "ergo-lib-wasm-browser";
-import {
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText
-} from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import { Inbox } from "@material-ui/icons";
-import { NETWORK_TYPE } from "../../config/const";
-import { JsonBI } from "../../config/json";
 import TotalAmount from "./TotalAmount";
-import explorer from "../../network/explorer";
 import TxBoxDisplay from "./TxBoxDisplay";
+import { getNetworkType } from "../../config/network_type";
+import { JsonBI } from "../../config/json";
 
 interface PropsType {
     tx: wasm.UnsignedTransaction | wasm.Transaction;
     boxes: Array<wasm.ErgoBox>;
     addresses: Array<string>;
     children?: React.ReactNode;
+    network_type: string;
 }
 
 interface stateType {
@@ -62,6 +57,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
 
     extractAssets = async () => {
         if (!this.state.loading && this.state.txId !== this.props.tx.id().to_str()) {
+            const network_type = getNetworkType(this.props.network_type);
             const tx = this.props.tx;
             const wasmOutputs = tx instanceof wasm.Transaction ? tx.outputs() : tx.output_candidates();
             const outputs = Array(wasmOutputs.len()).fill("").map((item, index) => wasmOutputs.get(index));
@@ -79,17 +75,17 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
                 if (boxes.hasOwnProperty(input.box_id().to_str())) {
                     input_boxes.push(boxes[input.box_id().to_str()]);
                 } else {
-                    const boxJson = await explorer.getBoxById(input.box_id().to_str());
+                    const boxJson = await network_type.getExplorer().getBoxById(input.box_id().to_str());
                     input_boxes.push(wasm.ErgoBox.from_json(JsonBI.stringify(boxJson)));
                 }
             }
             input_boxes.forEach(box => {
-                if (this.props.addresses.indexOf(wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(NETWORK_TYPE)) >= 0) {
+                if (this.props.addresses.indexOf(wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(network_type.prefix)) >= 0) {
                     this.processBox(box, -1, assets);
                 }
             });
             outputs.forEach((box, index) => {
-                if (this.props.addresses.indexOf(wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(NETWORK_TYPE)) >= 0) {
+                if (this.props.addresses.indexOf(wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(network_type.prefix)) >= 0) {
                     this.processBox(box, 1, assets);
                 }
             });
@@ -117,11 +113,13 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
             <React.Fragment>
                 <List>
                     <TotalAmount
+                        network_type={this.props.network_type}
                         assets={this.state.assets}
                         sign={-1}
                         title="Total Spent"
                         description={this.state.isMined ? "These amount spent in transaction" : "These amount will be spent when transaction proceed"} />
                     <TotalAmount
+                        network_type={this.props.network_type}
                         assets={this.state.assets}
                         sign={1}
                         title="Total Income"
@@ -135,6 +133,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
                     {this.props.children}
                 </List>
                 <TxBoxDisplay
+                    network_type={this.props.network_type}
                     show={this.state.showBoxes}
                     inputs={this.state.inputs}
                     close={() => this.setState({ showBoxes: false })}

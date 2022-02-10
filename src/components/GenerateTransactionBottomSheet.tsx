@@ -61,6 +61,7 @@ class GenerateTransactionBottomSheet extends React.Component<PropsType, StateTyp
             const box_array = Array(boxes.len()).map((item, index) => boxes.get(index));
             return (
                 <UnsignedTxView
+                    network_type={this.props.wallet.network_type}
                     tx={unsigned_tx}
                     boxes={box_array}
                     addresses={this.state.addresses}

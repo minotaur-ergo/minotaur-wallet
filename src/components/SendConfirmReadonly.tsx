@@ -37,7 +37,7 @@ const SendConfirmReadonly = (props: PropsType) => {
                 setTxRequest({ valid: false, req: "", closed: false });
                 const transaction: wasm.UnsignedTransaction = props.transaction?.tx as wasm.UnsignedTransaction;
                 const boxes: wasm.ErgoBoxes = props.transaction?.boxes!;
-                reduceTransaction(transaction, boxes, wasm.ErgoBoxes.from_boxes_json([])).then(reduced => {
+                reduceTransaction(transaction, boxes, wasm.ErgoBoxes.from_boxes_json([]), props.wallet.network_type).then(reduced => {
                     getWalletAddresses(props.wallet.id).then(walletAddress => {
                         let inputs = [];
                         for (let index = 0; index < boxes.len(); index++) {

@@ -5,11 +5,13 @@ import TokenName from "../../../components/TokenName";
 
 interface PropsType {
     tokens: Array<TokenWithAddress>;
-    addToken: (tokenId: string) => any
+    addToken: (tokenId: string) => any;
+    network_type: string
 }
 
 const TokenSelect = (props: PropsType) => {
     if(props.tokens && props.tokens.length > 0) {
+        const token_ids = Array.from((new Set(props.tokens.map(item => item.token_id))))
         return (
             <FormControl fullWidth variant="outlined" size="small" style={{ marginTop: 15 }}>
                 <InputLabel>Add Token</InputLabel>
@@ -18,10 +20,10 @@ const TokenSelect = (props: PropsType) => {
                     label="Add Token"
                     onChange={event => props.addToken(event.target.value as string)}
                 >
-                    {props.tokens.map(item => <MenuItem
-                        key={item.token_id}
-                        value={item.token_id}>
-                        <TokenName token_id={item.token_id} />
+                    {token_ids.map(item => <MenuItem
+                        key={item}
+                        value={item}>
+                        <TokenName token_id={item} network_type={props.network_type}/>
                     </MenuItem>)}
                 </Select>
             </FormControl>

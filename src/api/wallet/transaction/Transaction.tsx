@@ -7,7 +7,7 @@ import { WalletPagePropsType } from "../WalletPage";
 import * as wasm from "ergo-lib-wasm-browser";
 import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
 import { InputBox } from "../../../network/models";
-import { JsonAllBI, JsonBI } from "../../../config/json";
+import { JsonAllBI } from "../../../config/json";
 
 interface StateType {
     transactions: Array<WalletTx>;
@@ -65,13 +65,15 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
                 <List>
                     {this.state.transactions.map((transaction: WalletTx, index: number) => (
                         <React.Fragment key={transaction.id}>
-                            <TransactionElement transaction={transaction}
-                                                handleClick={() => this.selectTransaction(index)} />
+                            <TransactionElement
+                                transaction={transaction}
+                                handleClick={() => this.selectTransaction(index)} />
                             <Divider />
                         </React.Fragment>
                     ))}
                 </List>
                 <TxBoxDisplay
+                    network_type={this.state.transactions.length ? this.state.transactions[0].network_type : ""}
                     show={this.state.displayTx}
                     inputsJs={this.state.inputs}
                     close={() => this.setState({ displayTx: false })}

@@ -83,6 +83,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
                                     key={`sender-${index}`}
                                     remaining={this.state.totalErg - FEE}
                                     value={receiver}
+                                    network_type={this.props.wallet.network_type}
                                     setValue={param => this.updateReceivers(index, param)} />
                             ))}
                         </Grid>

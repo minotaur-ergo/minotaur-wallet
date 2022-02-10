@@ -7,6 +7,7 @@ import { TxStatus } from '../Tx';
         .select('Tx.id', 'id')
         .addSelect('Tx.tx_id', 'tx_id')
         .addSelect('Tx.height', 'height')
+        .addSelect('Tx.network_type', 'network_type')
         .addSelect('Tx.date', 'date')
         .addSelect('Tx.status', 'status')
         .addSelect('Tx.json', 'json')
@@ -33,6 +34,9 @@ class WalletTx {
 
     @ViewColumn()
     height: number = 0;
+
+    @ViewColumn()
+    network_type: string = '';
 
     @ViewColumn()
     date: number = 0;

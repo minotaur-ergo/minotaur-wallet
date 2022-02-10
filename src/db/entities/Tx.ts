@@ -20,6 +20,9 @@ class Tx {
     @Column('int')
     height: number = 0;
 
+    @Column("text")
+    network_type: string = '';
+
     @Column('int')
     date: number = 0;
 

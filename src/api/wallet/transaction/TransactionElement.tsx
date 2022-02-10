@@ -29,7 +29,7 @@ const TransactionElement = (props: PropsType) => {
                 secondary={(
                     <React.Fragment>
                         <DateView timestamp={props.transaction.date} showTime={true} />
-                        <Erg erg={tx_erg} showUnit={true} />
+                        <Erg erg={tx_erg} showUnit={true} network_type={props.transaction.network_type}/>
                     </React.Fragment>
                 )}
             />

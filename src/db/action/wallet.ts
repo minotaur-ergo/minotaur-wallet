@@ -6,11 +6,13 @@ import WalletWithErg from '../entities/views/WalletWithErg';
 const getWalletRepository = () => getConnection().getRepository(Wallet);
 const getWalletWithErgRepository = () => getConnection().getRepository(WalletWithErg);
 
-const createWallet = async (name: string, type: WalletType, mnemonic: string) => {
+const createWallet = async (name: string, type: WalletType, seed: string, extended_public_key: string, network_type: string) => {
     const wallet = {
         name: name,
         type: type,
-        mnemonic: mnemonic,
+        seed: seed,
+        extended_public_key: extended_public_key,
+        network_type: network_type
     };
     return await getWalletRepository().save(wallet);
 };

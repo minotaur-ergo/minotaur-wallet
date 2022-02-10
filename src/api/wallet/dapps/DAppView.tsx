@@ -15,6 +15,7 @@ import { apps } from "./DAppList";
 import Loading from "../../../components/Loading";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
 import { UnsignedGeneratedTx } from "../../../action/blockchain";
+import { getNetworkType } from "../../../config/network_type";
 
 interface PropsType extends RouteComponentProps<{ id: string, dAppId: string }> {
     wallets_valid: boolean;
@@ -91,6 +92,7 @@ class DAppView extends React.Component<PropsType, StateType> {
                 <WithAppBar header={<AppHeader title={dApp.name} hideQrCode={true}/>}>
                     {dApp.id === "issueToken" ? (
                         <TokenIssueDApp
+                            network_type={getNetworkType(this.state.wallet ? this.state.wallet?.network_type : "")}
                             getAddresses={this.getAddresses}
                             getCoveringForErgAndToken={this.getCoveringForErgAndToken}
                             signAndSendTx={this.signAndSendTx}
