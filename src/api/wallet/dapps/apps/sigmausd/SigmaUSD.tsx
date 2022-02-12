@@ -66,8 +66,8 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
         const explorer = this.props.network_type.getExplorer();
         const bankBoxes = await explorer.getUnspentBoxByTokenId(Bank.NFT_TOKEN_ID);
         const oracleBoxes = await explorer.getUnspentBoxByTokenId(Oracle.TOKEN_ID);
-        const oracle = new Oracle(oracleBoxes.items[0]);
-        const bank = new Bank(bankBoxes.items[0], oracle);
+        const oracle = new Oracle(await explorer.trackMemPool(oracleBoxes.items[0]));
+        const bank = new Bank(await explorer.trackMemPool(bankBoxes.items[0]), oracle);
         this.setState({
             bank: bank,
             oracle: oracle,

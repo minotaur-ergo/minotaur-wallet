@@ -39,7 +39,7 @@ class NetworkType implements NetworkTypeInterface{
 
     getExplorer = () => {
         if(!this.explorerApi){
-            this.explorerApi = new Explorer(this.explorer)
+            this.explorerApi = new Explorer(this.explorer, this.prefix)
         }
         return this.explorerApi;
     }

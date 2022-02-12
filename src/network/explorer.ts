@@ -7,8 +7,10 @@ import { getNetworkType } from "../config/network_type";
 
 export class Explorer {
     readonly backend: AxiosInstance;
+    readonly network_prefix: wasm.NetworkPrefix;
 
-    constructor(uri: string) {
+    constructor(uri: string, prefix: wasm.NetworkPrefix) {
+        this.network_prefix = prefix;
         this.backend = axios.create({
             baseURL: uri,
             timeout: 5000,
@@ -53,6 +55,7 @@ export class Explorer {
             }
         })
     }
+
     getBlocksHeaders = async (paging:Paging) => {
         return this.backend
             .request<Items<HeadersBlockExplorer>>({
@@ -67,11 +70,38 @@ export class Explorer {
           transformResponse: data => JsonBI.parse(data),
         }).then(res => (res.status !== 404 ? res.data as TokenInfo : undefined));
     }
+
+    getMemPoolTxForAddress = async (address: string) => {
+        return await this.backend.get<{ items: Array<ErgoTx>, total: number }>(`/api/v1/mempool/transactions/byAddress/${address}`).then(res => res.data)
+    }
+
+    trackMemPool = async (box: wasm.ErgoBox): Promise<any> => {
+        const address: string = wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(this.network_prefix)
+        let memPoolBoxesMap = new Map<string, wasm.ErgoBox>();
+        (await this.getMemPoolTxForAddress(address).then(res => {
+            return res.items
+        })).forEach((tx: ErgoTx) => {
+            for (let inBox of tx.inputs) {
+                if (inBox.address === address) {
+                    for (let outBox of tx.outputs) {
+                        if (outBox.address === address) {
+                            memPoolBoxesMap.set(inBox.boxId, wasm.ErgoBox.from_json(JSON.stringify(outBox)))
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+        })
+        let lastBox: wasm.ErgoBox = box
+        while (memPoolBoxesMap.has(lastBox.box_id().to_str())) lastBox = memPoolBoxesMap.get(lastBox.box_id().to_str())!
+        return lastBox
+    }
 }
 
 const getExplorer = (network_type: string) => {
     const networkTypeClass = getNetworkType(network_type)
-    return new Explorer(networkTypeClass.explorer);
+    return new Explorer(networkTypeClass.explorer, networkTypeClass.prefix);
 }
 
 export {

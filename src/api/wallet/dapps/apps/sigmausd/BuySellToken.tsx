@@ -49,7 +49,6 @@ const BuySellToken = (props: PropsType) => {
     } else if (amount_bigint > props.max && props.operation === "SELL") {
         error = `There are only ${props.max} Sigma${props.token_type} available in your wallet`;
     }
-    console.log(props.token_type, props.operation, amount_bigint);
     const maxRedeem = props.operation === "BUY" ? maxAmount : maxAmount > props.max ? props.max : maxAmount;
     return (
         <React.Fragment>
@@ -77,7 +76,7 @@ const BuySellToken = (props: PropsType) => {
             }
             <Button
                 fullWidth
-                disabled={error !== "" || amount_bigint == BigInt(0)}
+                disabled={error !== "" || amount_bigint === BigInt(0)}
                 variant="contained"
                 color="primary"
                 onClick={() => props.buy(BigInt(amount_bigint))}>
