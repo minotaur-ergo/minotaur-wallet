@@ -10,7 +10,9 @@ const reserve_ratio = (base_reserves: bigint, circulating_stable_coins: bigint, 
 };
 
 class Bank {
-    static TOKEN_ID = "7d672d1def471720ca5782fd6473e47e796d9ac0c138d9911346f118b2f6d9d9";
+    static NFT_TOKEN_ID = "7d672d1def471720ca5782fd6473e47e796d9ac0c138d9911346f118b2f6d9d9";
+    static STABLE_COIN_TOKEN_ID = "03faf2cb329f2e90d6d23b58d91bbb6c046aa143261cc21f52fbe2824bfcbf04";
+    static RESERVE_COIN_TOKEN_ID = "003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0";
     private readonly box: wasm.ErgoBox;
     private readonly oracle: Oracle;
 
@@ -74,10 +76,13 @@ class Bank {
     };
 
     num_able_to_mint_stable_coin = () => {
-        if (this.able_to_mint_stable_coin(BigInt(1))) return BigInt(0);
+        if (!this.able_to_mint_stable_coin(BigInt(1))) return BigInt(0);
         let low = this.equity() / this.oracle.datapoint_in_cents() / BigInt(4);
+        console.log("liabilities", this.liabilities())
+        console.log("equity", this.equity())
+        console.log(low);
         // TODO check index of stable token
-        let high = BigInt(this.oracle.get_box().tokens().get(1).amount().as_i64().to_str());
+        let high = BigInt(this.box.tokens().get(0).amount().as_i64().to_str());
         while (low <= high) {
             let mid = (high - low) / BigInt(2) + low;
             let new_reserve_ratio = this.mint_stable_coin_reserve_ratio(mid);
@@ -102,10 +107,10 @@ class Bank {
     };
 
     num_able_to_mint_reserve_coin = () => {
-        if (!this.able_to_mint_reserve_coin_amount(BigInt(1))) return 0;
+        if (!this.able_to_mint_reserve_coin_amount(BigInt(1))) return BigInt(0);
         let low = BigInt(0);
         // TODO check token id for reserve coin
-        let high = BigInt(this.oracle.get_box().tokens().get(1).amount().as_i64().to_str());
+        let high = BigInt(this.get_box().tokens().get(1).amount().as_i64().to_str());
         const MAX_RESERVE_RATIO = BigInt(parameters.MAX_RESERVE_RATIO);
         while (low <= high) {
             const mid = (high - low) / BigInt(2) + low;
@@ -131,7 +136,7 @@ class Bank {
     };
 
     num_able_to_redeem_reserve_coin = () => {
-        if (this.redeem_reserve_coin_reserve_ratio(BigInt(1)) <= parameters.MIN_RESERVE_RATIO) return 0;
+        if (this.redeem_reserve_coin_reserve_ratio(BigInt(1)) <= parameters.MIN_RESERVE_RATIO) return BigInt(0);
         let low = BigInt(0);
         let high = this.num_circulating_stable_coins();
         while (low < high) {
@@ -226,6 +231,14 @@ class Bank {
         const fee_less_amount = this.stable_coin_nominal_price() * amount;
         const protocol_fee = parameters.PROTOCOL_FEE(fee_less_amount);
         return fee_less_amount - protocol_fee;
+    }
+
+    get_erg_usd = () => {
+        return BigInt(1e9) / this.stable_coin_nominal_price();
+    }
+
+    get_erg_rsv = () => {
+        return BigInt(1e9) / this.reserve_coin_nominal_price();
     }
 
     create_candidate = (height: number, adding_stable_count: bigint, adding_reserve_count: bigint) => {

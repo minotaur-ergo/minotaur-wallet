@@ -1,76 +1,35 @@
 import React from "react";
 import { DAppPropsType } from "../../../../../utils/interface";
-import { Button, Typography } from "@material-ui/core";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import * as wasm from "ergo-lib-wasm-browser";
 import Bank from "./Bank";
-import { withStyles } from "@material-ui/core/styles";
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import * as parameters from "./parameters";
 import { show_notification } from "../../../../../utils/utils";
 import Oracle from "./Oracle";
-import { ErgoBoxAssetsDataList, UnsignedTransaction } from "ergo-lib-wasm-browser";
-import { UnsignedGeneratedTx } from "../../../../../action/blockchain";
+import { ErgoBoxAssetsDataList } from "ergo-lib-wasm-browser";
 import Boxes from "./Boxes";
+import * as utils from "./utils";
+import BuySellToken from "./BuySellToken";
+import { Accordion, AccordionDetails, AccordionSummary } from "./CustomAccordion";
 
-
-const Accordion = withStyles({
-    root: {
-        border: "1px solid rgba(0, 0, 0, .125)",
-        boxShadow: "none",
-        "&:not(:last-child)": {
-            borderBottom: 0
-        },
-        "&:before": {
-            display: "none"
-        },
-        "&$expanded": {
-            margin: "auto"
-        }
-    },
-    expanded: {}
-})(MuiAccordion);
-
-const AccordionSummary = withStyles({
-    root: {
-        backgroundColor: "rgba(0, 0, 0, .03)",
-        borderBottom: "1px solid rgba(0, 0, 0, .125)",
-        marginBottom: -1,
-        minHeight: 56,
-        "&$expanded": {
-            minHeight: 56
-        }
-    },
-    content: {
-        "&$expanded": {
-            margin: "12px 0"
-        }
-    },
-    expanded: {}
-})(MuiAccordionSummary);
-
-const AccordionDetails = withStyles((theme) => ({
-    root: {
-        padding: theme.spacing(2)
-    }
-}))(MuiAccordionDetails);
 
 interface StateType {
     bank?: Bank;
     oracle?: Oracle;
     loading: boolean;
-    loaded: boolean;
     page: string;
     last_update_height: number;
+    total_reserve_tokens: bigint;
+    total_stable_tokens: bigint;
 }
 
 class SigmaUSD extends React.Component<DAppPropsType, StateType> {
     state: StateType = {
         loading: false,
-        loaded: false,
-        page: "",
+        page: "usd",
         last_update_height: 0,
+        total_stable_tokens: BigInt(0),
+        total_reserve_tokens: BigInt(0),
     };
 
     getCoveringBox = async (amount: bigint, bank: Bank, token?: string, token_amount?: bigint) => {
@@ -104,20 +63,16 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
     };
 
     update_boxes = async () => {
-        if (!this.state.loading) {
-            this.setState({ loading: true });
-            const explorer = this.props.network_type.getExplorer();
-            const bankBoxes = await explorer.getUnspentBoxByTokenId(Bank.TOKEN_ID);
-            const oracleBoxes = await explorer.getUnspentBoxByTokenId(Oracle.TOKEN_ID);
-            const oracle = new Oracle(oracleBoxes.items[0]);
-            const bank = new Bank(bankBoxes.items[0], oracle);
-            this.setState({
-                bank: bank,
-                oracle: oracle,
-                loading: false,
-                loaded: true
-            });
-        }
+        const explorer = this.props.network_type.getExplorer();
+        const bankBoxes = await explorer.getUnspentBoxByTokenId(Bank.NFT_TOKEN_ID);
+        const oracleBoxes = await explorer.getUnspentBoxByTokenId(Oracle.TOKEN_ID);
+        const oracle = new Oracle(oracleBoxes.items[0]);
+        const bank = new Bank(bankBoxes.items[0], oracle);
+        this.setState({
+            bank: bank,
+            oracle: oracle,
+            loading: false
+        });
     };
 
     update_test_boxes = () => {
@@ -126,8 +81,7 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
         this.setState({
             bank: bank,
             oracle: oracle,
-            loading: false,
-            loaded: true
+            loading: false
         });
     };
 
@@ -270,14 +224,14 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
 
     schedule_to_refresh = (time: "long" | "short") => {
         const timeout = time === "long" ? 2 * 60 * 1000 : 30 * 1000;
-        setTimeout(() => this.setState({loading: false}), timeout);
-    }
+        setTimeout(() => this.setState({ loading: false }), timeout);
+    };
 
-    load_date = async () => {
-        if(!this.state.loading){
-            this.setState({loading: true});
+    load_data = async () => {
+        if (!this.state.loading) {
+            this.setState({ loading: true });
             const height = await this.props.network_type.getNode().getHeight();
-            if(height > this.state.last_update_height){
+            if (height > this.state.last_update_height) {
                 this.update_boxes().then(res => {
                     this.setState({
                         last_update_height: height
@@ -285,27 +239,38 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                     this.schedule_to_refresh("long");
                 }).catch(err => {
                     this.schedule_to_refresh("short");
-                })
+                });
             } else {
                 this.schedule_to_refresh("long");
             }
         }
-    }
+    };
 
     loadBoxes = (force: boolean = false) => {
-        if (!(this.state.bank && this.state.oracle && !force)) {
-            this.update_test_boxes();
-            // this.updateBoxes().then(() => null);
-        }
+        this.load_data().then(() => null);
+        // if (!(this.state.bank && this.state.oracle && !force)) {
+        //     this.update_test_boxes();
+        // this.updateBoxes().then(() => null);
+        // }
     };
 
     componentDidMount = () => {
         this.loadBoxes();
+        this.props.getTokenAmount(Bank.STABLE_COIN_TOKEN_ID).then(stable_count => {
+            this.props.getTokenAmount(Bank.RESERVE_COIN_TOKEN_ID).then(reserve_count => {
+                this.setState({
+                    total_stable_tokens: stable_count,
+                    total_reserve_tokens: reserve_count
+                })
+            })
+        })
     };
 
     componentDidUpdate = () => {
         this.loadBoxes();
     };
+
+    loaded = () => this.state.bank?.get_box() && this.state.oracle?.get_box();
 
     get_price_usd = () => {
         if (this.state.bank?.get_box() && this.state.oracle?.get_box()) {
@@ -328,66 +293,109 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
         this.setState({ page: this.state.page === page ? "" : page });
     };
 
+    loading = (center: boolean = false) => {
+        if (center) {
+            return (
+                <div style={{ textAlign: "center", width: "100%" }}>
+                    <CircularProgress size={60} />
+                </div>
+            );
+        }
+        return <CircularProgress size={30} style={{ marginBottom: "-10px" }} />;
+    };
+
     render = () => {
         return (
-            <React.Fragment>
+            <div>
                 <Accordion
                     square
                     expanded={this.state.page === "usd"}
-                    // style={{backgroundColor: "#EFEFEF"}}
                 >
                     <AccordionSummary
                         aria-controls="panel1d-content"
                         onClick={() => this.open_accordion("usd")}
                         id="panel1d-header">
-                        <Typography>1 ERG ≈ {this.get_price_usd()} SigmaUSD</Typography>
+                        <div>1 ERG
+                            ≈ {this.loaded() ? utils.format_usd(this.state.bank?.get_erg_usd()!) : this.loading()} SigmaUSD</div>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => this.buy_stable(BigInt("15000"))}
-                        >
-                            Buy Coin
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => this.sell_stable(BigInt("500"))}
-                        >
-                            Sell Coin
-                        </Button>
+                        {this.loaded() ? (
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    Circulating
+                                    Supply: {utils.format_usd(this.state.bank?.num_circulating_stable_coins()!)}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {this.state.bank && this.state.oracle ? (
+                                        <React.Fragment>
+                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Buy
+                                                SigmaUSD</Typography>
+                                            <BuySellToken bank={this.state.bank}
+                                                          oracle={this.state.oracle}
+                                                          buy={this.buy_stable}
+                                                          token_type="USD"
+                                                          max={BigInt(0)}
+                                                          operation="BUY" />
+                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Sell
+                                                SigmaUSD</Typography>
+                                            <BuySellToken bank={this.state.bank}
+                                                          oracle={this.state.oracle}
+                                                          buy={this.sell_stable}
+                                                          max={this.state.total_stable_tokens}
+                                                          token_type="USD"
+                                                          operation="SELL" />
+                                        </React.Fragment>
+                                    ) : null}
+                                </Grid>
+                            </Grid>
+                        ) : this.loading(true)}
                     </AccordionDetails>
                 </Accordion>
                 <Accordion
                     square
                     expanded={this.state.page === "rsv"}
-                    // style={{backgroundColor: "#EFEFEF"}}
                 >
                     <AccordionSummary
                         aria-controls="panel1d-content"
                         id="panel1d-header"
                         onClick={() => this.open_accordion("rsv")}>
-                        <Typography>1 ERG ≈ {this.get_price_rsv()} SigmaRSV</Typography>
+                        <div>1 ERG
+                            ≈ {this.loaded() ? this.state.bank?.get_erg_rsv().toString() : this.loading()} SigmaRSV</div>
                     </AccordionSummary>
                     <AccordionDetails>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => this.buy_reserve(BigInt("150"))}
-                            >
-                                Buy Coin
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => this.sell_reserve(BigInt("600"))}
-                            >
-                                Sell Coin
-                            </Button>
+                        {this.loaded() ? (
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    Circulating
+                                    Supply: {this.state.bank?.num_circulating_reserve_coins().toString()}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {this.state.bank && this.state.oracle ? (
+                                        <React.Fragment>
+                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Buy
+                                                SigmaRSV</Typography>
+                                            <BuySellToken bank={this.state.bank}
+                                                          oracle={this.state.oracle}
+                                                          max={BigInt(0)}
+                                                          buy={this.buy_stable}
+                                                          token_type="RSV"
+                                                          operation="BUY" />
+                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Sell
+                                                SigmaRSV</Typography>
+                                            <BuySellToken bank={this.state.bank}
+                                                          oracle={this.state.oracle}
+                                                          buy={this.sell_stable}
+                                                          max={this.state.total_reserve_tokens}
+                                                          token_type="RSV"
+                                                          operation="SELL" />
+                                        </React.Fragment>
+                                    ) : null}
+                                </Grid>
+                            </Grid>
+                        ) : this.loading(true)}
                     </AccordionDetails>
                 </Accordion>
-            </React.Fragment>
+            </div>
         );
     };
 }

@@ -11,6 +11,7 @@ import { Connection, ViewColumn, ViewEntity } from 'typeorm';
         .from('box_content', 'BoxContent')
         .innerJoin('box', 'Box', 'Box.id = BoxContent.boxId')
         .innerJoin('address', 'Address', 'Box.addressId = Address.id')
+        .where('Box.spend_tx IS NULL')
         .addGroupBy('address_id, token_id, wallet_id')
 })
 class TokenWithAddress{
