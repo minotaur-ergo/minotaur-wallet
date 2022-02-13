@@ -11,5 +11,6 @@ export interface DAppPropsType {
     getAddresses: () => Promise<Array<string>>;
     getCoveringForErgAndToken: (amount: bigint, tokens: Array<{id: string, amount: bigint}>, address?: string) => Promise<CoveringResult>;
     signAndSendTx: (unsignedTx: UnsignedGeneratedTx) => Promise<any>;
-    network_type: NetworkType
+    network_type: NetworkType,
+    getTokenAmount: (tokenId?: string) => Promise<bigint>;
 }

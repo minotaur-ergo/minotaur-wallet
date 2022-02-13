@@ -8,6 +8,7 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.6.0",
     "@capacitor-community/barcode-scanner": "^2.0.1",
+    "@capacitor-community/electron": "^4.1.0",
     "@capacitor-community/sqlite": "^3.2.4",
     "@capacitor/android": "^3.3.1",
     "@capacitor/app": "^1.0.5",
@@ -126,6 +127,5 @@
     "rimraf": "^3.0.2",
     "wait-on": "^6.0.0"
   },
-  "main": "electron/electron.js",
   "homepage": "./"
 }

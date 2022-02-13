@@ -74,6 +74,10 @@ const getTokenWithAddressForWallet = async (walletId: number) => {
     return await getTokenWithAddressRepository().find({ wallet_id: walletId });
 };
 
+const getSingleTokenWithAddressForWallet = async (walletId: number, tokenId: string) => {
+    return await getTokenWithAddressRepository().find({ wallet_id: walletId, token_id: tokenId });
+};
+
 export {
     createOrUpdateBoxContent,
     getBoxToken,
@@ -81,5 +85,6 @@ export {
     getAddressTokens,
     getWalletTokens,
     forkBoxContents,
-    getTokenWithAddressForWallet
+    getTokenWithAddressForWallet,
+    getSingleTokenWithAddressForWallet
 };

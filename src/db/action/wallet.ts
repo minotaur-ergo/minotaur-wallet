@@ -1,6 +1,6 @@
-import { getConnection } from 'typeorm';
-import Wallet, { WalletType } from '../entities/Wallet';
-import WalletWithErg from '../entities/views/WalletWithErg';
+import { getConnection } from "typeorm";
+import Wallet, { WalletType } from "../entities/Wallet";
+import WalletWithErg from "../entities/views/WalletWithErg";
 
 
 const getWalletRepository = () => getConnection().getRepository(Wallet);
@@ -21,6 +21,10 @@ const getWallets = async () => {
     return await getWalletWithErgRepository().find();
 };
 
+const getWalletWithErg = async (walletId: number) => {
+    return await getWalletWithErgRepository().findOne({ id: walletId });
+};
+
 const getWalletById = async (walletId: number) => {
     return getWalletRepository().findOne({ id: walletId });
 };
@@ -29,4 +33,5 @@ export {
     createWallet,
     getWallets,
     getWalletById,
+    getWalletWithErg
 };

@@ -18,6 +18,7 @@ import AddressWithErg from "../../../db/entities/views/AddressWithErg";
 import { signTx, UnsignedGeneratedTx } from "../../../action/blockchain";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
 import RequestQrcodeDisplay from "../../../components/RequestQrcodeDisplay";
+import { validatePassword } from "../../../action/address";
 
 interface PropsType extends RouteComponentProps<{ id: string }> {
     closeQrcode: () => any;
@@ -135,6 +136,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
                         <Divider />
                         {this.state.wallet !== undefined && this.state.walletAddress !== undefined ? (
                             <WalletPassword
+                                size={"small"}
                                 password={this.state.password}
                                 setPassword={password => this.setState({ password: password })}
                                 complete={() => this.signTx()}

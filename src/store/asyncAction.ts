@@ -8,7 +8,6 @@ import { updateTokenInfo } from "../action/asset";
 import { REFRESH_INTERVAL } from "../config/const";
 import { calcForkPoint } from "../action/block";
 import { NETWORK_TYPES } from "../config/network_type";
-import { getNode } from "../network/node";
 
 const loadTokensAsync = async (network_type: string) => {
     try {

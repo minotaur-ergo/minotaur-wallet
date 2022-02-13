@@ -37,7 +37,8 @@ const SendConfirmReadonly = (props: PropsType) => {
                 setTxRequest({ valid: false, req: "", closed: false });
                 const transaction: wasm.UnsignedTransaction = props.transaction?.tx as wasm.UnsignedTransaction;
                 const boxes: wasm.ErgoBoxes = props.transaction?.boxes!;
-                reduceTransaction(transaction, boxes, wasm.ErgoBoxes.from_boxes_json([]), props.wallet.network_type).then(reduced => {
+                const data_input = props.transaction?.data_inputs ? props.transaction.data_inputs : wasm.ErgoBoxes.from_boxes_json([]);
+                reduceTransaction(transaction, boxes, data_input, props.wallet.network_type).then(reduced => {
                     getWalletAddresses(props.wallet.id).then(walletAddress => {
                         let inputs = [];
                         for (let index = 0; index < boxes.len(); index++) {
@@ -56,7 +57,7 @@ const SendConfirmReadonly = (props: PropsType) => {
                         setTxLoading(false);
                     });
                 }).catch(error => {
-                    show_notification(error.message);
+                    show_notification(error);
                 });
             }
         } else {

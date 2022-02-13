@@ -21,7 +21,7 @@ const TotalAmount = (props: PropsType) => {
                     secondary={props.description} />
             </ListItem>
             {Object.entries(props.assets).map(([key, value]) => value * signBigInt > 0 ? (
-                <ListItem>
+                <ListItem key={key}>
                     <Erg
                         network_type={props.network_type}
                         erg={signBigInt * value}

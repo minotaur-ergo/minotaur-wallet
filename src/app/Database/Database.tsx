@@ -5,26 +5,20 @@ import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
 import Splash from "../Splash";
 import entities from "../../db/entities";
-// import isElectron from 'is-electron';
-// import sqlite3 from 'sqlite3';
 
 const connectSqlJs = async () => {
-    // if(isElectron()){
-    //     window.SQL = sqlite3;
-    // }else {
     window.SQL = await initSqlJs({
         // locateFile: file => `./${file}`,
         locateFile: file => `https://sql.js.org/dist/${file}`
     });
-    // }
     return await createConnection({
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
-        logging: ['error'],
+        logging: ["error"],
         synchronize: true,
         entities: entities,
-        sqlJsConfig: {useBigInt: true}
+        sqlJsConfig: { useBigInt: true }
     });
 };
 
@@ -65,7 +59,7 @@ interface PropsType {
 
 const downloadDb = () => {
     try {
-        const content = Buffer.from(JSON.parse(localStorage.minotaur).map((item: number) => ('0' + item.toString(16)).slice(-2)).join(""), "hex")
+        const content = Buffer.from(JSON.parse(localStorage.minotaur).map((item: number) => ("0" + item.toString(16)).slice(-2)).join(""), "hex");
 // any kind of extension (.txt,.cpp,.cs,.bat)
         const filename = "db.sqlite3";
 
@@ -76,13 +70,13 @@ const downloadDb = () => {
         const a = document.createElement("a");
         document.body.appendChild(a);
         a.href = url;
-        a.download = filename
-        a.click()
+        a.download = filename;
+        a.click();
         window.URL.revokeObjectURL(url);
-    }catch (e){
+    } catch (e) {
 
     }
-}
+};
 const Database = (props: PropsType) => {
     const [connected, setConnected] = useState<boolean>(false);
     const [connecting, setConnecting] = useState<boolean>(false);
