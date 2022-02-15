@@ -3,6 +3,8 @@ import { getConnection } from "typeorm";
 import Tx, { TxStatus } from "../entities/Tx";
 import WalletTx from "../entities/views/WalletTx";
 import { JsonBI } from "../../config/json";
+
+
 const getTxRepository = () => getConnection().getRepository(Tx);
 const getWalletTxRepository = () => getConnection().getRepository(WalletTx);
 

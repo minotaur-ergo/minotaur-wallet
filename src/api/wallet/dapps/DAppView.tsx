@@ -15,7 +15,7 @@ import AppHeader from "../../../header/AppHeader";
 import { apps } from "./DAppList";
 import Loading from "../../../components/Loading";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
-import { UnsignedGeneratedTx } from "../../../action/blockchain";
+import { UnsignedGeneratedTx } from "../../../utils/interface";
 import { getNetworkType } from "../../../config/network_type";
 import SigmaUSD from "./apps/sigmausd/SigmaUSD";
 import { getSingleTokenWithAddressForWallet, getTokenWithAddressForWallet } from "../../../db/action/boxContent";

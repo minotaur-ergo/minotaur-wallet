@@ -5,7 +5,10 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { RouteMap } from "../../router/WalletRouter";
+import { RouteMap } from "../../router/routerMap";
+import { Capacitor } from "@capacitor/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,6 +23,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+const downloadDb = () => {
+    try {
+        const content = Buffer.from(JSON.parse(localStorage.minotaur).map((item: number) => ("0" + item.toString(16)).slice(-2)).join(""), "hex");
+// any kind of extension (.txt,.cpp,.cs,.bat)
+        const filename = "db.sqlite3";
+        const blob = new Blob([content], {
+            type: "octet/stream"
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    } catch (e) {
+    }
+};
+
 const HomeHeader = ({ history }: RouteComponentProps) => {
 
     const addWalletClickHandler = () => {
@@ -28,22 +50,11 @@ const HomeHeader = ({ history }: RouteComponentProps) => {
     const classes = useStyles();
     return (
         <Toolbar>
-            {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">*/}
-            {/*    <MenuIcon />*/}
-            {/*</IconButton>*/}
-            <Typography variant="h6" className={classes.title}>
-                Minotaur
-            </Typography>
-            {/*<IconButton aria-label="show 17 new notifications" color="inherit">*/}
-            {/*<Badge badgeContent={""} color="secondary">*/}
-            {/*    <NotificationsIcon />*/}
-            {/*</Badge>*/}
-            {/*</IconButton>*/}
-            <IconButton aria-label="show 17 new notifications" color="inherit" onClick={addWalletClickHandler}>
-                {/*<Badge badgeContent={17} color="secondary">*/}
-                <AddIcon />
-                {/*</Badge>*/}
-            </IconButton>
+            <Typography variant="h6" className={classes.title}> Minotaur </Typography>
+            <IconButton color="inherit" onClick={addWalletClickHandler}> <AddIcon /> </IconButton>
+            {Capacitor.getPlatform() === "web" ? (
+                <IconButton color="inherit" onClick={downloadDb}> <FontAwesomeIcon icon={faDownload} /> </IconButton>
+            ) : null}
         </Toolbar>
     );
 };

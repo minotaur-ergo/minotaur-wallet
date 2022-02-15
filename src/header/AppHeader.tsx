@@ -59,7 +59,7 @@ const WalletHeader = (props: propTypes) => {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    openQrCode: () => dispatch(showQrCodeScanner()),
+    openQrCode: () => dispatch(showQrCodeScanner())
 });
 
 

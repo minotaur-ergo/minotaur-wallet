@@ -29,7 +29,7 @@ const connectCapacitor = async () => {
             type: "capacitor",
             database: "minotaur",
             driver: sqliteConnection,
-            logging: "all",
+            logging: false,
             synchronize: true,
             entities: entities
             // migrations: [
@@ -42,41 +42,12 @@ const connectCapacitor = async () => {
     }
 };
 
-const connectDb = async () => {
-    if (Capacitor.getPlatform() === "web") {
-        // if(isElectron()) {
-        //     return connectElectron();
-        // }else{
-        return connectSqlJs();
-        // }
-    }
-    return connectCapacitor();
-};
+const connectDb = async () => Capacitor.getPlatform() === "web" ? connectSqlJs() : connectCapacitor()
 
 interface PropsType {
     children?: React.ReactNode | React.ReactNodeArray;
 }
 
-const downloadDb = () => {
-    try {
-        const content = Buffer.from(JSON.parse(localStorage.minotaur).map((item: number) => ("0" + item.toString(16)).slice(-2)).join(""), "hex");
-// any kind of extension (.txt,.cpp,.cs,.bat)
-        const filename = "db.sqlite3";
-
-        const blob = new Blob([content], {
-            type: "octet/stream"
-        });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    } catch (e) {
-
-    }
-};
 const Database = (props: PropsType) => {
     const [connected, setConnected] = useState<boolean>(false);
     const [connecting, setConnecting] = useState<boolean>(false);
@@ -96,7 +67,6 @@ const Database = (props: PropsType) => {
     }, [connecting, connected]);
     return (
         <>
-            {/*<button onClick={() => downloadDb()}>download database</button>*/}
             {connected ? props.children : <Splash />}
         </>
     );

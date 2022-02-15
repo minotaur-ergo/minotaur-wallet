@@ -54,7 +54,7 @@ const getWalletTokens = async (walletId: number) => {
         .createQueryBuilder()
         .select("token_id", "tokenId")
         .addSelect("CAST(SUM(CAST(amount AS INT)) AS TEXT)", "total")
-        .innerJoin("box", "Box", "Box.id=BoxContent.boxId")
+        .innerJoin("box", "Box", "Box.id=boxId")
         .innerJoin("address", "Address", "Box.addressId=Address.id")
         .where("Address.walletId = :walletId and Box.spendTxId IS NULL", { walletId: walletId })
         .addGroupBy("token_id")

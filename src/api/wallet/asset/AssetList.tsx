@@ -1,10 +1,10 @@
 import React from "react";
-import { WalletPagePropsType } from "../WalletPage";
 import { getWalletTokens } from "../../../db/action/boxContent";
 import { Divider, List, ListItem, ListItemText } from "@material-ui/core";
 import TokenName from "../../../components/TokenName";
 import DisplayId from "../../../components/DisplayId";
 import Erg from "../../../components/Erg";
+import { WalletPagePropsType } from "../../../utils/interface";
 
 interface StateType {
     assets: Array<{ tokenId: string, total: string }>;

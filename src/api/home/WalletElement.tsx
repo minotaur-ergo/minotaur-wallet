@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Badge, ListItem, ListItemAvatar, ListItemText } from "@material-ui/core";
 import Erg from "../../components/Erg";
-import { getRoute, RouteMap } from "../../router/WalletRouter";
+import { getRoute, RouteMap } from "../../router/routerMap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { faCoffee, faSnowflake, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

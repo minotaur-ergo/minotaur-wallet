@@ -86,13 +86,14 @@
     "start:electron": "concurrently -k \"cross-env BROWSER=none react-app-rewired start\" \"wait-on http://localhost:3000 && electronmon .\"",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "sync": "react-app-rewired build && cap sync && cap update",
+    "sync": "react-app-rewired build && cap sync && cap update && cap sync electron",
     "android": "npm run sync && npx cap run android",
     "build": "rimraf ./build && react-app-rewired build",
     "build:electron:mac": "react-app-rewired build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "build:electron:win": "react-app-rewired build && electron-builder -w -c.extraMetadata.main=build/electron.js",
     "build:electron:linux": "react-app-rewired build && electron-builder -l -c.extraMetadata.main=build/electron.js",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "preprocess:circular": " npx madge --circular --extensions ts --extensions tsx ./"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -1,10 +1,10 @@
 import * as crypto from "crypto";
-import * as blakejs from "blakejs";
+import * as blake_js from "blakejs";
 // const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY; // Must be 256 bits (32 characters)
 const IV_LENGTH = 16; // For AES, this is always 16
 
 const getPassword = (password: string): Buffer => {
-    return Buffer.from(blakejs.blake2b(password, undefined, 32));
+    return Buffer.from(blake_js.blake2b(password, undefined, 32));
 };
 
 const encrypt = (text: Buffer, password: string) => {

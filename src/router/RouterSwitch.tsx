@@ -9,20 +9,7 @@ import { connect, MapDispatchToProps } from "react-redux";
 import { hideQrCodeScanner } from "../store/actions";
 import { GlobalStateType } from "../store/reducer";
 import DAppView from "../api/wallet/dapps/DAppView";
-
-const RouteMap = {
-    Home: "/",
-    WalletAdd: "/wallet/add/",
-    Wallet: "/wallet/:id/",
-    WalletTransaction: "/wallet/:id/transaction",
-    WalletSend: "/wallet/:id/send",
-    WalletAddress: "/wallet/:id/address/",
-    WalletAssets: "/wallet/:id/assets/",
-    WalletAddressView: "/wallet/:id/address/:address_id",
-    WalletDApps: "/wallet/:id/dApp",
-    WalletDAppView: "/wallet/:id/dApp/:dAppId",
-    QrCode: "/qrcode"
-};
+import { RouteMap } from "./routerMap";
 
 interface PropsType extends RouteComponentProps {
     showQrCodeScanner: boolean;
@@ -87,4 +74,3 @@ const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RouterSwitch));
-export { RouteMap };

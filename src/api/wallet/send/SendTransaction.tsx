@@ -1,10 +1,10 @@
 import React from "react";
 import { Button, Container, Divider, Grid } from "@material-ui/core";
-import { WalletPagePropsType } from "../WalletPage";
 import ReceiverRow from "./ReceiverRow";
 import AddressSelector from "./AddressSelector";
 import Address from "../../../db/entities/Address";
-import { createTx, Receiver, UnsignedGeneratedTx } from "../../../action/blockchain";
+import { createTx, Receiver } from "../../../action/blockchain";
+import { UnsignedGeneratedTx, WalletPagePropsType } from "../../../utils/interface";
 import { FEE } from "../../../config/const";
 import TokenWithAddress from "../../../db/entities/views/AddressToken";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
@@ -54,15 +54,15 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     closeModal = () => this.setState({ showModal: false });
     generateAndSendTx = async () => {
         try {
-            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress)
+            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress);
             this.setState({
                 showModal: true,
                 generatedTx: tx
             });
-        }catch (e){
+        } catch (e) {
             show_notification(e);
         }
-    }
+    };
 
     componentDidMount() {
         this.props.setTab("send");
@@ -99,7 +99,8 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
                         </Grid>
                     </Grid>
                 </Container>
-                <GenerateTransactionBottomSheet transaction={this.state.generatedTx} show={this.state.showModal} close={this.closeModal} wallet={this.props.wallet}/>
+                <GenerateTransactionBottomSheet transaction={this.state.generatedTx} show={this.state.showModal}
+                                                close={this.closeModal} wallet={this.props.wallet} />
             </React.Fragment>
         );
     };

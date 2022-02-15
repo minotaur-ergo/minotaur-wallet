@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Grid } from "@material-ui/core";
 import Wallet from "../db/entities/Wallet";
-import { reduceTransaction, UnsignedGeneratedTx } from "../action/blockchain";
+import { reduceTransaction } from "../action/blockchain";
 import * as wasm from "ergo-lib-wasm-browser";
 import { getWalletAddresses } from "../db/action/address";
 import RequestQrcodeDisplay from "./RequestQrcodeDisplay";
@@ -10,6 +10,7 @@ import { connect, MapDispatchToProps } from "react-redux";
 import { showQrCodeScanner } from "../store/actions";
 import { show_notification } from "../utils/utils";
 import Loading from "./Loading";
+import { UnsignedGeneratedTx } from "../utils/interface";
 
 interface PropsType {
     transaction?: UnsignedGeneratedTx;

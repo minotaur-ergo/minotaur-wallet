@@ -12,7 +12,6 @@ import DisplayId from "../../../components/DisplayId";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
 import { Inbox } from "@material-ui/icons";
 import { Browser } from "@capacitor/browser";
-import { getNode } from "../../../network/node";
 import { getNetworkType, NetworkType } from "../../../config/network_type";
 
 interface PropsType {
@@ -74,7 +73,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
 
     sendTx = () => {
         if (this.state.tx && this.state.network_type) {
-            const node = getNode(this.state.network_type.label);
+            const node = getNetworkType(this.state.network_type.label).getNode();
             node.sendTx(this.state.tx).then(result => {
                 this.setState({ txId: result.txId });
             }).catch(exp => {

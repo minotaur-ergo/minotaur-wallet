@@ -6,12 +6,13 @@ import Address from "../db/entities/Address";
 import Tx, { TxStatus } from "../db/entities/Tx";
 import { ErgoTx } from "../network/models";
 import { Paging } from "../network/paging";
-import { getExplorer } from "../network/explorer";
 import { setAddressHeight } from "../db/action/address";
 import * as dbTransactionActions from "../db/action/transaction";
+import { getNetworkType } from "../config/network_type";
 
 
 const processAddressOutputBoxes = async (address: Address, height: number) => {
+    debugger
     const txs = await dbTransactionActions.getNetworkTxs(address.network_type, address.tx_create_box_height, height);
     for(let tx of txs) {
         if(tx.height <= height) {
@@ -59,7 +60,7 @@ const processSpentTransaction = async (tx: Tx, address: Address) => {
 };
 
 const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks: { [height: number]: string }) => {
-    const explorer = getExplorer(address.network_type)
+    const explorer = getNetworkType(address.network_type).getExplorer()
     let txList: Array<ErgoTx> = [];
     const heights = Object.keys(blocks).map(item => Number(item));
     const maxBlockHeight = Math.max(...heights);

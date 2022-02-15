@@ -3,12 +3,7 @@ import WalletInsertOption from "./WalletInsertOption";
 import InsertWallet from "./insert/InsertWallet";
 import RestoreWallet from "./restore/RestoreWallet";
 import ReadOnlyWallet from "./readonly/ReadOnlyWallet";
-
-enum WalletCreateType {
-    New = "new",
-    Restore = "restore",
-    ReadOnly = "read-only"
-}
+import { WalletCreateType } from "./walletCreateType";
 
 const WalletAddBody = () => {
     const [walletType, setWalletType] = useState<WalletCreateType | null>(null);

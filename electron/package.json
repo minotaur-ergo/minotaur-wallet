@@ -1,9 +1,9 @@
 {
   "name": "minotaur-wallet",
   "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "description": "A multiplatform wallet for ergo.",
   "author": {
-    "name": "",
+    "name": "minotaur-ergo",
     "email": ""
   },
   "repository": {

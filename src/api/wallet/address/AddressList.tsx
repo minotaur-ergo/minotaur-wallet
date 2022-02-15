@@ -3,10 +3,10 @@ import { Divider, List } from "@material-ui/core";
 import AddressElement from "./AddressElement";
 import DeriveAddress from "./DeriveAddress";
 import { getWalletAddresses } from "../../../action/address";
-import { WalletPagePropsType } from "../WalletPage";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
 import AddressView from "./AddressView";
 import AddressWithErg from "../../../db/entities/views/AddressWithErg";
+import { WalletPagePropsType } from "../../../utils/interface";
 
 interface StateType {
     addresses: Array<AddressWithErg>;

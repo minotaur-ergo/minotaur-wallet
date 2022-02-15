@@ -2,7 +2,6 @@ import axios, { AxiosInstance } from "axios";
 import * as wasm from "ergo-lib-wasm-browser";
 import { BlockHeader, NetworkContext, NodeInfo } from "./models";
 import { JsonBI } from "../config/json";
-import { getNetworkType } from "../config/network_type";
 
 
 export class Node {
@@ -50,13 +49,4 @@ export class Node {
         });
     };
 
-}
-
-const getNode = (network_type: string) => {
-    const networkTypeClass = getNetworkType(network_type)
-    return new Node(networkTypeClass.node);
-}
-
-export {
-    getNode,
 }
