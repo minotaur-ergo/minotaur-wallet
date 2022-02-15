@@ -20,7 +20,7 @@ const createOrUpdateBoxContent = async (box: Box, asset: BoxAsset) => {
             entity
         ).where("id=:id", { id: dbEntity.id }).execute();
     } else {
-        await getBoxContentRepository().save(entity);
+        await getBoxContentRepository().insert(entity);
     }
 };
 

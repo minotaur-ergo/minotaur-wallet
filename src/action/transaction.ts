@@ -12,7 +12,6 @@ import { getNetworkType } from "../config/network_type";
 
 
 const processAddressOutputBoxes = async (address: Address, height: number) => {
-    debugger
     const txs = await dbTransactionActions.getNetworkTxs(address.network_type, address.tx_create_box_height, height);
     for(let tx of txs) {
         if(tx.height <= height) {
