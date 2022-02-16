@@ -102,7 +102,7 @@ export class ElectronCapacitorApp {
       join(app.getAppPath(), 'assets', process.platform === 'win32' ? 'appIcon.ico' : 'appIcon.png')
     );
     this.mainWindowState = windowStateKeeper({
-      defaultWidth: 1000,
+      defaultWidth: 520,
       defaultHeight: 800,
     });
     // Setup preload script path and construct our main window.
@@ -114,6 +114,10 @@ export class ElectronCapacitorApp {
       y: this.mainWindowState.y,
       width: this.mainWindowState.width,
       height: this.mainWindowState.height,
+      maxWidth: electronIsDev ? 620 : null,
+      minWidth: 480,
+      minHeight: 400,
+      maximizable: false,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: true,
@@ -123,6 +127,7 @@ export class ElectronCapacitorApp {
       },
     });
     this.mainWindowState.manage(this.MainWindow);
+    this.MainWindow.setMenu(null);
 
     if (this.CapacitorFileConfig.backgroundColor) {
       this.MainWindow.setBackgroundColor(this.CapacitorFileConfig.electron.backgroundColor);
@@ -225,7 +230,7 @@ export function setupContentSecurityPolicy(customScheme: string): void {
         'Content-Security-Policy': [
           electronIsDev
             ? `default-src ${customScheme}://* 'unsafe-inline' devtools://* 'unsafe-eval' data:; connect-src http: https: ${customScheme}://* 'unsafe-inline' devtools://*`
-            : `default-src ${customScheme}://* 'unsafe-inline' data:; connect-src http: https: ${customScheme}://* 'unsafe-inline'`,
+            : `default-src ${customScheme}://* 'unsafe-inline' data:; connect-src http: https: ${customScheme}://* 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline'`,
         ],
       },
     });

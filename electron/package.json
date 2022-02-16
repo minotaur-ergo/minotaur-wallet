@@ -16,8 +16,8 @@
     "build": "tsc && electron-rebuild",
     "electron:start-live": "node ./live-runner.js",
     "electron:start": "npm run build && electron --inspect=5858 ./",
-    "electron:pack": "npm run build && electron-builder build --dir -c ./electron-builder.config.json",
-    "electron:make": "npm run build && electron-builder build -c ./electron-builder.config.json -p always"
+    "electron:pack": "rimraf ./build && rimraf ./dist/ && npm run build && electron-builder build --dir -c ./electron-builder.config.json",
+    "electron:make": "rimraf ./build && rimraf ./dist/ && npm run build && electron-builder build -c ./electron-builder.config.json -p always"
   },
   "dependencies": {
     "@capacitor-community/electron": "^4.1.0",
@@ -27,9 +27,13 @@
     "electron-serve": "~1.1.0",
     "electron-unhandled": "~3.0.2",
     "electron-updater": "~4.3.9",
-    "electron-window-state": "~5.0.3"
+    "electron-window-state": "~5.0.3",
+    "jszip": "^3.7.1",
+    "rimraf": "^3.0.2",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "@types/sqlite3": "^3.1.8",
     "electron": "^14.0.0",
     "electron-builder": "~22.11.7",
     "electron-rebuild": "^3.2.3",
