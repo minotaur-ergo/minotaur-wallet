@@ -53,7 +53,7 @@ const HomeHeader = ({ history }: RouteComponentProps) => {
             <Typography variant="h6" className={classes.title}> Minotaur </Typography>
             <IconButton color="inherit" onClick={addWalletClickHandler}> <AddIcon /> </IconButton>
             {Capacitor.getPlatform() === "web" ? (
-                <IconButton color="inherit" onClick={downloadDb}> <FontAwesomeIcon icon={faDownload} /> </IconButton>
+                <IconButton color="inherit" onClick={downloadDb}> <FontAwesomeIcon icon={faDownload} size={"xs"}/> </IconButton>
             ) : null}
         </Toolbar>
     );

@@ -7,6 +7,29 @@ import { faCoffee, faSnowflake, faWallet } from "@fortawesome/free-solid-svg-ico
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WalletType } from "../../db/entities/Wallet";
 
+import { deepOrange, deepPurple } from '@material-ui/core/colors';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { getNetworkType } from "../../config/network_type";
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            display: 'flex',
+            '& > *': {
+                margin: theme.spacing(1),
+            },
+        },
+        orange: {
+            color: theme.palette.getContrastText(deepOrange[500]),
+            backgroundColor: deepOrange[500],
+        },
+        purple: {
+            color: theme.palette.getContrastText(deepPurple[500]),
+            backgroundColor: deepPurple[500],
+        },
+    }),
+);
+
 interface propType extends RouteComponentProps {
     type: WalletType;
     id: number;
@@ -16,14 +39,16 @@ interface propType extends RouteComponentProps {
     network_type: string;
 }
 
-const walletElement = (props: propType) => {
+const WalletElement = (props: propType) => {
+    const classes = useStyles();
     const gotoWallet = () => {
         props.history.push(getRoute(RouteMap.WalletTransaction, { "id": props.id }));
     };
+    const network_type = getNetworkType(props.network_type);
     return (
         <ListItem onClick={gotoWallet}>
             <ListItemAvatar>
-                <Avatar>
+                <Avatar className={network_type.color === "orange" ? classes.orange : network_type.color === "purple" ? classes.purple : ""}>
                     {props.type === WalletType.Cold ? <FontAwesomeIcon icon={faSnowflake} /> : null}
                     {props.type === WalletType.Normal ? <FontAwesomeIcon icon={faWallet} /> : null}
                     {props.type === WalletType.ReadOnly ? <FontAwesomeIcon icon={faCoffee} /> : null}
@@ -44,4 +69,4 @@ const walletElement = (props: propType) => {
     );
 };
 
-export default withRouter(walletElement);
+export default withRouter(WalletElement);

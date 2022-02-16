@@ -12,7 +12,7 @@ export class Explorer {
         this.network_prefix = prefix;
         this.backend = axios.create({
             baseURL: uri,
-            timeout: 5000,
+            timeout: 60000,
             headers: { "Content-Type": "application/json" }
         });
     }

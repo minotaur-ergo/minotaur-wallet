@@ -83,7 +83,7 @@ const getMinedTxForAddress = async (address: Address, fromHeight: number, blocks
             break;
         }
         paging.offset += paging.limit;
-        paging.limit = Math.min(PAGE_SIZE, paging.limit + 5)
+        paging.limit = Math.min(PAGE_SIZE, paging.limit + 10)
     }
     for (let tx of txList) {
         await dbTxAction.updateOrCreateTx(tx, TxStatus.Mined, address.network_type);
