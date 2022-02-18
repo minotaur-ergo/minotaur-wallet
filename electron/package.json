@@ -4,11 +4,11 @@
   "description": "A multiplatform wallet for ergo.",
   "author": {
     "name": "minotaur-ergo",
-    "email": ""
+    "email": "minotaur-ergo@protonmail.com"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/minotaur-ergo/minotaur-wallet"
   },
   "license": "MIT",
   "main": "build/src/index.js",
@@ -16,8 +16,8 @@
     "build": "tsc && electron-rebuild",
     "electron:start-live": "node ./live-runner.js",
     "electron:start": "npm run build && electron --inspect=5858 ./",
-    "electron:pack": "rimraf ./build && rimraf ./dist/ && npm run build && electron-builder build --dir -c ./electron-builder.config.json",
-    "electron:make": "rimraf ./build && rimraf ./dist/ && npm run build && electron-builder build -c ./electron-builder.config.json -p always"
+    "electron:pack": "npm run build && electron-builder build --dir -c ./electron-builder.config.json",
+    "electron:make": "npm run build && electron-builder build -c ./electron-builder.config.json -p always"
   },
   "dependencies": {
     "@capacitor-community/electron": "^4.1.0",

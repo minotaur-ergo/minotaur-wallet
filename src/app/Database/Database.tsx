@@ -30,11 +30,11 @@ const connectCapacitor = async () => {
             database: "minotaur",
             driver: sqliteConnection,
             logging: false,
-            synchronize: true,
-            entities: entities
-            // migrations: [
-            //     "src/db/migration/**/*.ts"
-            // ]
+            synchronize: false,
+            entities: entities,
+            migrations: [
+                "src/db/migration/*.ts"
+            ]
         });
     } catch (exp) {
         console.log(exp);
