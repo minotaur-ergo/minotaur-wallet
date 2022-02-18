@@ -8,7 +8,8 @@ import WithAppBar from "../../layout/WithAppBar";
 import AppHeader from "../../header/AppHeader";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import { getRoute, RouteMap } from "../../router/WalletRouter";
+import { getRoute, RouteMap } from "../../router/routerMap";
+
 import {
     AssistantOutlined,
     ContactMailOutlined,
@@ -45,11 +46,6 @@ const TABS = [
 interface PropsType extends RouteComponentProps<{ id: string }> {
     walletsValid: boolean;
     wallets: Array<Wallet>;
-}
-
-export interface WalletPagePropsType {
-    wallet: Wallet;
-    setTab: (name: string) => any;
 }
 
 const gotoPage = (props: PropsType, page_url: string) => () => {

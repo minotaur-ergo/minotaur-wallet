@@ -46,7 +46,7 @@ const loadBlockChainDataAsync = async () => {
                     // process tx inputs and outputs.
                     store.dispatch({ type: actionType.INVALIDATE_WALLETS });
                 } catch (e) {
-
+                    console.log(e)
                 }
             }
         }

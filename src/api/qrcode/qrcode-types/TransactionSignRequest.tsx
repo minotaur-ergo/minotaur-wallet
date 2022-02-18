@@ -15,10 +15,10 @@ import Wallet from "../../../db/entities/Wallet";
 import WalletPassword from "../../../components/WalletPassword";
 import Address from "../../../db/entities/Address";
 import AddressWithErg from "../../../db/entities/views/AddressWithErg";
-import { signTx, UnsignedGeneratedTx } from "../../../action/blockchain";
+import { signTx } from "../../../action/blockchain";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
 import RequestQrcodeDisplay from "../../../components/RequestQrcodeDisplay";
-import { validatePassword } from "../../../action/address";
+import { UnsignedGeneratedTx } from "../../../utils/interface";
 
 interface PropsType extends RouteComponentProps<{ id: string }> {
     closeQrcode: () => any;

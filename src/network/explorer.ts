@@ -3,7 +3,6 @@ import { ErgoBox, ErgoTx, HeadersBlockExplorer, Items, TokenInfo } from "./model
 import { Paging } from "./paging";
 import * as wasm from 'ergo-lib-wasm-browser';
 import { JsonBI } from "../config/json";
-import { getNetworkType } from "../config/network_type";
 
 export class Explorer {
     readonly backend: AxiosInstance;
@@ -13,7 +12,7 @@ export class Explorer {
         this.network_prefix = prefix;
         this.backend = axios.create({
             baseURL: uri,
-            timeout: 5000,
+            timeout: 60000,
             headers: { "Content-Type": "application/json" }
         });
     }
@@ -97,13 +96,4 @@ export class Explorer {
         while (memPoolBoxesMap.has(lastBox.box_id().to_str())) lastBox = memPoolBoxesMap.get(lastBox.box_id().to_str())!
         return lastBox
     }
-}
-
-const getExplorer = (network_type: string) => {
-    const networkTypeClass = getNetworkType(network_type)
-    return new Explorer(networkTypeClass.explorer, networkTypeClass.prefix);
-}
-
-export {
-    getExplorer,
 }

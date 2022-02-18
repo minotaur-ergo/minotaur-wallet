@@ -8,7 +8,8 @@ import Address from "../db/entities/Address";
 import { getWalletAddressSecret } from "./address";
 import Asset from "../db/entities/Asset";
 import { getAssetByAssetId } from "../db/action/asset";
-import { getNode } from "../network/node";
+import { getNetworkType } from "../config/network_type";
+import { UnsignedGeneratedTx } from "../utils/interface";
 
 class ReceiverToken {
     readonly token_id: string;
@@ -80,18 +81,12 @@ class Receiver {
     };
 }
 
-export type UnsignedGeneratedTx = {
-    tx: wasm.UnsignedTransaction | wasm.ReducedTransaction;
-    boxes: wasm.ErgoBoxes;
-    data_inputs?: wasm.ErgoBoxes;
-}
-
 const bigintToBoxValue = (num: bigint) => wasm.BoxValue.from_i64(wasm.I64.from_str(num.toString()));
 
 const getReceiverAmount = (receivers: Array<Receiver>) => receivers.map(receiver => receiver.erg()).reduce((a, b) => a + b);
 
 const createContext = async (network_type: string) => {
-    const node = getNode(network_type);
+    const node = getNetworkType(network_type).getNode();
     const networkContext = await node.getNetworkContext();
     const blockHeaders = wasm.BlockHeaders.from_json(networkContext.lastBlocks);
     const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
@@ -99,7 +94,7 @@ const createContext = async (network_type: string) => {
 };
 
 const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress?: Address): Promise<UnsignedGeneratedTx> => {
-    const node = getNode(wallet.network_type);
+    const node = getNetworkType(wallet.network_type).getNode();
     const height = await node.getHeight();
     let totalRequired = getReceiverAmount(receivers) + FEE;
     let candidates: wasm.ErgoBoxCandidates = wasm.ErgoBoxCandidates.empty();
@@ -172,10 +167,11 @@ const signTx = async (dbWallet: Wallet, tx: UnsignedGeneratedTx, password: strin
     if (tx.tx instanceof wasm.ReducedTransaction) {
         return wallet.sign_reduced_transaction(tx.tx);
     } else {
-        const data_inputs = tx.data_inputs ? tx.data_inputs : wasm.ErgoBoxes.from_boxes_json([])
+        const data_inputs = tx.data_inputs ? tx.data_inputs : wasm.ErgoBoxes.from_boxes_json([]);
         return wallet.sign_transaction(await createContext(dbWallet.network_type), tx.tx, tx.boxes, data_inputs);
     }
 };
+
 export {
     Receiver,
     ReceiverToken,

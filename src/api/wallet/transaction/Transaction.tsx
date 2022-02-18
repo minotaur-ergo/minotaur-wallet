@@ -3,11 +3,11 @@ import { Divider, List } from "@material-ui/core";
 import TransactionElement from "./TransactionElement";
 import { getWalletTx } from "../../../db/action/transaction";
 import WalletTx from "../../../db/entities/views/WalletTx";
-import { WalletPagePropsType } from "../WalletPage";
 import * as wasm from "ergo-lib-wasm-browser";
 import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
 import { InputBox } from "../../../network/models";
 import { JsonAllBI } from "../../../config/json";
+import { WalletPagePropsType } from "../../../utils/interface";
 
 interface StateType {
     transactions: Array<WalletTx>;

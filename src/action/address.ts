@@ -6,7 +6,6 @@ import Address from "../db/entities/Address";
 import { decrypt } from "./enc";
 import { mnemonicToSeedSync } from "bip39";
 import { getNetworkType } from "../config/network_type";
-import { getExplorer } from "../network/explorer";
 const RootPathWithoutIndex = "m/44'/429'/0'/0"
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
@@ -18,7 +17,8 @@ const addWalletAddresses = async (wallet: Wallet) => {
         let index = 1;
         while (true) {
             addressObject = await deriveAddress(wallet.extended_public_key, network_type.prefix, index);
-            const txs = (await getExplorer(wallet.network_type).getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
+            const explorer = getNetworkType(wallet.network_type).getExplorer();
+            const txs = (await explorer.getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
             if (txs.total > 0) {
                 await dbAddressAction.saveAddress(wallet, `Derive Address ${index}`, addressObject.address, addressObject.path, index);
             } else {

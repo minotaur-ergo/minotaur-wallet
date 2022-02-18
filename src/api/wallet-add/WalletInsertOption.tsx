@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Restore from "@material-ui/icons/RestorePage";
 import { faCoffee, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { WalletCreateType } from "./WalletAddBody";
+import { WalletCreateType } from "./walletCreateType";
 
 const useStyles = makeStyles((theme) => ({
     root: {

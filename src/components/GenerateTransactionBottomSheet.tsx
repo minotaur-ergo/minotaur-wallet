@@ -3,7 +3,7 @@ import BottomSheet from "./bottom-sheet/BottomSheet";
 import Wallet, { WalletType } from "../db/entities/Wallet";
 import SendConfirmReadonly from "./SendConfirmReadonly";
 import SendConfirm from "./SendConfirm";
-import { UnsignedGeneratedTx } from "../action/blockchain";
+import { UnsignedGeneratedTx } from "../utils/interface";
 import { getWalletAddresses } from "../action/address";
 import UnsignedTxView from "./display-tx/UnsignedTxView";
 import * as wasm from "ergo-lib-wasm-browser";
