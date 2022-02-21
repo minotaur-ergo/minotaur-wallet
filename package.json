@@ -43,7 +43,7 @@
     "blakejs": "^1.1.1",
     "buffer-to-uint8array": "^1.1.0",
     "customize-cra": "^0.6.1",
-    "ergo-lib-wasm-browser": "^0.15.0-alpha-c2a87c8",
+    "ergo-lib-wasm-browser": "^0.15.0-alpha-78df65a",
     "is-electron": "^2.2.1",
     "json-bigint": "^1.0.0",
     "less": "^3.10.3",

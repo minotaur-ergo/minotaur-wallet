@@ -18,7 +18,7 @@ import GenerateTransactionBottomSheet from "../../../components/GenerateTransact
 import { UnsignedGeneratedTx } from "../../../utils/interface";
 import { getNetworkType } from "../../../config/network_type";
 import SigmaUSD from "./apps/sigmausd/SigmaUSD";
-import { getSingleTokenWithAddressForWallet, getTokenWithAddressForWallet } from "../../../db/action/boxContent";
+import { getSingleTokenWithAddressForWallet } from "../../../db/action/boxContent";
 
 interface PropsType extends RouteComponentProps<{ id: string, dAppId: string }> {
     wallets_valid: boolean;

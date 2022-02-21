@@ -33,7 +33,7 @@ const BuySellToken = (props: PropsType) => {
             }
         }
         setMaxAmount(max_amount);
-    }, [props.bank]);
+    }, [props.bank, props.operation, props.token_type]);
     // error is invalid number or amount > max_usd_to_buy
     let error = "";
     if (isNaN(Number(amount))) {
