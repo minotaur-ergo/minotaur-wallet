@@ -4,9 +4,10 @@ import AddressConfirm from "./AddressConfirm";
 import { withRouter } from "react-router-dom";
 import WalletCreate from "../WalletCreate";
 
+// nominee pretty fabric dance opinion lemon attend garden market rally bread own own material icon
 class RestoreWallet extends WalletCreate {
     componentDidMount() {
-        this.setState({ mnemonic: "nominee pretty fabric dance opinion lemon attend garden market rally bread own own material icon" });
+        this.setState({ mnemonic: "" });
         // this.setState({mnemonic: ''})
     }
 

@@ -4,13 +4,13 @@
     overflow: hidden;
     text-align: center;
     background: rgb(197,199,210);
-    background: radial-gradient(circle, rgba(197,199,210,1) 0%, rgba(65,78,105,1) 85%);
+    /*background: radial-gradient(circle, rgba(197,199,210,1) 0%, rgba(65,78,105,1) 85%);*/
 }
 
 .splashContainer .splash-icon{
     width: 60%;
     height: 60vh;
-    margin-left: 15%;
+    margin-left: 20%;
     margin-top: 20vh;
     background-repeat: no-repeat;
     background-position: center center;

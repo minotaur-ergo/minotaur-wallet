@@ -20,17 +20,7 @@ const TestNet = new NetworkType(
     "Testnet"
 );
 
-const Local = new NetworkType(
-    "http://10.10.9.3:9064",
-    "http://10.10.9.3:7000",
-    "http://10.10.9.3:5000",
-    wasm.NetworkPrefix.Mainnet,
-    "default",
-    "Deployment"
-);
-
 const NETWORK_TYPES = [
-    Local,
     MainNet,
     TestNet
 ];
