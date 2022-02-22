@@ -5,44 +5,48 @@ import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
 import Splash from "../Splash";
 import entities from "../../db/entities";
+import migrations from "../../db/migration";
+
 
 const connectSqlJs = async () => {
     window.SQL = await initSqlJs({
         // locateFile: file => `./${file}`,
         locateFile: file => `https://sql.js.org/dist/${file}`
     });
-    return await createConnection({
+    const connection = await createConnection({
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
         logging: ["error"],
-        synchronize: true,
+        synchronize: false,
         entities: entities,
-        sqlJsConfig: { useBigInt: true }
+        migrations: migrations
     });
+    await connection.runMigrations();
+    return connection;
 };
 
 const connectCapacitor = async () => {
     const sqliteConnection = await new SQLiteConnection(CapacitorSQLite);
     try {
-        return await createConnection({
+        const connection = await createConnection({
             type: "capacitor",
             database: "minotaur",
             driver: sqliteConnection,
-            logging: false,
+            logging: "all",
             synchronize: false,
             entities: entities,
-            migrations: [
-                "src/db/migration/*.ts"
-            ]
+            migrations: migrations
         });
+        await connection.runMigrations();
+        return connection;
     } catch (exp) {
         console.log(exp);
         throw exp;
     }
 };
 
-const connectDb = async () => Capacitor.getPlatform() === "web" ? connectSqlJs() : connectCapacitor()
+const connectDb = async () => Capacitor.getPlatform() === "web" ? connectSqlJs() : connectCapacitor();
 
 interface PropsType {
     children?: React.ReactNode | React.ReactNodeArray;
@@ -59,9 +63,9 @@ const Database = (props: PropsType) => {
                     setTimeout(async () => {
                         setConnected(true);
                         setConnecting(false);
-                    }, 1000);
+                    }, 100);
                 });
-            }, 3000);
+            }, 300);
         }
 
     }, [connecting, connected]);
