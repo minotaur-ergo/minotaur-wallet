@@ -24,5 +24,8 @@
   "mac": {
     "category": "your.app.category.type",
     "target": "dmg"
+  },
+  "linux": {
+    "target": "AppImage",
   }
 }
