@@ -23,9 +23,10 @@
   },
   "mac": {
     "category": "your.app.category.type",
-    "target": "dmg"
+    "target": "dmg",
+    "icon": "assets/appIcon.icns"
   },
   "linux": {
-    "target": "AppImage",
+    "target": "AppImage"
   }
 }

@@ -10,10 +10,11 @@ interface PropsType {
 
 
 const QrCodeReader = (props: PropsType) => {
-    if (Capacitor.getPlatform() === "web") {
-        return <QrCodeReaderWeb handleScan={props.success} handleError={props.fail} />;
+    const platform = Capacitor.getPlatform()
+    if (platform === "android" || platform === "ios") {
+        return <QrCodeReaderCapacitor handleScan={props.success} handleError={props.fail} />;
     }
-    return <QrCodeReaderCapacitor handleScan={props.success} handleError={props.fail} />;
+    return <QrCodeReaderWeb handleScan={props.success} handleError={props.fail} />;
 };
 
 export default QrCodeReader;

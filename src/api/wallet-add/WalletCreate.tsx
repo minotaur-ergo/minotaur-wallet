@@ -9,6 +9,7 @@ import WalletName from "./WalletName";
 import WalletTypeSelect from "./elements/WalletTypeSelect";
 import { NETWORK_TYPES } from "../../config/network_type";
 import WalletPassword from "./WalletPassword";
+import { show_notification } from "../../utils/utils";
 
 interface PropsType extends RouteComponentProps {
     back: () => any;
@@ -71,6 +72,8 @@ class WalletCreate extends React.Component<PropsType, StateType> {
             ).then(() => {
                 this.props.history.goBack();
                 this.setState({ saving: false });
+            }).catch(exp => {
+                show_notification(exp)
             });
         }
     };

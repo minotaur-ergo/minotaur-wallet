@@ -4,6 +4,7 @@ import WalletName from "../WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
 import * as walletActions from '../../../action/wallet';
+import { show_notification } from "../../../utils/utils";
 
 class ReadOnlyWallet extends WalletCreate {
     steps = [
@@ -32,6 +33,8 @@ class ReadOnlyWallet extends WalletCreate {
             walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
                 this.props.history.goBack();
                 this.setState({ saving: false });
+            }).catch(exp => {
+                show_notification(exp)
             });
         }
     };
