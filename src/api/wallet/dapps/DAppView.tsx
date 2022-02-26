@@ -12,13 +12,18 @@ import { GlobalStateType } from "../../../store/reducer";
 import { connect } from "react-redux";
 import WithAppBar from "../../../layout/WithAppBar";
 import AppHeader from "../../../header/AppHeader";
-import { apps } from "./DAppList";
+import { apps } from "./dapps";
 import Loading from "../../../components/Loading";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
 import { UnsignedGeneratedTx } from "../../../utils/interface";
 import { getNetworkType } from "../../../config/network_type";
 import SigmaUSD from "./apps/sigmausd/SigmaUSD";
 import { getSingleTokenWithAddressForWallet } from "../../../db/action/boxContent";
+import IconButton from "@material-ui/core/IconButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
+import { Container } from "@material-ui/core";
 
 interface PropsType extends RouteComponentProps<{ id: string, dAppId: string }> {
     wallets_valid: boolean;
@@ -31,12 +36,14 @@ interface StateType {
     display: boolean;
     transaction?: UnsignedGeneratedTx;
     title?: string;
+    show_description: boolean;
 }
 
 class DAppView extends React.Component<PropsType, StateType> {
     state: StateType = {
         display: false,
-        wallet_loading: false
+        wallet_loading: false,
+        show_description: false,
     };
 
     loadContent = () => {
@@ -108,11 +115,23 @@ class DAppView extends React.Component<PropsType, StateType> {
         };
     };
 
+    descriptionIcon = () => {
+        const dApp = this.getDApp();
+        if(dApp && dApp.readme) {
+            return (
+                <IconButton aria-label="show 17 new notifications" color="inherit" onClick={() => this.setState({show_description: true})}>
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                </IconButton>
+            )
+        }
+        return null
+    }
+
     render = () => {
         const dApp = this.getDApp();
         if (dApp && this.state.wallet) {
             return (
-                <WithAppBar header={<AppHeader title={dApp.name} hideQrCode={true} />}>
+                <WithAppBar header={<AppHeader title={dApp.name} hideQrCode={true} extraIcons={this.descriptionIcon()}/>}>
                     {dApp.id === "issueToken" ? (
                         <TokenIssueDApp {...this.getProps()} />
                     ) : null}
@@ -125,6 +144,16 @@ class DAppView extends React.Component<PropsType, StateType> {
                             close={this.closeTransactionView}
                             wallet={this.state.wallet}
                             transaction={this.state.transaction} />
+                    ) : null}
+                    {dApp && dApp.readme ? (
+                        <BottomSheet show={this.state.show_description} close={() => this.setState({show_description: false})}>
+                            <Container>
+                            {dApp.readme}
+                                <br/>
+                                <br/>
+                                <br/>
+                            </Container>
+                        </BottomSheet>
                     ) : null}
                 </WithAppBar>
             );

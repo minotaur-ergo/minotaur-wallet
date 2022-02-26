@@ -27,6 +27,7 @@ interface propTypes extends RouteComponentProps {
     back?: () => any;
     hideQrCode?: boolean;
     openQrCode: () => any;
+    extraIcons?: React.ReactNode | Array<React.ReactNode>,
 }
 
 const WalletHeader = (props: propTypes) => {
@@ -46,6 +47,7 @@ const WalletHeader = (props: propTypes) => {
             <Typography variant="h6" className={classes.title}>
                 {props.title}
             </Typography>
+            {props.extraIcons ? props.extraIcons : null}
             {props.hideQrCode ? null : (
                 <IconButton aria-label="show 17 new notifications" color="inherit" onClick={props.openQrCode}>
                     <FontAwesomeIcon icon={faQrcode} />

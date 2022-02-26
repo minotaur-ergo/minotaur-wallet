@@ -4,11 +4,8 @@ import DAppListElement from "./DAppListElement";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { RouteMap, getRoute } from "../../../router/routerMap";
 import { WalletPagePropsType } from "../../../utils/interface";
+import { apps } from "./dapps";
 
-export const apps = [
-    { name: "Issue Token", description: "Issue new token using EIP-004", id: "issueToken" },
-    { name: "SigmaUSD", description: "Buy or sell SigmaUSD and SigmaRSV", id: "sigmaUsd" }
-];
 
 interface DAppListPropsTypes extends WalletPagePropsType, RouteComponentProps<{ id: string }> {
 

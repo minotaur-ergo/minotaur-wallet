@@ -377,14 +377,14 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}
                                                           max={BigInt(0)}
-                                                          buy={this.buy_stable}
+                                                          buy={this.buy_reserve}
                                                           token_type="RSV"
                                                           operation="BUY" />
                                             <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Sell
                                                 SigmaRSV</Typography>
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}
-                                                          buy={this.sell_stable}
+                                                          buy={this.sell_reserve}
                                                           max={this.state.total_reserve_tokens}
                                                           token_type="RSV"
                                                           operation="SELL" />

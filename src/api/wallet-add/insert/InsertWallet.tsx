@@ -1,5 +1,5 @@
 import React from "react";
-import WalletName from "../WalletName";
+import WalletName from "../elements/WalletName";
 import Mnemonic from "./Mnemonic";
 import MnemonicConfirm from "./MnemonicConfirm";
 import { withRouter } from "react-router-dom";
@@ -10,10 +10,8 @@ class InsertWallet extends WalletCreate {
     renderName = () => (
         <WalletName
             name={this.state.name}
-            password={this.state.mnemonicPassPhrase}
             goBack={this.props.back}
-            confirm={true}
-            goForward={(name, password) => this.gotoMnemonic(name, password)}>
+            goForward={(name) => this.gotoMnemonic(name)}>
             <>
                 Enter new wallet name and password.
                 <p style={{ color: "red" }}>
@@ -27,10 +25,10 @@ class InsertWallet extends WalletCreate {
     renderMnemonic = () => (
         <Mnemonic
             mnemonic={this.state.mnemonic}
+            mnemonic_passphrase={this.state.mnemonic_passphrase}
             goBack={() => this.goBackName()}
             network={this.state.network_type}
-            goForward={(mnemonic: string, network: string) => this.goConfirm(mnemonic, network)} />
-
+            goForward={(mnemonic: string, network: string, mnemonic_passphrase: string) => this.goConfirm(mnemonic, network, mnemonic_passphrase)} />
     );
 
     renderConfirm = () => (

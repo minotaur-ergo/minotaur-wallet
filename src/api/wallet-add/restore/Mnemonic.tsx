@@ -4,11 +4,13 @@ import MnemonicView from "../elements/MnemonicView";
 import { wordlists, getDefaultWordlist, mnemonicToEntropy } from "bip39";
 import { Autocomplete } from "@material-ui/lab";
 import WalletNetworkSelect from "../elements/WalletNetworkSelect";
+import MnemonicPassword from "../elements/MnemonicPassword";
 
 interface PropsType {
     mnemonic?: string;
     goBack: () => any;
-    goForward: (mnemonic: string, network: string) => any;
+    mnemonic_passphrase: string;
+    goForward: (mnemonic: string, network: string, mnemonic_passphrase: string) => any;
     network: string;
 }
 
@@ -19,6 +21,10 @@ const Mnemonic = (props: PropsType) => {
     const [mnemonicValid, setMnemonicValid] = useState(true);
     const [selected, setSelected] = useState("");
     const [network, setNetwork] = useState(props.network);
+    const [mnemonic_passphrase, set_mnemonic_passphrase] = useState<{ password: string, valid: boolean }>({
+        password: props.mnemonic_passphrase,
+        valid: true
+    });
     const selectElement = (element: string) => {
         if (words.indexOf(element) !== -1) {
             setMnemonic(mnemonic ? mnemonic + " " + element : element);
@@ -106,6 +112,13 @@ const Mnemonic = (props: PropsType) => {
                         </FormHelperText>
                     ) : null}
                 </Grid>
+                <Grid item xs={12}>
+                    <MnemonicPassword
+                        valid={mnemonic_passphrase.valid}
+                        password={mnemonic_passphrase.password}
+                        confirm={true}
+                        setPassword={(password, valid) => set_mnemonic_passphrase({ password, valid })} />
+                </Grid>
             </Grid>
             <Grid container spacing={2} justifyContent="space-between">
                 <Grid item>
@@ -117,8 +130,8 @@ const Mnemonic = (props: PropsType) => {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled={wordCount < 15}
-                        onClick={() => props.goForward(mnemonic, network)}>
+                        disabled={wordCount < 15 || !mnemonic_passphrase.valid}
+                        onClick={() => props.goForward(mnemonic, network, mnemonic_passphrase.password)}>
                         OK
                     </Button>
                 </Grid>

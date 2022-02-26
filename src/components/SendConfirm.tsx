@@ -31,6 +31,7 @@ const SendConfirm = (props: PropsType) => {
                 }).catch(exp => {
                     show_notification(exp);
                 });
+                setPassword("");
             }).catch(error => {
                 show_notification(error);
             });

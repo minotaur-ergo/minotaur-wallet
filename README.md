@@ -50,7 +50,12 @@ npx cap sync
 npx cap update
 ```
 
-two last commands are synced code for android and ios.
+two last commands are synced code for android and ios. if you want to build for desktop you must enter these two commands to sync code
+
+```
+npx cap sync electron
+npx cap sync update electron
+```
 
 ### Android
 
@@ -63,10 +68,12 @@ IOS users can open ios project in code, open it in xcode and build any version t
 
 ### Desktop systems
 
-for desktop systems you can use electron use command below 
+To build desktop version of project you must enter to electron directory and build project
 
 ```
-npm run build:electron:<your platform choices are: linux/win/mac>
+npm run build
+npm run electron:pack
+npm run electron:make
 ```
 
 

@@ -1,6 +1,6 @@
 import React from "react";
 import WalletCreate from "../WalletCreate";
-import WalletName from "../WalletName";
+import WalletName from "../elements/WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
 import * as walletActions from '../../../action/wallet';
@@ -13,11 +13,9 @@ class ReadOnlyWallet extends WalletCreate {
     ];
     renderName = () => (
         <WalletName
-            hidePassword={true}
-            hideDbPassword={true}
             name={this.state.name}
             goBack={this.props.back}
-            goForward={(name, password) => this.gotoMnemonic(name, password)}>
+            goForward={(name) => this.gotoMnemonic(name)}>
             <>
                 Enter new wallet name.
                 <p style={{ color: "red" }}>

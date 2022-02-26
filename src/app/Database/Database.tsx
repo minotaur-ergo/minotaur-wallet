@@ -64,6 +64,9 @@ const Database = (props: PropsType) => {
                         setConnected(true);
                         setConnecting(false);
                     }, 100);
+                }).catch(exp => {
+                    setConnected(true);
+                    setConnecting(false)
                 });
             }, 300);
         }
