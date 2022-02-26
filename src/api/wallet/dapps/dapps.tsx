@@ -4,25 +4,12 @@ import { Browser } from "@capacitor/browser";
 const SigmaUSDReadme = () => (
     <div style={{ textAlign: "justify" }}>
         <h3>What is SigmaUSD</h3>
-        SigmaUSD is an instance of AgeUSD protocol for Ergo blockchain.
+        SigmaUSD is an instance of AgeUSD protocol on Ergo.
         <br />
         <br />
         AgeUSD is a novel crypto-backed algorithmic stablecoin protocol
         that has been created in joint partnership by the Ergo Foundation,
         EMURGO, and IOG on top of the Ergo Blockchain.
-        <br />
-        <br />
-        AgeUSD does not rely on CDPs (collateralized debt positions)
-        as is the current popular crypto-backed stablecoin design pattern.
-        This was a conscious design decision made due to the fragility of
-        CDP-based protocols in the face of sharp volatility and/or blockchain
-        congestion.
-        <br />
-        <br />
-        This was epitomized during Black Thursday where MakerDAO CDPs were
-        triggered for liquidation due to volatility,
-        and then sold off for $0 due to blockchain congestion
-        which prevented others from bidding.
         <br />
         <br />
         Please note that this dApp itself is not the instance;
