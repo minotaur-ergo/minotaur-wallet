@@ -43,7 +43,6 @@ const downloadDb = () => {
 };
 
 const HomeHeader = ({ history }: RouteComponentProps) => {
-
     const addWalletClickHandler = () => {
         history.push(RouteMap.WalletAdd);
     };
