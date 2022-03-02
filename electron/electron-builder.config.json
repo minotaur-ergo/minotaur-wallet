@@ -1,5 +1,5 @@
 {
-  "appId": "com.yourdoamnin.yourapp",
+  "appId": "ml.minotaur.wallet",
   "directories": {
     "buildResources": "resources"
   },
@@ -24,6 +24,6 @@
     "icon": "assets/appIcon.icns"
   },
   "linux": {
-    "target": "AppImage"
+    "target": ["snap","AppImage"]
   }
 }
