@@ -31,12 +31,24 @@ jobs:
       - name: Install app dependencies
         run: npm install
 
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+      - name: Update package.json files
+        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+
       - name: Build Minotaur JS app and update capacitor
         run: CI=false npm run sync
 
       - name: Build Electron
         working-directory: ./electron
         run: CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
+
+      - name: List outputs
+        run: |
+          ls ./electron
+          echo '\n====\n'
+          ls ./electron/dist
 
       - name: Upload Executable File to release
         uses: softprops/action-gh-release@v1
@@ -45,6 +57,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v1
+
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v1
+        with:
+          snapcraft_token: ${{ secrets.SNAP_LOGIN }}
+
+      - name: Upload to snapstore
+        run: snapcraft upload --release stable electron/dist/minotaur-wallet*.snap
+
+
   release-mac:
     runs-on: macos-latest
 
@@ -65,6 +90,12 @@ jobs:
 
       - name: Install app dependencies
         run: npm install
+
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+      - name: Update package.json files
+        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
 
       - name: Build Minotaur JS app
         run: CI=false npm run sync
@@ -101,6 +132,12 @@ jobs:
       - name: Install app dependencies
         run: npm install
 
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+      - name: Update package.json files
+        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+
       - name: Build Minotaur JS app
         run: $env:CI=$false; npm run sync
 
@@ -120,7 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get current tag
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" | cut -c 2-100 >> $GITHUB_ENV
 
       - name: Checkout source
         uses: actions/checkout@v2
@@ -142,21 +179,36 @@ jobs:
       - name: Install app dependencies
         run: npm install
 
+      - name: Update package.json files
+        run: node cli/update_version.js $RELEASE_VERSION
+
       - name: Build Minotaur JS app
         run: CI=false npm run sync
-
-      - name: Decode Keystore
-        id: decode_keystore
-        uses: timheuer/base64-to-file@v1
-        with:
-          fileName: 'android/keystore/release.jks'
-          encodedString: ${{ secrets.SIGNING_KEYSTORE }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./android/gradlew
 
       - name: Setup Android build environment
         uses: android-actions/setup-android@v2.0.2
+
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
+      - name: Update AndroidManifest.xml
+        uses: damienaicheh/update-android-version-manifest-action@v1.0.0
+        with:
+          android-manifest-path: './android/app/src/main/AndroidManifest.xml'
+          version-code: ${{ env.NUMBER_OF_COMMITS }}
+          version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+          print-file: true
+
+      - name: Update gradle version for Android
+        uses: damienaicheh/update-android-version-gradle-action@v1.0.0
+        with:
+          build-gradle-path: './android/app/build.gradle'
+          version-code: ${{ env.NUMBER_OF_COMMITS }}
+          version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+          print-file: true
 
       - name: Build app bundle
         working-directory: android
@@ -177,12 +229,12 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: move apk to root directory
-        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} minotaur-wallet-`echo $RELEASE_VERSION | cut -c 2-100`.apk && ls
+        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} minotaur-wallet_${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}.apk
 
       - name: Upload Apk File to release
         uses: softprops/action-gh-release@v1
         with:
-          files: minotaur-wallet-*.apk
+          files: minotaur-wallet_*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         if: startsWith(github.ref, 'refs/tags/')
