@@ -1,5 +1,5 @@
 {
-	"appId": "tk.minotaur.wallet",
+	"appId": "ml.minotaur.wallet",
 	"appName": "minotaur-wallet",
 	"webDir": "build",
 	"bundledWebRuntime": true
