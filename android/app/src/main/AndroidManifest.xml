@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="tk.minotaur.wallet">
+          package="ml.minotaur.wallet">
 
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:usesCleartextTraffic="true"
-            android:roundIcon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:hardwareAccelerated="true"
             android:theme="@style/AppTheme"
@@ -16,7 +16,7 @@
 
         <activity
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-                android:name="tk.minotaur.wallet.MainActivity"
+                android:name="ml.minotaur.wallet.MainActivity"
                 android:label="@string/title_activity_main"
                 android:theme="@style/AppTheme.NoActionBarLaunch"
                 android:launchMode="singleTask">
@@ -39,11 +39,11 @@
         </provider>
     </application>
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
     <!-- Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 </manifest>

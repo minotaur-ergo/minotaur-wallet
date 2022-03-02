@@ -1,4 +1,4 @@
-package tk.minotaur.wallet;
+package ml.minotaur.wallet;
 
 import com.getcapacitor.BridgeActivity;
 
