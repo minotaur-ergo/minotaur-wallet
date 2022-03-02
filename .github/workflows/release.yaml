@@ -162,6 +162,9 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -184,9 +187,6 @@ jobs:
 
       - name: Setup Android build environment
         uses: android-actions/setup-android@v2.0.2
-
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
 
       - name: Update AndroidManifest.xml
         uses: damienaicheh/update-android-version-manifest-action@v1.0.0
