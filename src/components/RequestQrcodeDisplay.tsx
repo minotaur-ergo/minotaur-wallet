@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { QRCODE_SIZE_DEFAULT } from "../config/const";
+import { MAX_CHUNK_SIZE, QRCODE_SIZE_DEFAULT } from "../config/const";
 import { Button, Grid, Slider } from "@material-ui/core";
 import QrCode from "qrcode.react";
 
@@ -67,7 +67,7 @@ const RequestQrcodeDisplay = (props: PropsType) => {
                     step={100}
                     marks
                     min={200}
-                    max={Math.min(3000, props.requestData.length)}
+                    max={Math.min(MAX_CHUNK_SIZE, props.requestData.length)}
                 />
             </React.Fragment>
         </React.Fragment>

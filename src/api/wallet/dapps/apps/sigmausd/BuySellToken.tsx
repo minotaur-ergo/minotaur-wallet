@@ -13,6 +13,21 @@ interface PropsType {
     max: bigint;
 }
 
+const get_amount = (amount: string, token_type: "USD" | "RSV") => {
+    if(token_type === "USD") {
+        const amount_parts = amount.split(".");
+        const decimal_part = amount_parts.length <= 1 ? "00" : amount_parts[1].padStart(2, "0");
+        return BigInt(amount_parts[0]) * BigInt(100) + BigInt(decimal_part);
+    }else{
+        return BigInt(amount.split(".")[0])
+    }
+}
+
+const get_decimal = (amount: string) => {
+    const amount_parts = amount.split(".")
+    return amount_parts.length === 1 ? "" : amount_parts[1];
+}
+
 const BuySellToken = (props: PropsType) => {
     const [blurred, setBlurred] = useState(false);
     const [amount, setAmount] = useState("");
@@ -39,11 +54,10 @@ const BuySellToken = (props: PropsType) => {
     if (isNaN(Number(amount))) {
         error = "Invalid Number Entered";
     }
-    const amount_parts = amount.split(".");
-    const decimal_part = amount_parts.length <= 1 ? "00" : amount_parts[1].padStart(2, "0");
-    const amount_bigint = BigInt(amount_parts[0]) * BigInt(100) + BigInt(decimal_part);
-    if (decimal_part.length > 2) {
-        error = "SigmaUSD have 2 decimal point";
+    const amount_bigint = get_amount(amount, props.token_type)
+    const decimal_length = (props.token_type === "USD" ? 2 : 0)
+    if (get_decimal(amount).length > decimal_length) {
+        error = `Sigma${props.token_type} have ${decimal_length} decimal point`;
     } else if (amount_bigint > maxAmount) {
         error = `Unable to mint more than ${format_usd(maxAmount)} Sigma${props.token_type} based on the current reserve status`;
     } else if (amount_bigint > props.max && props.operation === "SELL") {

@@ -17,14 +17,14 @@ const bigint_to_erg_str = (ergBigInt: bigint) => {
 };
 
 const erg_nano_erg_to_str = (erg: bigint, nano_erg: bigint, digits?: number, maxDigit?: number) => {
-    maxDigit = maxDigit ? maxDigit : 9;
+    maxDigit = maxDigit !== undefined ? maxDigit : 9;
     if (!digits) digits = 3;
     if (digits > maxDigit) digits = maxDigit;
     let nano_erg_str = "" + nano_erg;
     while (nano_erg_str.length < maxDigit) nano_erg_str = "0" + nano_erg_str;
     while (nano_erg_str.length > digits && nano_erg_str.substr(nano_erg_str.length - 1) === "0")
         nano_erg_str = nano_erg_str.substr(0, nano_erg_str.length - 1);
-    return `${erg}.${nano_erg_str}`;
+    return nano_erg_str.length === 0 ? erg.toString() : `${erg}.${nano_erg_str}`;
 };
 
 const html_safe_gson = (txt: string) => {

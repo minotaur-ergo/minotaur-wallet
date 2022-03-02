@@ -63,7 +63,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
             const outputs = Array(wasmOutputs.len()).fill("").map((item, index) => wasmOutputs.get(index));
             this.setState({ loading: true });
             const txId = tx.id().to_str();
-            let assets: { [id: string]: bigint } = { ...this.state.assets };
+            let assets: { [id: string]: bigint } = {erg: BigInt(0)};
             let boxes: { [id: string]: wasm.ErgoBox } = {};
             if (this.props.boxes) {
                 this.props.boxes.forEach(box => boxes[box.box_id().to_str()] = box);
