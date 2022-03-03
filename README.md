@@ -1,9 +1,15 @@
+
 # Minotaur wallet for ergo
+
+---
+<img src="https://user-images.githubusercontent.com/90670824/156564933-fe5a5189-4d26-4705-ac5a-93537dde2ba7.png" align="right"  width="300">
 
 This is the first multi-platform wallet for ergo.
 
 
 [![minotaur-wallet](https://snapcraft.io/minotaur-wallet/badge.svg)](https://snapcraft.io/minotaur-wallet)
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/minotaur-wallet)
 
 Features:
 
@@ -30,10 +36,6 @@ Features:
 [comment]: <> (You need at least Android 7 or iOS 13 to run Ergo Wallet.)
 
 [comment]: <> (Visit the [Ergo Discord]&#40;https://discord.gg/kj7s7nb&#41; to give feedback.)
-
-### Installation
-
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/minotaur-wallet)
 
 ### Build wallet from source
 
