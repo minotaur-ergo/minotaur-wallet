@@ -3,6 +3,8 @@
 This is the first multi-platform wallet for ergo.
 
 
+[![minotaur-wallet](https://snapcraft.io/minotaur-wallet/badge.svg)](https://snapcraft.io/minotaur-wallet)
+
 Features:
 
 - [X] generating wallets, restoring wallets in a way compatible to Yoroi and Ergo node and ergo android app
@@ -16,16 +18,22 @@ Features:
 - [X] Display Transaction in wallet.
 - [X] Display generated transaction before signing
 - [X] DApp support: Any dApp can embed directly in app. we currently create two dapp. one for issue token and one for sigma-usd.
-- [ ] Dynamic DApp setup: We're working to generate a dynamic protocol to add new dApp to wallet without an update.
 - [X] Support Android and IOS mobile.
 - [X] Support Desktop build for windows, max os X and linux
 - [X] Wallet password to encrypt secret.
+- [ ] Dynamic DApp setup: We're working to generate a dynamic protocol to add new dApp to wallet without an update.
+- [ ] Minotaur dApp connector extension for chrome and firefox support
 - [ ] ErgoPay support
 - [ ] MultiLingual wallet support
+- [ ] Mem pool transaction support
 
 [comment]: <> (You need at least Android 7 or iOS 13 to run Ergo Wallet.)
 
 [comment]: <> (Visit the [Ergo Discord]&#40;https://discord.gg/kj7s7nb&#41; to give feedback.)
+
+### Installation
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/minotaur-wallet)
 
 ### Build wallet from source
 
