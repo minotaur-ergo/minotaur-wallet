@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container, Divider, Grid } from "@material-ui/core";
+import { Button, Container, Grid } from "@material-ui/core";
 import ReceiverRow from "./ReceiverRow";
 import AddressSelector from "./AddressSelector";
 import Address from "../../../db/entities/Address";
@@ -9,6 +9,7 @@ import { FEE } from "../../../config/const";
 import TokenWithAddress from "../../../db/entities/views/AddressToken";
 import GenerateTransactionBottomSheet from "../../../components/GenerateTransactionBottomSheet";
 import { show_notification } from "../../../utils/utils";
+import ReceiverRowCard from "./ReceiverRowCard";
 
 interface StateType {
     receivers: Array<Receiver>;
@@ -43,7 +44,13 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     };
 
     addReceiver = () => {
-        this.setState(state => ({...state, receivers: [...state.receivers, new Receiver("", "")]}))
+        this.setState(state => ({ ...state, receivers: [...state.receivers, new Receiver("", "")] }));
+    };
+
+    deleteReceiver = (index: number) => {
+        let newReceivers = [...this.state.receivers]
+        newReceivers.splice(index, 1)
+        this.setState({receivers: newReceivers});
     }
 
     setParams = (amount: bigint, address: Address | null, tokens: Array<TokenWithAddress>) => {
@@ -56,6 +63,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
         }
     };
     closeModal = () => this.setState({ showModal: false });
+
     generateAndSendTx = async () => {
         try {
             const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress ? [this.state.selectedAddress] : undefined);
@@ -77,20 +85,25 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
         return (
             <React.Fragment>
                 <Container style={{ marginTop: 20 }}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <AddressSelector setParams={this.setParams} wallet={this.props.wallet} />
-                            <Divider />
-                            {this.state.receivers.map((receiver: Receiver, index: number) => (
-                                <ReceiverRow
-                                    tokens={this.state.availableTokens}
-                                    key={`sender-${index}`}
-                                    remaining={this.state.totalErg - FEE}
-                                    value={receiver}
-                                    network_type={this.props.wallet.network_type}
-                                    setValue={param => this.updateReceivers(index, param)} />
-                            ))}
                         </Grid>
+                        {this.state.receivers.map((receiver: Receiver, index: number) => (
+                            <Grid item xs={12}>
+                                <ReceiverRowCard
+                                    delete={() => this.deleteReceiver(index)}
+                                    showDelete={this.state.receivers.length > 1}>
+                                    <ReceiverRow
+                                        tokens={this.state.availableTokens}
+                                        key={`sender-${index}`}
+                                        remaining={this.state.totalErg - FEE}
+                                        value={receiver}
+                                        network_type={this.props.wallet.network_type}
+                                        setValue={param => this.updateReceivers(index, param)} />
+                                </ReceiverRowCard>
+                            </Grid>
+                        ))}
                         <Grid item xs={6}>
                             <Button
                                 variant="contained"

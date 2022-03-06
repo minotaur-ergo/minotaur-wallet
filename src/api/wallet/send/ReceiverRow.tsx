@@ -3,7 +3,6 @@ import AddressInput from "../../../components/AddressInput";
 import ErgoAmount from "./ErgoAmount";
 import { Receiver, ReceiverToken } from "../../../action/blockchain";
 import { is_valid_address } from "../../../utils/utils";
-import { Divider } from "@material-ui/core";
 import TokenSelect from "./TokenSelect";
 import TokenWithAddress from "../../../db/entities/views/AddressToken";
 import TokenName from "../../../components/TokenName";
@@ -34,13 +33,13 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
         const newReceiver = this.props.value.clone();
         newReceiver.erg_str = amount_str;
         this.props.setValue(newReceiver);
-    }
+    };
 
     updateTokenAt = (index: number, amount_str: string) => {
         const newReceiver = this.props.value.clone();
         newReceiver.tokens[index].amount_str = amount_str;
         this.props.setValue(newReceiver);
-    }
+    };
 
     addToken = (tokenId: string) => {
         if (this.props.value.tokens.filter(item => item.token_id === tokenId).length === 0) {
@@ -48,7 +47,7 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
             newReceiver.tokens.push(new ReceiverToken(tokenId, "", this.props.network_type));
             this.props.setValue(newReceiver);
         }
-    }
+    };
 
     render = () => {
         const tokens = this.props.value.tokens.map(item => item.token_id);
@@ -73,10 +72,10 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
                         key={index}
                         value={token.amount_str}
                         setValue={amount => this.updateTokenAt(index, amount)}
-                        label={<TokenName token_id={token.token_id} network_type={this.props.network_type}/>} />
+                        label={<TokenName token_id={token.token_id} network_type={this.props.network_type} />} />
                 ))}
-                <TokenSelect tokens={availableTokens} addToken={this.addToken} network_type={this.props.network_type}/>
-                <Divider style={{ marginTop: 10 }} />
+                <TokenSelect tokens={availableTokens} addToken={this.addToken}
+                             network_type={this.props.network_type} />
             </React.Fragment>
         );
     };

@@ -80,7 +80,7 @@ class AddressSelector extends React.Component<PropsType, StateType> {
     render = () => {
         return (
             <React.Fragment>
-                <FormControl fullWidth variant="outlined" size="small" style={{ marginBottom: 10 }}>
+                <FormControl fullWidth variant="outlined" size="small" style={{ marginBottom: -10 }}>
                     <InputLabel>From Address</InputLabel>
                     <Select
                         value={this.state.selectedAddress}

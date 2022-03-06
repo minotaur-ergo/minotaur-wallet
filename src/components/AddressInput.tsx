@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    Divider,
     FormControl,
     FormHelperText,
     IconButton,
@@ -7,7 +8,7 @@ import {
     TextField
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { GlobalStateType } from "../store/reducer";
 import { connect, MapDispatchToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -47,7 +48,7 @@ const AddressInput = (props: PropsType) => {
 
     return (
         <React.Fragment>
-            <FormControl fullWidth variant="outlined" margin={"normal"}>
+            <FormControl fullWidth variant="outlined" margin={"none"}>
                 <TextField
                     size={props.size ? props.size: "medium"}
                     variant="outlined"
