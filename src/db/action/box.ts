@@ -1,4 +1,4 @@
-import { getConnection, IsNull } from "typeorm";
+import { getConnection } from "typeorm";
 import Box from "../entities/Box";
 import { ErgoBox } from "../../network/models";
 import Address from "../entities/Address";
@@ -54,11 +54,13 @@ const getWalletBoxes = async (walletId: number) => {
         .getMany();
 };
 
-const getAddressBoxes = async (address: Address) => {
-    return await getBoxRepository().find({ address: address, spend_tx: IsNull() });
+const getAddressBoxes = async (address: Array<Address>) => {
+    return getBoxRepository().createQueryBuilder()
+        .where(address.map(item => `addressId=${item.id}`).join(" OR "))
+        .andWhere('spentTx IS NULL').getMany();
 };
 
-const getCoveringBoxFor = async (amount: bigint, walletId: number, tokens: { [id: string]: bigint }, address?: Address | null): Promise<CoveringResult> => {
+const getCoveringBoxFor = async (amount: bigint, walletId: number, tokens: { [id: string]: bigint }, address?: Array<Address> | null): Promise<CoveringResult> => {
     const requiredTokens: { [id: string]: bigint } = { ...tokens };
     let requiredAmount: bigint = amount;
     let selectedBoxesJson: Array<string> = [];
@@ -84,7 +86,7 @@ const getCoveringBoxFor = async (amount: bigint, walletId: number, tokens: { [id
         }
     };
     const remaining = () => requiredAmount > BigInt(0) || (Object.keys(requiredTokens).filter(token => requiredTokens[token] > 0).length > 0);
-    const boxes = await (address ? getAddressBoxes(address as Address) : getWalletBoxes(walletId));
+    const boxes = await (address ? getAddressBoxes(address as Array<Address>) : getWalletBoxes(walletId));
     for (let boxObject of boxes) {
         const box = wasm.ErgoBox.from_json(boxObject.json);
         if (checkIsRequired(box)) {

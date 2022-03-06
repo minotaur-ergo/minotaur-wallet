@@ -4,7 +4,7 @@ import { CONFIRMATION_HEIGHT } from "../config/const";
 import { forkBoxContents } from "../db/action/boxContent";
 import { forkBoxes } from "../db/action/box";
 import { forkTxs } from "../db/action/transaction";
-import { NetworkType } from "../config/network_type";
+import { NetworkType } from "../config/interface";
 
 const pageSize: number = 20;
 

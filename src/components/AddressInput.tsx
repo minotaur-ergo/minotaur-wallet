@@ -28,19 +28,22 @@ interface PropsType extends RouteComponentProps {
 
 const AddressInput = (props: PropsType) => {
     const [blurred, setBlurred] = useState(false);
+    const [useScanner, setUseScanner] = useState(false);
     const startScanner = () => {
+        setUseScanner(true);
         props.openQrCode();
         // props.history.push(getRoute(RouteMap.QrCode, {}));
     };
 
     useEffect(() => {
-        if (props.scanSuccess) {
+        if (props.scanSuccess && useScanner) {
             if (props.scanResult !== props.address) {
+                setUseScanner(false);
                 props.setAddress(props.scanResult);
                 props.clearScan();
             }
         }
-    });
+    }, [props, useScanner]);
 
     return (
         <React.Fragment>

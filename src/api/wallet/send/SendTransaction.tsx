@@ -27,7 +27,7 @@ const getAddressId = (address: Address | null | undefined) => {
 };
 
 class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
-    state = {
+    state: StateType = {
         receivers: [new Receiver("", "")],
         totalErg: BigInt(0),
         showModal: false,
@@ -42,6 +42,10 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
         this.setState({ receivers: newReceivers });
     };
 
+    addReceiver = () => {
+        this.setState(state => ({...state, receivers: [...state.receivers, new Receiver("", "")]}))
+    }
+
     setParams = (amount: bigint, address: Address | null, tokens: Array<TokenWithAddress>) => {
         if (getAddressId(address) !== getAddressId(this.state.selectedAddress)) {
             this.setState({
@@ -54,7 +58,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     closeModal = () => this.setState({ showModal: false });
     generateAndSendTx = async () => {
         try {
-            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress);
+            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress ? [this.state.selectedAddress] : undefined);
             this.setState({
                 showModal: true,
                 generatedTx: tx
@@ -87,7 +91,16 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
                                     setValue={param => this.updateReceivers(index, param)} />
                             ))}
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                color="primary"
+                                onClick={this.addReceiver}>
+                                Add Receiver
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
                             <Button
                                 variant="contained"
                                 fullWidth

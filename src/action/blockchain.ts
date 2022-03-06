@@ -93,7 +93,7 @@ const createContext = async (network_type: string) => {
     return new wasm.ErgoStateContext(pre_header, blockHeaders);
 };
 
-const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress?: Address): Promise<UnsignedGeneratedTx> => {
+const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress?: Array<Address>): Promise<UnsignedGeneratedTx> => {
     const node = getNetworkType(wallet.network_type).getNode();
     const height = await node.getHeight();
     let totalRequired = getReceiverAmount(receivers) + FEE;
@@ -113,7 +113,7 @@ const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress
         candidates.add(boxBuilder.build());
     });
     const addresses = await dbAddressAction.getWalletAddressesWithoutErg(wallet.id);
-    const address = inputAddress ? inputAddress : addresses[0];
+    const address = (inputAddress ? inputAddress : addresses)[0];
     const coveringBoxes = await getCoveringBoxFor(totalRequired, wallet.id, tokens, inputAddress);
     if (coveringBoxes.covered) {
         const tokenSelection = new wasm.Tokens();

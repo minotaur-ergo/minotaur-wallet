@@ -81,7 +81,7 @@ class DAppView extends React.Component<PropsType, StateType> {
         let coveringTokens: { [id: string]: bigint } = {};
         tokens.forEach(item => coveringTokens[item.id] = item.amount);
         const addressObject = address ? (await getAddressByAddressString(address))?.addressObject() : null;
-        return getCoveringBoxFor(amount, this.state.wallet?.id!, coveringTokens, addressObject);
+        return getCoveringBoxFor(amount, this.state.wallet?.id!, coveringTokens, addressObject ? [addressObject] : null);
     };
 
     signAndSendTx = async (unsignedTx: UnsignedGeneratedTx) => {
