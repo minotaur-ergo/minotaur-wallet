@@ -20,7 +20,7 @@ const addWalletAddresses = async (wallet: Wallet) => {
             const explorer = getNetworkType(wallet.network_type).getExplorer();
             const txs = (await explorer.getTxsByAddress(addressObject.address, { offset: 0, limit: 1 }));
             if (txs.total > 0) {
-                await dbAddressAction.saveAddress(wallet, `Derive Address ${index}`, addressObject.address, addressObject.path, index);
+                await dbAddressAction.saveAddress(wallet, `Derived Address ${index}`, addressObject.address, addressObject.path, index);
             } else {
                 break;
             }
@@ -60,14 +60,24 @@ const deriveAddressFromMnemonic = async (mnemonic: string, password: string, NET
     };
 };
 
+const getNewAddressName = async (walletId: number, name: string) => {
+    if(!name) {
+        const index = (await getWalletAddresses(walletId)).length;
+        name = `Derived Address ${index}`
+    }
+    return name
+}
+
 const deriveNewAddress = async (wallet: Wallet, name: string) => {
     const network_type = getNetworkType(wallet.network_type)
     const index = await dbAddressAction.getLastAddress(wallet.id) + 1;
+    name = name ? name : await getNewAddressName(wallet.id, name)
     const address = await deriveAddress(wallet.extended_public_key, network_type.prefix, index ? index : 0);
     await dbAddressAction.saveAddress(wallet, name, address.address, address.path, index ? index : 0);
 };
 
 const deriveReadOnlyAddress = async (wallet: Wallet, address: string, name: string) => {
+    name = name ? name : await getNewAddressName(wallet.id, name)
     await dbAddressAction.saveAddress(wallet, name, address, "no-path", -1);
 };
 

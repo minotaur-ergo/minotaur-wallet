@@ -34,7 +34,7 @@ const Erg = (props: PropsType) => {
     const erg = props.erg / factor;
     const nano_erg = props.erg - erg * factor;
     const erg_str = erg_nano_erg_to_str(erg, nano_erg, 2, maxDecimal);
-    const unit = props.showUnit ? props.token ? <TokenName token_id={props.token} network_type={props.network_type}/> : " erg" : "";
+    const unit = props.showUnit ? props.token ? <TokenName token_id={props.token} network_type={props.network_type}/> : " ERG" : "";
     return (
         <span className={props.class}>{erg_str} {unit}</span>
     );

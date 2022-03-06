@@ -64,7 +64,7 @@ const DeriveAddress = (props: PropsType) => {
                         variant="contained"
                         color="primary"
                         fullWidth
-                        disabled={addressError !== "" || name === ""}
+                        disabled={addressError !== ""}
                         onClick={() => deriveAddress()}>
                         Derive new address
                     </Button>

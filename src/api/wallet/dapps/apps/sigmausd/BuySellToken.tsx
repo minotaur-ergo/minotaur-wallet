@@ -94,7 +94,7 @@ const BuySellToken = (props: PropsType) => {
                 variant="contained"
                 color="primary"
                 onClick={() => props.buy(BigInt(amount_bigint))}>
-                {props.operation}
+                {props.operation === "BUY" ? "Mint" : "Redeem"}
             </Button>
         </React.Fragment>
     );

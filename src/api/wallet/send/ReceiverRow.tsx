@@ -63,7 +63,7 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
                     label="Receiver Address" />
                 <ErgoAmount
                     size="small"
-                    label="Erg"
+                    label="ERG"
                     value={this.props.value.erg_str}
                     setValue={(val: string) => this.fillAmount(val)}
                 />

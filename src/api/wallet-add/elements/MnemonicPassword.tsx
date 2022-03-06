@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Container, FormControlLabel, Grid } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid } from "@material-ui/core";
 import PasswordInput from "../../../components/PasswordInput";
 
 interface PropsType {
