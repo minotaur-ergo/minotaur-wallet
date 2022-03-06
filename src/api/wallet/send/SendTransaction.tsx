@@ -15,7 +15,7 @@ interface StateType {
     receivers: Array<Receiver>;
     totalErg: bigint;
     showModal: boolean;
-    selectedAddress: Address | null | undefined;
+    selectedAddress: Array<Address> | null | undefined;
     availableTokens: Array<TokenWithAddress>;
     generatedTx?: UnsignedGeneratedTx
 }
@@ -48,13 +48,22 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     };
 
     deleteReceiver = (index: number) => {
-        let newReceivers = [...this.state.receivers]
-        newReceivers.splice(index, 1)
-        this.setState({receivers: newReceivers});
-    }
+        let newReceivers = [...this.state.receivers];
+        newReceivers.splice(index, 1);
+        this.setState({ receivers: newReceivers });
+    };
 
-    setParams = (amount: bigint, address: Address | null, tokens: Array<TokenWithAddress>) => {
-        if (getAddressId(address) !== getAddressId(this.state.selectedAddress)) {
+    checkAddressesEqual = (addrList1: Array<Address> | undefined | null, addrList2: Array<Address> | undefined | null) => {
+        if (addrList1 && addrList2) {
+            if (addrList1.length !== addrList2.length) return false;
+            return addrList1.filter((item, index) => getAddressId(item) !== getAddressId(addrList2[index])).length === 0;
+        }
+        return addrList1 === addrList2;
+    };
+
+    setParams = (amount: bigint, address: Array<Address> | null, tokens: Array<TokenWithAddress>) => {
+        console.log(amount, address)
+        if (!this.checkAddressesEqual(address, this.state.selectedAddress)) {
             this.setState({
                 selectedAddress: address,
                 totalErg: amount,
@@ -66,7 +75,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
 
     generateAndSendTx = async () => {
         try {
-            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress ? [this.state.selectedAddress] : undefined);
+            const tx = await createTx(this.state.receivers, this.props.wallet, this.state.selectedAddress ? this.state.selectedAddress : undefined);
             this.setState({
                 showModal: true,
                 generatedTx: tx
@@ -82,6 +91,8 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
 
     render = () => {
         const isValid = this.state.receivers.filter((item: Receiver) => !item.valid()).length === 0;
+        const validAddress = this.state.selectedAddress === undefined || this.state.selectedAddress === null || this.state.selectedAddress.length > 0;
+        console.log(this.state.selectedAddress, validAddress)
         return (
             <React.Fragment>
                 <Container style={{ marginTop: 20 }}>
@@ -90,13 +101,12 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
                             <AddressSelector setParams={this.setParams} wallet={this.props.wallet} />
                         </Grid>
                         {this.state.receivers.map((receiver: Receiver, index: number) => (
-                            <Grid item xs={12}>
+                            <Grid item xs={12} key={`sender-${index}`}>
                                 <ReceiverRowCard
                                     delete={() => this.deleteReceiver(index)}
                                     showDelete={this.state.receivers.length > 1}>
                                     <ReceiverRow
                                         tokens={this.state.availableTokens}
-                                        key={`sender-${index}`}
                                         remaining={this.state.totalErg - FEE}
                                         value={receiver}
                                         network_type={this.props.wallet.network_type}
@@ -119,7 +129,7 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
                                 fullWidth
                                 color="primary"
                                 onClick={this.generateAndSendTx}
-                                disabled={!isValid}>
+                                disabled={!isValid || !validAddress}>
                                 Send
                             </Button>
                         </Grid>

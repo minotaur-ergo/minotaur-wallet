@@ -57,7 +57,7 @@ const getWalletBoxes = async (walletId: number) => {
 const getAddressBoxes = async (address: Array<Address>) => {
     return getBoxRepository().createQueryBuilder()
         .where(address.map(item => `addressId=${item.id}`).join(" OR "))
-        .andWhere('spentTx IS NULL').getMany();
+        .andWhere('spendTxId IS NULL').getMany();
 };
 
 const getCoveringBoxFor = async (amount: bigint, walletId: number, tokens: { [id: string]: bigint }, address?: Array<Address> | null): Promise<CoveringResult> => {
