@@ -328,7 +328,7 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                                 <Grid item xs={12}>
                                     {this.state.bank && this.state.oracle ? (
                                         <React.Fragment>
-                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Buy
+                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Purchase
                                                 SigmaUSD</Typography>
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}
@@ -336,7 +336,7 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                                                           token_type="USD"
                                                           max={BigInt(0)}
                                                           operation="BUY" />
-                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Sell
+                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Redeem
                                                 SigmaUSD</Typography>
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}
@@ -372,7 +372,7 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                                 <Grid item xs={12}>
                                     {this.state.bank && this.state.oracle ? (
                                         <React.Fragment>
-                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Buy
+                                            <Typography style={{ marginTop: "10px", marginBottom: "10px" }}>Purchase
                                                 SigmaRSV</Typography>
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}
@@ -380,7 +380,7 @@ class SigmaUSD extends React.Component<DAppPropsType, StateType> {
                                                           buy={this.buy_reserve}
                                                           token_type="RSV"
                                                           operation="BUY" />
-                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Sell
+                                            <Typography style={{ marginTop: "20px", marginBottom: "10px" }}>Redeem
                                                 SigmaRSV</Typography>
                                             <BuySellToken bank={this.state.bank}
                                                           oracle={this.state.oracle}

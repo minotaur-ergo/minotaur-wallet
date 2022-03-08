@@ -45,7 +45,7 @@ const DeriveAddress = (props: PropsType) => {
                     <TextInput
                         size={"small"}
                         label="New Address Name"
-                        error={name === "" ? "Name is required" : ""}
+                        error=""
                         value={name}
                         setValue={setName} />
                 </Grid>
