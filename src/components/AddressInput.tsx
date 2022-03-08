@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-    Divider,
     FormControl,
     FormHelperText,
     IconButton,
@@ -8,7 +7,7 @@ import {
     TextField
 } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode, faTrash, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { GlobalStateType } from "../store/reducer";
 import { connect, MapDispatchToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";

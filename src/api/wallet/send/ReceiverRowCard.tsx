@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Theme } from "@material-ui/core/styles";
-import { Card, CardContent, createStyles, Fab } from "@material-ui/core";
+import { Card, CardContent, createStyles } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import React from "react";

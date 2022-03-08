@@ -10,19 +10,19 @@ import migrations from "../../db/migration";
 
 const connectSqlJs = async () => {
     window.SQL = await initSqlJs({
-        // locateFile: file => `./${file}`,
-        locateFile: file => `https://sql.js.org/dist/${file}`
+        locateFile: file => `./${file}`,
+        // locateFile: file => `https://sql.js.org/dist/${file}`
     });
     const connection = await createConnection({
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
         logging: ["error"],
-        synchronize: false,
+        synchronize: true,
         entities: entities,
-        migrations: migrations
+        // migrations: migrations
     });
-    await connection.runMigrations();
+    // await connection.runMigrations();
     return connection;
 };
 
@@ -65,6 +65,7 @@ const Database = (props: PropsType) => {
                         setConnecting(false);
                     }, 100);
                 }).catch(exp => {
+                    console.log(exp);
                     setConnected(true);
                     setConnecting(false)
                 });
