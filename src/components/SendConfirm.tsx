@@ -8,7 +8,6 @@ import DisplayId from "./DisplayId";
 import { show_notification } from "../utils/utils";
 import { getNetworkType } from "../config/network_type";
 import { validatePassword } from "../action/address";
-import { UnsignedTransaction } from "ergo-lib-wasm-browser";
 import { UnsignedGeneratedTx } from "../utils/interface";
 
 interface PropsType {
@@ -23,7 +22,6 @@ const SendConfirm = (props: PropsType) => {
     const [txResponse, setTxResponse] = useState("");
     const sendTx = () => {
         if (props.transaction) {
-            console.log((props.transaction.tx as UnsignedTransaction).to_json())
             signTx(props.wallet, props.transaction, password).then(signedTx => {
                 const node = getNetworkType(props.wallet.network_type).getNode();
                 node.sendTx(signedTx).then(result => {

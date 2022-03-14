@@ -37,9 +37,14 @@ class RouterSwitch extends React.Component<PropsType, {}> {
     };
 
     render = () => {
+        console.log(this.props.showQrCodeScanner);
         return (
             <React.Fragment>
-                {this.props.showQrCodeScanner ? <QrCodeReaderView /> : null}
+                {this.props.showQrCodeScanner ? (
+                    <Route path={RouteMap.Wallet}>
+                        <QrCodeReaderView />
+                    </Route>
+                ) : null}
                 <div style={{ display: this.props.showQrCodeScanner ? "none" : "block" }}>
                     <Switch>
                         <Route path={RouteMap.WalletAdd} exact>

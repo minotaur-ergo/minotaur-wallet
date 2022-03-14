@@ -10,7 +10,7 @@ import migrations from "../../db/migration";
 
 const connectSqlJs = async () => {
     window.SQL = await initSqlJs({
-        locateFile: file => `./${file}`,
+        locateFile: file => `/${file}`,
         // locateFile: file => `https://sql.js.org/dist/${file}`
     });
     const connection = await createConnection({

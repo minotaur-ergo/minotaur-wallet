@@ -15,6 +15,7 @@ const QrCodeReaderWeb = (props: QrCodeWebPropsType) => {
     const handleScan = (data: string | null) => {
         if (data) props.handleScan(data);
     };
+    console.log("scanner is here")
     return (
         <WithAppBar header={<AppHeader hideQrCode={true} title="Scan Qrcode" back={props.closeQrcode} />}>
             <QrReader

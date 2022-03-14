@@ -15,7 +15,7 @@ interface PropsType {
     network_type: string;
 }
 
-interface stateType {
+interface StateType {
     loading: boolean;
     txId: string;
     assets: { [id: string]: bigint };
@@ -26,8 +26,8 @@ interface stateType {
     showSendModal: boolean;
 }
 
-class UnsignedTxView extends React.Component<PropsType, stateType> {
-    state = {
+class UnsignedTxView extends React.Component<PropsType, StateType> {
+    state: StateType = {
         assets: { "erg": BigInt(0) },
         inputs: [],
         outputs: [],
@@ -35,7 +35,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
         txId: "",
         isMined: false,
         showBoxes: false,
-        showSendModal: false
+        showSendModal: false,
     };
     i64ToBigInt = (value: wasm.I64) => {
         return BigInt(value.to_str());
@@ -63,7 +63,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
             const outputs = Array(wasmOutputs.len()).fill("").map((item, index) => wasmOutputs.get(index));
             this.setState({ loading: true });
             const txId = tx.id().to_str();
-            let assets: { [id: string]: bigint } = {erg: BigInt(0)};
+            let assets: { [id: string]: bigint } = { erg: BigInt(0) };
             let boxes: { [id: string]: wasm.ErgoBox } = {};
             if (this.props.boxes) {
                 this.props.boxes.forEach(box => boxes[box.box_id().to_str()] = box);
@@ -104,7 +104,7 @@ class UnsignedTxView extends React.Component<PropsType, stateType> {
         this.extractAssets().then(() => null);
     }
 
-    componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<stateType>, snapshot?: any) {
+    componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<StateType>, snapshot?: any) {
         this.extractAssets().then(() => null);
     }
 

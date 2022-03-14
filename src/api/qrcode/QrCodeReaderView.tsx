@@ -4,12 +4,13 @@ import { connect, MapDispatchToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import QrCodeReader from "./QrCodeReader";
 import { GlobalStateType } from "../../store/reducer";
-import { detectType, TxPublishR, TxSignR } from "./qrcode-types/QrCodeScanResult";
+import { detectType, ErgoPayR, TxPublishR, TxSignR } from "./qrcode-types/QrCodeScanResult";
 import QrCodeMoreChunk from "./qrcode-types/QrCodeMoreChunk";
 import TransactionSignRequest from "./qrcode-types/TransactionSignRequest";
 import TransactionPublishRequest from "./qrcode-types/TransactionPublishRequest";
 import { JsonBI } from "../../config/json";
 import { show_notification } from "../../utils/utils";
+import ErgoPayRequest from "./qrcode-types/ErgoPayRequest";
 
 interface PropsType extends RouteComponentProps {
     closeQrcode: () => any;
@@ -23,7 +24,7 @@ interface StateType {
     chunks: Array<string>;
 }
 
-const parametersRegex = new RegExp(/^(?<name>[A-Za-z]+)(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?-(?<tx>.*)$/);
+const parametersRegex = new RegExp(/^(?<name>[A-Za-z]+)(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?(-|:\/\/)(?<tx>.*)$/);
 
 class QrCodeReaderView extends React.Component<PropsType, StateType> {
     state = {
@@ -73,6 +74,8 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
                 return <TransactionSignRequest tx={JsonBI.parse(this.state.chunks.join(""))} />;
             case TxPublishR:
                 return <TransactionPublishRequest tx={JsonBI.parse(this.state.chunks.join(""))} />;
+            case ErgoPayR:
+                return <ErgoPayRequest url={this.state.chunks[0]}/>
         }
         return null;
     };

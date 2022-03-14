@@ -20,7 +20,6 @@ import SendTransaction from "./send/SendTransaction";
 import AddressList from "./address/AddressList";
 import DAppList from "./dapps/DAppList";
 import Transaction from "./transaction/Transaction";
-import { loadWallets } from "../../action/wallet";
 import AssetList from "./asset/AssetList";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 
@@ -44,7 +43,6 @@ const TABS = [
 ];
 
 interface PropsType extends RouteComponentProps<{ id: string }> {
-    walletsValid: boolean;
     wallets: Array<Wallet>;
 }
 
@@ -60,24 +58,16 @@ const WalletPage = (props: PropsType) => {
     const [wallet, setWallet] = useState<Wallet>();
     const [tabs, setTabs] = useState({ show: true, active: "" });
     const tabIndex = TABS.indexOf(tabs.active);
-    const [walletLoading, setWalletLoading] = useState(false);
     const classes = useStyles();
     useEffect(() => {
-        if (!props.walletsValid && !walletLoading) {
-            setWalletLoading(true);
-            loadWallets().then(() => {
-                setWalletLoading(false);
-            });
-        } else if (props.walletsValid) {
-            if (!wallet || wallet.id + "" !== props.match.params.id) {
-                const wallets = props.wallets.filter(item => "" + item.id === "" + props.match.params.id);
-                if (wallets.length === 0) {
-                    gotoPage(props, RouteMap.Home);
-                }
-                setWallet(wallets[0]);
+        if (!wallet || wallet.id + "" !== props.match.params.id) {
+            const wallets = props.wallets.filter(item => "" + item.id === "" + props.match.params.id);
+            if (wallets.length === 0) {
+                gotoPage(props, RouteMap.Home);
             }
+            setWallet(wallets[0]);
         }
-    }, [props, walletLoading, wallet]);
+    }, [props, wallet]);
     const setCurrentTab = (name: string) => {
         if (!tabs.show || name !== tabs.active) {
             setTabs({ show: true, active: name });
@@ -140,8 +130,7 @@ const WalletPage = (props: PropsType) => {
 };
 
 const mapsPropsToDispatch = (state: GlobalStateType) => ({
-    wallets: state.wallet.wallets,
-    walletsValid: state.wallet.walletValid
+    wallets: state.wallet.wallets
 });
 
 export default connect(mapsPropsToDispatch)(withRouter(WalletPage));

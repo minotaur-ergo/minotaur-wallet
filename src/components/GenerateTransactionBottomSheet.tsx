@@ -1,14 +1,13 @@
 import React from "react";
 import BottomSheet from "./bottom-sheet/BottomSheet";
-import Wallet, { WalletType } from "../db/entities/Wallet";
-import SendConfirmReadonly from "./SendConfirmReadonly";
-import SendConfirm from "./SendConfirm";
+import Wallet from "../db/entities/Wallet";
 import { UnsignedGeneratedTx } from "../utils/interface";
 import { getWalletAddresses } from "../action/address";
 import UnsignedTxView from "./display-tx/UnsignedTxView";
 import * as wasm from "ergo-lib-wasm-browser";
 import { Divider } from "@material-ui/core";
 import Loading from "./Loading";
+import SignTransactionDisplay from "./SignTransactionDisplay";
 
 interface PropsType {
     transaction?: UnsignedGeneratedTx
@@ -77,23 +76,12 @@ class GenerateTransactionBottomSheet extends React.Component<PropsType, StateTyp
             <BottomSheet show={this.props.show} close={this.props.close}>
                 {this.render_transaction()}
                 <Divider />
-                {this.props.wallet.type === WalletType.ReadOnly ? (
-                    <SendConfirmReadonly
-                        display={this.props.show}
-                        transaction={this.props.transaction}
-                        close={this.props.close}
-                        wallet={this.props.wallet}
-                    />
-                ) : (
-                    <SendConfirm
-                        display={this.props.show}
-                        transaction={this.props.transaction}
-                        close={this.props.close}
-                        wallet={this.props.wallet}
-                    />
-                )}
+                <SignTransactionDisplay
+                    wallet={this.props.wallet}
+                    show={this.props.show}
+                    close={this.props.close}
+                    transaction={this.props.transaction} />
             </BottomSheet>
-
         );
     };
 }

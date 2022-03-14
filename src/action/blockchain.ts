@@ -140,6 +140,7 @@ const createTx = async (receivers: Array<Receiver>, wallet: Wallet, inputAddress
 
 const reduceTransaction = async (tx: wasm.UnsignedTransaction, boxes: wasm.ErgoBoxes, data_boxes: wasm.ErgoBoxes, network_type: string) => {
     const ctx = await createContext(network_type);
+    debugger
     const reduced_transaction = wasm.ReducedTransaction.from_unsigned_tx(tx, boxes, data_boxes, ctx);
     return reduced_transaction.sigma_serialize_bytes();
 };

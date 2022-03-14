@@ -1,20 +1,15 @@
-import React, { useEffect } from "react";
+import React  from "react";
 import { Divider, List } from "@material-ui/core";
 import WalletElement from "./WalletElement";
 import { connect } from "react-redux";
 import { GlobalStateType } from "../../store/reducer";
-import { loadWallets } from "../../action/wallet";
 import WalletWithErg from "../../db/entities/views/WalletWithErg";
 
 interface PropsType {
     wallets: Array<WalletWithErg>;
-    walletsValid: boolean;
 }
 
 const WalletList = (props: PropsType) => {
-    useEffect(() => {
-        loadWallets().then(() => null);
-    });
     return (
         <List>
             {props.wallets.map((wallet, index) => (
@@ -35,7 +30,6 @@ const WalletList = (props: PropsType) => {
 
 const mapStateToProps = (state: GlobalStateType) => ({
     wallets: state.wallet.wallets,
-    walletsValid: state.wallet.walletValid
 });
 
 export default connect(mapStateToProps)(WalletList);
