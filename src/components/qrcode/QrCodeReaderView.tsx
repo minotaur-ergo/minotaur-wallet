@@ -88,7 +88,6 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
 
     render = () => {
         const invalidChunkCount = this.state.chunks.filter(item => !item).length;
-        console.log(this.state);
         return (
             <React.Fragment>
                 {!this.state.open ? null : this.state.scanning ? (
@@ -99,7 +98,7 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
                         close={this.props.close}
                         scanNext={() => this.setState({ scanning: true })} />
                 ) : this.renderSubComponent()}
-                <div style={{ display: this.state.open ? "none" : "auto" }}>
+                <div style={{ display: this.state.open ? "none" : "block" }}>
                     {this.props.children}
                 </div>
             </React.Fragment>

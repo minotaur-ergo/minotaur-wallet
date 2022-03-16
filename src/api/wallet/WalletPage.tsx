@@ -81,8 +81,9 @@ const WalletPage = (props: PropsType) => {
             success={() => null}
             open={showQrCode}
             close={() => setShowQrCode(false)}>
-            <WithAppBar header={<AppHeader hideQrCode={false} openQrCode={() => setShowQrCode(true)}
-                                           title={wallet ? wallet.name : ""} />}>
+            <WithAppBar
+                header={<AppHeader hideQrCode={false} openQrCode={() => setShowQrCode(true)}
+                                   title={wallet ? wallet.name : ""} />}>
                 <div className={classes.content}>
                     {wallet ? (
                         <React.Fragment>
