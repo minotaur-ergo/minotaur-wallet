@@ -78,9 +78,6 @@ class Bank {
     num_able_to_mint_stable_coin = () => {
         if (!this.able_to_mint_stable_coin(BigInt(1))) return BigInt(0);
         let low = this.equity() / this.oracle.datapoint_in_cents() / BigInt(4);
-        console.log("liabilities", this.liabilities())
-        console.log("equity", this.equity())
-        console.log(low);
         // TODO check index of stable token
         let high = BigInt(this.box.tokens().get(0).amount().as_i64().to_str());
         while (low <= high) {

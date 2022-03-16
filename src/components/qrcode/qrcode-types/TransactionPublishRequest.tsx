@@ -15,6 +15,7 @@ import { getNetworkType, NetworkType } from "../../../config/network_type";
 
 interface PropsType {
     closeQrcode: () => any;
+    completed?: (result: string) => any;
     tx: { signedTx: string }
 }
 
@@ -75,6 +76,9 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
             const node = getNetworkType(this.state.network_type.label).getNode();
             node.sendTx(this.state.tx).then(result => {
                 this.setState({ txId: result.txId });
+                if(this.props.completed){
+                    this.props.completed(result.txId);
+                }
             }).catch(exp => {
                 console.log(exp);
             });

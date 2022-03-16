@@ -10,6 +10,7 @@ interface PropsType {
     close: () => any;
     open: boolean;
     children: React.ReactNode;
+    completed?: (result: string) => any;
     allowedTypes?: Array<string>
 }
 
@@ -81,7 +82,7 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
     renderSubComponent = () => {
         const selectedType = Types.filter(item => item.type === this.state.type);
         if (selectedType.length > 0) {
-            return selectedType[0].render(this.state.chunks.join(""), this.props.close);
+            return selectedType[0].render(this.state.chunks.join(""), this.props.close, this.props.completed);
         }
         return null;
     };

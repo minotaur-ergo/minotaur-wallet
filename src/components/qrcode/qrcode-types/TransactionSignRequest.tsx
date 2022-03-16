@@ -19,6 +19,7 @@ import { UnsignedGeneratedTx } from "../../../utils/interface";
 
 interface PropsType extends RouteComponentProps<{ id: string }> {
     closeQrcode: () => any;
+    completed?: (result: string) => any;
     tx: { reducedTx: string, sender: string, inputs: Array<string> }
 }
 

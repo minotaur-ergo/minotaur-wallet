@@ -8,6 +8,7 @@ import * as wasm from "ergo-lib-wasm-browser";
 import { Divider } from "@material-ui/core";
 import Loading from "./Loading";
 import SignTransactionDisplay from "./SignTransactionDisplay";
+import { WalletQrCodeContext } from "../api/wallet/WalletPage";
 
 interface PropsType {
     transaction?: UnsignedGeneratedTx
@@ -77,6 +78,7 @@ class GenerateTransactionBottomSheet extends React.Component<PropsType, StateTyp
                 {this.render_transaction()}
                 <Divider />
                 <SignTransactionDisplay
+                    contextType={WalletQrCodeContext}
                     wallet={this.props.wallet}
                     show={this.props.show}
                     close={this.props.close}

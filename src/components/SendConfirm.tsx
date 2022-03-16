@@ -13,6 +13,7 @@ import { UnsignedGeneratedTx } from "../utils/interface";
 interface PropsType {
     close: () => any;
     wallet: Wallet;
+    completed?: (txId: string) => any;
     transaction?: UnsignedGeneratedTx;
     display: boolean;
 }
@@ -26,6 +27,9 @@ const SendConfirm = (props: PropsType) => {
                 const node = getNetworkType(props.wallet.network_type).getNode();
                 node.sendTx(signedTx).then(result => {
                     setTxResponse(result.txId);
+                    if(props.completed){
+                        props.completed(result.txId);
+                    }
                 }).catch(exp => {
                     show_notification(exp);
                 });

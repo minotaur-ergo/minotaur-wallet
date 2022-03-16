@@ -25,15 +25,15 @@ const detect = (value: string, regex: RegExp) : DetectParam | null => {
 
 const Types = [
     {
-        render: (param: string, close: () => any) => <TransactionSignRequest tx={JsonBI.parse(param)} closeQrcode={close}/>,
+        render: (param: string, close: () => any, completed?: (result: string) => any) => <TransactionSignRequest completed={completed}  tx={JsonBI.parse(param)} closeQrcode={close}/>,
         type: TxSignR,
         detect: (value: string) : DetectParam | null => detect(value, new RegExp(/^CSR(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?(-)(?<payload>.*)$/))
     }, {
-        render: (param: string, close: () => any) => <TransactionPublishRequest closeQrcode={close} tx={JsonBI.parse(param)}/>,
+        render: (param: string, close: () => any, completed?: (result: string) => any) => <TransactionPublishRequest completed={completed} closeQrcode={close} tx={JsonBI.parse(param)}/>,
         type: TxPublishR,
         detect: (value: string) : DetectParam | null => detect(value, new RegExp(/^CSTX(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?(-)(?<payload>.*)$/))
     }, {
-        render: (param: string, close: () => any) => <ErgoPayRequest closeQrcode={close} url={param}/>,
+        render: (param: string, close: () => any, completed?: (result: string) => any) => <ErgoPayRequest completed={completed} closeQrcode={close} url={param}/>,
         type: ErgoPayR,
         detect: (value: string) : DetectParam | null => {
             return value.startsWith("ergopay://") ? {page: 1, total: 1, payload: value.replace("ergopay://", "")} : null

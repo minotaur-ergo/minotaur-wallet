@@ -25,7 +25,6 @@ const AddressInput = (props: PropsType) => {
             context.showQrCode(true);
         }
     }
-    console.log(context, scanning)
     useEffect(() => {
         if(scanning){
             if(context && context.value){

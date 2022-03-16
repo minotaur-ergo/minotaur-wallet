@@ -62,7 +62,6 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     };
 
     setParams = (amount: bigint, address: Array<Address> | null, tokens: Array<TokenWithAddress>) => {
-        console.log(amount, address)
         if (!this.checkAddressesEqual(address, this.state.selectedAddress)) {
             this.setState({
                 selectedAddress: address,
@@ -92,7 +91,6 @@ class SendTransaction extends React.Component<WalletPagePropsType, StateType> {
     render = () => {
         const isValid = this.state.receivers.filter((item: Receiver) => !item.valid()).length === 0;
         const validAddress = this.state.selectedAddress === undefined || this.state.selectedAddress === null || this.state.selectedAddress.length > 0;
-        console.log(this.state.selectedAddress, validAddress)
         return (
             <React.Fragment>
                 <Container style={{ marginTop: 20 }}>

@@ -24,6 +24,7 @@ const SendConfirmReadonly = (props: PropsType) => {
         closed: false
     });
     const close = (openScanner: boolean) => {
+        console.log(openScanner, props)
         props.close(openScanner);
     };
     useEffect(() => {
