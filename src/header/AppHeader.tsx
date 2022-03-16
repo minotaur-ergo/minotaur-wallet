@@ -7,8 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { connect, MapDispatchToProps } from "react-redux";
-import { showQrCodeScanner } from "../store/actions";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +24,7 @@ interface propTypes extends RouteComponentProps {
     title: string;
     back?: () => any;
     hideQrCode?: boolean;
-    openQrCode: () => any;
+    openQrCode?: () => any;
     extraIcons?: React.ReactNode | Array<React.ReactNode>,
 }
 
@@ -39,6 +37,7 @@ const WalletHeader = (props: propTypes) => {
         }
     };
     const classes = useStyles();
+    console.log(props)
     return (
         <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={back}>
@@ -57,12 +56,4 @@ const WalletHeader = (props: propTypes) => {
     );
 };
 
-
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    openQrCode: () => dispatch(showQrCodeScanner())
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WalletHeader));
+export default withRouter(WalletHeader);

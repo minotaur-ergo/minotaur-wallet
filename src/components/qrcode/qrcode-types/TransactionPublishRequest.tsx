@@ -2,8 +2,7 @@ import React from "react";
 import AppHeader from "../../../header/AppHeader";
 import WithAppBar from "../../../layout/WithAppBar";
 import { GlobalStateType } from "../../../store/reducer";
-import { connect, MapDispatchToProps } from "react-redux";
-import { hideQrCodeScanner } from "../../../store/actions";
+import { connect } from "react-redux";
 import * as dbAddressActions from "../../../db/action/address";
 import * as wasm from "ergo-lib-wasm-browser";
 import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
@@ -83,10 +82,10 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
     };
 
     openTxInExplorer = () => {
-        if(this.state.network_type) {
-            Browser.open({ url: `${this.state.network_type.explorer_front}/en/transactions/${this.state.txId}` }).then(() => null)
+        if (this.state.network_type) {
+            Browser.open({ url: `${this.state.network_type.explorer_front}/en/transactions/${this.state.txId}` }).then(() => null);
         }
-    }
+    };
 
     render = () => {
         const tx = this.state.tx;
@@ -96,7 +95,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
                 {tx !== undefined ? (
                     <React.Fragment>
                         <UnsignedTxView
-                            network_type={this.state.network_type? this.state.network_type.label : ""}
+                            network_type={this.state.network_type ? this.state.network_type.label : ""}
                             tx={tx}
                             boxes={[]}
                             addresses={this.state.addresses}>
@@ -143,9 +142,4 @@ const mapStateToProps = (state: GlobalStateType) => ({
     // scan: state.qrcode.chunks
 });
 
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    closeQrcode: () => dispatch(hideQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionPublishRequest);
+export default connect(mapStateToProps)(TransactionPublishRequest);

@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-    FormControl,
-    FormHelperText,
-    IconButton,
-    InputAdornment,
-    TextField
-} from "@material-ui/core";
+import { FormControl, FormHelperText, IconButton, InputAdornment, TextField } from "@material-ui/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
-import { GlobalStateType } from "../store/reducer";
-import { connect, MapDispatchToProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { failScanResult, showQrCodeScanner } from "../store/actions";
+import QrCodeReaderView from "./qrcode/QrCodeReaderView";
 
 
 interface PropsType extends RouteComponentProps {
@@ -19,37 +11,25 @@ interface PropsType extends RouteComponentProps {
     label: string;
     error?: string;
     setAddress: (password: string) => any;
-    scanResult: string;
-    scanSuccess: boolean;
-    clearScan: () => any;
-    openQrCode: () => any;
     size?: "small" | "medium";
 }
 
 const AddressInput = (props: PropsType) => {
     const [blurred, setBlurred] = useState(false);
-    const [useScanner, setUseScanner] = useState(false);
+    const [showQrCode, setShowQrCode] = useState(false);
     const startScanner = () => {
-        setUseScanner(true);
-        props.openQrCode();
-        // props.history.push(getRoute(RouteMap.QrCode, {}));
+        setShowQrCode(true);
     };
 
-    useEffect(() => {
-        if (props.scanSuccess && useScanner) {
-            if (props.scanResult !== props.address) {
-                setUseScanner(false);
-                props.setAddress(props.scanResult);
-                props.clearScan();
-            }
-        }
-    }, [props, useScanner]);
-
     return (
-        <React.Fragment>
+        <QrCodeReaderView
+            fail={() => null}
+            open={showQrCode}
+            close={() => setShowQrCode(false)}
+            success={(scanned) => props.setAddress(scanned)}>
             <FormControl fullWidth variant="outlined" margin={"none"}>
                 <TextField
-                    size={props.size ? props.size: "medium"}
+                    size={props.size ? props.size : "medium"}
                     variant="outlined"
                     label={props.label}
                     error={props.error !== "" && blurred}
@@ -79,18 +59,8 @@ const AddressInput = (props: PropsType) => {
                     </FormHelperText>
                 ) : null}
             </FormControl>
-        </React.Fragment>
+        </QrCodeReaderView>
     );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({
-    scanResult: state.qrcode.scan.content,
-    scanSuccess: state.qrcode.scan.valid
-});
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    clearScan: () => dispatch(failScanResult()),
-    openQrCode: () => dispatch(showQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AddressInput));
+export default withRouter(AddressInput);

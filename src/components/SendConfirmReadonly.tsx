@@ -5,9 +5,6 @@ import { reduceTransaction } from "../action/blockchain";
 import * as wasm from "ergo-lib-wasm-browser";
 import { getWalletAddresses } from "../db/action/address";
 import RequestQrcodeDisplay from "./RequestQrcodeDisplay";
-import { GlobalStateType } from "../store/reducer";
-import { connect, MapDispatchToProps } from "react-redux";
-import { showQrCodeScanner } from "../store/actions";
 import { show_notification } from "../utils/utils";
 import Loading from "./Loading";
 import { UnsignedGeneratedTx } from "../utils/interface";
@@ -15,8 +12,7 @@ import { UnsignedGeneratedTx } from "../utils/interface";
 interface PropsType {
     transaction?: UnsignedGeneratedTx;
     wallet: Wallet;
-    close: () => any;
-    openQrCode: () => any;
+    close: (openScanner: boolean) => any;
     display: boolean;
 }
 
@@ -27,9 +23,8 @@ const SendConfirmReadonly = (props: PropsType) => {
         valid: false,
         closed: false
     });
-    const close = () => {
-        props.openQrCode();
-        props.close();
+    const close = (openScanner: boolean) => {
+        props.close(openScanner);
     };
     useEffect(() => {
         if (props.display) {
@@ -77,7 +72,7 @@ const SendConfirmReadonly = (props: PropsType) => {
                         </Grid>
                         <RequestQrcodeDisplay requestType={"CSR"} requestData={txRequest.req} />
                         <Grid item xs={12}>
-                            <Button variant="contained" fullWidth color="primary" onClick={() => close()}>
+                            <Button variant="contained" fullWidth color="primary" onClick={() => close(true)}>
                                 Scan
                             </Button>
                         </Grid>
@@ -87,11 +82,5 @@ const SendConfirmReadonly = (props: PropsType) => {
         </Container>
     );
 };
-const mapStateToProps = (state: GlobalStateType) => ({});
 
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    openQrCode: () => dispatch(showQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SendConfirmReadonly);
+export default SendConfirmReadonly;

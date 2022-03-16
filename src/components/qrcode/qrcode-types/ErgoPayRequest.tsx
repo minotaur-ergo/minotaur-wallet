@@ -9,9 +9,8 @@ import Loading from "../../../components/Loading";
 import * as dbAddressActions from "../../../db/action/address";
 import Wallet from "../../../db/entities/Wallet";
 import { GlobalStateType } from "../../../store/reducer";
-import { connect, MapDispatchToProps } from "react-redux";
+import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { hideQrCodeScanner } from "../../../store/actions";
 import DisplayId from "../../../components/DisplayId";
 import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
@@ -242,8 +241,4 @@ const mapStateToProps = (state: GlobalStateType) => ({
     wallets: state.wallet.wallets
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    closeQrcode: () => dispatch(hideQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ErgoPayRequest));
+export default connect(mapStateToProps)(withRouter(ErgoPayRequest));

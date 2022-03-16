@@ -2,7 +2,7 @@ import React from "react";
 import { QrCodePropsType } from "./propsType";
 import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 import { ScanResult } from "@capacitor-community/barcode-scanner/dist/esm/definitions";
-import { show_notification } from "../../utils/utils";
+import { show_notification } from "../../../utils/utils";
 
 
 class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
@@ -42,7 +42,6 @@ class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
     }
 
     componentDidMount() {
-        console.log("component started");
         this.start().then(() => null).catch(() => this.props.handleError());
     }
 

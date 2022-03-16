@@ -1,9 +1,6 @@
 import React from "react";
 import AppHeader from "../../../header/AppHeader";
 import WithAppBar from "../../../layout/WithAppBar";
-import { connect, MapDispatchToProps } from "react-redux";
-import { hideQrCodeScanner } from "../../../store/actions";
-import { GlobalStateType } from "../../../store/reducer";
 import * as wasm from "ergo-lib-wasm-browser";
 import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
 import * as dbAddressActions from "../../../db/action/address";
@@ -106,8 +103,8 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
             const wallet = this.state.wallet;
             if (wallet) {
                 signTx(wallet, tx, this.state.password).then(signed => {
-                    const base64Data = Buffer.from(signed.sigma_serialize_bytes()).toString("base64")
-                    this.setState({ signed: JSON.stringify({"signedTx": base64Data}) });
+                    const base64Data = Buffer.from(signed.sigma_serialize_bytes()).toString("base64");
+                    this.setState({ signed: JSON.stringify({ "signedTx": base64Data }) });
                 });
             }
         }
@@ -162,7 +159,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
                                     Please scan code below on your hot wallet to send it to blockchain
                                 </Grid>
                                 {this.state.signed ? (
-                                    <RequestQrcodeDisplay requestType={"CSTX"} requestData={this.state.signed}/>
+                                    <RequestQrcodeDisplay requestType={"CSTX"} requestData={this.state.signed} />
                                 ) : null}
                             </React.Fragment>
                         </Grid>
@@ -173,14 +170,4 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
     };
 }
 
-
-const mapStateToProps = (state: GlobalStateType) => ({
-    // scan: state.qrcode.chunks
-});
-
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    closeQrcode: () => dispatch(hideQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionSignRequest));
+export default withRouter(TransactionSignRequest);

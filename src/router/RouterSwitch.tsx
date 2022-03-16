@@ -4,32 +4,23 @@ import WalletAdd from "../api/wallet-add/WalletAdd";
 import Home from "../api/home/Home";
 import { App } from "@capacitor/app";
 import WalletPage from "../api/wallet/WalletPage";
-import QrCodeReaderView from "../api/qrcode/QrCodeReaderView";
-import { connect, MapDispatchToProps } from "react-redux";
-import { hideQrCodeScanner } from "../store/actions";
-import { GlobalStateType } from "../store/reducer";
 import DAppView from "../api/wallet/dapps/DAppView";
 import { RouteMap } from "./routerMap";
 
 interface PropsType extends RouteComponentProps {
-    showQrCodeScanner: boolean;
     closeQrcode: () => any;
 }
 
 class RouterSwitch extends React.Component<PropsType, {}> {
     appBackButtonListener = () => {
-        if (this.props.showQrCodeScanner) {
-            this.props.closeQrcode();
-        } else {
-            try {
-                if (this.props.history.location.pathname === "/") {
-                    App.exitApp();
-                } else {
-                    this.props.history.goBack();
-                }
-            } catch (e) {
+        try {
+            if (this.props.history.location.pathname === "/") {
                 App.exitApp();
+            } else {
+                this.props.history.goBack();
             }
+        } catch (e) {
+            App.exitApp();
         }
     };
     componentDidMount = () => {
@@ -37,15 +28,9 @@ class RouterSwitch extends React.Component<PropsType, {}> {
     };
 
     render = () => {
-        console.log(this.props.showQrCodeScanner);
         return (
             <React.Fragment>
-                {this.props.showQrCodeScanner ? (
-                    <Route path={RouteMap.Wallet}>
-                        <QrCodeReaderView />
-                    </Route>
-                ) : null}
-                <div style={{ display: this.props.showQrCodeScanner ? "none" : "block" }}>
+                <div>
                     <Switch>
                         <Route path={RouteMap.WalletAdd} exact>
                             <WalletAdd />
@@ -69,13 +54,4 @@ class RouterSwitch extends React.Component<PropsType, {}> {
     };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({
-    showQrCodeScanner: state.qrcode.show
-});
-
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    closeQrcode: () => dispatch(hideQrCodeScanner())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RouterSwitch));
+export default withRouter(RouterSwitch);

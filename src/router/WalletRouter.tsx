@@ -18,9 +18,7 @@ class WalletRouter extends React.Component<PropsType, StateType>{
     }
 
     checkWallet = () => {
-        console.log("start checking wallets", this.state, this.props)
         if(!this.props.walletsValid && !this.state.loading) {
-            console.log("try reloading wallets")
             this.setState({loading: true})
             loadWallets().then(() => this.setState({loading: false})).catch((error) => {
                 console.log(error)

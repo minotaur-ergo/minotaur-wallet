@@ -1,10 +1,8 @@
 import React from "react";
 import QrReader from "react-qr-reader";
 import { QrCodePropsType } from "./propsType";
-import AppHeader from "../../header/AppHeader";
-import { connect, MapDispatchToProps } from "react-redux";
-import { hideQrCodeScanner } from "../../store/actions";
-import WithAppBar from "../../layout/WithAppBar";
+import AppHeader from "../../../header/AppHeader";
+import WithAppBar from "../../../layout/WithAppBar";
 
 interface QrCodeWebPropsType extends QrCodePropsType {
     closeQrcode: () => any;
@@ -15,7 +13,6 @@ const QrCodeReaderWeb = (props: QrCodeWebPropsType) => {
     const handleScan = (data: string | null) => {
         if (data) props.handleScan(data);
     };
-    console.log("scanner is here")
     return (
         <WithAppBar header={<AppHeader hideQrCode={true} title="Scan Qrcode" back={props.closeQrcode} />}>
             <QrReader
@@ -27,13 +24,4 @@ const QrCodeReaderWeb = (props: QrCodeWebPropsType) => {
     );
 };
 
-
-const mapStateToProps = () => ({});
-
-
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-    closeQrcode: () => dispatch(hideQrCodeScanner())
-});
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(QrCodeReaderWeb);
+export default (QrCodeReaderWeb);

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Wallet, { WalletType } from "../db/entities/Wallet";
 import SendConfirmReadonly from "./SendConfirmReadonly";
 import SendConfirm from "./SendConfirm";
 import { UnsignedGeneratedTx } from "../utils/interface";
+import QrCodeReaderView from "./qrcode/QrCodeReaderView";
 
 interface PropsType {
     wallet: Wallet;
@@ -12,15 +13,37 @@ interface PropsType {
 }
 
 const SignTransactionDisplay = (props: PropsType) => {
-    if(props.transaction) {
+    const [qrcode, setQrcode] = useState(false);
+    const [closeAfterComplete, setCloseAfterComplete] = useState(false)
+    const close = (showQrCode: boolean) => {
+        if(showQrCode){
+            setCloseAfterComplete(true)
+        }else{
+            props.close()
+        }
+    }
+    const closeQrCode = () => {
+        if(closeAfterComplete){
+            props.close()
+        }else{
+            setQrcode(false);
+        }
+    }
+    if (props.transaction) {
         if (props.wallet.type === WalletType.ReadOnly) {
             return (
-                <SendConfirmReadonly
-                    display={props.show}
-                    transaction={props.transaction}
-                    close={props.close}
-                    wallet={props.wallet}
-                />
+                <QrCodeReaderView
+                    success={() => null}
+                    fail={() => null}
+                    close={closeQrCode}
+                    open={qrcode}>
+                    <SendConfirmReadonly
+                        display={props.show}
+                        transaction={props.transaction}
+                        close={close}
+                        wallet={props.wallet}
+                    />
+                </QrCodeReaderView>
             );
         }
         return (
@@ -32,7 +55,7 @@ const SignTransactionDisplay = (props: PropsType) => {
             />
         );
     }
-    return null
+    return null;
 };
 
 export default SignTransactionDisplay;

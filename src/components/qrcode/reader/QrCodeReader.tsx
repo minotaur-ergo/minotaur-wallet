@@ -6,6 +6,7 @@ import QrCodeReaderCapacitor from "./QrCodeReaderCapacitor";
 interface PropsType {
     success: (scanned: string) => any;
     fail: () => any;
+    closeQrCode: () => any;
 }
 
 
@@ -14,7 +15,7 @@ const QrCodeReader = (props: PropsType) => {
     if (platform === "android" || platform === "ios") {
         return <QrCodeReaderCapacitor handleScan={props.success} handleError={props.fail} />;
     }
-    return <QrCodeReaderWeb handleScan={props.success} handleError={props.fail} />;
+    return <QrCodeReaderWeb closeQrcode={props.closeQrCode} handleScan={props.success} handleError={props.fail} />;
 };
 
 export default QrCodeReader;
