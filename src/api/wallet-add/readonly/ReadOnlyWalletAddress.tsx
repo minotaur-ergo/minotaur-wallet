@@ -4,6 +4,7 @@ import AddressInput from "../../../components/AddressInput";
 import { is_valid_address } from "../../../utils/utils";
 import * as dbAddressAction from '../../../db/action/address';
 import WalletNetworkSelect from "../elements/WalletNetworkSelect";
+import { CreateWalletQrCodeContext } from "../WalletAdd";
 interface PropsType {
     address: string;
     setAddress: (address: string) => any;
@@ -34,7 +35,12 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
                         Please check it. if this is not your address you entered mnemonic or mnemonic passphrase wrong.
                         double check it and try again
                     </Typography>
-                    <AddressInput error={addressError} address={props.address} setAddress={props.setAddress} label="Enter address below" />
+                    <AddressInput
+                        error={addressError}
+                        address={props.address}
+                        setAddress={props.setAddress}
+                        contextType={CreateWalletQrCodeContext}
+                        label="Enter address below" />
                 </Grid>
             </Grid>
             <Grid container spacing={2} justifyContent="space-between">

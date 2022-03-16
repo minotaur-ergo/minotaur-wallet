@@ -3,12 +3,12 @@ import { FormControl, FormHelperText, IconButton, InputAdornment, TextField } fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import QrCodeReaderView from "./qrcode/QrCodeReaderView";
-import { WalletQrCodeContext } from "../api/wallet/WalletPage";
+import { QrCodeContextType } from "./qrcode/qrcode-types";
 
 
 interface PropsType extends RouteComponentProps {
     address: string;
+    contextType: React.Context<QrCodeContextType | null>;
     label: string;
     error?: string;
     setAddress: (password: string) => any;
@@ -18,7 +18,7 @@ interface PropsType extends RouteComponentProps {
 const AddressInput = (props: PropsType) => {
     const [blurred, setBlurred] = useState(false);
     const [scanning, setScanning] = useState(false);
-    const context = useContext(WalletQrCodeContext);
+    const context = useContext(props.contextType);
     const startQrCodeScanner = () => {
         setScanning(true)
         if (context) {

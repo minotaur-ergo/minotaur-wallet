@@ -6,6 +6,7 @@ import { is_valid_address } from "../../../utils/utils";
 import TokenSelect from "./TokenSelect";
 import TokenWithAddress from "../../../db/entities/views/AddressToken";
 import TokenName from "../../../components/TokenName";
+import { WalletQrCodeContext } from "../WalletPage";
 
 interface PropsType {
     value: Receiver;
@@ -58,6 +59,7 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
                     address={this.props.value.address}
                     size={"small"}
                     setAddress={this.fillAddress}
+                    contextType={WalletQrCodeContext}
                     error={is_valid_address(this.props.value.address) ? "" : "Invalid Address"}
                     label="Receiver Address" />
                 <ErgoAmount

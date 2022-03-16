@@ -6,6 +6,7 @@ import Wallet, { WalletType } from "../../../db/entities/Wallet";
 import AddressInput from "../../../components/AddressInput";
 import { is_valid_address } from "../../../utils/utils";
 import * as dbAddressAction from "../../../db/action/address";
+import { WalletQrCodeContext } from "../WalletPage";
 
 
 interface PropsType {
@@ -55,6 +56,7 @@ const DeriveAddress = (props: PropsType) => {
                             size={"small"}
                             address={address}
                             setAddress={setAddress}
+                            contextType={WalletQrCodeContext}
                             error={addressError}
                             label="Enter address below" />
                     </Grid>
