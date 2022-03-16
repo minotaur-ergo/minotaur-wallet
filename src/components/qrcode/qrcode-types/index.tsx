@@ -41,4 +41,10 @@ const Types = [
     }
 ];
 
+export interface QrCodeContextType {
+    qrCode: boolean;
+    showQrCode: React.Dispatch<boolean>;
+    value: string;
+    cleanValue: () => any;
+}
 export default Types;

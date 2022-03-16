@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import { Route, RouteComponentProps, withRouter } from "react-router-dom";
 import Wallet, { WalletType } from "../../db/entities/Wallet";
@@ -23,6 +23,7 @@ import Transaction from "./transaction/Transaction";
 import AssetList from "./asset/AssetList";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import QrCodeReaderView from "../../components/qrcode/QrCodeReaderView";
+import { QrCodeContextType } from "../../components/qrcode/qrcode-types";
 
 const useStyles = makeStyles(theme => ({
     stickToBottom: {
@@ -55,9 +56,12 @@ const gotoPage = (props: PropsType, page_url: string) => () => {
     }
 };
 
+export const WalletQrCodeContext = createContext<QrCodeContextType | null>(null);
+
 const WalletPage = (props: PropsType) => {
     const [wallet, setWallet] = useState<Wallet>();
     const [tabs, setTabs] = useState({ show: true, active: "" });
+    const [scanned, setScanned] = useState("");
     const [showQrCode, setShowQrCode] = useState(false);
     const tabIndex = TABS.indexOf(tabs.active);
     const classes = useStyles();
@@ -77,64 +81,71 @@ const WalletPage = (props: PropsType) => {
     };
     return (
         <QrCodeReaderView
-            fail={() => null}
-            success={() => null}
+            fail={() => setShowQrCode(false)}
+            success={(scanned) => setScanned(scanned)}
             open={showQrCode}
             close={() => setShowQrCode(false)}>
-            <WithAppBar
-                header={<AppHeader hideQrCode={false} openQrCode={() => setShowQrCode(true)}
-                                   title={wallet ? wallet.name : ""} />}>
-                <div className={classes.content}>
-                    {wallet ? (
-                        <React.Fragment>
-                            <Route path={RouteMap.WalletTransaction} exact>
-                                <Transaction setTab={setCurrentTab} wallet={wallet} />
-                            </Route>
-                            <Route path={RouteMap.WalletSend} exact>
-                                <SendTransaction setTab={setCurrentTab} wallet={wallet} />
-                            </Route>
-                            <Route path={RouteMap.WalletAddress} exact>
-                                <AddressList setTab={setCurrentTab} wallet={wallet} />
-                            </Route>
-                            <Route path={RouteMap.WalletAssets} exact>
-                                <AssetList setTab={setCurrentTab} wallet={wallet} />
-                            </Route>
-                            <Route path={RouteMap.WalletDApps} exact>
-                                <DAppList setTab={setCurrentTab} wallet={wallet} />
-                            </Route>
-                        </React.Fragment>
-                    ) : null}
-                </div>
-                {tabs.show && wallet ? (
-                    <BottomNavigation
-                        value={tabIndex}
-                        showLabels
-                        className={classes.stickToBottom}
-                    >
-                        {wallet.type === WalletType.Cold ? null : (
+            <WalletQrCodeContext.Provider value={{
+                qrCode: showQrCode,
+                showQrCode: setShowQrCode,
+                value: scanned,
+                cleanValue: () => setScanned(""),
+            }}>
+                <WithAppBar
+                    header={<AppHeader hideQrCode={false} openQrCode={() => setShowQrCode(true)}
+                                       title={wallet ? wallet.name : ""} />}>
+                    <div className={classes.content}>
+                        {wallet ? (
+                            <React.Fragment>
+                                <Route path={RouteMap.WalletTransaction} exact>
+                                    <Transaction setTab={setCurrentTab} wallet={wallet} />
+                                </Route>
+                                <Route path={RouteMap.WalletSend} exact>
+                                    <SendTransaction setTab={setCurrentTab} wallet={wallet} />
+                                </Route>
+                                <Route path={RouteMap.WalletAddress} exact>
+                                    <AddressList setTab={setCurrentTab} wallet={wallet} />
+                                </Route>
+                                <Route path={RouteMap.WalletAssets} exact>
+                                    <AssetList setTab={setCurrentTab} wallet={wallet} />
+                                </Route>
+                                <Route path={RouteMap.WalletDApps} exact>
+                                    <DAppList setTab={setCurrentTab} wallet={wallet} />
+                                </Route>
+                            </React.Fragment>
+                        ) : null}
+                    </div>
+                    {tabs.show && wallet ? (
+                        <BottomNavigation
+                            value={tabIndex}
+                            showLabels
+                            className={classes.stickToBottom}
+                        >
+                            {wallet.type === WalletType.Cold ? null : (
+                                <BottomNavigationAction
+                                    onClick={gotoPage(props, getRoute(RouteMap.WalletTransaction, { id: props.match.params.id }))}
+                                    label="Transactions"
+                                    icon={<FormatListBulletedOutlined />} />
+                            )}
                             <BottomNavigationAction
-                                onClick={gotoPage(props, getRoute(RouteMap.WalletTransaction, { id: props.match.params.id }))}
-                                label="Transactions"
-                                icon={<FormatListBulletedOutlined />} />
-                        )}
-                        <BottomNavigationAction
-                            onClick={gotoPage(props, getRoute(RouteMap.WalletSend, { id: props.match.params.id }))}
-                            label="Send"
-                            icon={<ReceiptOutlined />} />
-                        <BottomNavigationAction
-                            onClick={gotoPage(props, getRoute(RouteMap.WalletAddress, { id: props.match.params.id }))}
-                            label="Addresses"
-                            icon={<ContactMailOutlined />} />
-                        <BottomNavigationAction
-                            onClick={gotoPage(props, getRoute(RouteMap.WalletAssets, { id: props.match.params.id }))}
-                            label="Assets"
-                            icon={<AccountBalanceWalletIcon />} />
-                        <BottomNavigationAction
-                            onClick={gotoPage(props, getRoute(RouteMap.WalletDApps, { id: props.match.params.id }))}
-                            label="dApps" icon={<AssistantOutlined />} />
-                    </BottomNavigation>
-                ) : null}
-            </WithAppBar>
+                                onClick={gotoPage(props, getRoute(RouteMap.WalletSend, { id: props.match.params.id }))}
+                                label="Send"
+                                icon={<ReceiptOutlined />} />
+                            <BottomNavigationAction
+                                onClick={gotoPage(props, getRoute(RouteMap.WalletAddress, { id: props.match.params.id }))}
+                                label="Addresses"
+                                icon={<ContactMailOutlined />} />
+                            <BottomNavigationAction
+                                onClick={gotoPage(props, getRoute(RouteMap.WalletAssets, { id: props.match.params.id }))}
+                                label="Assets"
+                                icon={<AccountBalanceWalletIcon />} />
+                            <BottomNavigationAction
+                                onClick={gotoPage(props, getRoute(RouteMap.WalletDApps, { id: props.match.params.id }))}
+                                label="dApps" icon={<AssistantOutlined />} />
+                        </BottomNavigation>
+                    ) : null}
+                </WithAppBar>
+            </WalletQrCodeContext.Provider>
         </QrCodeReaderView>
     );
 };
