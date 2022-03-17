@@ -78,6 +78,7 @@ class GenerateTransactionBottomSheet extends React.Component<PropsType, StateTyp
                 {this.render_transaction()}
                 <Divider />
                 <SignTransactionDisplay
+                    completed={() => null}
                     contextType={WalletQrCodeContext}
                     wallet={this.props.wallet}
                     show={this.props.show}

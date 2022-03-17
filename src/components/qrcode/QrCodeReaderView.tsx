@@ -3,6 +3,10 @@ import QrCodeReader from "./reader/QrCodeReader";
 import QrCodeMoreChunk from "./qrcode-types/QrCodeMoreChunk";
 import { show_notification } from "../../utils/utils";
 import Types from "./qrcode-types";
+import crypto from "crypto";
+import { GlobalStateType } from "../../store/reducer";
+import { connect, MapDispatchToProps } from "react-redux";
+import { AddQrCodeOpened, closeQrCodeScanner } from "../../store/actions";
 
 interface PropsType {
     success: (scanned: string) => any;
@@ -11,12 +15,16 @@ interface PropsType {
     open: boolean;
     children: React.ReactNode;
     completed?: (result: string) => any;
-    allowedTypes?: Array<string>
+    allowedTypes?: Array<string>;
+    qrCodes: Array<string>;
+    addQrcode: (id: string) => any
+    closeQrCode: (id: string) => any
 }
 
 interface StateType {
     scanning: boolean;
     type: string;
+    id: string;
     chunks: Array<string>;
     open: boolean;
 }
@@ -25,18 +33,32 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
     state = {
         scanning: true,
         type: "",
+        id: "",
         chunks: [],
         open: false
     };
 
     updateOpen = () => {
+        const qrCodeId = this.state.id ? this.state.id : crypto.randomBytes(8).toString("hex")
         if (this.state.open !== this.props.open) {
             this.setState({
                 open: this.props.open,
                 type: "",
+                id: qrCodeId,
                 chunks: [],
                 scanning: true
             });
+            if(this.props.open) {
+                if (this.props.qrCodes.indexOf(qrCodeId) <= -1) {
+                    this.props.addQrcode(qrCodeId)
+                }
+            }else{
+                this.props.closeQrCode(qrCodeId);
+            }
+        } else {
+            if(this.props.open && this.props.qrCodes.indexOf(qrCodeId) === -1){
+                this.props.close()
+            }
         }
     };
 
@@ -106,5 +128,13 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
         );
     };
 }
+const mapStateToProps = (state: GlobalStateType) => ({
+    qrCodes: state.qrcode.pages
+});
 
-export default QrCodeReaderView;
+const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+    addQrcode: (id: string) => dispatch(AddQrCodeOpened(id)),
+    closeQrCode: (id: string) => dispatch(closeQrCodeScanner(id))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(QrCodeReaderView);

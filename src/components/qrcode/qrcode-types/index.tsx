@@ -15,9 +15,9 @@ const detect = (value: string, regex: RegExp) : DetectParam | null => {
     const match = value.match(regex);
     if(match){
         return {
-            page: parseInt(match.groups?.page!),
-            payload: match.groups?.payload!,
-            total: parseInt(match.groups?.total!)
+            page: parseInt((match.groups && match.groups.page) ? match.groups.page : "1"),
+            total: parseInt((match.groups && match.groups.total) ? match.groups.total : "1"),
+            payload: (match.groups && match.groups.payload) ? match.groups.payload : "",
         }
     }
     return null

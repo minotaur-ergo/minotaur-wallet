@@ -37,7 +37,6 @@ const WalletHeader = (props: propTypes) => {
         }
     };
     const classes = useStyles();
-    console.log(props)
     return (
         <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={back}>

@@ -189,7 +189,10 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
     completed = (txId: string) => {
         if (this.state.response && this.state.response.replyToUrl) {
             axios.post(this.state.response.replyToUrl, { "txId": txId }).then(() => {
+                this.props.closeQrcode();
             });
+        } else {
+            this.props.closeQrcode();
         }
     };
 

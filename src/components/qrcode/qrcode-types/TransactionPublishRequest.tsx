@@ -71,14 +71,17 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
         this.loadTx();
     }
 
+    componentWillUnmount() {
+        if(this.props.completed && this.state.txId){
+            this.props.completed(this.state.txId);
+        }
+    }
+
     sendTx = () => {
         if (this.state.tx && this.state.network_type) {
             const node = getNetworkType(this.state.network_type.label).getNode();
             node.sendTx(this.state.tx).then(result => {
                 this.setState({ txId: result.txId });
-                if(this.props.completed){
-                    this.props.completed(result.txId);
-                }
             }).catch(exp => {
                 console.log(exp);
             });

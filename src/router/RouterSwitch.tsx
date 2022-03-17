@@ -6,21 +6,29 @@ import { App } from "@capacitor/app";
 import WalletPage from "../api/wallet/WalletPage";
 import DAppView from "../api/wallet/dapps/DAppView";
 import { RouteMap } from "./routerMap";
+import { GlobalStateType } from "../store/reducer";
+import { connect, MapDispatchToProps } from "react-redux";
+import { closeQrCodeScanner } from "../store/actions";
 
 interface PropsType extends RouteComponentProps {
-    closeQrcode: () => any;
+    qrCodes: Array<string>;
+    closeQrcode: (id: string) => any;
 }
 
 class RouterSwitch extends React.Component<PropsType, {}> {
     appBackButtonListener = () => {
-        try {
-            if (this.props.history.location.pathname === "/") {
+        if(this.props.qrCodes.length > 0){
+            this.props.closeQrcode(this.props.qrCodes[this.props.qrCodes.length - 1])
+        }else {
+            try {
+                if (this.props.history.location.pathname === "/") {
+                    App.exitApp();
+                } else {
+                    this.props.history.goBack();
+                }
+            } catch (e) {
                 App.exitApp();
-            } else {
-                this.props.history.goBack();
             }
-        } catch (e) {
-            App.exitApp();
         }
     };
     componentDidMount = () => {
@@ -54,4 +62,13 @@ class RouterSwitch extends React.Component<PropsType, {}> {
     };
 }
 
-export default withRouter(RouterSwitch);
+const mapStateToProps = (state: GlobalStateType) => ({
+    qrCodes: state.qrcode.pages
+});
+
+const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+    closeQrcode: (id: string) => dispatch(closeQrCodeScanner(id))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RouterSwitch));
