@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Container, Grid, Typography } from "@material-ui/core";
 import QrCode from "qrcode.react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { show_notification } from "../../../utils/utils";
-import { fromBase58 } from "bip32";
 
 
 interface PropsType {

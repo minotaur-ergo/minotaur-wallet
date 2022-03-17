@@ -25,14 +25,12 @@ const DeriveAddress = (props: PropsType) => {
                 setAddresses(addresses.map(item => item.address));
             });
         }
-    }, [props.wallet.type]);
+    }, [props.wallet.type, props.wallet.extended_public_key]);
     useEffect(() => {
         if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
             debugger
             const addressError = !is_valid_address(address) ? "Invalid address" : addresses.indexOf(address) >= 0 ? "Address already exists on a wallet" : "";
             setAddressError(addressError);
-        // }else{
-
         }
     }, [props.wallet, address, addresses]);
     const deriveAddress = () => {
