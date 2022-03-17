@@ -32,7 +32,6 @@ const DevNet = new NetworkType(
 const NETWORK_TYPES = [
     MainNet,
     TestNet,
-    DevNet
 ];
 
 const getNetworkType = (networkName: string): NetworkType => {
