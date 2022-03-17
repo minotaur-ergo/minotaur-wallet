@@ -34,8 +34,12 @@ const getTxById = async (id: number) => {
     return await getTxRepository().findOne({ id: id });
 };
 
-const getWalletTx = async (wallet_id: number) => {
-    return await getWalletTxRepository().find({ create_wallet_id: wallet_id });
+const getWalletTx = async (wallet_id: number, limit: number, offset: number) => {
+    return await getWalletTxRepository().createQueryBuilder()
+        .where("create_wallet_id=:wallet_id", {wallet_id: wallet_id})
+        .limit(limit)
+        .offset(offset)
+        .getMany()
 };
 
 const getNetworkTxs = async (network_type: string, from_height: number, to_height: number) => {

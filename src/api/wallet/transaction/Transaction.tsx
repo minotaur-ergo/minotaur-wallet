@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, List } from "@material-ui/core";
+import { Button, Divider, List } from "@material-ui/core";
 import TransactionElement from "./TransactionElement";
 import { getWalletTx } from "../../../db/action/transaction";
 import WalletTx from "../../../db/entities/views/WalletTx";
@@ -8,12 +8,15 @@ import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
 import { InputBox } from "../../../network/models";
 import { JsonAllBI } from "../../../config/json";
 import { WalletPagePropsType } from "../../../utils/interface";
+import { INC_LIMIT } from "../../../config/const";
 
 interface StateType {
     transactions: Array<WalletTx>;
     addressValid: boolean;
     displayTx: boolean;
     inputs: Array<InputBox>;
+    limit: number;
+    loadedLimit: number;
     outputs: Array<wasm.ErgoBox>;
 }
 
@@ -23,19 +26,26 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
         addressValid: false,
         displayTx: false,
         inputs: [],
-        outputs: []
+        outputs: [],
+        limit: 10,
+        loadedLimit: 0,
     };
 
     loadTransactions = () => {
-        if (!this.state.addressValid) {
-            getWalletTx(this.props.wallet.id).then(dbTransaction => {
+        if (this.state.limit !== this.state.loadedLimit) {
+            const loadedLimit = this.state.limit;
+            getWalletTx(this.props.wallet.id, this.state.limit, 0).then(dbTransaction => {
                 this.setState({
                     transactions: dbTransaction,
-                    addressValid: true
+                    loadedLimit: loadedLimit
                 });
             });
         }
     };
+
+    loadMore = () => {
+        this.setState(state => ({...state, limit: state.limit + INC_LIMIT}))
+    }
 
     selectTransaction = (index: number) => {
         if (index < this.state.transactions.length && index >= 0) {
@@ -71,6 +81,11 @@ class Transaction extends React.Component<WalletPagePropsType, StateType> {
                             <Divider />
                         </React.Fragment>
                     ))}
+                    {this.state.transactions.length === this.state.limit ? (
+                        <Button fullWidth color={"primary"} onClick={() => this.loadMore()}>
+                            Load More Transactions
+                        </Button>
+                    ) : null}
                 </List>
                 <TxBoxDisplay
                     network_type={this.state.transactions.length ? this.state.transactions[0].network_type : ""}
