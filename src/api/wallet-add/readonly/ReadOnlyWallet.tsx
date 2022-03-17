@@ -4,7 +4,7 @@ import WalletName from "../elements/WalletName";
 import { withRouter } from "react-router-dom";
 import ReadOnlyWalletAddress from "./ReadOnlyWalletAddress";
 import * as walletActions from '../../../action/wallet';
-import { show_notification } from "../../../utils/utils";
+import { is_valid_address, is_valid_extended_public_key, show_notification } from "../../../utils/utils";
 
 class ReadOnlyWallet extends WalletCreate {
     steps = [
@@ -28,12 +28,23 @@ class ReadOnlyWallet extends WalletCreate {
     saveWallet = () => {
         if (!this.state.saving) {
             this.setState({ saving: true });
-            walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
-                this.props.history.goBack();
-                this.setState({ saving: false });
-            }).catch(exp => {
-                show_notification(exp)
-            });
+            if(is_valid_address(this.state.mnemonic)) {
+                walletActions.createReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
+                    this.props.history.goBack();
+                    this.setState({ saving: false });
+                }).catch(exp => {
+                    show_notification(exp)
+                });
+            }else if(is_valid_extended_public_key(this.state.mnemonic)){
+                walletActions.createExtendedReadOnlyWallet(this.state.name, this.state.mnemonic, this.state.network_type).then(() => {
+                    this.props.history.goBack();
+                    this.setState({ saving: false });
+                }).catch(exp => {
+                    show_notification(exp)
+                });
+            }else{
+                show_notification("Invalid address or extended public key");
+            }
         }
     };
 

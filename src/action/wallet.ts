@@ -25,6 +25,12 @@ const createReadOnlyWallet = async (name: string, address: string, network_type:
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
 };
 
+const createExtendedReadOnlyWallet = async (name: string, extended_public_key: string, network_type: string) => {
+    const wallet = await dbWalletAction.createWallet(name, WalletType.ReadOnly, ' ', extended_public_key, network_type);
+    await addressActions.addWalletAddresses(wallet);
+    store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
+};
+
 const loadWallets = async () => {
     if (!store.getState().wallet.walletValid) {
         const wallets = await dbWalletAction.getWallets();
@@ -37,4 +43,5 @@ export {
     createWallet,
     loadWallets,
     createReadOnlyWallet,
+    createExtendedReadOnlyWallet,
 };

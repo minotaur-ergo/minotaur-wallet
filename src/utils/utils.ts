@@ -3,6 +3,7 @@ import * as wasm from "ergo-lib-wasm-browser";
 import { Capacitor } from "@capacitor/core";
 import { Toast } from "@capacitor/toast";
 import isElectron from "is-electron";
+import { fromBase58 } from "bip32";
 
 const sum_erg_and_nano_erg = (erg: number | null | undefined, nano_erg: number | null | undefined) => {
     const erg_bigint = erg ? BigInt(erg) : BigInt(0);
@@ -50,6 +51,15 @@ const is_valid_address = (address: string) => {
     }
 };
 
+const is_valid_extended_public_key = (extended_public_key: string) => {
+    try{
+        fromBase58(extended_public_key);
+        return true;
+    }catch (e){
+        return false;
+    }
+}
+
 const show_notification = (msg: string, title?: string) => {
     if (Capacitor.getPlatform() === "android" || Capacitor.getPlatform() === "ios") {
         Toast.show({ text: msg, position: "bottom", duration: "long" }).then(() => null);
@@ -67,5 +77,6 @@ export {
     bigint_to_erg_str,
     erg_nano_erg_to_str,
     is_valid_address,
+    is_valid_extended_public_key,
     show_notification
 };

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Grid, Typography } from "@material-ui/core";
 import QrCode from "qrcode.react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { show_notification } from "../../../utils/utils";
+import { fromBase58 } from "bip32";
 
 
 interface PropsType {
@@ -16,7 +17,7 @@ const ExtendedPublicKeyView = (props: PropsType) => {
                 <Grid item xs={12}>
                     <Typography>
                     Here you can see your wallet extended public key.
-                    using this key in any readonly wallet you can drive your addresses.
+                    using this key you can derive all addresses in readonly minotaur wallet.
                     </Typography>
                     <Typography color="secondary">
                         keep is secret rof your privacy

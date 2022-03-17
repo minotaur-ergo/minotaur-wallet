@@ -20,25 +20,29 @@ const DeriveAddress = (props: PropsType) => {
     const [addressError, setAddressError] = useState("");
     const [addresses, setAddresses] = useState<Array<string>>([]);
     useEffect(() => {
-        if (props.wallet.type === WalletType.ReadOnly) {
+        if (props.wallet.type === WalletType.ReadOnly && !!props.wallet.extended_public_key.trim()) {
             dbAddressAction.getAllAddresses().then(addresses => {
                 setAddresses(addresses.map(item => item.address));
             });
         }
     }, [props.wallet.type]);
     useEffect(() => {
-        if (props.wallet.type === WalletType.ReadOnly) {
+        if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
+            debugger
             const addressError = !is_valid_address(address) ? "Invalid address" : addresses.indexOf(address) >= 0 ? "Address already exists on a wallet" : "";
             setAddressError(addressError);
+        // }else{
+
         }
     }, [props.wallet, address, addresses]);
     const deriveAddress = () => {
-        if (props.wallet.type === WalletType.ReadOnly) {
+        if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
             deriveReadOnlyAddress(props.wallet, address, name).then(() => props.addressDerived());
         } else {
             deriveNewAddress(props.wallet, name).then(() => props.addressDerived());
         }
     };
+    console.log(addressError, props.wallet)
     return (
         <Container style={{marginTop: "20px"}}>
             <Grid container spacing={2}>
@@ -50,7 +54,7 @@ const DeriveAddress = (props: PropsType) => {
                         value={name}
                         setValue={setName} />
                 </Grid>
-                {props.wallet.type === WalletType.ReadOnly ? (
+                {props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim() ? (
                     <Grid item xs={12}>
                         <AddressInput
                             size={"small"}
