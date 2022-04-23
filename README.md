@@ -90,7 +90,7 @@ npm run electron:make
 ### Tip the developer
 
 If you want to tip the developer for making this app, thanks in advance! Send your tips to
-[9hN2UY1ZvvWMeWRBso28vSyjrAAfGJHh2DkZpE47J7Wqr51YLAR](https://explorer.ergoplatform.com/payment-request?address=9hpYEvB9PejeMVv9fBskWeWQdhLHNtwf79BY2jhpFQPcZbtNjaH&amount=0&description=)
+[9hN2UY1ZvvWMeWRBso28vSyjrAAfGJHh2DkZpE47J7Wqr51YLAR](https://explorer.ergoplatform.com/payment-request?address=9hN2UY1ZvvWMeWRBso28vSyjrAAfGJHh2DkZpE47J7Wqr51YLAR&amount=0&description=)
 
 ### Testing on Testnet
 You can test the testnet Android debug build on testnet or build the iOS version yourself for testnet. Generate a new wallet and send
