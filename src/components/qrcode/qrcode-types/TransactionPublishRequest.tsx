@@ -1,17 +1,17 @@
 import React from "react";
-import AppHeader from "../../../header/AppHeader";
+import AppHeader from "../../app-header/AppHeader";
 import WithAppBar from "../../../layout/WithAppBar";
 import { GlobalStateType } from "../../../store/reducer";
 import { connect } from "react-redux";
-import * as dbAddressActions from "../../../db/action/address";
 import * as wasm from "ergo-lib-wasm-browser";
-import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
-import { Container, Divider, Grid, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
-import DisplayId from "../../../components/DisplayId";
+import { Container, Divider, Grid, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import DisplayId from "../../display-id/DisplayId";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
-import { Inbox } from "@material-ui/icons";
+import { Inbox } from "@mui/icons-material";
 import { Browser } from "@capacitor/browser";
-import { getNetworkType, NetworkType } from "../../../config/network_type";
+import { getNetworkType, NetworkType } from "../../../util/network_type";
+import { AddressDbAction } from "../../../action/db";
+import TxView from "../../display-tx/TxView";
 
 interface PropsType {
     closeQrcode: () => any;
@@ -49,7 +49,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
             this.setState({ loading: true });
             // debugger
             const signedTx = this.props.tx.signedTx;
-            dbAddressActions.getAllAddresses().then(addresses => {
+            AddressDbAction.getAllAddresses().then(addresses => {
                 const txBytes = this._base64ToArrayBuffer(signedTx);
                 const tx = wasm.Transaction.sigma_parse_bytes(txBytes);
                 this.setState({
@@ -101,7 +101,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
                 header={<AppHeader hideQrCode={true} title="Signing transaction" back={this.props.closeQrcode} />}>
                 {tx !== undefined ? (
                     <React.Fragment>
-                        <UnsignedTxView
+                        <TxView
                             network_type={this.state.network_type ? this.state.network_type.label : ""}
                             tx={tx}
                             boxes={[]}
@@ -113,7 +113,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
                                 </ListItemIcon>
                                 <ListItemText primary="Publish Transaction" />
                             </ListItem>
-                        </UnsignedTxView>
+                        </TxView>
                         <Divider />
                     </React.Fragment>
                 ) : null}

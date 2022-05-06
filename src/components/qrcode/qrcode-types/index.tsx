@@ -3,7 +3,7 @@ import { TxSignR, TxPublishR, ErgoPayR } from "./QrCodeScanResult";
 import TransactionSignRequest from "./TransactionSignRequest";
 import TransactionPublishRequest from "./TransactionPublishRequest";
 import ErgoPayRequest from "./ErgoPayRequest";
-import { JsonBI } from "../../../config/json";
+import { JsonBI } from "../../../util/json";
 
 interface DetectParam {
     page: number;
@@ -41,10 +41,4 @@ const Types = [
     }
 ];
 
-export interface QrCodeContextType {
-    qrCode: boolean;
-    showQrCode: React.Dispatch<boolean>;
-    value: string;
-    cleanValue: () => any;
-}
 export default Types;

@@ -2,16 +2,21 @@ import React from "react";
 import { QrCodePropsType } from "./propsType";
 import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 import { ScanResult } from "@capacitor-community/barcode-scanner/dist/esm/definitions";
-import { show_notification } from "../../../utils/utils";
+import { MessageEnqueueService } from "../../app/MessageHandler";
+import { GlobalStateType } from "../../../store/reducer";
+import { connect, MapDispatchToProps } from "react-redux";
+import { SnackbarMessage, VariantType } from "notistack";
+import { showMessage } from "../../../store/actions";
 
+interface QrCodeReaderCapacitorPropsType extends QrCodePropsType, MessageEnqueueService {
 
-class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
+}
 
+class QrCodeReaderCapacitor extends React.Component<QrCodeReaderCapacitorPropsType, {}> {
 
     checkPermission = async () => {
         // check or request permission
-        const status = await BarcodeScanner.checkPermission({ force: true });
-        console.log(status)
+        const status = await BarcodeScanner.checkPermission({force: true});
         if (status.granted) {
             // the user granted permission
             return true;
@@ -20,7 +25,7 @@ class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
         return false;
     };
     start = async () => {
-        if(await this.checkPermission()) {
+        if (await this.checkPermission()) {
             await BarcodeScanner.hideBackground();
             const result: ScanResult = await BarcodeScanner.startScan();
             if (result.hasContent && result.content) {
@@ -28,8 +33,8 @@ class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
             } else {
                 this.props.handleError();
             }
-        }else{
-            await show_notification("No permission to use camera");
+        } else {
+            this.props.showMessage("No permission to use camera", "error");
         }
     };
     stop = async () => {
@@ -50,4 +55,10 @@ class QrCodeReaderCapacitor extends React.Component<QrCodePropsType, {}> {
     };
 }
 
-export default QrCodeReaderCapacitor;
+const mapStateToProps = (state: GlobalStateType) => ({});
+
+const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+    showMessage: (message: SnackbarMessage, variant: VariantType) => dispatch(showMessage(message, variant))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(QrCodeReaderCapacitor);

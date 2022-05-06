@@ -1,29 +1,29 @@
 import React from "react";
-import AppHeader from "../../../header/AppHeader";
+import AppHeader from "../../app-header/AppHeader";
 import WithAppBar from "../../../layout/WithAppBar";
 import * as wasm from "ergo-lib-wasm-browser";
-import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
-import * as dbAddressActions from "../../../db/action/address";
-import * as dbWalletActions from "../../../db/action/wallet";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import { Container, Divider, Grid } from "@material-ui/core";
-import DisplayId from "../../../components/DisplayId";
+// import TxView from "../../../components/display-tx/TxView";
+import { Container, Divider, Grid } from "@mui/material";
+import DisplayId from "../../display-id/DisplayId";
 import Wallet from "../../../db/entities/Wallet";
-import WalletPassword from "../../../components/WalletPassword";
+import WalletPassword from "../../inputs/WalletPassword";
 import Address from "../../../db/entities/Address";
 import AddressWithErg from "../../../db/entities/views/AddressWithErg";
-import { signTx } from "../../../action/blockchain";
 import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
-import RequestQrcodeDisplay from "../../../components/RequestQrcodeDisplay";
-import { UnsignedGeneratedTx } from "../../../utils/interface";
+import { AddressDbAction, WalletDbAction } from "../../../action/db";
+import { UnsignedGeneratedTx } from "../../../util/interface";
+import { BlockChainAction } from "../../../action/blockchain";
+import RequestQrcodeDisplay from "../../request-qrcode-display/RequestQrcodeDisplay";
+import TxView from "../../display-tx/TxView";
+// import { UnsignedGeneratedTx } from "../../../utils/interface";
 
-interface PropsType extends RouteComponentProps<{ id: string }> {
+interface TransactionSignRequestPropsType{
     closeQrcode: () => any;
     completed?: (result: string) => any;
     tx: { reducedTx: string, sender: string, inputs: Array<string> }
 }
 
-interface StateType {
+interface TransactionSignRequestStateType {
     reducedTx?: wasm.ReducedTransaction;
     boxes: Array<wasm.ErgoBox>;
     loading: boolean;
@@ -36,8 +36,8 @@ interface StateType {
     signed: string;
 }
 
-class TransactionSignRequest extends React.Component<PropsType, StateType> {
-    state: StateType = {
+class TransactionSignRequest extends React.Component<TransactionSignRequestPropsType, TransactionSignRequestStateType> {
+    state: TransactionSignRequestStateType = {
         loading: false,
         loadedSender: "",
         addresses: [],
@@ -64,16 +64,15 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
             this.setState({ loading: true });
             // debugger
             const { reducedTx, sender, inputs } = this.props.tx;
-            dbAddressActions.getAddressByAddressString(sender).then(address => {
-                dbAddressActions.getAllAddresses().then(res => console.log(res));
+            AddressDbAction.getAddressByAddressString(sender).then(address => {
                 if (address && address.walletId) {
-                    dbWalletActions.getWalletById(address.walletId).then(wallet => {
-                        dbAddressActions.getWalletAddresses(address.walletId).then(addresses => {
+                    WalletDbAction.getWalletById(address.walletId).then(wallet => {
+                        AddressDbAction.getWalletAddresses(address.walletId).then(addresses => {
                             const txBytes = this._base64ToArrayBuffer(reducedTx);
                             const reduced = wasm.ReducedTransaction.sigma_parse_bytes(txBytes);
                             const boxes = inputs.map(item => wasm.ErgoBox.sigma_parse_bytes(this._base64ToArrayBuffer(item)));
                             this.setState({
-                                wallet: wallet,
+                                wallet: wallet ? wallet : undefined,
                                 reducedTx: reduced,
                                 boxes: boxes,
                                 loading: false,
@@ -103,7 +102,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
             };
             const wallet = this.state.wallet;
             if (wallet) {
-                signTx(wallet, tx, this.state.password).then(signed => {
+                BlockChainAction.signTx(wallet, tx, this.state.password).then(signed => {
                     const base64Data = Buffer.from(signed.sigma_serialize_bytes()).toString("base64");
                     this.setState({ signed: JSON.stringify({ "signedTx": base64Data }) });
                 });
@@ -115,7 +114,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
         this.loadTx();
     }
 
-    componentDidUpdate(prevProps: Readonly<PropsType>, prevState: Readonly<StateType>, snapshot?: any) {
+    componentDidUpdate() {
         this.loadTx();
     }
 
@@ -126,7 +125,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
                 header={<AppHeader hideQrCode={true} title="Signing transaction" back={this.props.closeQrcode} />}>
                 {reduced !== undefined ? (
                     <React.Fragment>
-                        <UnsignedTxView
+                        <TxView
                             network_type={this.state.wallet ? this.state.wallet.network_type : ""}
                             tx={(reduced as wasm.ReducedTransaction).unsigned_tx()}
                             boxes={this.state.boxes}
@@ -136,7 +135,7 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
                             <WalletPassword
                                 size={"small"}
                                 password={this.state.password}
-                                setPassword={password => this.setState({ password: password })}
+                                setPassword={(password: string) => this.setState({ password: password })}
                                 complete={() => this.signTx()}
                                 wallet={this.state.wallet}
                                 address={this.state.walletAddress} />
@@ -171,4 +170,4 @@ class TransactionSignRequest extends React.Component<PropsType, StateType> {
     };
 }
 
-export default withRouter(TransactionSignRequest);
+export default TransactionSignRequest;

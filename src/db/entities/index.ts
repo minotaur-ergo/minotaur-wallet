@@ -9,6 +9,7 @@ import WalletWithErg, { AddressTokenId } from "./views/WalletWithErg";
 import AddressWithErg from './views/AddressWithErg';
 import Block from "./Block";
 import TokenWithAddress from "./views/AddressToken";
+import Config from "./Config";
 
 const Entities = [
     Wallet,
@@ -23,6 +24,7 @@ const Entities = [
     WalletWithErg,
     TokenWithAddress,
     WalletTx,
+    Config,
 ];
 
 

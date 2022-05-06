@@ -10,7 +10,6 @@ import { TxStatus } from '../Tx';
         .addSelect('Tx.network_type', 'network_type')
         .addSelect('Tx.date', 'date')
         .addSelect('Tx.status', 'status')
-        .addSelect('Tx.json', 'json')
         .addSelect('CreateAddress.walletId', 'create_wallet_id')
         .addSelect('SpentAddress.walletId', 'spent_wallet_id')
         .addSelect('(SELECT CAST(SUM(CAST(erg AS INT)) AS TEXT) from box WHERE box.txId = Tx.id)', 'create_erg_str')
@@ -43,9 +42,6 @@ class WalletTx {
 
     @ViewColumn()
     status: TxStatus = TxStatus.New;
-
-    @ViewColumn()
-    json: string = '';
 
     @ViewColumn()
     create_wallet_id: number = 0;

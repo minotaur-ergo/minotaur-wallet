@@ -1,32 +1,33 @@
 import React, { createContext } from "react";
-import AppHeader from "../../../header/AppHeader";
+import AppHeader from "../../app-header/AppHeader";
 import WithAppBar from "../../../layout/WithAppBar";
 import * as wasm from "ergo-lib-wasm-browser";
-import { Container, Divider, List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import { Container, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
 import axios from "axios";
-import { ADDRESS_URL_PLACE_HOLDER } from "../../../config/const";
-import Loading from "../../../components/Loading";
-import * as dbAddressActions from "../../../db/action/address";
+import { ADDRESS_URL_PLACE_HOLDER } from "../../../util/const";
+import Loading from "../../loading/Loading";
 import Wallet from "../../../db/entities/Wallet";
 import { GlobalStateType } from "../../../store/reducer";
 import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import DisplayId from "../../../components/DisplayId";
-import UnsignedTxView from "../../../components/display-tx/UnsignedTxView";
-import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
-import SignTransactionDisplay from "../../../components/SignTransactionDisplay";
-import { UnsignedGeneratedTx } from "../../../utils/interface";
-import { JsonBI } from "../../../config/json";
-import { getNetworkType, NetworkType } from "../../../config/network_type";
+import DisplayId from "../../display-id/DisplayId";
+import { useMatch } from 'react-router-dom'
+import BottomSheet from "../../bottom-sheet/BottomSheet";
+// import SignTransactionDisplay from "../../../components/SignTransactionDisplay";
+import { UnsignedGeneratedTx } from "../../../util/interface";
+import { JsonBI } from "../../../util/json";
+import { getNetworkType, NetworkType } from "../../../util/network_type";
 import QrCodeReaderView from "../QrCodeReaderView";
-import { QrCodeContextType } from "./index";
+import { QrCodeContextType } from "./types";
 import { TxPublishR } from "./QrCodeScanResult";
+import { AddressDbAction } from "../../../action/db";
+import { RouteMap } from "../../route/routerMap";
+import TxView from "../../display-tx/TxView";
 
 
 const ip_regex = RegExp("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$");
 
 
-interface PropsType extends RouteComponentProps<{ id: string }> {
+interface PropsType {
     closeQrcode: () => any;
     wallets: Array<Wallet>;
     completed?: (result: string) => any;
@@ -99,12 +100,14 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
         const url = this.getUrl();
         if (this.state.addresses.length === 0) {
             if (this.state.status !== "Loading") {
-                this.setState({ status: "Loading" });
-                const wallet = this.props.wallets.filter(wallet => wallet.id + "" === this.props.match.params.id);
+                this.setState({status: "Loading"});
+                const match = useMatch(RouteMap.Wallet);
+                const walletId = match?.params.id!;
+                const wallet = this.props.wallets.filter(wallet => wallet.id + "" === walletId);
                 if (wallet.length === 0) {
-                    this.setState({ "error": "Invalid Wallet" });
+                    this.setState({"error": "Invalid Wallet"});
                 } else {
-                    dbAddressActions.getWalletAddresses(wallet[0].id).then(addresses => {
+                    AddressDbAction.getWalletAddresses(wallet[0].id).then(addresses => {
                         this.setState({
                             status: "Display",
                             addresses: addresses.map(item => item.address),
@@ -117,9 +120,9 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
             const network_type = getNetworkType(this.state.wallet?.network_type!);
             if (this.urlContainPlaceHolder(url)) {
                 if (this.state.status !== "Address")
-                    this.setState({ status: "Address", selectedAddress: "" });
+                    this.setState({status: "Address", selectedAddress: ""});
             } else {
-                this.setState({ status: "Loading" });
+                this.setState({status: "Loading"});
                 axios.get<ErgoPayResponse>(url).then(response => {
                     const data = response.data;
                     if (data.reducedTx) {
@@ -152,7 +155,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
     };
 
     handleSelectAddress = (address: string) => {
-        this.setState({ selectedAddress: address });
+        this.setState({selectedAddress: address});
     };
 
     componentDidMount() {
@@ -188,7 +191,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
 
     completed = (txId: string) => {
         if (this.state.response && this.state.response.replyToUrl) {
-            axios.post(this.state.response.replyToUrl, { "txId": txId }).then(() => {
+            axios.post(this.state.response.replyToUrl, {"txId": txId}).then(() => {
                 this.props.closeQrcode();
             });
         } else {
@@ -201,20 +204,20 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
             <QrCodeReaderView
                 completed={this.completed}
                 allowedTypes={[TxPublishR]}
-                fail={() => this.setState({ showQrCode: false })}
-                success={(scanned) => this.setState({ scanned: scanned })}
+                fail={() => this.setState({showQrCode: false})}
+                success={(scanned) => this.setState({scanned: scanned})}
                 open={this.state.showQrCode}
-                close={() => this.setState({ showQrCode: false })}>
+                close={() => this.setState({showQrCode: false})}>
                 <ErgoPayQrCodeContext.Provider value={{
                     qrCode: this.state.showQrCode,
-                    showQrCode: (value: boolean) => this.setState({ showQrCode: value }),
+                    showQrCode: (value: boolean) => this.setState({showQrCode: value}),
                     value: this.state.scanned,
-                    cleanValue: () => this.setState({ scanned: "" })
+                    cleanValue: () => this.setState({scanned: ""})
                 }}>
                     <WithAppBar
-                        header={<AppHeader hideQrCode={true} title="ErgoPay Request" back={this.props.closeQrcode} />}>
+                        header={<AppHeader hideQrCode={true} title="ErgoPay Request" back={this.props.closeQrcode}/>}>
                         {this.state.error ? (
-                            <Container style={{ marginTop: 20 }}>
+                            <Container style={{marginTop: 20}}>
                                 <Typography color="secondary">
                                     {this.state.error}
                                 </Typography>
@@ -222,7 +225,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
                         ) : null}
                         {this.state.status === "Address" ? (
                             <React.Fragment>
-                                <Container style={{ marginTop: 20 }}>
+                                <Container style={{marginTop: 20}}>
                                     <Typography>
                                         ErgoPay request needs one address. Please select one address to use for it.
                                     </Typography>
@@ -231,45 +234,45 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
                                     {this.state.addresses.map((address: string, index: number) => (
                                         <React.Fragment key={index}>
                                             <ListItem onClick={() => this.handleSelectAddress(address)}>
-                                                <ListItemText primary={<DisplayId id={address} />} />
+                                                <ListItemText primary={<DisplayId id={address}/>}/>
                                             </ListItem>
-                                            <Divider />
+                                            <Divider/>
                                         </React.Fragment>
                                     ))}
                                 </List>
                             </React.Fragment>
                         ) : this.state.status === "Display" ? (
                             <React.Fragment>
-                                <Container style={{ marginTop: 20 }}>
+                                <Container style={{marginTop: 20}}>
                                     <Typography>
                                         {this.state.response?.message}
                                     </Typography>
                                 </Container>
                                 {this.state.tx ? (
-                                    <UnsignedTxView
+                                    <TxView
                                         network_type={this.state.wallet ? this.state.wallet.network_type : ""}
                                         tx={this.state.tx.tx as wasm.UnsignedTransaction}
                                         boxes={[]}
                                         addresses={this.state.addresses}>
-                                        <Divider />
-                                        <ListItem button onClick={() => this.setState({ showSignModal: true })}>
-                                            <ListItemText primary="Sign Transaction" />
+                                        <Divider/>
+                                        <ListItem button onClick={() => this.setState({showSignModal: true})}>
+                                            <ListItemText primary="Sign Transaction"/>
                                         </ListItem>
                                         <BottomSheet
                                             show={this.state.showSignModal}
-                                            close={() => this.setState({ showSignModal: false })}>
-                                            <SignTransactionDisplay
-                                                completed={this.completed}
-                                                contextType={ErgoPayQrCodeContext}
-                                                wallet={this.state.wallet!}
-                                                show={this.state.showSignModal}
-                                                transaction={this.state.tx}
-                                                close={() => this.setState({ showSignModal: false })} />
+                                            close={() => this.setState({showSignModal: false})}>
+                                            {/*<SignTransactionDisplay*/}
+                                            {/*    completed={this.completed}*/}
+                                            {/*    contextType={ErgoPayQrCodeContext}*/}
+                                            {/*    wallet={this.state.wallet!}*/}
+                                            {/*    show={this.state.showSignModal}*/}
+                                            {/*    transaction={this.state.tx}*/}
+                                            {/*    close={() => this.setState({showSignModal: false})}/>*/}
                                         </BottomSheet>
-                                    </UnsignedTxView>
+                                    </TxView>
                                 ) : null}
                             </React.Fragment>
-                        ) : <Loading />}
+                        ) : <Loading/>}
                     </WithAppBar>
                 </ErgoPayQrCodeContext.Provider>
             </QrCodeReaderView>
@@ -281,4 +284,4 @@ const mapStateToProps = (state: GlobalStateType) => ({
     wallets: state.wallet.wallets
 });
 
-export default connect(mapStateToProps)(withRouter(ErgoPayRequest));
+export default connect(mapStateToProps)(ErgoPayRequest);

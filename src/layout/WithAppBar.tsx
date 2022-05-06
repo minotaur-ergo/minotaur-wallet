@@ -1,18 +1,24 @@
 import React, { ReactElement } from "react";
-import { AppBar, Toolbar } from "@material-ui/core";
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 
 interface propType {
     header: ReactElement,
-    children: React.ReactNode
+    children: React.ReactNode;
+    hide?: boolean;
 }
 
 const WithAppBar = (props: propType) => {
     return (
         <React.Fragment>
-            <AppBar position="fixed">
-                {props.header}
-            </AppBar>
-            <Toolbar />
+            {props.hide ? null : (
+                <React.Fragment>
+                    <AppBar position="fixed">
+                        {props.header}
+                    </AppBar>
+                    <Toolbar/>
+                </React.Fragment>
+            )}
             {props.children}
         </React.Fragment>
     );

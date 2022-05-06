@@ -1,14 +1,14 @@
 import React from "react";
-import { Divider, ListItem, ListItemText } from "@material-ui/core";
-import Erg from "../Erg";
-interface PropsType {
+import { Divider, ListItem, ListItemText } from "@mui/material";
+import Erg from "../value/Erg";
+interface TotalAmountPropsType {
     assets: {[id:string] : bigint};
     sign: -1 | 1;
     title: string;
     description: string;
     network_type: string;
 }
-const TotalAmount = (props: PropsType) => {
+const TotalAmount = (props: TotalAmountPropsType) => {
     const signBigInt = BigInt(props.sign)
     if (Object.entries(props.assets).filter(item => item[1] * signBigInt > 0).length === 0){
         return null

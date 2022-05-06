@@ -1,23 +1,17 @@
 import React from 'react';
-
-/**
- * Animations
- */
-
 import './BottomSheet.css';
 
-interface PropsType {
+export interface BottomSheetPropsType {
     show: boolean;
     children?: React.ReactNode;
     close: () => any;
 }
 
-
-const BottomSheet = (props: PropsType) => {
+const BottomSheet = (props: BottomSheetPropsType) => {
     return (
         <div className={props.show ? 'card-container' : 'card-container hide'}>
             <div className="overlay" onClick={props.close}/>
-            <div className='content'>
+            <div className='card'>
                 {props.children ? props.children : null}
             </div>
         </div>

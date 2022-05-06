@@ -27,7 +27,7 @@ class Address {
     @Column('int', { default: -1 })
     idx: number = -1;
 
-    @ManyToOne(() => Wallet)
+    @ManyToOne(() => Wallet, {onDelete: "CASCADE"})
     wallet: Wallet | null = null;
 
     @Column('int', { default: 0 })

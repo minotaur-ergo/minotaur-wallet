@@ -1,12 +1,12 @@
 import React from "react";
-import { ListItem, ListItemText } from "@material-ui/core";
-import Erg from "../Erg";
+import { ListItem, ListItemText } from "@mui/material";
+import Erg from "../value/Erg";
 import * as wasm from "ergo-lib-wasm-browser";
-import DisplayId from "../DisplayId";
-import { InputBox } from "../../network/models";
-import { getNetworkType } from "../../config/network_type";
+import DisplayId from "../display-id/DisplayId";
+import { InputBox } from "../../util/network/models";
+import { getNetworkType } from "../../util/network_type";
 
-interface PropsType {
+interface RawBoxPropsType {
     boxJs?: InputBox;
     box?: wasm.ErgoBox | wasm.ErgoBoxCandidate;
     allowedAssets?: Array<string>;
@@ -28,7 +28,7 @@ const getAssetJsonFromExplorer = (boxJs: InputBox, allowedAssets?: Array<string>
     })
 }
 
-const RawBox = (props: PropsType) => {
+const RawBox = (props: RawBoxPropsType) => {
     const network_type = getNetworkType(props.network_type);
     const assets = props.box ? getAssetJsonFromWasm(props.box) : props.boxJs ? getAssetJsonFromExplorer(props.boxJs) : [];
     const boxValue = props.box ? BigInt(props.box.value().as_i64().to_str()) : props.boxJs ? props.boxJs.value : BigInt("0")

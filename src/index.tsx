@@ -1,27 +1,21 @@
-import React, { lazy, Suspense } from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import * as serviceWorker from "./serviceWorker";
-import "reflect-metadata";
-import Splash from "./app/Splash";
-import safeAreaInsets from "safe-area-insets";
+import React, { lazy, Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+import Splash from "./components/splash/Splash";
 
-const MinotaurApp = lazy(() => import("./app/MinotaurApp"));
+const MinotaurApp = lazy(() => import("./components/app/MinotaurApp"));
 
-declare global {
-    interface Window {
-        SQL: any;
-    }
-}
+const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+);
+root.render(
+    <Suspense fallback={<Splash/>}>
+        <MinotaurApp/>
+    </Suspense>,
+);
 
-safeAreaInsets.onChange((style: any) => null);
-ReactDOM.render((
-    <Suspense fallback={<Splash />}>
-        <MinotaurApp />
-    </Suspense>
-), document.getElementById("root"));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();

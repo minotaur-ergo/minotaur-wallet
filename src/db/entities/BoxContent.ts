@@ -14,7 +14,7 @@ class BoxContent {
     @Column('text', {transformer: new BigIntValueTransformer()})
     amount: bigint = BigInt(0);
 
-    @ManyToOne(type => Box,{onDelete: "CASCADE"})
+    @ManyToOne(() => Box,{onDelete: "CASCADE"})
     box: Box | null = null;
 }
 

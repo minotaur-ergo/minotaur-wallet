@@ -13,6 +13,7 @@
   "license": "MIT",
   "main": "build/src/index.js",
   "scripts": {
+    "clean": "rimraf ./dist && rimraf ./build",
     "build": "tsc && electron-rebuild",
     "electron:start-live": "node ./live-runner.js",
     "electron:start": "npm run build && electron --inspect=5858 ./",
@@ -22,16 +23,15 @@
   },
   "dependencies": {
     "@capacitor-community/electron": "^4.1.0",
-    "@capacitor-community/sqlite": "^3.4.1-1",
+    "@capacitor-community/sqlite": "^3.2.4",
     "chokidar": "~3.5.2",
     "electron-is-dev": "~2.0.0",
     "electron-serve": "~1.1.0",
     "electron-unhandled": "~3.0.2",
     "electron-updater": "~4.3.9",
     "electron-window-state": "~5.0.3",
-    "jszip": "^3.7.1",
     "rimraf": "^3.0.2",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.4"
   },
   "devDependencies": {
     "@types/sqlite3": "^3.1.8",

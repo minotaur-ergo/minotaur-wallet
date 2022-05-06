@@ -1,14 +1,16 @@
 import React from "react";
 import QrCodeReader from "./reader/QrCodeReader";
 import QrCodeMoreChunk from "./qrcode-types/QrCodeMoreChunk";
-import { show_notification } from "../../utils/utils";
 import Types from "./qrcode-types";
 import crypto from "crypto";
 import { GlobalStateType } from "../../store/reducer";
 import { connect, MapDispatchToProps } from "react-redux";
-import { AddQrCodeOpened, closeQrCodeScanner } from "../../store/actions";
+import { AddQrCodeOpened, closeQrCodeScanner, showMessage } from "../../store/actions";
+import { SnackbarMessage, VariantType } from "notistack";
+import { MessageEnqueueService } from "../app/MessageHandler";
 
-interface PropsType {
+
+interface QrCodeReaderViewPropsType extends MessageEnqueueService{
     success: (scanned: string) => any;
     fail: () => any;
     close: () => any;
@@ -17,11 +19,11 @@ interface PropsType {
     completed?: (result: string) => any;
     allowedTypes?: Array<string>;
     qrCodes: Array<string>;
-    addQrcode: (id: string) => any
-    closeQrCode: (id: string) => any
+    addQrcode: (id: string) => any;
+    closeQrCode: (id: string) => any;
 }
 
-interface StateType {
+interface QrCodeReaderViewStateType {
     scanning: boolean;
     type: string;
     id: string;
@@ -29,8 +31,8 @@ interface StateType {
     open: boolean;
 }
 
-class QrCodeReaderView extends React.Component<PropsType, StateType> {
-    state = {
+class QrCodeReaderView extends React.Component<QrCodeReaderViewPropsType, QrCodeReaderViewStateType> {
+    state : QrCodeReaderViewStateType = {
         scanning: true,
         type: "",
         id: "",
@@ -48,15 +50,15 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
                 chunks: [],
                 scanning: true
             });
-            if(this.props.open) {
+            if (this.props.open) {
                 if (this.props.qrCodes.indexOf(qrCodeId) <= -1) {
                     this.props.addQrcode(qrCodeId)
                 }
-            }else{
+            } else {
                 this.props.closeQrCode(qrCodeId);
             }
         } else {
-            if(this.props.open && this.props.qrCodes.indexOf(qrCodeId) === -1){
+            if (this.props.open && this.props.qrCodes.indexOf(qrCodeId) === -1) {
                 this.props.close()
             }
         }
@@ -72,7 +74,7 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
 
     success = (scanned: string) => {
         let selectedTypes = Types.filter(item => item.detect(scanned) !== null);
-        if(this.props.allowedTypes){
+        if (this.props.allowedTypes) {
             selectedTypes = selectedTypes.filter(item => this.props.allowedTypes?.indexOf(item.type)! >= 0);
         }
         if (selectedTypes.length > 0) {
@@ -82,20 +84,20 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
             const total = chunk?.total!;
             const page = chunk?.page!;
             if ((selectedType.type !== this.state.type && this.state.type) || page <= 0 || page > total) {
-                show_notification("Invalid Qrcode scanned");
+                this.props.showMessage("Invalid QRCODE scanned", "error")
             } else {
                 if (this.state.chunks.length === 0) {
                     chunks = Array(total).fill("");
                     chunks[page - 1] = chunk?.payload!;
                 } else {
                     if (total !== chunks.length) {
-                        show_notification("Invalid Qrcode scanned");
+                        this.props.showMessage("Invalid QRCODE scanned", "error")
                     } else {
                         chunks[page - 1] = chunk?.payload!;
                     }
                 }
             }
-            this.setState({ type: selectedType.type, chunks: chunks, scanning: false });
+            this.setState({type: selectedType.type, chunks: chunks, scanning: false});
         } else {
             this.props.success(scanned);
         }
@@ -114,27 +116,29 @@ class QrCodeReaderView extends React.Component<PropsType, StateType> {
         return (
             <React.Fragment>
                 {!this.state.open ? null : this.state.scanning ? (
-                    <QrCodeReader closeQrCode={this.props.close} fail={this.props.fail} success={this.success} />
+                    <QrCodeReader closeQrCode={this.props.close} fail={this.props.fail} success={this.success}/>
                 ) : invalidChunkCount > 0 ? (
                     <QrCodeMoreChunk
                         chunks={this.state.chunks}
                         close={this.props.close}
-                        scanNext={() => this.setState({ scanning: true })} />
+                        scanNext={() => this.setState({scanning: true})}/>
                 ) : this.renderSubComponent()}
-                <div style={{ display: this.state.open ? "none" : "block" }}>
+                <div style={{display: this.state.open ? "none" : "block"}}>
                     {this.props.children}
                 </div>
             </React.Fragment>
         );
     };
 }
+
 const mapStateToProps = (state: GlobalStateType) => ({
     qrCodes: state.qrcode.pages
 });
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
     addQrcode: (id: string) => dispatch(AddQrCodeOpened(id)),
-    closeQrCode: (id: string) => dispatch(closeQrCodeScanner(id))
+    closeQrCode: (id: string) => dispatch(closeQrCodeScanner(id)),
+    showMessage: (message: SnackbarMessage, variant: VariantType) => dispatch(showMessage(message, variant))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QrCodeReaderView);
