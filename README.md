@@ -29,7 +29,7 @@ Features:
 - [X] Wallet password to encrypt secret.
 - [ ] Dynamic DApp setup: We're working to generate a dynamic protocol to add new dApp to wallet without an update.
 - [ ] Minotaur dApp connector extension for chrome and firefox support
-- [ ] ErgoPay support
+- [X] ErgoPay support
 - [ ] MultiLingual wallet support
 - [ ] Mem pool transaction support
 

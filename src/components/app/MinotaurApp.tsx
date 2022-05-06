@@ -32,12 +32,19 @@ const MinotaurApp = () => {
             })
         }
     }, [])
+    const style = `.MuiAppBar-root{
+     padding-top: ${marginTop}px; 
+}
+.MuiToolbar-root{
+    padding-top: ${marginTop}px;
+}
+.MuiAppBar-root .MuiToolbar-root{
+    padding-top: 0;
+}`
     return (
         <ThemeProvider theme={getTheme("light")}>
-            <style>
-                {/*.MuiAppBar-root{*/}
-                {/*    margin-top: {marginTop}*/}
-                {/*}*/}
+            <style type="text/css">
+                {style}
             </style>
             <Database>
                 <Provider store={store}>
