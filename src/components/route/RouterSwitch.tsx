@@ -43,7 +43,7 @@ class RouterSwitch extends React.Component<PropsType, {}> {
                 <div>
                     <Routes>
                         <Route path={RouteMap.Settings} element={<Settings/>} />
-                        <Route path={RouteMap.DAppConnector} element={<DAppConnectorContainer/>} />
+                        {/*<Route path={RouteMap.DAppConnector} element={<DAppConnectorContainer/>} />*/}
                         <Route path={RouteMap.Wallet} element={<WalletPage/>} />
                         <Route path={RouteMap.WalletAdd} element={<WalletAdd/>} />
                         <Route path={RouteMap.Home} element={<Home/>} />

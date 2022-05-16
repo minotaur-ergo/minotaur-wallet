@@ -37,9 +37,9 @@ const HomeHeader = () => {
     return (
         <Toolbar>
             <Typography variant="h6" sx={{flexGrow: 1}}> Minotaur </Typography>
-            <IconButton color="inherit" onClick={() => navigate(RouteMap.DAppConnector)}>
-                <FontAwesomeIcon icon={faHandshake} size={"xs"}/>
-            </IconButton>
+            {/*<IconButton color="inherit" onClick={() => navigate(RouteMap.DAppConnector)}>*/}
+            {/*    <FontAwesomeIcon icon={faHandshake} size={"xs"}/>*/}
+            {/*</IconButton>*/}
             <IconButton color="inherit" onClick={() => navigate(RouteMap.Settings)}>
                 <FontAwesomeIcon icon={faGear} size={"xs"}/>
             </IconButton>

@@ -7,6 +7,7 @@ import Splash from "../splash/Splash";
 import entities from "../../db/entities";
 import migrations from "../../db/migration";
 import { initializeAction } from "../../action/db";
+import { loadConfig } from '../../store/actions';
 
 let dataSource: DataSource;
 
