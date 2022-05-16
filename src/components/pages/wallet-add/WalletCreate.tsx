@@ -29,6 +29,7 @@ interface WalletCreateStateType {
     type: WalletType;
     saving: boolean;
     network_type: string;
+    public_keys: Array<string>
 }
 
 
@@ -41,6 +42,7 @@ class WalletCreate extends React.Component<WalletCreatePropsType, WalletCreateSt
         type: WalletType.Normal,
         saving: false,
         network_type: NETWORK_TYPES[0].label,
+        public_keys: []
     };
 
     steps = [

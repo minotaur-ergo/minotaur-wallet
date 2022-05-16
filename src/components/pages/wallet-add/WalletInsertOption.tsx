@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import Restore from "@mui/icons-material/RestorePage";
-import { faCoffee, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCoffee, faPlus, faGroupArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WalletCreateType } from "./walletCreateType";
 
@@ -45,6 +45,17 @@ const WalletInsertOption = (props: PropsType) => {
                 <ListItemText
                     primary="Add read only wallet"
                     secondary="this is a read only wallet. do not store any secret. only track incomes. if you want to send transaction you must use a cold wallet to sign it." />
+            </ListItem>
+            <Divider />
+            <ListItem onClick={() => props.setWalletType(WalletCreateType.MultiSig)}>
+                <ListItemAvatar>
+                    <Avatar>
+                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    primary="Add multi sig wallet"
+                    secondary="???" />
             </ListItem>
         </List>
     );
