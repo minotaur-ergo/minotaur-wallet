@@ -29,7 +29,7 @@ const connectSqlJs = async () => {
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
-        logging: "all",
+        logging: false,
         entities: entities,
         migrations: migrations,
         synchronize: false
@@ -46,7 +46,7 @@ const connectCapacitor = async () => {
             type: "capacitor",
             database: "minotaur",
             driver: sqliteConnection,
-            logging: "all",
+            logging: false,
             synchronize: false,
             entities: entities,
             migrations: migrations,

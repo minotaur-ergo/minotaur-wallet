@@ -246,7 +246,6 @@ class BlockChainTxActionClass {
         const explorer = getNetworkType(address.network_type).getExplorer()
         // let txList: Array<ErgoTx> = [];
         const heights = blocksList.map(item => item.height);
-        // debugger
         const maxBlockHeight = Math.max(...heights);
         const minBlockHeight = Math.min(...heights);
         let txList: {[height: number]: {[id: string]: ErgoTx}} = {};
@@ -267,7 +266,7 @@ class BlockChainTxActionClass {
             }
             for (let tx of txs) {
                 if (tx.inclusionHeight > address.tx_load_height) {
-                    if (tx.inclusionHeight >= maxBlockHeight) continue;
+                    if (tx.inclusionHeight > maxBlockHeight) continue;
                     if(tx.inclusionHeight >= minBlockHeight && blocks[tx.inclusionHeight] !== tx.blockId) continue;// forked transaction arrived
                     if(!txList.hasOwnProperty(tx.inclusionHeight)){
                         txList[tx.inclusionHeight] = {}
@@ -330,6 +329,7 @@ class BlockChainTxActionClass {
             }
             await AddressDbAction.setAddressHeight(address.id, Number(height), "tx_load");
         }
+        console.log(`address proceed completely ${address.address}`)
     };
 
     processAddressOutputBoxes = async (address: Address, height: number, txs: Array<TxWithJson>) => {

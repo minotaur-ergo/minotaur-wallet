@@ -27,20 +27,24 @@ const SendConfirm = (props: SendConfirmPropsType) => {
     const [txResponse, setTxResponse] = useState("");
     const sendTx = () => {
         if (props.transaction) {
-            BlockChainAction.signTx(props.wallet, props.transaction, password).then(signedTx => {
-                const node = getNetworkType(props.wallet.network_type).getNode();
-                node.sendTx(signedTx).then(result => {
-                    setTxResponse(result.txId);
-                    if (props.completed) {
-                        props.completed(result.txId);
-                    }
+            try {
+                BlockChainAction.signTx(props.wallet, props.transaction, password).then(signedTx => {
+                    const node = getNetworkType(props.wallet.network_type).getNode();
+                    node.sendTx(signedTx).then(result => {
+                        setTxResponse(result.txId);
+                        if (props.completed) {
+                            props.completed(result.txId);
+                        }
+                    }).catch(error => {
+                        props.showMessage(`${error}`, "error");
+                    });
+                    setPassword("");
                 }).catch(error => {
                     props.showMessage(`${error}`, "error");
                 });
-                setPassword("");
-            }).catch(error => {
-                props.showMessage(`${error}`, "error");
-            });
+            }catch (exp) {
+                console.log(exp)
+            }
         }
     };
     const passwordValid = () => {

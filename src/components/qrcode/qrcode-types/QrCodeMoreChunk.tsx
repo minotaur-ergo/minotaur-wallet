@@ -2,7 +2,7 @@ import React from "react";
 import WithAppBar from "../../../layout/WithAppBar";
 import AppHeader from "../../app-header/AppHeader";
 import { Button, Container, Grid, Typography } from "@mui/material";
-
+import qrcode from '../../../assets/qrcode.svg';
 interface PropsType {
     chunks: Array<string>
     close: () => any;
@@ -11,13 +11,14 @@ interface PropsType {
 
 const QrCodeMoreChunk = (props: PropsType) => {
     const completed = props.chunks.filter(item => !!item).length
+    console.log(`chunks are: ${JSON.stringify(props.chunks)}`)
     return (
         <WithAppBar header={<AppHeader hideQrCode={true} title="More chunks required" back={props.close}/>}>
             <Container style={{marginTop: 20}}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Typography align="center">
-                            <img src="../../../assets/qrcode.svg" alt="qrcode"/>
+                            <img src={qrcode} alt="qrcode"/>
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
