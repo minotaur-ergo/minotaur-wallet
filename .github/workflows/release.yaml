@@ -20,13 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -77,13 +74,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -118,13 +112,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -168,10 +159,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
+          node-version: 16.x
 
       - name: Install app dependencies
         run: npm install
