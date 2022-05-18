@@ -45,7 +45,10 @@ const loadBlockChainDataAsync = async () => {
 };
 
 const loadBlockChainData = () => {
-    loadBlockChainDataAsync().then(() => setTimeout(() => loadBlockChainData(), REFRESH_INTERVAL));
+    loadBlockChainDataAsync().then(() => {
+        store.dispatch({type: actionType.INVALIDATE_WALLETS});
+        setTimeout(() => loadBlockChainData(), REFRESH_INTERVAL)
+    });
 };
 
 

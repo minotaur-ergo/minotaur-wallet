@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import initSqlJs from "sql.js/dist/sql-wasm";
 import { DataSource } from "typeorm";
 import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
@@ -21,14 +20,15 @@ export interface DatabasePropsType {
 }
 
 const connectSqlJs = async () => {
+    const initSqlJs = require("sql.js/dist/sql-wasm");
     window.SQL = await initSqlJs({
-        locateFile: file => `/${file}`,
+        locateFile: (file: string) => `/${file}`,
     });
     dataSource = new DataSource({
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
-        logging: "all",
+        logging: false,
         entities: entities,
         migrations: migrations,
         synchronize: false
@@ -45,7 +45,7 @@ const connectCapacitor = async () => {
             type: "capacitor",
             database: "minotaur",
             driver: sqliteConnection,
-            logging: "all",
+            logging: false,
             synchronize: false,
             entities: entities,
             migrations: migrations,

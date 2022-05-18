@@ -16,7 +16,12 @@ import { showMessage } from "../../../store/actions";
 import { MessageEnqueueService } from "../../app/MessageHandler";
 import GenerateTransactionBottomSheet from "../../generate-transaction-bottom-sheet/GenerateTransactionBottomSheet";
 import InSimpleMode from "../../display-view/InSimpleMode";
+import { AddressDbAction, BoxContentDbAction } from "../../../action/db";
+import { DisplayType } from "../../../store/reducer/wallet";
 
+interface SendTransactionPropsType extends WalletPagePropsType, MessageEnqueueService{
+    display: DisplayType
+}
 interface SendTransactionStateType {
     receivers: Array<Receiver>;
     totalErg: bigint;
@@ -33,7 +38,7 @@ const getAddressId = (address: Address | null | undefined) => {
     return address;
 };
 
-class SendTransaction extends React.Component<WalletPagePropsType & MessageEnqueueService, SendTransactionStateType> {
+class SendTransaction extends React.Component<SendTransactionPropsType, SendTransactionStateType> {
     state: SendTransactionStateType = {
         receivers: [new Receiver("", "")],
         totalErg: BigInt(0),
@@ -58,6 +63,14 @@ class SendTransaction extends React.Component<WalletPagePropsType & MessageEnque
         newReceivers.splice(index, 1);
         this.setState({receivers: newReceivers});
     };
+
+    updateTotalParams = async () => {
+        if(this.props.display === "simple") {
+            const totalErg = (await AddressDbAction.getWalletAddressesWithErg(this.props.wallet.id)).map(item => item.erg()).reduce((a, b) => a + b, BigInt(0));
+            const tokens = await BoxContentDbAction.getTokenWithAddressForWallet(this.props.wallet.id);
+            this.setParams(totalErg, null, tokens)
+        }
+    }
 
     checkAddressesEqual = (addrList1: Array<Address> | undefined | null, addrList2: Array<Address> | undefined | null) => {
         if (addrList1 && addrList2) {
@@ -92,6 +105,7 @@ class SendTransaction extends React.Component<WalletPagePropsType & MessageEnque
 
     componentDidMount() {
         this.props.setTab("send");
+        this.updateTotalParams().then(() => null)
     }
 
     renderSendButton = () => {
@@ -164,7 +178,9 @@ class SendTransaction extends React.Component<WalletPagePropsType & MessageEnque
     };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = (state: GlobalStateType) => ({
+    display: state.wallet.display
+});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
     showMessage: (message: SnackbarMessage, variant: VariantType) => dispatch(showMessage(message, variant))

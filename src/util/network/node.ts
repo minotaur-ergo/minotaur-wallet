@@ -29,7 +29,7 @@ export class Node {
     };
 
     getHeight = async () => {
-        return this.getInfo().then(res => res.fullHeight)
+        return this.getInfo().then(res => res.fullHeight).catch(() => 0)
     }
 
     getNetworkContext = async (): Promise<NetworkContext> => {

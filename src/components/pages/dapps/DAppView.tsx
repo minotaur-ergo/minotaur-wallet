@@ -95,7 +95,10 @@ class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
     };
 
     closeTransactionView = () => {
-        this.setState({ display: false });
+        this.setState({
+            display: false,
+        });
+        setTimeout(() => this.setState({transaction: undefined}), 900)
     };
 
     getTokenAmount = async (tokenId?: string) => {

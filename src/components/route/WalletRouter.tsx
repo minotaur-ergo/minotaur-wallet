@@ -1,13 +1,15 @@
 import React  from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import RouterSwitch from './RouterSwitch';
-import { connect } from "react-redux";
+import { connect, MapDispatchToProps } from 'react-redux';
 import { GlobalStateType } from "../../store/reducer";
 import { WalletAction } from "../../action/action";
 import { loadBlockChainData } from "../../store/asyncAction";
+import { loadConfig } from '../../store/actions';
 
 interface PropsType {
     walletsValid: boolean;
+    loadConfig: () => any;
 }
 interface StateType {
     loading: boolean;
@@ -28,6 +30,7 @@ class WalletRouter extends React.Component<PropsType, StateType>{
     }
     componentDidMount = () => {
         loadBlockChainData();
+        this.props.loadConfig();
         this.checkWallet();
     }
 
@@ -48,5 +51,10 @@ const mapStateToProps = (state: GlobalStateType) => ({
     walletsValid: state.wallet.walletValid
 });
 
-export default connect(mapStateToProps)(WalletRouter);
+const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+    loadConfig: () => dispatch(loadConfig())
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletRouter);
 
