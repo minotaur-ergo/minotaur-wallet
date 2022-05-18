@@ -105,6 +105,7 @@
     "madge": "^5.0.1",
     "path-browserify": "^1.0.1",
     "rewire": "^6.0.0",
+    "sql.js": "1.6.2",
     "stream-browserify": "^3.0.0"
   }
 }

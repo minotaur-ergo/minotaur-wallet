@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import initSqlJs from "sql.js/dist/sql-wasm";
 import { DataSource } from "typeorm";
 import { Capacitor } from "@capacitor/core";
 import { CapacitorSQLite, SQLiteConnection } from "@capacitor-community/sqlite";
@@ -7,7 +6,6 @@ import Splash from "../splash/Splash";
 import entities from "../../db/entities";
 import migrations from "../../db/migration";
 import { initializeAction } from "../../action/db";
-import { loadConfig } from '../../store/actions';
 
 let dataSource: DataSource;
 
@@ -22,8 +20,9 @@ export interface DatabasePropsType {
 }
 
 const connectSqlJs = async () => {
+    const initSqlJs = require("sql.js/dist/sql-wasm");
     window.SQL = await initSqlJs({
-        locateFile: file => `/${file}`,
+        locateFile: (file: string) => `/${file}`,
     });
     dataSource = new DataSource({
         type: "sqljs",
