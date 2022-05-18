@@ -29,39 +29,39 @@ jobs:
         run: npm install
 
       - name: Print package.lock file
-        run: cat package-lock.json
-
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
-
-      - name: Update package.json files
-        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
-
-      - name: Build Minotaur JS app and update capacitor
-        run: CI=false npm run sync
-
-      - name: Build Electron
-        working-directory: ./electron
-        run: CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
-
-      - name: List outputs
-        run: ls ./electron/dist
-
-      - name: Upload Executable File to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: electron/dist/minotaur-wallet*.AppImage
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        if: startsWith(github.ref, 'refs/tags/')
-
-      - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
-        with:
-          snapcraft_token: ${{ secrets.SNAP_LOGIN }}
-
-      - name: Upload to snapstore
-        run: snapcraft upload --release stable electron/dist/minotaur-wallet*.snap
+        run: cat node_modules/@capacitor-community/sqlite/package.lock
+#
+#      - name: Extract version from tag
+#        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
+#
+#      - name: Update package.json files
+#        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
+#
+#      - name: Build Minotaur JS app and update capacitor
+#        run: CI=false npm run sync
+#
+#      - name: Build Electron
+#        working-directory: ./electron
+#        run: CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
+#
+#      - name: List outputs
+#        run: ls ./electron/dist
+#
+#      - name: Upload Executable File to release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: electron/dist/minotaur-wallet*.AppImage
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#        if: startsWith(github.ref, 'refs/tags/')
+#
+#      - name: Install Snapcraft
+#        uses: samuelmeuli/action-snapcraft@v1
+#        with:
+#          snapcraft_token: ${{ secrets.SNAP_LOGIN }}
+#
+#      - name: Upload to snapstore
+#        run: snapcraft upload --release stable electron/dist/minotaur-wallet*.snap
 #
 #
 #  release-mac:
