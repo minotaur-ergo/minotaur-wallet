@@ -28,8 +28,8 @@ jobs:
       - name: Install app dependencies
         run: npm install
 
-      - name: Print package.lock file
-        run: cat node_modules/@capacitor-community/sqlite/package.lock
+      - name: Print test result
+        run: cat node_modules/@capacitor-community/sqlite/package.json
 #
 #      - name: Extract version from tag
 #        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
