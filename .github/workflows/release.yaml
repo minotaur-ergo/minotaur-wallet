@@ -34,7 +34,7 @@ jobs:
         run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
 
       - name: Build Minotaur JS app and update capacitor
-        run: npm run build && npx cap sync electron
+        run: CI=false npm run sync
 
       - name: Build Electron
         working-directory: ./electron
