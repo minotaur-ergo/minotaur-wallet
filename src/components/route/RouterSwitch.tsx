@@ -9,7 +9,7 @@ import WalletAdd from "../pages/wallet-add/WalletAdd";
 import WalletPage from "../pages/wallet/WalletPage";
 import { closeQrCodeScanner } from "../../store/actions";
 import Settings from "../pages/settings/Settings";
-import DAppConnectorContainer from "../pages/dapp-connector/DAppConnectorContainer";
+// import DAppConnectorContainer from "../pages/dapp-connector/DAppConnectorContainer";
 
 interface PropsType {
     qrCodes: Array<string>;

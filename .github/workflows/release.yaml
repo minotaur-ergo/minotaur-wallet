@@ -34,14 +34,11 @@ jobs:
         run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
 
       - name: Build Minotaur JS app and update capacitor
-        run: CI=false npm run sync
+        run: npm run build && npx cap sync electron
 
       - name: Build Electron
         working-directory: ./electron
         run: CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
-
-      - name: List outputs
-        run: ls ./electron/dist
 
       - name: Upload Executable File to release
         uses: softprops/action-gh-release@v1
@@ -57,7 +54,7 @@ jobs:
           snapcraft_token: ${{ secrets.SNAP_LOGIN }}
 
       - name: Upload to snapstore
-        run: snapcraft upload --release stable electron/dist/minotaur-wallet*.snap
+        run: snapcraft upload --release candidate electron/dist/minotaur-wallet*.snap
 
   release-mac:
     runs-on: macos-latest

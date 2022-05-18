@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { RouteMap } from "../../route/routerMap";
 import { Capacitor } from "@capacitor/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faGear, faHandshake } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faGear } from "@fortawesome/free-solid-svg-icons";
 
 
 const downloadDb = () => {

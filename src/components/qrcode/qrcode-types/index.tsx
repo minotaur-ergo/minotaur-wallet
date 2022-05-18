@@ -10,19 +10,19 @@ interface DetectParam {
     total: number;
     payload: string;
 }
-
-const detect = (value: string, regex: RegExp) : DetectParam | null => {
-    const match = value.match(regex);
-    console.log(`match is ${match?.groups}`)
-    if(match){
-        return {
-            page: parseInt((match.groups && match.groups.page) ? match.groups.page : "1"),
-            total: parseInt((match.groups && match.groups.total) ? match.groups.total : "1"),
-            payload: (match.groups && match.groups.payload) ? match.groups.payload : "",
-        }
-    }
-    return null
-}
+//
+// const detect = (value: string, regex: RegExp) : DetectParam | null => {
+//     const match = value.match(regex);
+//     console.log(`match is ${match?.groups}`)
+//     if(match){
+//         return {
+//             page: parseInt((match.groups && match.groups.page) ? match.groups.page : "1"),
+//             total: parseInt((match.groups && match.groups.total) ? match.groups.total : "1"),
+//             payload: (match.groups && match.groups.payload) ? match.groups.payload : "",
+//         }
+//     }
+//     return null
+// }
 
 const detectPagedWithPrefix = (value: string, prefix: string): DetectParam | null => {
     const valueParts = value.split("-", )
