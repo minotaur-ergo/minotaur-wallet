@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Print package.lock file
-        run: cal package-lock.json
+        run: cat package-lock.json
 
       - name: Extract version from tag
         uses: damienaicheh/extract-version-from-tag-action@v1.0.0
