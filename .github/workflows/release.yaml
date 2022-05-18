@@ -12,7 +12,6 @@ on:
 jobs:
   release-linux:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -20,13 +19,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -44,9 +40,6 @@ jobs:
         working-directory: ./electron
         run: CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
 
-      - name: List outputs
-        run: ls ./electron/dist
-
       - name: Upload Executable File to release
         uses: softprops/action-gh-release@v1
         with:
@@ -57,19 +50,14 @@ jobs:
 
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v1
-
-      - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
         with:
           snapcraft_token: ${{ secrets.SNAP_LOGIN }}
 
       - name: Upload to snapstore
-        run: snapcraft upload --release stable electron/dist/minotaur-wallet*.snap
-
+        run: snapcraft upload --release candidate electron/dist/minotaur-wallet*.snap
 
   release-mac:
     runs-on: macos-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -77,13 +65,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -108,9 +93,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         if: startsWith(github.ref, 'refs/tags/')
+
   release-windows:
     runs-on: windows-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -118,13 +103,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Remove old package-lock file
         run: rm package-lock.json
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
 
       - name: Install app dependencies
         run: npm install
@@ -149,6 +131,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         if: startsWith(github.ref, 'refs/tags/')
+
   release-android:
     name: Release Apk for android
     runs-on: ubuntu-latest
@@ -168,10 +151,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
-
-      - name: install correct version of typeorm
-        run: npm i -s typeorm@0.2.38
+          node-version: 16.x
 
       - name: Install app dependencies
         run: npm install

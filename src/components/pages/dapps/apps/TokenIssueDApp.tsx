@@ -9,30 +9,30 @@ const encodeString = (msg: string): Uint8Array => {
     return Uint8Array.from(Buffer.from(msg));
 }
 const TokenIssueDApp = (props: DAppPropsType) => {
-    const [name, setName] = useState("token name");
-    const [description, setDescription] = useState("token description");
-    const [amount, setAmount] = useState("1000000000000");
-    const [decimal, setDecimal] = useState("3");
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [amount, setAmount] = useState("");
+    const [decimal, setDecimal] = useState("");
     const issueToken = async () => {
         const addresses = await props.getAddresses();
         const height = await props.network_type.getNode().getHeight()
         const box_value = BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str()) + constants.FEE;
-        const coveringBox = await props.getCoveringForErgAndToken(box_value,[]);
-        if(coveringBox.covered){
+        const coveringBox = await props.getCoveringForErgAndToken(box_value, []);
+        if (coveringBox.covered) {
             const boxes = coveringBox.boxes;
-            let remainingTokens: {[id: string]: bigint} = {}
+            let remainingTokens: { [id: string]: bigint } = {}
             const totalErg: bigint = Array(boxes.len()).fill("").map((item, index) => {
                 const box = boxes.get(index);
                 Array(box.tokens().len()).fill("").forEach((item, token_index) => {
                     const token = box.tokens().get(token_index);
-                    if(remainingTokens.hasOwnProperty(token.id().to_str())){
+                    if (remainingTokens.hasOwnProperty(token.id().to_str())) {
                         remainingTokens[token.id().to_str()] += BigInt(token.amount().as_i64().to_str())
-                    }else{
+                    } else {
                         remainingTokens[token.id().to_str()] = BigInt(token.amount().as_i64().to_str());
                     }
                 })
                 return BigInt(box.value().as_i64().to_str())
-            }).reduce((a,b) => a+b, BigInt(0)) - constants.FEE;
+            }).reduce((a, b) => a + b, BigInt(0)) - constants.FEE;
             const candidate_builder = new wasm.ErgoBoxCandidateBuilder(
                 wasm.BoxValue.from_i64(wasm.I64.from_str(totalErg.toString())),
                 wasm.Contract.pay_to_address(wasm.Address.from_base58(addresses[0])),
@@ -62,7 +62,7 @@ const TokenIssueDApp = (props: DAppPropsType) => {
                 wasm.BoxValue.SAFE_USER_MIN()
             ).build()
             await props.signAndSendTx({tx: tx, boxes: boxes});
-        } else{
+        } else {
             props.showNotification("Insufficient Ergs to issue new token", "error")
         }
     };
@@ -97,7 +97,8 @@ const TokenIssueDApp = (props: DAppPropsType) => {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <Button disabled={!valid} variant="contained" color="primary" fullWidth onClick={() => issueToken()}>
+                    <Button disabled={!valid} variant="contained" color="primary" fullWidth
+                            onClick={() => issueToken()}>
                         Issue token
                     </Button>
                 </Grid>

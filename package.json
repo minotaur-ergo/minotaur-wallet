@@ -5,7 +5,7 @@
   "dependencies": {
     "@capacitor-community/barcode-scanner": "^2.1.1",
     "@capacitor-community/electron": "^4.1.0",
-    "@capacitor-community/sqlite": "^3.2.4",
+    "@capacitor-community/sqlite": "3.2.4",
     "@capacitor/android": "^3.5.1",
     "@capacitor/app": "^1.1.1",
     "@capacitor/browser": "^1.0.7",
@@ -106,6 +106,7 @@
     "madge": "^5.0.1",
     "path-browserify": "^1.0.1",
     "rewire": "^6.0.0",
+    "sql.js": "1.6.2",
     "stream-browserify": "^3.0.0"
   }
 }
