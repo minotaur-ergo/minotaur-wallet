@@ -65,7 +65,11 @@ function App() {
                     pageId={pageId}
                     confirm={confirm}
                     server={server}/>
-            ) : null}
+            ) : (
+                <div>
+                    Minotaur wallet connector currently does not support UI.
+                </div>
+            )}
 
         </div>
     );
