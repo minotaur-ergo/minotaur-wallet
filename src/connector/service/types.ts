@@ -1,4 +1,4 @@
-import { Payload } from "../types";
+import { Payload } from "../types/payloads";
 
 export const DEFAULT_SERVER = "ws://127.0.0.1:6486";
 
@@ -22,15 +22,20 @@ export interface UIMessage {
 interface UIResponseInfo {
     server: string;
     enc_key: string;
+    requestId?: string;
+    pageId?: string;
     id: string;
     favIcon?: string;
     origin?: string;
 }
 
+export type UIResponseType = "set_info" | "registered" | "close" | "set_display" | "set_error";
+
 export interface UIResponse {
-    type: "set_info" | "registered" | "close" | "set_display";
+    type: UIResponseType;
     info?: UIResponseInfo;
     display?: string;
+    error?: string
 }
 
 export type ConnectRequest = {
@@ -45,10 +50,13 @@ export type EventFunction = "connect" |
     "balance" |
     "address" |
     "boxes" |
-    "sign" ;
+    "sign" |
+    "sign_data";
+
+export type EventDataType = "call" | "auth" | "register";
 
 export type EventData = {
-    type: "call" | "auth";
+    type: EventDataType;
     function: EventFunction;
     sessionId: string;
     direction: "request" | "response";

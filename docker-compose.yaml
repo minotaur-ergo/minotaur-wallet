@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  websocket:
+    build: .
+    ports:
+      - "6486:6486"
+    restart: always
+    network_mode: bridge

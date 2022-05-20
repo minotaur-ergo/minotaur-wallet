@@ -16,10 +16,16 @@ const getPort = () => {
         }
         info.port = chrome.runtime.connect();
         info.port.onMessage.addListener((msg: EventData) => {
-            if(msg.type === 'connected') {
-                info.port?.postMessage({
-                    "type": "register"
-                })
+            if(msg.type === 'register') {
+                const postMsg: EventData = {
+                    direction: "request",
+                    isSuccess: false,
+                    requestId: "",
+                    sessionId: "",
+                    type: "register",
+                    function: "connect"
+                }
+                info.port?.postMessage(postMsg)
             }else {
                 msg.sessionId = info.sessionId;
                 window.postMessage(msg, window.location.origin);
@@ -48,7 +54,7 @@ window.addEventListener("message", (event: MessageEvent<EventData>) => {
     if (event.data.direction !== 'request') {
         return
     }
-    const data = {...event.data, sessionId: info.sessionId};
+    const data: EventData = {...event.data, sessionId: info.sessionId};
     getPort().postMessage(data);
 })
 

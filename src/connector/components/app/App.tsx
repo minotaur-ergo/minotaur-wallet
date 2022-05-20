@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Connect from '../connect/Connect';
 import './App.css';
 import { UIResponse } from "../../service/types";
+import { Alert } from "@mui/material";
 
 const port = chrome.runtime.connect({
     name: "minotaur"
@@ -13,6 +14,7 @@ function App() {
     const [server, setServer] = useState("");
     const [encKey, setEncKey] = useState("");
     const [id, setId] = useState("");
+    const [error, setError] = useState("");
     const [origin, setOrigin] = useState("");
     const [display, setDisplay] = useState("");
     const [favIcon, setFavIcon] = useState("");
@@ -32,6 +34,10 @@ function App() {
                     if(info.favIcon){
                         setFavIcon(info.favIcon);
                     }
+                    break;
+                case "set_error":
+                    const error = msg.error!;
+                    setError(error);
                     break;
                 case "registered":
                     port.postMessage({id: pageId, type: "get_params"})
@@ -54,7 +60,15 @@ function App() {
     }
     return (
         <div className="App">
-            {pageId ? (
+            {!pageId ? (
+                <div>
+                    Minotaur wallet connector currently does not support UI.
+                </div>
+            ) : error ? (
+                <Alert severity="error">
+                    {error}
+                </Alert>
+            ) : (
                 <Connect
                     enc_key={encKey}
                     id={id}
@@ -65,10 +79,6 @@ function App() {
                     pageId={pageId}
                     confirm={confirm}
                     server={server}/>
-            ) : (
-                <div>
-                    Minotaur wallet connector currently does not support UI.
-                </div>
             )}
 
         </div>

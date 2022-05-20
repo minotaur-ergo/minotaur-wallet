@@ -1,4 +1,7 @@
-import { EventData } from "../types";
+import { EventData, EventDataType, EventFunction } from "../types";
+import { Tx, SignedTx, Box, SignedInput } from "../../types/blockchain";
+import { ConfirmResponsePayload, Payload, BoxResponsePayload, Paginate } from "../../types/payloads";
+import { TxSignError, APIError, PaginateError } from "../../types/errors";
 
 declare global {
     interface Window {
@@ -10,40 +13,37 @@ declare global {
     }
 }
 
-type Paginate = {
-    page: number;
-    limit: number;
-}
 class ExtensionConnector {
-    private resolver: {currentId: number, requests: Map<string, {resolve: (value: any) => any, reject: (err?: any) => any}>} = {
+    private resolver: { currentId: number, requests: Map<string, { resolve: (value: EventData) => any, reject: (err?: any) => any }> } = {
         currentId: 1,
         requests: new Map()
     };
 
-    protected processEventType = ''
+    protected processEventType: EventDataType = "call";
 
     protected constructor() {
     }
 
     protected setup = () => {
         window.addEventListener("message", this.eventHandler);
-    }
+    };
 
-    protected rpcCall = (func: string, params?: any) => {
-        return new Promise((resolve, reject) => {
-            const msg = {
+    protected rpcCall = (func: EventFunction, params?: Payload): Promise<EventData> => {
+        return new Promise<EventData>((resolve, reject) => {
+            const msg: EventData = {
                 type: this.processEventType,
                 direction: "request",
                 requestId: `${this.resolver.currentId}`,
                 function: func,
+                isSuccess: false,
+                sessionId: "",
                 payload: params
-            }
-            console.log("new message to send: ", msg)
+            };
             window.postMessage(msg);
-            this.resolver.requests.set(`${this.resolver.currentId}`, {resolve: resolve, reject: reject});
+            this.resolver.requests.set(`${this.resolver.currentId}`, { resolve: resolve, reject: reject });
             this.resolver.currentId++;
         });
-    }
+    };
 
     private eventHandler = (event: MessageEvent<EventData>) => {
         if (event.data.type === this.processEventType && event.data.direction === "response") {
@@ -55,7 +55,7 @@ class ExtensionConnector {
                 if (ret.isSuccess) {
                     this.processEvent(ret, promise.resolve);
                 } else {
-                    promise.reject(ret)
+                    promise.reject(ret);
                 }
             }
         }
@@ -63,44 +63,46 @@ class ExtensionConnector {
 
     protected processEvent = (data: EventData, callback: (content: any) => any) => {
         callback(data);
-    }
+    };
 }
 
 class MinotaurConnector extends ExtensionConnector {
     private static instance?: MinotaurConnector;
-    protected processEventType = 'auth'
+    protected processEventType: EventDataType = "auth";
 
     static getInstance = () => {
         if (!MinotaurConnector.instance) {
             MinotaurConnector.instance = new MinotaurConnector();
             MinotaurConnector.instance.setup();
         }
-        return MinotaurConnector.instance
-    }
+        return MinotaurConnector.instance;
+    };
 
     connect = (url?: string): Promise<boolean> => {
         return new Promise<boolean>((resolve, reject) => {
-            this.rpcCall('connect', {server: url}).then(res => resolve(true)).catch(() => reject())
-        })
-    }
+            this.rpcCall("connect", { server: url }).then(res => resolve(true)).catch(() => reject());
+        });
+    };
 
     is_connected = (): Promise<boolean> => {
         return new Promise<boolean>((resolve, reject) => {
-            this.rpcCall('is_connected').then(res => resolve((res as EventData).payload as boolean)).catch(() => reject())
-        })
-    }
+            this.rpcCall("is_connected").then(res => resolve(
+                ((res as EventData).payload as ConfirmResponsePayload).confirmed)
+            ).catch(() => reject());
+        });
+    };
     protected processEvent = (data: EventData, callback: (content: any) => any) => {
         if (data.isSuccess) {
             window.ergo = MinotaurApi.getInstance();
             callback(data);
         }
-    }
+    };
 }
 
 
 class MinotaurApi extends ExtensionConnector {
     private static instance?: MinotaurApi;
-    protected processEventType = 'call'
+    protected processEventType: EventDataType = "call";
 
 
     static getInstance = () => {
@@ -108,120 +110,94 @@ class MinotaurApi extends ExtensionConnector {
             MinotaurApi.instance = new MinotaurApi();
             MinotaurApi.instance.setup();
         }
-        return MinotaurApi.instance
-    }
+        return MinotaurApi.instance;
+    };
 
-    get_used_addresses = (paginate?: Paginate) => {
-        return new Promise<Array<string>>((resolve, reject) => {
-            this.rpcCall('address', {type: "used", page: paginate}).then(res => {
-                const data: EventData = res as EventData;
-                resolve(data.payload as Array<string>);
-            }).catch((err: any) => reject(err));
-        })
-    }
+    get_utxos = (amount: bigint, token_id: string = "ERG", paginate?: Paginate): Promise<Array<Box> | undefined> => {
+        return new Promise<Array<Box> | undefined>((resolve, reject) => {
+            paginate = paginate ? paginate : { page: 1, limit: 100 };
+            this.rpcCall("boxes", {
+                amount: amount.toString(),
+                tokenId: token_id,
+                page: paginate
+            }).then(res => {
+                resolve(res.payload as BoxResponsePayload);
+            }).catch((err: APIError | PaginateError) => reject(err));
+        });
+    };
 
-    get_unused_addresses = (paginate?: Paginate) => {
+    get_balance = (token_id: string): Promise<bigint> => {
+        return this.get_balances(token_id).then(res => res as bigint);
+    };
+
+    get_balances = (token_id: string, ...token_ids: Array<string>): Promise<bigint | { [id: string]: bigint }> => {
+        return new Promise<bigint | { [id: string]: bigint }>((resolve, reject) => {
+            this.rpcCall("balance", { tokenIds: [token_id, ...token_ids] }).then(res => {
+                const data = (res.payload as { [id: string]: string });
+                const output: { [id: string]: bigint } = {};
+                if (token_ids.length) {
+                    output[token_id] = BigInt(data[token_id]);
+                    token_ids.forEach(token => {
+                        output[token] = BigInt(data[token]);
+                    });
+                    resolve(output);
+                } else {
+                    resolve(BigInt(data[token_id]));
+                }
+            }).catch((err: APIError) => reject(err));
+        });
+    };
+
+    get_used_addresses = (paginate?: Paginate): Promise<Array<string>> => {
         return new Promise<Array<string>>((resolve, reject) => {
-            this.rpcCall('address', {type: "unused", page: paginate}).then(res => {
-                const data: EventData = res as EventData;
+            this.rpcCall("address", { type: "used", page: paginate }).then(data => {
                 resolve(data.payload as Array<string>);
-            }).catch((err: any) => reject(err));
-        })
-    }
+            }).catch((err: APIError | PaginateError) => reject(err));
+        });
+    };
+
+    get_unused_addresses = (paginate?: Paginate): Promise<Array<string>> => {
+        return new Promise<Array<string>>((resolve, reject) => {
+            this.rpcCall("address", { type: "unused", page: paginate }).then(data => {
+                resolve(data.payload as Array<string>);
+            }).catch((err: APIError | PaginateError) => reject(err));
+        });
+    };
 
     get_change_address = () => {
         return new Promise<string>((resolve, reject) => {
-            this.rpcCall('address', {type: "change"}).then(res => {
-                console.log("res is ", res)
-                const data: EventData = res as EventData;
+            this.rpcCall("address", { type: "change" }).then(data => {
                 const addresses = data.payload as Array<string>;
-                if(addresses.length > 0){
-                    resolve(addresses[0])
-                }else{
+                if (addresses.length > 0) {
+                    resolve(addresses[0]);
+                } else {
                     reject();
                 }
-            }).catch((err: any) => reject(err));
-        })
+            }).catch((err: APIError) => reject(err));
+        });
+    };
+    sign_tx = (tx: Tx): Promise<SignedTx> => {
+        return new Promise<SignedTx>((resolve, reject) => {
+            this.rpcCall("sign", { tx: tx, index: "all" }).then(signed => {
+                resolve(signed.payload as SignedTx);
+            }).catch((err: APIError | TxSignError) => reject(err));
+        });
+    };
+
+    sign_tx_input = (tx: Tx, index: number): Promise<SignedInput> => {
+        return new Promise<SignedInput>((resolve, reject) => {
+            this.rpcCall("sign", { tx: tx, index: index }).then(signed => {
+                resolve(signed.payload as SignedInput);
+            }).catch((err: APIError | TxSignError) => reject(err));
+        });
     }
 
-    get_balance = (token_id: string, ...token_ids: Array<string>): Promise<bigint | {[id:string]: bigint}> => {
-        return new Promise<bigint | {[id: string]: bigint}>((resolve, reject) => {
-            this.rpcCall('balance', {tokens: [token_id, ...token_ids]}).then(res => {
-                console.log(res)
-                const data = ((res as EventData).payload as {[id: string]: string})
-                const output: {[id: string]: bigint} = {};
-                if(token_ids.length){
-                    output[token_id] = BigInt(data[token_id])
-                    token_ids.forEach(token => {
-                        output[token] = BigInt(data[token]);
-                    })
-                    resolve(output);
-                }else{
-                    resolve(BigInt(data[token_id]))
-                }
-            }).catch(() => reject())
-        })
-    }
-
-    get_utxos = (amount?: bigint, token_id: string = "ERG", page?: {offset: number, limit: number}) => {
-        return new Promise<bigint>((resolve, reject) => {
-            this.rpcCall('get_boxes', {
-                amount: amount,
-                token_id: token_id,
-                page: page
-            }).then(res => {
-                resolve(BigInt((res as EventData).payload as string))
-            }).catch(() => reject())
-        })
+    sign_data = (address: string, message: string): Promise<string> => {
+        return new Promise<string>((resolve, reject) => {
+            reject({code: -1, info: "Not Implemented"})
+        });
     }
 }
-
-//     sign_tx = (tx) => {
-//         return this._rpcCall("signTx", [tx]);
-//     }
-//
-//     sign_tx_input = (tx, index) => {
-//         return this._rpcCall("signTxInput", [tx, index]);
-//     }
-//
-//     sign_data = (addr, message) => {
-//         return this._rpcCall("signData", [addr, message]);
-//     }
-//
-//     submit_tx = (tx) => {
-//         return this._rpcCall("submitTx", [tx]);
-//     }
-//
-//     _rpcCall = (func: string, params?: any) => {
-//         return new Promise((resolve, reject) => {
-//             window.postMessage({
-//                 type: "rpc/connector-request",
-//                 requestId: this.resolver.currentId,
-//                 function: func,
-//                 params
-//             });
-//             this.resolver.requests.set(this.resolver.currentId, {resolve: resolve, reject: reject});
-//             this.resolver.currentId++;
-//         });
-//     }
-//
-//     eventHandler = (event) => {
-//         if (event.data.type === "rpc/connector-response") {
-//             console.debug(JSON.stringify(event.data));
-//             const promise = this.resolver.requests.get(event.data.requestId);
-//             if (promise !== undefined) {
-//                 this.resolver.requests.delete(event.data.requestId);
-//                 const ret = event.data.return;
-//                 if (ret.isSuccess) {
-//                     promise.resolve(ret.data);
-//                 } else {
-//                     promise.reject(ret.data);
-//                 }
-//             }
-//         }
-//     };
-//
-// }
 
 if (window.ergoConnector !== undefined) {
     window.ergoConnector = {
@@ -234,7 +210,7 @@ if (window.ergoConnector !== undefined) {
     };
 }
 
-const warnDeprecated = function (func: string) {
+const warnDeprecated = function(func: string) {
     console.warn(
         "[Deprecated] In order to avoid conflicts with another wallets, this method will be disabled and replaced by '" +
         func +
@@ -243,12 +219,12 @@ const warnDeprecated = function (func: string) {
 };
 
 if (!window.ergo_request_read_access && !window.ergo_check_read_access) {
-    window.ergo_request_read_access = function () {
+    window.ergo_request_read_access = function() {
         warnDeprecated("ergoConnector.nautilus.connect()");
-        return MinotaurConnector.getInstance().connect().then(res => null)
+        return MinotaurConnector.getInstance().connect().then(res => null);
     };
-    window.ergo_check_read_access = function () {
+    window.ergo_check_read_access = function() {
         warnDeprecated("ergoConnector.nautilus.isConnected()");
-        return MinotaurConnector.getInstance().is_connected().then(res => null)
+        return MinotaurConnector.getInstance().is_connected().then(res => null);
     };
 }

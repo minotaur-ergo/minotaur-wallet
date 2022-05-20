@@ -17,6 +17,7 @@ interface TxBoxDisplayPropsType {
 }
 
 const TxBoxDisplay = (props: TxBoxDisplayPropsType) => {
+    const tx: wasm.ReducedTransaction = new wasm.ReducedTransaction();
     return (
         <BottomSheet show={props.show} close={props.close}>
             <Grid container>

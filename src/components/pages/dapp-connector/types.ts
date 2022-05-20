@@ -1,68 +1,6 @@
 import * as uuid from "uuid";
-
-export type ActionType =
-    "registered" |
-    "confirm" |
-    "confirmed" |
-    "boxes_request" |
-    "boxes_response" |
-    "balance_request" |
-    "balance_response" |
-    "address_request" |
-    "address_response" |
-    "sign_request" |
-    "sign_response" |
-    "submit_request" |
-    "submit_response";
-
-export type Page = {
-    page: number;
-    limit: number
-}
-
-export type ConfirmPayload = {
-    id: string;
-    display: string;
-}
-
-export type BoxRequestPayload = {
-    amount: string;
-    tokenId: string;
-    page: Page;
-}
-
-export type BalanceRequestPayload = {
-    tokens: Array<string>;
-}
-
-export type BalanceResponsePayload = { [tokenId: string]: string }
-
-export type AddressRequestPayload = {
-    type: "used" | "unused" | "change" | "all";
-    page: Page;
-}
-
-export type AddressResponsePayload = Array<string>
-
-
-export type Payload = ConfirmPayload |
-    BoxRequestPayload |
-    BalanceRequestPayload |
-    BalanceResponsePayload |
-    AddressRequestPayload |
-    AddressResponsePayload;
-
-export interface MessageContent {
-    action: ActionType;
-    requestId: string
-    payload?: Payload;
-}
-
-export interface MessageData {
-    sender: string;
-    pageId: string;
-    content: string;
-}
+import { MessageContent, MessageData, PostMessage } from "../../../connector/types/communication";
+import { encrypt } from "../../../connector/utils";
 
 export interface ConnectionData {
     server: string;
@@ -113,7 +51,7 @@ export class Connection {
         connection.onopen = () => {
             connection.send(JSON.stringify({
                 action: "register",
-                payload: {id: this.id}
+                id: this.id
             }))
         }
         connection.onclose = () => {
@@ -124,19 +62,18 @@ export class Connection {
         this.connection = connection;
     }
 
-    send = (id: string, pageId: string, msg: string) => {
-        const sendMsg = JSON.stringify({
-            action: 'send',
-            payload: {
-                client: id,
-                pageId: pageId,
-                content: msg
-            }
-        })
+    send = (id: string, enc_key: string, body: MessageContent) => {
+        const content = enc_key ? encrypt(body, enc_key) : JSON.stringify(body)
+        const msg: PostMessage = {
+            action: "send",
+            user: id,
+            content: content
+        };
+        const msgStr = JSON.stringify(msg);
         if (this.connection) {
-            this.connection.send(sendMsg);
+            this.connection.send(msgStr);
         } else {
-            this.messageQueue.push(sendMsg)
+            this.messageQueue.push(msgStr)
             this.connect();
         }
     }
