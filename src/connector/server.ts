@@ -53,12 +53,14 @@ wsServer.on("request", function(request) {
                     const client = message.user;
                     if (client && clients.hasOwnProperty(client)) {
                         const clientConnection = clients[client]!;
+                        console.log((new Date()) + " New message from " + request.origin + " to " + clientConnection.id);
                         const clientMessage: MessageData = {
                             sender: myInfo.id,
                             content: message.content!
                         }
                         clientConnection.connection.sendUTF(JSON.stringify(clientMessage));
                     } else {
+                        console.log((new Date()) + " New message from " + request.origin + " declined.");
                         const response: MessageData = {
                             sender: "decline",
                             content: message.content? message.content : ""

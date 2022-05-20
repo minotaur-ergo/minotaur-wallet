@@ -5,8 +5,11 @@ import Typography from "@mui/material/Typography";
 import WalletSelect from "./WalletSelect";
 import WalletWithErg from "../../../db/entities/views/WalletWithErg";
 import { Connection, ConnectionData, ConnectionState } from "./types";
-import { MessageContent, MessageData } from "../../../connector/types/communication";
+import { ActionType, MessageContent, MessageData } from "../../../connector/types/communication";
 import { decrypt } from "../../../connector/utils";
+import { AddressRequestPayload, Payload } from "../../../connector/types/payloads";
+import { AddressDbAction, BoxDbAction, WalletDbAction } from "../../../action/db";
+import { EventData } from "../../../connector/service/types";
 
 interface DAppConnectorPropType {
     value: string;
@@ -77,18 +80,53 @@ class DAppConnector extends React.Component<DAppConnectorPropType, DAppConnector
                 case "confirm":
                     this.processConfirmed(connection);
                     break;
-                // case "address_request":
-                //     this.processAddress(connection, content).then(() => null);
-                //     break;
+                case "address":
+                    this.processAddress(connection, content).then(() => null);
+                    break;
                 // case "balance_request":
                 //     this.processBalance(connection, content).then(() => null);
             }
         }
     }
 
+    sendMessageToServer = (connection: ConnectionState, action: ActionType, requestId: string, payloadType: string, payload: Payload) => {
+        const serverAddress = connection.info.server;
+        let server: Connection = this.state.servers[serverAddress];
+        const body: MessageContent = {
+            pageId: connection.info.pageId,
+            payload: payload,
+            payloadType: payloadType,
+            action: action,
+            requestId: requestId
+        }
+        server.send(connection.info.id, connection.info.enc_key, body);
+    };
+
     handleError = () => {
 
     }
+
+    processAddress = async (connection: ConnectionState, content: MessageContent) => {
+        const payload = content.payload as AddressRequestPayload;
+        const wallet = await WalletDbAction.getWalletById(connection.walletId!);
+        if (wallet) {
+            const addresses = await AddressDbAction.getWalletAddresses(wallet.id);
+            let resultAddress: Array<string> = [];
+            if (payload.type === "change") {
+                resultAddress = [addresses[0].address];
+            } else {
+                const usedAddressIds = (await BoxDbAction.getUsedAddressIds(`${wallet.id}`)).map(item => item.addressId);
+                resultAddress = addresses.filter(item => {
+                    const index = usedAddressIds.indexOf(item.id);
+                    return payload.type === "used" ? index !== -1 : index === -1;
+                }).map(item => item.address);
+                if (payload.page) {
+                    resultAddress = resultAddress.slice(payload.page.page * payload.page.limit, (payload.page.page + 1) * payload.page.limit);
+                }
+            }
+            this.sendMessageToServer(connection, "address", content.requestId, "AddressResponsePayload", resultAddress);
+        }
+    };
 
     processConfirmed = (connection: ConnectionState) => {
         this.setState(state => {

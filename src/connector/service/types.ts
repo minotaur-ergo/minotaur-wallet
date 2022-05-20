@@ -51,7 +51,8 @@ export type EventFunction = "connect" |
     "address" |
     "boxes" |
     "sign" |
-    "sign_data";
+    "sign_data" |
+    "submit";
 
 export type EventDataType = "call" | "auth" | "register";
 

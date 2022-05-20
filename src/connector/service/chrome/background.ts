@@ -42,7 +42,6 @@ const createSocket = (server: string): Promise<void> => {
                 socket.send(JSON.stringify(msg));
             };
             socket.onmessage = (message: MessageEvent<string>) => {
-                console.log(message)
                 const msg = JSON.parse(message.data) as MessageData;
                 if (msg.sender === "") {
                     resolve();
@@ -56,20 +55,24 @@ const createSocket = (server: string): Promise<void> => {
                                 case "confirm":
                                     const payload = content.payload as ConfirmPayload;
                                     session.walletId = payload.id;
-                                    const msg: UIResponse = {
+                                    const confirmMsg: UIResponse = {
                                         type: "set_display",
                                         display: payload.display
                                     };
-                                    session.popupPort?.postMessage(msg);
+                                    session.popupPort?.postMessage(confirmMsg);
                                     break;
                                 case "address":
-                                    // session.port.postMessage({
-                                    //     type: 'call',
-                                    //     direction: 'response',
-                                    //     isSuccess: true,
-                                    //     requestId: request.requestId,
-                                    //     payload: contentJson.payload as AddressResponsePayload
-                                    // });
+                                    // TODO process exceptions
+                                    const addressMsg: EventData = {
+                                        type: "call",
+                                        direction: "response",
+                                        isSuccess: true,
+                                        function: "address",
+                                        payload: content.payload,
+                                        sessionId: session.id,
+                                        requestId: request.requestId,
+                                    };
+                                    session.port.postMessage(addressMsg)
                                     break;
                                 case "balance":
                                     // session.port.postMessage({
@@ -194,37 +197,40 @@ const sendMessage = (server: string, id: string, pageId: string, content: Messag
 const handleAuthRequests = (msg: EventData, port: chrome.runtime.Port) => {
     if (msg.type === "auth") {
         let session = info.sessions.get(msg.sessionId);
-        if (!session) {
-            const payload = msg.payload as ConnectPayload;
-            session = {
-                port: port,
-                id: msg.sessionId,
-                server: payload.server ? payload.server : DEFAULT_SERVER,
-                requests: new Map<string, EventData>(),
-                requestId: `${msg.requestId}`
-            };
-            info.sessions.set(msg.sessionId, session);
-            port.onDisconnect.addListener(() => {
-                if (session) {
-                    session.port = undefined;
-                }
-            });
-        }
-        session.requests.set(`${msg.requestId}`, { ...msg });
         const fn = msg.function;
         switch (fn) {
             case "connect":
+                if (!session) {
+                    const payload = msg.payload as ConnectPayload;
+                    session = {
+                        port: port,
+                        id: msg.sessionId,
+                        server: payload.server ? payload.server : DEFAULT_SERVER,
+                        requests: new Map<string, EventData>(),
+                        requestId: `${msg.requestId}`
+                    };
+                    info.sessions.set(msg.sessionId, session);
+                    port.onDisconnect.addListener(() => {
+                        if (session) {
+                            session.port = undefined;
+                        }
+                    });
+                }
+                session.requests.set(`${msg.requestId}`, { ...msg });
                 session.requests.set(`${msg.requestId}`, msg);
                 requestAccess(session, msg.requestId);
                 break;
             case "is_connected":
-                session.port?.postMessage({
+                const msgResponse: EventData = {
                     type: "auth",
                     direction: "response",
                     isSuccess: true,
                     requestId: msg.requestId,
-                    payload: !!session.walletId
-                });
+                    sessionId: msg.sessionId,
+                    function: "is_connected",
+                    payload: {confirmed: !!session && !!session.walletId}
+                }
+                port.postMessage(msgResponse);
                 break;
         }
     }
@@ -263,20 +269,41 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
                         error: "" + err
                     };
                     session.popupPort?.postMessage(msg);
+                    const request = session.requests.get(`${session.requestId!}`);
+                    if(request) {
+                        const response: EventData = {
+                            type: "auth",
+                            requestId: request.requestId,
+                            isSuccess: false,
+                            function: "connect",
+                            sessionId: request.sessionId,
+                            direction: "response",
+                        }
+                        session.port?.postMessage(response);
+                    }
                 });
                 break;
-//             case "approve":
-//                 const request = session.requests.get(`${msg.requestId!}`);
-//                 if (request) {
-//                     session.port?.postMessage({
-//                         type: 'auth',
-//                         direction: 'response',
-//                         isSuccess: true,
-//                         requestId: request.requestId,
-//                     });
-//                     session.popupPort?.postMessage({type: "close"});
-//                     sendMessage(session.server, session.walletId!, session.id, JSON.stringify({action: "confirmed"}))
-//                 }
+            case "approve":
+                const request = session.requests.get(`${msg.requestId!}`);
+                if (request) {
+                    const response: EventData = {
+                        type: "auth",
+                        requestId: request.requestId,
+                        isSuccess: true,
+                        function: "connect",
+                        sessionId: request.sessionId,
+                        direction: "response",
+                    }
+                    session.port?.postMessage(response);
+                    session.popupPort?.postMessage({type: "close"});
+                    sendMessage(session.server, session.walletId!, session.id, {
+                        action: "confirm",
+                        requestId: session.requestId,
+                        pageId: session.id,
+                        payload: undefined,
+                        payloadType: ""
+                    })
+                }
         }
     }
 };

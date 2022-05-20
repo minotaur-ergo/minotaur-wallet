@@ -1,6 +1,12 @@
 import { EventData, EventDataType, EventFunction } from "../types";
-import { Tx, SignedTx, Box, SignedInput } from "../../types/blockchain";
-import { ConfirmResponsePayload, Payload, BoxResponsePayload, Paginate } from "../../types/payloads";
+import { Tx, SignedTx, Box, SignedInput, TxId } from "../../types/blockchain";
+import {
+    ConfirmResponsePayload,
+    Payload,
+    BoxResponsePayload,
+    Paginate,
+    SubmitTxResponsePayload
+} from "../../types/payloads";
 import { TxSignError, APIError, PaginateError } from "../../types/errors";
 
 declare global {
@@ -176,6 +182,7 @@ class MinotaurApi extends ExtensionConnector {
             }).catch((err: APIError) => reject(err));
         });
     };
+
     sign_tx = (tx: Tx): Promise<SignedTx> => {
         return new Promise<SignedTx>((resolve, reject) => {
             this.rpcCall("sign", { tx: tx, index: "all" }).then(signed => {
@@ -190,13 +197,21 @@ class MinotaurApi extends ExtensionConnector {
                 resolve(signed.payload as SignedInput);
             }).catch((err: APIError | TxSignError) => reject(err));
         });
-    }
+    };
 
     sign_data = (address: string, message: string): Promise<string> => {
         return new Promise<string>((resolve, reject) => {
-            reject({code: -1, info: "Not Implemented"})
+            reject({ code: -1, info: "Not Implemented" });
         });
-    }
+    };
+
+    submit_tx = (tx: SignedTx): Promise<TxId> => {
+        return new Promise<TxId>((resolve, reject) => {
+            this.rpcCall("submit", { tx: tx }).then(result => {
+                resolve((result.payload as SubmitTxResponsePayload).tx_id);
+            }).catch((err: APIError | TxSignError) => reject(err));
+        });
+    };
 }
 
 if (window.ergoConnector !== undefined) {

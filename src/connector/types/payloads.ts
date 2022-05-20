@@ -55,11 +55,14 @@ export type SubmitTxRequestPayload = {
     tx: SignedTx;
 }
 
-export type SubmitTxResponsePayload = TxId;
+export type SubmitTxResponsePayload = {
+    tx_id: TxId;
+};
 
 export type ConnectPayload = {
     server?: string;
 }
+
 export type Payload = ConfirmPayload |
     ConnectPayload |
     ConfirmResponsePayload |
