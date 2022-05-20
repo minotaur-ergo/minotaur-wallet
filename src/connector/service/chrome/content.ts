@@ -5,7 +5,7 @@ import {
     Payload,
     BoxResponsePayload,
     Paginate,
-    SubmitTxResponsePayload
+    SubmitTxResponsePayload, BalanceResponsePayload
 } from "../../types/payloads";
 import { TxSignError, APIError, PaginateError } from "../../types/errors";
 
@@ -36,6 +36,7 @@ class ExtensionConnector {
 
     protected rpcCall = (func: EventFunction, params?: Payload): Promise<EventData> => {
         return new Promise<EventData>((resolve, reject) => {
+            console.log("before rpc call:", params)
             const msg: EventData = {
                 type: this.processEventType,
                 direction: "request",
@@ -139,16 +140,17 @@ class MinotaurApi extends ExtensionConnector {
     get_balances = (token_id: string, ...token_ids: Array<string>): Promise<bigint | { [id: string]: bigint }> => {
         return new Promise<bigint | { [id: string]: bigint }>((resolve, reject) => {
             this.rpcCall("balance", { tokenIds: [token_id, ...token_ids] }).then(res => {
-                const data = (res.payload as { [id: string]: string });
+                const getTokenId = (tmp_token_id: string) => (!!tmp_token_id && tmp_token_id.toUpperCase() !== "ERG") ? tmp_token_id : "ERG"
+                const data = (res.payload as BalanceResponsePayload);
                 const output: { [id: string]: bigint } = {};
                 if (token_ids.length) {
-                    output[token_id] = BigInt(data[token_id]);
+                    output[getTokenId(token_id)] = BigInt(data[getTokenId(token_id)]);
                     token_ids.forEach(token => {
-                        output[token] = BigInt(data[token]);
+                        output[getTokenId(token)] = BigInt(data[getTokenId(token)]);
                     });
                     resolve(output);
                 } else {
-                    resolve(BigInt(data[token_id]));
+                    resolve(BigInt(data[getTokenId(token_id)]));
                 }
             }).catch((err: APIError) => reject(err));
         });

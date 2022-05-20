@@ -1,4 +1,4 @@
-import { APIError } from "./errors";
+import { APIError, PaginateError } from "./errors";
 import { Box, SignedInput, SignedTx, Tx, TxId } from "./blockchain";
 
 export type Paginate = {
@@ -78,4 +78,5 @@ export type Payload = ConfirmPayload |
     SignDataResponsePayload |
     SubmitTxRequestPayload |
     SubmitTxResponsePayload |
+    PaginateError |
     APIError;

@@ -7,9 +7,15 @@ import WalletWithErg from "../../../db/entities/views/WalletWithErg";
 import { Connection, ConnectionData, ConnectionState } from "./types";
 import { ActionType, MessageContent, MessageData } from "../../../connector/types/communication";
 import { decrypt } from "../../../connector/utils";
-import { AddressRequestPayload, Payload } from "../../../connector/types/payloads";
-import { AddressDbAction, BoxDbAction, WalletDbAction } from "../../../action/db";
+import {
+    AddressRequestPayload,
+    AddressResponsePayload,
+    BalanceRequestPayload,
+    Payload
+} from "../../../connector/types/payloads";
+import { AddressDbAction, BoxContentDbAction, BoxDbAction, WalletDbAction } from "../../../action/db";
 import { EventData } from "../../../connector/service/types";
+import { PaginateError } from "../../../connector/types/errors";
 
 interface DAppConnectorPropType {
     value: string;
@@ -83,8 +89,8 @@ class DAppConnector extends React.Component<DAppConnectorPropType, DAppConnector
                 case "address":
                     this.processAddress(connection, content).then(() => null);
                     break;
-                // case "balance_request":
-                //     this.processBalance(connection, content).then(() => null);
+                case "balance":
+                    this.processBalance(connection, content).then(() => null);
             }
         }
     }
@@ -106,25 +112,53 @@ class DAppConnector extends React.Component<DAppConnectorPropType, DAppConnector
 
     }
 
+    processBalance = async (connection: ConnectionState, content: MessageContent) => {
+        const payload = content.payload as BalanceRequestPayload;
+        const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+        if (wallet) {
+            const tokens = payload.tokenIds;
+            const res: { [id: string]: string } = {};
+            const amounts: { [id: string]: string } = {};
+            (await BoxContentDbAction.getWalletTokens(wallet.id)).forEach(item => {
+                amounts[item.tokenId] = item.total;
+            });
+            tokens.forEach(token => {
+                if (!!token && token.toUpperCase() !== "ERG") {
+                    res[token] = amounts.hasOwnProperty(token) ? amounts[token] : "0";
+                } else {
+                    res["ERG"] = wallet.erg().toString();
+                }
+            });
+            this.sendMessageToServer(connection, "balance", content.requestId, "BalanceResponsePayload", res);
+
+        }
+    };
+
     processAddress = async (connection: ConnectionState, content: MessageContent) => {
         const payload = content.payload as AddressRequestPayload;
         const wallet = await WalletDbAction.getWalletById(connection.walletId!);
+        let payloadType = "AddressResponsePayload"
+        let responsePayload: PaginateError | AddressResponsePayload = [];
         if (wallet) {
             const addresses = await AddressDbAction.getWalletAddresses(wallet.id);
-            let resultAddress: Array<string> = [];
             if (payload.type === "change") {
-                resultAddress = [addresses[0].address];
+                responsePayload = [addresses[0].address];
             } else {
                 const usedAddressIds = (await BoxDbAction.getUsedAddressIds(`${wallet.id}`)).map(item => item.addressId);
-                resultAddress = addresses.filter(item => {
+                responsePayload = addresses.filter(item => {
                     const index = usedAddressIds.indexOf(item.id);
                     return payload.type === "used" ? index !== -1 : index === -1;
                 }).map(item => item.address);
                 if (payload.page) {
-                    resultAddress = resultAddress.slice(payload.page.page * payload.page.limit, (payload.page.page + 1) * payload.page.limit);
+                    if(payload.page.page * payload.page.limit >= responsePayload.length){
+                        payloadType = "PaginateError"
+                        responsePayload = {maxSize: responsePayload.length}
+                    }else {
+                        responsePayload = responsePayload.slice(payload.page.page * payload.page.limit, (payload.page.page + 1) * payload.page.limit);
+                    }
                 }
             }
-            this.sendMessageToServer(connection, "address", content.requestId, "AddressResponsePayload", resultAddress);
+            this.sendMessageToServer(connection, "address", content.requestId, payloadType, responsePayload);
         }
     };
 
@@ -143,7 +177,6 @@ class DAppConnector extends React.Component<DAppConnectorPropType, DAppConnector
 
     componentDidUpdate = () => {
         if (this.props.value) {
-            debugger
             const info: ConnectionData = JSON.parse(this.props.value) as ConnectionData;
             const current = this.state.connections.filter(item => item.info.pageId === info.pageId);
             if (current.length === 0) {

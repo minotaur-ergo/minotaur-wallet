@@ -7,11 +7,17 @@ import {
     BalanceRequestPayload,
     BoxRequestPayload, ConfirmPayload,
     ConnectPayload,
-    SingTxRequestPayload
+    SingTxRequestPayload, SubmitTxRequestPayload, SubmitTxResponsePayload
 } from "../../types/payloads";
 import { MessageContent, MessageData, PostMessage } from "../../types/communication";
 import { decrypt, encrypt } from "../../utils";
 
+const LOCAL_STORAGE_KEYS = {
+    id: "ID",
+    pass: "PASSWORD"
+}
+// const currentId = localStorage.getItem(LOCAL_STORAGE_KEYS.id);
+// const enc_key = localStorage.getItem(LOCAL_STORAGE_KEYS.pass)
 const info: {
     id: string;
     enc_key: string;
@@ -23,6 +29,10 @@ const info: {
     enc_key: generate({ length: 32, symbols: true, numbers: true, uppercase: true, lowercase: true }),
     sessions: new Map<string, Session>()
 };
+
+// localStorage.setItem(LOCAL_STORAGE_KEYS.id, info.id)
+// localStorage.setItem(LOCAL_STORAGE_KEYS.pass, info.enc_key)
+// TODO: store sessions information to localStorage
 
 const createSocket = (server: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -62,11 +72,10 @@ const createSocket = (server: string): Promise<void> => {
                                     session.popupPort?.postMessage(confirmMsg);
                                     break;
                                 case "address":
-                                    // TODO process exceptions
                                     const addressMsg: EventData = {
                                         type: "call",
                                         direction: "response",
-                                        isSuccess: true,
+                                        isSuccess: content.payloadType === 'AddressResponsePayload',
                                         function: "address",
                                         payload: content.payload,
                                         sessionId: session.id,
@@ -75,13 +84,16 @@ const createSocket = (server: string): Promise<void> => {
                                     session.port.postMessage(addressMsg)
                                     break;
                                 case "balance":
-                                    // session.port.postMessage({
-                                    //     type: 'call',
-                                    //     direction: 'response',
-                                    //     isSuccess: true,
-                                    //     requestId: request.requestId,
-                                    //     payload: contentJson.payload as BalanceResponsePayload
-                                    // })
+                                    const balanceMsg: EventData = {
+                                        type: "call",
+                                        direction: "response",
+                                        isSuccess: content.payloadType === 'BalanceResponsePayload',
+                                        function: "balance",
+                                        payload: content.payload,
+                                        sessionId: session.id,
+                                        requestId: request.requestId,
+                                    };
+                                    session.port.postMessage(balanceMsg)
                                     break;
                             }
                         }
@@ -169,12 +181,21 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
                         sendMessage(session.server, session.walletId, session.id, {
                             action: "sign",
                             pageId: session.id,
-                            payloadType: "",
+                            payloadType: "SingTxRequestPayload",
                             requestId: msg.requestId,
                             payload: msg.payload as SingTxRequestPayload
                         });
                         break;
                     case "sign_data":
+                        break;
+                    case "submit":
+                        sendMessage(session.server, session.walletId, session.id, {
+                            action: "submit",
+                            pageId: session.id,
+                            payloadType: "SubmitTxRequestPayload",
+                            requestId: msg.requestId,
+                            payload: msg.payload as SubmitTxRequestPayload
+                        });
                         break;
                 }
             }
