@@ -22,7 +22,7 @@ interface SendConfirmPropsType extends MessageEnqueueService {
     display: boolean;
 }
 
-const SendConfirm = (props: SendConfirmPropsType) => {
+const SendConfirmMultiSig = (props: SendConfirmPropsType) => {
     const [password, setPassword] = useState("");
     const [txResponse, setTxResponse] = useState("");
     const sendTx = () => {
@@ -102,4 +102,4 @@ const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
     showMessage: (message: SnackbarMessage, variant: VariantType) => dispatch(showMessage(message, variant))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendConfirm);
+export default connect(mapStateToProps, mapDispatchToProps)(SendConfirmMultiSig);

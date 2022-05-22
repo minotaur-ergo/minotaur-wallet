@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import SendConfirmReadonly from "./SendConfirmReadonly";
-import SendConfirm from "./SendConfirm";
-import Wallet, { WalletType } from "../../db/entities/Wallet";
-import { UnsignedGeneratedTx } from "../../util/interface";
-import { QrCodeContextType } from "../qrcode/qrcode-types/types";
+import React, { useContext } from 'react';
+import SendConfirmReadonly from './SendConfirmReadonly';
+import SendConfirm from './SendConfirm';
+import Wallet, { WalletType } from '../../db/entities/Wallet';
+import { UnsignedGeneratedTx } from '../../util/interface';
+import { QrCodeContextType } from '../qrcode/qrcode-types/types';
 
 interface PropsType {
     wallet: Wallet;
@@ -31,6 +31,11 @@ const SignTransactionDisplay = (props: PropsType) => {
                     close={close}
                     wallet={props.wallet}
                 />
+            );
+        }
+        if (props.wallet.type === WalletType.MultiSig) {
+            return (
+                <div>salam</div>
             );
         }
         return (

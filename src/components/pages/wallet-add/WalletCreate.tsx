@@ -15,6 +15,7 @@ import { showMessage } from "../../../store/actions";
 import { Grid, Typography } from "@mui/material";
 import WalletNetworkSelect from "./elements/WalletNetworkSelect";
 import { NavigateFunction } from "react-router-dom";
+import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 
 interface WalletCreatePropsType extends MessageEnqueueService {
     back: () => any;
@@ -29,7 +30,9 @@ interface WalletCreateStateType {
     type: WalletType;
     saving: boolean;
     network_type: string;
-    public_keys: Array<string>
+    public_keys: Array<string>;
+    minSig: number;
+    wallet: number;
 }
 
 
@@ -42,7 +45,9 @@ class WalletCreate extends React.Component<WalletCreatePropsType, WalletCreateSt
         type: WalletType.Normal,
         saving: false,
         network_type: NETWORK_TYPES[0].label,
-        public_keys: []
+        public_keys: [],
+        minSig: 1,
+        wallet: -1,
     };
 
     steps = [
@@ -86,6 +91,7 @@ class WalletCreate extends React.Component<WalletCreatePropsType, WalletCreateSt
                 this.goBack();
             }).catch(exp => {
                 this.props.showMessage(exp, "error")
+                this.setState({saving: false});
             });
         }
     };

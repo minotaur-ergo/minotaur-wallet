@@ -1,8 +1,7 @@
-import React from "react";
+import React  from 'react';
 import Erg from "../../value/Erg";
 import { Badge, ListItem, ListItemText } from "@mui/material";
 import DisplayId from "../../display-id/DisplayId";
-
 
 interface PropsType {
     address: string;

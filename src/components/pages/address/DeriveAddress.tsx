@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Wallet, { WalletType } from "../../../db/entities/Wallet";
-import { AddressDbAction } from "../../../action/db";
-import { is_valid_address } from "../../../util/util";
-import { AddressAction } from "../../../action/action";
-import { Button, Container, Grid } from "@mui/material";
-import TextInput from "../../inputs/TextInput";
-import AddressInput from "../../inputs/AddressInput";
-import { WalletQrCodeContext } from "../wallet/types";
+import React, { useEffect, useState } from 'react';
+import Wallet, { WalletType } from '../../../db/entities/Wallet';
+import { AddressDbAction } from '../../../action/db';
+import { is_valid_address } from '../../../util/util';
+import { AddressAction } from '../../../action/action';
+import { Button, Container, Grid } from '@mui/material';
+import TextInput from '../../inputs/TextInput';
+import AddressInput from '../../inputs/AddressInput';
+import { WalletQrCodeContext } from '../wallet/types';
 
 
 interface PropsType {
@@ -15,9 +15,9 @@ interface PropsType {
 }
 
 const DeriveAddress = (props: PropsType) => {
-    const [name, setName] = useState("");
-    const [address, setAddress] = useState("");
-    const [addressError, setAddressError] = useState("");
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
+    const [addressError, setAddressError] = useState('');
     const [addresses, setAddresses] = useState<Array<string>>([]);
     useEffect(() => {
         if (props.wallet.type === WalletType.ReadOnly && !!props.wallet.extended_public_key.trim()) {
@@ -29,47 +29,64 @@ const DeriveAddress = (props: PropsType) => {
     useEffect(() => {
         if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
             debugger
-            const addressError = !is_valid_address(address) ? "Invalid address" : addresses.indexOf(address) >= 0 ? "Address already exists on a wallet" : "";
+            const addressError = !is_valid_address(address) ? 'Invalid address' : addresses.indexOf(address) >= 0 ? 'Address already exists on a wallet' : '';
             setAddressError(addressError);
         }
     }, [props.wallet, address, addresses]);
     const deriveAddress = () => {
-        if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
+        if (props.wallet.type === WalletType.MultiSig) {
+            AddressAction.deriveNewMultiSigWalletAddress(props.wallet, name).then(() => {
+                props.addressDerived();
+            });
+        } else if (props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim()) {
             AddressAction.deriveReadOnlyAddress(props.wallet, address, name).then(() => props.addressDerived());
         } else {
             AddressAction.deriveNewAddress(props.wallet, name).then(() => props.addressDerived());
         }
     };
+
+    const deleteAddresses = () => {
+        AddressDbAction.deleteAddresses(props.wallet.id).then(() => null)
+    }
     return (
-        <Container style={{marginTop: "20px"}}>
+        <Container style={{ marginTop: '20px' }}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextInput
-                        size={"small"}
-                        label="New Address Name"
-                        error=""
+                        size={'small'}
+                        label='New Address Name'
+                        error=''
                         value={name}
                         setValue={setName} />
                 </Grid>
                 {props.wallet.type === WalletType.ReadOnly && !props.wallet.extended_public_key.trim() ? (
                     <Grid item xs={12}>
                         <AddressInput
-                            size={"small"}
+                            size={'small'}
                             address={address}
                             setAddress={setAddress}
                             contextType={WalletQrCodeContext}
                             error={addressError}
-                            label="Enter address below" />
+                            label='Enter address below' />
                     </Grid>
                 ) : null}
                 <Grid item xs={12}>
                     <Button
-                        variant="contained"
-                        color="primary"
+                        variant='contained'
+                        color='primary'
                         fullWidth
-                        disabled={addressError !== ""}
+                        disabled={addressError !== ''}
                         onClick={() => deriveAddress()}>
                         Derive new address
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        variant='contained'
+                        color='primary'
+                        fullWidth
+                        onClick={() => deleteAddresses()}>
+                        Delete Available Addresses
                     </Button>
                 </Grid>
             </Grid>

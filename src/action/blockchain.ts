@@ -236,6 +236,17 @@ class BlockChainActionClass {
         }
     };
 
+    generateHintBag = async (tx: wasm.ReducedTransaction) => {
+        const wallet = new wasm.Wallet()
+        const commitments = wallet.generate_commitments(
+            await this.createContext("mainnet"),
+            tx.unsigned_tx(),
+            wasm.ErgoBoxes.from_boxes_json([]),
+            wasm.ErgoBoxes.from_boxes_json([]))
+        const hintBag = wallet.generate_commitments_for_reduced_transaction(tx);
+        const inp0 = hintBag.all_hints_for_input(0)
+        const known = inp0.get(0)
+    }
 }
 
 class BlockChainTxActionClass {
@@ -364,6 +375,7 @@ class BlockChainTxActionClass {
         }
         await AddressDbAction.setAddressHeight(address.id, height, 'tx_spent_box')
     }
+
 }
 
 const BlockChainAction = new BlockChainActionClass();

@@ -1,38 +1,61 @@
 import React, { useState } from "react";
-import { Button, Container, Grid } from "@mui/material";
-import TextInput from "../../../inputs/TextInput";
+import { Button, Container, Grid, Slider } from '@mui/material';
 
 interface TotalSignPropsType {
-    total: string;
+    total: number;
+    minSign: number;
     goBack?: () => any;
-    goForward: (total: string) => any;
+    goForward: (total: number, minSig: number) => any;
     children?: React.ReactNode;
 }
 
 const TotalSign = (props: TotalSignPropsType) => {
     const [total, setTotal] = useState(props.total);
+    const [minSign, setMinSign] = useState(props.minSign);
 
-    const validateTotal = () => {
-        if (total === "") return "Total signers is required";
-        if (isNaN(parseInt(total))) return "Invalid number entered";
-        return parseInt(total) <= 1 ? "Total signers must be grater or equals to 2" : "";
+    const handleSlideTotalSign = (event: Event, newValue: number | number[]) => {
+        setTotal(newValue as number);
+        if(minSign > newValue) {
+            setMinSign(newValue as number)
+        }
     };
-    const formValid = () => {
-        return validateTotal() === "";
+    const handleSlideMinSign = (event: Event, newValue: number | number[]) => {
+        setMinSign(newValue as number);
     };
-
     return (
         <Container>
             <Grid container columnSpacing={2} marginBottom={2}>
                 <Grid item xs={12}>
-                    {props.children}
+                    Total number of signers ({total})
+                </Grid>
+                <br/>
+                <Grid item xs={12}>
+                    <Slider
+                        aria-label="Total Signers"
+                        value={total}
+                        onChange={handleSlideTotalSign}
+                        valueLabelDisplay="auto"
+                        step={1}
+                        marks
+                        min={2}
+                        max={20}
+                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextInput
-                        label="Total Sign"
-                        error={validateTotal()}
-                        value={total}
-                        setValue={setTotal} />
+                    <br/>
+                    Minimum Signature required ({Math.min(total, minSign)})
+                </Grid>
+                <Grid item xs={12}>
+                    <Slider
+                        aria-label="Minimum Required Signs"
+                        value={Math.min(total, minSign)}
+                        onChange={handleSlideMinSign}
+                        valueLabelDisplay="auto"
+                        step={1}
+                        marks
+                        min={1}
+                        max={total}
+                    />
                 </Grid>
             </Grid>
             <Grid container spacing={2} justifyContent="space-between">
@@ -48,8 +71,7 @@ const TotalSign = (props: TotalSignPropsType) => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => props.goForward(total)}
-                        disabled={!formValid()}>
+                        onClick={() => props.goForward(total, Math.min(total, minSign))}>
                         Next
                     </Button>
                 </Grid>

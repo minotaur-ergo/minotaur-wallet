@@ -3,7 +3,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 enum WalletType {
     Cold = 'COLD',
     ReadOnly = 'READ_ONLY',
-    Normal = 'NORMAL'
+    Normal = 'NORMAL',
+    MultiSig = 'MULTI_SIG',
 }
 
 @Entity({name:"wallet"})

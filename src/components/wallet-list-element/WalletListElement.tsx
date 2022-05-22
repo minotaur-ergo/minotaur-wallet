@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Badge, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { faCoffee, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faCoffee, faGroupArrowsRotate, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import { WalletType } from "../../db/entities/Wallet";
@@ -37,6 +37,7 @@ const WalletElement = (props: WalletListElementPropType) => {
                 <Avatar sx={network_type.color === "orange" ? {bgColor: deepOrange[500]} : network_type.color === "purple" ? {bgColor: deepPurple[500]} : {}}>
                     {props.type === WalletType.Normal ? <FontAwesomeIcon icon={faWallet} /> : null}
                     {props.type === WalletType.ReadOnly ? <FontAwesomeIcon icon={faCoffee} /> : null}
+                    {props.type === WalletType.MultiSig ? <FontAwesomeIcon icon={faGroupArrowsRotate} /> : null}
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
