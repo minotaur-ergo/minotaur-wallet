@@ -8,6 +8,7 @@ import { connect, MapDispatchToProps } from "react-redux";
 import { AddQrCodeOpened, closeQrCodeScanner, showMessage } from "../../store/actions";
 import { SnackbarMessage, VariantType } from "notistack";
 import { MessageEnqueueService } from "../app/MessageHandler";
+import Wallet from '../../db/entities/Wallet';
 
 
 interface QrCodeReaderViewPropsType extends MessageEnqueueService{
@@ -21,6 +22,7 @@ interface QrCodeReaderViewPropsType extends MessageEnqueueService{
     qrCodes: Array<string>;
     addQrcode: (id: string) => any;
     closeQrCode: (id: string) => any;
+    wallet?: Wallet;
 }
 
 interface QrCodeReaderViewStateType {
@@ -106,7 +108,7 @@ class QrCodeReaderView extends React.Component<QrCodeReaderViewPropsType, QrCode
     renderSubComponent = () => {
         const selectedType = Types.filter(item => item.type === this.state.type);
         if (selectedType.length > 0) {
-            return selectedType[0].render(this.state.chunks.join(""), this.props.close, this.props.completed);
+            return selectedType[0].render(this.state.chunks.join(""), this.props.close, this.props.completed, this.props.wallet);
         }
         return null;
     };

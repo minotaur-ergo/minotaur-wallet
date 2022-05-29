@@ -257,7 +257,7 @@ class WalletActionClass {
     };
 
     getWalletById = async (walletId: number) => {
-        return this.walletRepository.findOneBy({ id: walletId });
+        return await this.walletRepository.findOneBy({ id: walletId });
     };
 
     getWallets = async () => {

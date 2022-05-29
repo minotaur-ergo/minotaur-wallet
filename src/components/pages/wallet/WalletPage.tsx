@@ -22,6 +22,7 @@ import AssetList from "../asset/AssetList";
 import AddressList from "../address/AddressList";
 import SendTransaction from "../send/SendTransaction";
 import { WalletQrCodeContext } from "./types";
+import MultiSigCommunication from '../multi-sig/MultiSigCommunication';
 
 const TABS = [
     "transaction",
@@ -77,6 +78,7 @@ const WalletPage = (props: PropsType) => {
             fail={() => setShowQrCode(false)}
             success={(scanned) => setScanned(scanned)}
             open={showQrCode}
+            wallet={wallet}
             close={() => setShowQrCode(false)}>
             <WalletQrCodeContext.Provider value={{
                 qrCode: showQrCode,
@@ -95,6 +97,8 @@ const WalletPage = (props: PropsType) => {
                                        element={<Transaction wallet={wallet} setTab={setCurrentTab}/>}/>
                                 <Route path={WalletPageSuffix.WalletSend}
                                        element={<SendTransaction wallet={wallet} setTab={setCurrentTab}/>}/>
+                                <Route path={WalletPageSuffix.WalletMultiSig}
+                                       element={<MultiSigCommunication wallet={wallet} setTab={hideTab}/>}/>
                                 <Route path={WalletPageSuffix.WalletAddress}
                                        element={<AddressList wallet={wallet} setTab={setCurrentTab}/>}/>
                                 <Route path={WalletPageSuffix.WalletAssets}

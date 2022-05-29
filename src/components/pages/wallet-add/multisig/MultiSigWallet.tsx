@@ -9,7 +9,7 @@ import TotalSign from './TotalSign';
 import PublicKeys from './PublicKeys';
 import { Typography } from '@mui/material';
 import AddressConfirm from './AddressConfirm';
-import { WalletAction } from '../../../../action/action';
+import { MultiSigAction, WalletAction } from '../../../../action/action';
 
 class MultiSigWallet extends WalletCreate {
     steps = [
