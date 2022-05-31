@@ -38,7 +38,7 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
                 const transaction: wasm.UnsignedTransaction = props.transaction?.tx as wasm.UnsignedTransaction;
                 const boxes: wasm.ErgoBoxes = props.transaction?.boxes!;
                 const data_input = props.transaction?.data_inputs ? props.transaction.data_inputs : wasm.ErgoBoxes.from_boxes_json([]);
-                BlockChainAction.reduceTransaction(transaction, boxes, data_input, props.wallet.network_type).then(reduced => {
+                BlockChainAction.reduceTransactionBytes(transaction, boxes, data_input, props.wallet.network_type).then(reduced => {
                     AddressDbAction.getWalletAddresses(props.wallet.id).then(walletAddress => {
                         let inputs = [];
                         for (let index = 0; index < boxes.len(); index++) {

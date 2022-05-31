@@ -94,7 +94,7 @@ class BlockChainActionClass {
 
     private getReceiverAmount = (receivers: Array<Receiver>) => receivers.map(receiver => receiver.erg()).reduce((a, b) => a + b);
 
-    private createContext = async (network_type: string) => {
+    createContext = async (network_type: string) => {
         const node = getNetworkType(network_type).getNode();
         const networkContext = await node.getNetworkContext();
         const blockHeaders = wasm.BlockHeaders.from_json(networkContext.lastBlocks);
@@ -147,10 +147,14 @@ class BlockChainActionClass {
         throw Error("Insufficient erg or token to generate transaction");
     };
 
+    reduceTransactionBytes = async (tx: wasm.UnsignedTransaction, boxes: wasm.ErgoBoxes, data_boxes: wasm.ErgoBoxes, network_type: string) => {
+        const reduced_transaction = await this.reduceTransaction(tx, boxes, data_boxes, network_type)
+        return reduced_transaction.sigma_serialize_bytes();
+    };
+
     reduceTransaction = async (tx: wasm.UnsignedTransaction, boxes: wasm.ErgoBoxes, data_boxes: wasm.ErgoBoxes, network_type: string) => {
         const ctx = await this.createContext(network_type);
-        const reduced_transaction = wasm.ReducedTransaction.from_unsigned_tx(tx, boxes, data_boxes, ctx);
-        return reduced_transaction.sigma_serialize_bytes();
+        return wasm.ReducedTransaction.from_unsigned_tx(tx, boxes, data_boxes, ctx);
     };
 
     signReduceTransaction = async (txBytes: Uint8Array, dbWallet: Wallet, password: string) => {
@@ -235,7 +239,6 @@ class BlockChainActionClass {
             await AssetDbAction.createOrUpdateAsset(info, network_type);
         }
     };
-
 }
 
 class BlockChainTxActionClass {
@@ -364,6 +367,7 @@ class BlockChainTxActionClass {
         }
         await AddressDbAction.setAddressHeight(address.id, height, 'tx_spent_box')
     }
+
 }
 
 const BlockChainAction = new BlockChainActionClass();

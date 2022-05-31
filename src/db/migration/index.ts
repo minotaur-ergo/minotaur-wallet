@@ -11,6 +11,7 @@ import { block1645511116354 } from "./1645511116354-block";
 import { tx1645511237301 } from "./1645511237301-tx";
 import { asset1645511244626 } from "./1645511244626-asset";
 import { config1650404055667 } from "./1650404055667-config";
+import { multiSigKeys1653204889560 } from './1653204889560-multi-sig-keys';
 
 const Migrations = [
     block1645511116354,
@@ -25,7 +26,8 @@ const Migrations = [
     walletWithErg1645511292840,
     walletTx1645511299711,
     tokenWithAddress1645511306482,
-    config1650404055667
+    config1650404055667,
+    multiSigKeys1653204889560
 ];
 
 export default Migrations;

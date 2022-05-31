@@ -56,7 +56,7 @@ class GenerateTransactionBottomSheet extends React.Component<PropsType, StateTyp
     render_transaction = () => {
         if (this.state.loaded_wallet_id === this.props.wallet.id && this.props.transaction && this.props.transaction.tx && this.props.transaction.boxes) {
             const tx = this.props.transaction.tx;
-            const unsigned_tx = tx.hasOwnProperty("unsigned_tx") ? (tx as wasm.ReducedTransaction).unsigned_tx() : tx as wasm.UnsignedTransaction;
+            const unsigned_tx = (tx instanceof wasm.ReducedTransaction) ? tx.unsigned_tx() : tx as wasm.UnsignedTransaction
             const boxes = this.props.transaction.boxes;
             const box_array = Array(boxes.len()).map((item, index) => boxes.get(index));
             return (

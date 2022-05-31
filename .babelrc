@@ -1,8 +1,0 @@
-{
-  "presets": ["babel-preset-react-app"],
-  "plugins": [
-    ["import", { "libraryName": "antd", "style": true}, "antd"],
-    ["@babel/plugin-proposal-decorators", { "legacy": true }],
-    ["@babel/plugin-proposal-class-properties", { "loose": true }]
-  ]
-}

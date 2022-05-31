@@ -7,5 +7,5 @@ export const MAX_CHUNK_SIZE = 2800;
 export const CONFIRMATION_HEIGHT = 20;
 export const REFRESH_INTERVAL = 15 * 1000;
 export const ADDRESS_URL_PLACE_HOLDER = "#P2PK_ADDRESS#"
-
+export const CO_SIGNING_SERVER_ADDRESS = "http://127.0.0.1:8080/"
 export const INC_LIMIT = 10;

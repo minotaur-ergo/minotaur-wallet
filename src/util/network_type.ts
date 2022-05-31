@@ -10,7 +10,7 @@ const MainNet = new NetworkType(
     "purple",
     "Mainnet"
 );
-//
+
 // const DevNet = new NetworkType(
 //     "http://10.10.9.3:9065",
 //     "http://10.10.9.3:7000",

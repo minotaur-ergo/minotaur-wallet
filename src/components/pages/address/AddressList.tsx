@@ -1,13 +1,14 @@
-import React from "react";
-import AddressElement from "./AddressElement";
-import DeriveAddress from "./DeriveAddress";
-import BottomSheet from "../../../components/bottom-sheet/BottomSheet";
-import AddressView from "./AddressView";
-import AddressWithErg from "../../../db/entities/views/AddressWithErg";
-import ExtendedPublicKeyView from "./ExtendedPublicKeyView";
-import { WalletPagePropsType } from "../../../util/interface";
-import { AddressDbAction } from "../../../action/db";
-import { Divider, List, ListItem, ListItemText } from "@mui/material";
+import React from 'react';
+import AddressElement from './AddressElement';
+import DeriveAddress from './DeriveAddress';
+import BottomSheet from '../../../components/bottom-sheet/BottomSheet';
+import AddressView from './AddressView';
+import AddressWithErg from '../../../db/entities/views/AddressWithErg';
+import ExtendedPublicKeyView from './ExtendedPublicKeyView';
+import { WalletPagePropsType } from '../../../util/interface';
+import { AddressDbAction } from '../../../action/db';
+import { Divider, List, ListItem, ListItemText } from '@mui/material';
+import { WalletType } from '../../../db/entities/Wallet';
 
 interface StateType {
     addresses: Array<AddressWithErg>;
@@ -83,7 +84,7 @@ class AddressList extends React.Component<WalletPagePropsType, StateType> {
                         addressDerived={this.addressDerived}/>
                 ) : null}
                 <List>
-                    {!!this.props.wallet.extended_public_key.trim() ? (
+                    {!!this.props.wallet.extended_public_key.trim() && this.props.wallet.type !== WalletType.MultiSig ? (
                         <React.Fragment>
                             <Divider/>
                             <ListItem onClick={this.showPublicKey}>
