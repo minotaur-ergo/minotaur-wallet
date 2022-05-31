@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import PasswordInput from '../inputs/PasswordInput';
 import { AddressAction } from '../../action/action';
 import Wallet from '../../db/entities/Wallet';
 
 
 interface RenderPasswordPropsType {
-    accept: (password: string) => any;
+    accept: (password: string, cosigning: boolean) => any;
     wallet: Wallet;
+    selectCosigning: boolean;
 }
 
 const RenderPassword = (props: RenderPasswordPropsType) => {
@@ -30,15 +31,47 @@ const RenderPassword = (props: RenderPasswordPropsType) => {
                     setPassword={password => setPassword(password)} />
             </Grid>
             <Grid item xs={12}>
-                <Button
-                    variant='contained'
-                    fullWidth
-                    color='primary'
-                    onClick={() => props.accept(password)}
-                    disabled={!passwordValid()}
-                >
-                    Create Commitment
-                </Button>
+                {props.selectCosigning ? (
+                <Grid container spacing={2} aria-orientation={'horizontal'}>
+                    <Grid item xs={12}>
+                        <Typography>
+                            Select message passing approach between wallets
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button
+                            variant='contained'
+                            fullWidth
+                            color='primary'
+                            onClick={() => props.accept(password, false)}
+                            disabled={!passwordValid()}
+                        >
+                            Manual Sign
+                        </Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button
+                            variant='contained'
+                            fullWidth
+                            color='primary'
+                            onClick={() => props.accept(password, true)}
+                            disabled={!passwordValid()}
+                        >
+                            Cosigning Server
+                        </Button>
+                    </Grid>
+                </Grid>
+                ) : (
+                    <Button
+                        variant='contained'
+                        fullWidth
+                        color='primary'
+                        onClick={() => props.accept(password, false)}
+                        disabled={!passwordValid()}
+                    >
+                        Continue Signing
+                    </Button>
+                )}
             </Grid>
         </React.Fragment>
     );

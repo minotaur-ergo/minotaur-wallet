@@ -38,6 +38,20 @@ class MultiSigActionClass {
         return res;
     };
 
+    getAddressMapForIndex = async (multiSigWallet: Wallet, signingWallet: Wallet, sortIndex: number, networkPrefix: wasm.NetworkPrefix) => {
+        const extendedKeys = (await MultiSigDbAction.getWalletExternalKeys(multiSigWallet.id)).map(item => item.extended_key);
+        extendedKeys.push(signingWallet.extended_public_key);
+        const derive_path = extendedKeys.map(item => bip32.fromBase58(item));
+        const pks: Array<string> = [];
+        const map: { [pk: string]: string } = Object.assign({}, ...derive_path.map(item => {
+            const address = wasm.Address.from_public_key(item.derive(0).publicKey).to_base58(networkPrefix);
+            const pk = item.derive(sortIndex).publicKey.toString('hex');
+            pks.push(pk);
+            return { [pk]: address };
+        }));
+        return pks.sort().map(item => ({ address: map[item], pk: item }));
+    };
+
     getMultiSigWalletMyPublicKeys = async (multiSigWallet: Wallet, signingWallet: Wallet) => {
         const addresses = await AddressDbAction.getWalletAddresses(multiSigWallet.id);
         const res: { [address: string]: string } = {};
@@ -96,6 +110,9 @@ class MultiSigActionClass {
 
     overridePublicCommitments = (baseCommitments: Array<Array<string>>, override: Array<Array<string>>): { commitments: Array<Array<string>>, changed: boolean } => {
         if (baseCommitments.length !== override.length) {
+            if (override.length === 0) {
+                return { commitments: [...baseCommitments], changed: false };
+            }
             return { commitments: [...override], changed: true };
         }
         let changed = false;
@@ -117,7 +134,7 @@ class MultiSigActionClass {
         return {
             hint: 'cmtReal',
             pubkey: {
-                op: "205",
+                op: '205',
                 h: publicKey,
             },
             type: 'dlog',
@@ -131,9 +148,9 @@ class MultiSigActionClass {
         publicKeys.forEach((inputPublicKeys, index) => {
             const inputCommitments = commitments[index];
             publicJson[`${index}`] = inputPublicKeys.map((inputPublicKey, pkIndex) => {
-                if(inputCommitments[pkIndex])
+                if (inputCommitments[pkIndex])
                     return this.generateHintBagJson(inputPublicKey, inputCommitments[pkIndex], pkIndex);
-                return undefined
+                return undefined;
             }).filter(item => !!item);
             secretJson[`${index}`] = [];
         });

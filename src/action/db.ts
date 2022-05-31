@@ -16,6 +16,8 @@ import BoxContent from '../db/entities/BoxContent';
 import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import MultiSigKey from '../db/entities/MultiSigKey';
+import { bip32 } from '../util/util';
+import { getNetworkType } from '../util/network_type';
 
 class BoxContentActionClass {
     private repository: Repository<BoxContent>;
@@ -116,9 +118,9 @@ class MultiSigActionClass {
         const data = await this.repository.createQueryBuilder()
             .where('walletId = :walletId', { walletId: walletId })
             .andWhere('signWalletId is not null')
-            .getRawOne()
-        return await WalletDbAction.getWalletById(data.MultiSigKey_signWalletId)
-    }
+            .getRawOne();
+        return await WalletDbAction.getWalletById(data.MultiSigKey_signWalletId);
+    };
 
     getWalletExternalKeys = async (walletId: number) => {
         return await this.repository.createQueryBuilder()
@@ -126,6 +128,29 @@ class MultiSigActionClass {
             .andWhere('signWalletId is null')
             .getMany();
     };
+
+    getBaseAddress = async (walletId: number) => {
+        const wallet = await MultiSigDbAction.getWalletInternalKey(walletId);
+        if (wallet) {
+            const publicKey = bip32.fromBase58(wallet.extended_public_key).derive(0).publicKey;
+            const prefix = getNetworkType(wallet.network_type).prefix;
+            return wasm.Address.from_public_key(Uint8Array.from(publicKey)).to_base58(prefix);
+        }
+        return '';
+    };
+
+    getOtherAddresses = async (walletId: number) => {
+        const wallet = await MultiSigDbAction.getWalletInternalKey(walletId);
+        if(wallet) {
+            const prefix = getNetworkType(wallet.network_type).prefix;
+            const keys = await MultiSigDbAction.getWalletExternalKeys(walletId)
+            return keys.map(key => {
+                const publicKey = bip32.fromBase58(key.extended_key).derive(0).publicKey;
+                return wasm.Address.from_public_key(Uint8Array.from(publicKey)).to_base58(prefix);
+            })
+        }
+        return []
+    }
 }
 
 class AddressActionClass {
@@ -223,8 +248,8 @@ class AddressActionClass {
     };
 
     deleteAddresses = async (walletId: number) => {
-        await this.addressRepository.remove(await this.getWalletAddresses(walletId))
-    }
+        await this.addressRepository.remove(await this.getWalletAddresses(walletId));
+    };
 }
 
 class WalletActionClass {

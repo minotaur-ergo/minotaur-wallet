@@ -44,7 +44,7 @@ const getAddressId = (address: Address | null | undefined) => {
 
 class SendTransaction extends React.Component<SendTransactionPropsType, SendTransactionStateType> {
     state: SendTransactionStateType = {
-        receivers: [new Receiver('3WwqqWWYoMieDXBJfyt8UbYp91Uepa9fh2eSRk2eRW1URyKYxqzv', '1')],
+        receivers: [new Receiver('', '')],
         totalErg: BigInt(0),
         showModal: false,
         availableTokens: [],

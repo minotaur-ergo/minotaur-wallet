@@ -11,14 +11,14 @@ const MainNet = new NetworkType(
     "Mainnet"
 );
 
-const DevNet = new NetworkType(
-    "http://10.10.9.3:9065",
-    "http://10.10.9.3:7000",
-    "http://10.10.9.3:5000",
-    wasm.NetworkPrefix.Mainnet,
-    "purple",
-    "DevNet"
-);
+// const DevNet = new NetworkType(
+//     "http://10.10.9.3:9065",
+//     "http://10.10.9.3:7000",
+//     "http://10.10.9.3:5000",
+//     wasm.NetworkPrefix.Mainnet,
+//     "purple",
+//     "DevNet"
+// );
 
 const TestNet = new NetworkType(
     "http://213.239.193.208:9052",
@@ -32,7 +32,7 @@ const TestNet = new NetworkType(
 const NETWORK_TYPES = [
     MainNet,
     TestNet,
-    DevNet
+    // DevNet
 ];
 
 const getNetworkType = (networkName: string): NetworkType => {

@@ -48,6 +48,7 @@ const SendConfirmMultiSig = (props: SendConfirmMultiSigPropsType) => {
         <MultiSigSignProcess
             wallet={props.wallet}
             tx={tx!}
+            init={true}
             boxes={props.transaction?.boxes!}
             close={props.close} />
     ) : <Loading />;

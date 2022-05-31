@@ -55,7 +55,7 @@ const WalletInsertOption = (props: PropsType) => {
                 </ListItemAvatar>
                 <ListItemText
                     primary="Add multi sig wallet"
-                    secondary="???" />
+                    secondary="this wallet used to allow multiple user sign single transaction." />
             </ListItem>
         </List>
     );
