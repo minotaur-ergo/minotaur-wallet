@@ -28,9 +28,6 @@ class Tx {
 
     @Column('text')
     status: TxStatus = TxStatus.Mined;
-
-    @Column('text')
-    json: string = '';
 }
 
 export default Tx;

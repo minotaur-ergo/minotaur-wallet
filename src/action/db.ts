@@ -131,21 +131,19 @@ class AddressActionClass {
     }
 
 
-    setAddressHeight = async (addressId: number, height: number, height_type: "tx_load" | "tx_create_box" | "tx_spent_box") => {
+    setAddressHeight = async (addressId: number, height: number) => {
         return await this.addressRepository.createQueryBuilder().update().set(
-            {[height_type + "_height"]: height}
+            {'process_height': height}
         ).where("id=:id", {id: addressId}).execute();
     }
 
     setAllAddressHeight = async (height: number, network_type: string) => {
-        ["tx_load", "tx_create_box", "tx_spent_box"].forEach((height_type: string) => {
-            this.addressRepository.createQueryBuilder().update().set(
-                {[height_type + "_height"]: height}
-            ).where(`${height_type}_height > :height AND network_type = :network_type`, {
+            await this.addressRepository.createQueryBuilder().update().set(
+                {"process_height": height}
+            ).where(`process_height > :height AND network_type = :network_type`, {
                 height: height,
                 network_type: network_type
             }).execute()
-        })
     }
 }
 
@@ -376,7 +374,6 @@ class TxActionClass {
             date: tx.timestamp,
             status: status,
             network_type: network_type,
-            json: "{}"
         };
         if (dbTx) {
             await this.repository.createQueryBuilder().update().set(entity).where("id=:id", {id: dbTx.id}).execute();
@@ -484,7 +481,7 @@ class BoxContentActionClass {
     forkBoxContents = async (height: number, network_type: string) => {
         await this.repository.remove(await this.repository
             .createQueryBuilder()
-            .innerJoin("box", "Box")
+            .innerJoin("box", "Box", "Box.id = boxId")
             .where("create_height >= :height", {height: height})
             .andWhere("network_type=:network_type", {network_type: network_type})
             .getMany());

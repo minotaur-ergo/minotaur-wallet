@@ -209,6 +209,8 @@ class BlockChainActionClass {
         const dbHeight = Object.keys(dbBlocks).length > 0 ? Math.max(...Object.keys(dbBlocks).map(item => Number(item))) : 0;
         let paging: Paging = { offset: 0, limit: 2 };
         let minHeight: number = height;
+        // await BoxContentDbAction.forkBoxContents(246731, network_type.label)
+        // await AddressDbAction.setAllAddressHeight(246731, network_type.label)
         while (minHeight > height - CONFIRMATION_HEIGHT) {
             const chunkHeaders = (await network_type.getExplorer().getBlocksHeaders(paging)).items;
             chunkHeaders.sort((a, b) => b.height - a.height);
@@ -265,7 +267,7 @@ class BlockChainTxActionClass {
                 }
             }
             for (let tx of txs) {
-                if (tx.inclusionHeight > address.tx_load_height) {
+                if (tx.inclusionHeight > address.process_height) {
                     if (tx.inclusionHeight > maxBlockHeight) continue;
                     if(tx.inclusionHeight >= minBlockHeight && blocks[tx.inclusionHeight] !== tx.blockId) continue;// forked transaction arrived
                     if(!txList.hasOwnProperty(tx.inclusionHeight)){
@@ -327,7 +329,7 @@ class BlockChainTxActionClass {
                     index += 1;
                 }
             }
-            await AddressDbAction.setAddressHeight(address.id, Number(height), "tx_load");
+            await AddressDbAction.setAddressHeight(address.id, Number(height));
         }
         console.log(`address proceed completely ${address.address}`)
     };
@@ -348,7 +350,7 @@ class BlockChainTxActionClass {
                 index += 0;
             }
         }
-        await AddressDbAction.setAddressHeight(address.id, height, 'tx_create_box')
+        await AddressDbAction.setAddressHeight(address.id, height)
     }
 
     processAddressInputBoxes = async (address: Address, height: number, txs: Array<TxWithJson>) => {
@@ -362,7 +364,7 @@ class BlockChainTxActionClass {
                 index += 1;
             }
         }
-        await AddressDbAction.setAddressHeight(address.id, height, 'tx_spent_box')
+        await AddressDbAction.setAddressHeight(address.id, height)
     }
 }
 
