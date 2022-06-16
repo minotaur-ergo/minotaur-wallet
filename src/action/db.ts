@@ -9,8 +9,8 @@ import Block from "../db/entities/Block";
 import Box from "../db/entities/Box";
 import Tx, { TxStatus } from "../db/entities/Tx";
 import { JsonBI } from "../util/json";
-import * as wasm from 'ergo-lib-wasm-browser';
-import { CoveringResult } from '../util/interface';
+import * as wasm from "ergo-lib-wasm-browser";
+import { CoveringResult } from "../util/interface";
 import WalletTx from "../db/entities/views/WalletTx";
 import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
@@ -22,7 +22,7 @@ class WalletActionClass {
 
     constructor(dataSource: DataSource) {
         this.walletRepository = dataSource.getRepository(Wallet);
-        this.walletWithErgRepository = dataSource.getRepository(WalletWithErg)
+        this.walletWithErgRepository = dataSource.getRepository(WalletWithErg);
     }
 
     createWallet = async (name: string, type: WalletType, seed: string, extended_public_key: string, network_type: string) => {
@@ -41,25 +41,25 @@ class WalletActionClass {
     };
 
     getWalletWithErg = async (walletId: number) => {
-        return await this.walletWithErgRepository.findOneBy({id: walletId});
+        return await this.walletWithErgRepository.findOneBy({ id: walletId });
     };
 
     getWalletById = async (walletId: number) => {
-        return this.walletRepository.findOneBy({id: walletId});
+        return this.walletRepository.findOneBy({ id: walletId });
     };
 
     getWallets = async () => {
         return this.walletRepository.find();
-    }
+    };
 }
 
 class AddressActionClass {
     private addressRepository: Repository<Address>;
-    private addressWithErgRepository: Repository<AddressWithErg>
+    private addressWithErgRepository: Repository<AddressWithErg>;
 
     constructor(dataSource: DataSource) {
-        this.addressRepository = dataSource.getRepository(Address)
-        this.addressWithErgRepository = dataSource.getRepository(AddressWithErg)
+        this.addressRepository = dataSource.getRepository(Address);
+        this.addressWithErgRepository = dataSource.getRepository(AddressWithErg);
     }
 
     saveAddress = async (wallet: Wallet, name: string, address: string, path: string, index: number) => {
@@ -70,26 +70,26 @@ class AddressActionClass {
             idx: index,
             network_type: wallet.network_type,
             wallet: wallet
-        }
-        return await this.addressRepository.save(entity)
-    }
+        };
+        return await this.addressRepository.save(entity);
+    };
 
     getAddress = async (addressId: number) => {
-        return await this.addressRepository.findOneBy({id: addressId})
-    }
+        return await this.addressRepository.findOneBy({ id: addressId });
+    };
 
     getAddressByAddressString = async (address: string) => {
-        return await (this.addressWithErgRepository.findOneBy({address: address}));
-    }
+        return await (this.addressWithErgRepository.findOneBy({ address: address }));
+    };
 
     getWalletAddressesWithErg = async (walletId: number) => {
         const wallet = await WalletDbAction.getWalletById(walletId);
         if (wallet) {
             return await this.addressWithErgRepository.createQueryBuilder()
-                .where('walletId = :walletId', {walletId: wallet.id})
-                .orderBy('idx')
-                .addOrderBy('address')
-                .getMany()
+                .where("walletId = :walletId", { walletId: wallet.id })
+                .orderBy("idx")
+                .addOrderBy("address")
+                .getMany();
         }
         return [];
     };
@@ -98,10 +98,10 @@ class AddressActionClass {
         const wallet = await WalletDbAction.getWalletById(walletId);
         if (wallet) {
             return await this.addressRepository.createQueryBuilder()
-                .where('walletId = :walletId', {walletId: wallet.id})
-                .orderBy('idx')
-                .addOrderBy('address')
-                .getMany()
+                .where("walletId = :walletId", { walletId: wallet.id })
+                .orderBy("idx")
+                .addOrderBy("address")
+                .getMany();
         }
         return [];
     };
@@ -115,8 +115,8 @@ class AddressActionClass {
 
     updateAddressName = async (addressId: number, newName: string) => {
         return await this.addressRepository.createQueryBuilder().update().set(
-            {name: newName}
-        ).where("id=:id", {id: addressId}).execute();
+            { name: newName }
+        ).where("id=:id", { id: addressId }).execute();
     };
 
     getAllAddresses = async () => {
@@ -126,38 +126,36 @@ class AddressActionClass {
     getAllAddressOfNetworkType = async (networkType: string) => {
         return await this.addressRepository.createQueryBuilder()
             .innerJoin("wallet", "Wallet", "walletId = Wallet.id")
-            .where("Wallet.network_type = :network_type", {network_type: networkType})
+            .where("Wallet.network_type = :network_type", { network_type: networkType })
             .getMany();
-    }
+    };
 
 
-    setAddressHeight = async (addressId: number, height: number, height_type: "tx_load" | "tx_create_box" | "tx_spent_box") => {
+    setAddressHeight = async (addressId: number, height: number) => {
         return await this.addressRepository.createQueryBuilder().update().set(
-            {[height_type + "_height"]: height}
-        ).where("id=:id", {id: addressId}).execute();
-    }
+            { "process_height": height }
+        ).where("id=:id", { id: addressId }).execute();
+    };
 
     setAllAddressHeight = async (height: number, network_type: string) => {
-        ["tx_load", "tx_create_box", "tx_spent_box"].forEach((height_type: string) => {
-            this.addressRepository.createQueryBuilder().update().set(
-                {[height_type + "_height"]: height}
-            ).where(`${height_type}_height > :height AND network_type = :network_type`, {
-                height: height,
-                network_type: network_type
-            }).execute()
-        })
-    }
+        await this.addressRepository.createQueryBuilder().update().set(
+            { "process_height": height }
+        ).where(`process_height > :height AND network_type = :network_type`, {
+            height: height,
+            network_type: network_type
+        }).execute();
+    };
 }
 
 class AssetActionClass {
-    private assetRepository: Repository<Asset>
+    private assetRepository: Repository<Asset>;
 
     constructor(dataSource: DataSource) {
         this.assetRepository = dataSource.getRepository(Asset);
     }
 
     getAssetByAssetId = async (assetId: string, network_type: string) => {
-        return await this.assetRepository.findOneBy({asset_id: assetId, network_type: network_type});
+        return await this.assetRepository.findOneBy({ asset_id: assetId, network_type: network_type });
     };
 
     createOrUpdateAsset = async (info: TokenInfo, network_type: string) => {
@@ -171,7 +169,7 @@ class AssetActionClass {
             decimal: info.decimals
         };
         if (dbEntity) {
-            await this.assetRepository.createQueryBuilder().update().set(entity).where("id=:id", {id: dbEntity.id}).execute();
+            await this.assetRepository.createQueryBuilder().update().set(entity).where("id=:id", { id: dbEntity.id }).execute();
         } else {
             await this.assetRepository.insert(entity);
         }
@@ -179,12 +177,12 @@ class AssetActionClass {
     };
 
     getAllAsset = async (network_type: string) => {
-        return await this.assetRepository.findBy({network_type: network_type});
+        return await this.assetRepository.findBy({ network_type: network_type });
     };
 }
 
 class BlockActionClass {
-    private repository: Repository<Block>
+    private repository: Repository<Block>;
 
     constructor(dataSource: DataSource) {
         this.repository = dataSource.getRepository(Block);
@@ -194,39 +192,39 @@ class BlockActionClass {
         return await this.repository.createQueryBuilder()
             .limit(count)
             .offset(0)
-            .orderBy('height', 'DESC')
-            .getMany()
+            .orderBy("height", "DESC")
+            .getMany();
     };
 
     getAllHeaders = async () => {
         // return await this.repository.find()
         return await this.repository.createQueryBuilder()
-            .orderBy('height', 'DESC')
-            .getMany()
+            .orderBy("height", "DESC")
+            .getMany();
     };
 
     InsertHeader = async (id: string, height: number, network_type: string) => {
         const entity = {
             block_id: id,
             height: height,
-            network_type: network_type,
-        }
+            network_type: network_type
+        };
         await this.repository.insert(entity);
-    }
+    };
 
     forkHeaders = async (height: number, network_type: string) => {
         return await this.repository
             .createQueryBuilder()
-            .where("height >= :height", {height: height})
-            .andWhere('network_type = :network_type', {network_type: network_type})
+            .where("height >= :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
             .delete()
-            .execute()
-    }
+            .execute();
+    };
 
     InsertHeaders = async (headers: Array<{ id: string, height: number }>, network_type: string) => {
-        const entities = headers.map(item => ({block_id: item.id, height: item.height, network_type: network_type}));
+        const entities = headers.map(item => ({ block_id: item.id, height: item.height, network_type: network_type }));
         await this.repository.insert(entities);
-    }
+    };
 }
 
 class BoxActionClass {
@@ -250,7 +248,7 @@ class BoxActionClass {
             create_height: tx.height
         };
         if (dbEntity) {
-            await this.repository.createQueryBuilder().update().set(entity).where("id=:id", {id: dbEntity.id}).execute();
+            await this.repository.createQueryBuilder().update().set(entity).where("id=:id", { id: dbEntity.id }).execute();
         } else {
             await this.repository.insert(entity);
         }
@@ -264,31 +262,31 @@ class BoxActionClass {
             dbEntity.spend_index = index;
             dbEntity.spend_height = spendTx.height;
             return await this.repository.createQueryBuilder().update().set(
-                {spend_tx: spendTx, spend_index: index, spend_height: spendTx.height}
-            ).where("id=:id", {id: dbEntity.id}).execute();
+                { spend_tx: spendTx, spend_index: index, spend_height: spendTx.height }
+            ).where("id=:id", { id: dbEntity.id }).execute();
         }
         return null;
     };
 
     getBoxByBoxId = async (boxId: string, network_type: string) => {
-        return await this.repository.findOneBy({box_id: boxId, network_type: network_type});
+        return await this.repository.findOneBy({ box_id: boxId, network_type: network_type });
     };
 
     getWalletBoxes = async (walletId: number) => {
         return await this.repository.createQueryBuilder()
             .innerJoin("address", "Address", "Address.id = addressId")
-            .where("walletId = :walletId AND spendTxId IS NULL", {walletId: walletId})
+            .where("walletId = :walletId AND spendTxId IS NULL", { walletId: walletId })
             .getMany();
     };
 
     getAddressBoxes = async (address: Array<Address>) => {
         return this.repository.createQueryBuilder()
             .where(address.map(item => `addressId=${item.id}`).join(" OR "))
-            .andWhere('spendTxId IS NULL').getMany();
+            .andWhere("spendTxId IS NULL").getMany();
     };
 
     getCoveringBoxFor = async (amount: bigint, walletId: number, tokens: { [id: string]: bigint }, address?: Array<Address> | null): Promise<CoveringResult> => {
-        const requiredTokens: { [id: string]: bigint } = {...tokens};
+        const requiredTokens: { [id: string]: bigint } = { ...tokens };
         let requiredAmount: bigint = amount;
         let selectedBoxesJson: Array<string> = [];
         const checkIsRequired = (box: wasm.ErgoBox) => {
@@ -334,25 +332,25 @@ class BoxActionClass {
 
     getUsedAddressIds = async (walletId: string) => {
         return await this.repository.createQueryBuilder()
-            .select('addressId')
-            .innerJoin('address', 'Address', 'addressId = Address.id')
-            .where('walletId = :walletId', {walletId: walletId})
+            .select("addressId")
+            .innerJoin("address", "Address", "addressId = Address.id")
+            .where("walletId = :walletId", { walletId: walletId })
             .distinct()
-            .getRawMany<{addressId: number}>()
-    }
+            .getRawMany<{ addressId: number }>();
+    };
 
     forkBoxes = async (height: number, network_type: string) => {
         await this.repository
             .createQueryBuilder()
             .update()
-            .set({spend_tx: null, spend_index: undefined, spend_height: undefined})
-            .where("create_height >= :height", {height: height})
+            .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
+            .where("create_height >= :height", { height: height })
             .execute();
         // await forkBoxContents(address.id, height);
         await this.repository
             .createQueryBuilder()
-            .where("create_height >= :height", {height: height})
-            .andWhere("network_type = :network_type", {network_type: network_type})
+            .where("create_height >= :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
             .delete()
             .execute();
     };
@@ -360,7 +358,7 @@ class BoxActionClass {
 
 class TxActionClass {
     private repository: Repository<Tx>;
-    private walletRepository: Repository<WalletTx>
+    private walletRepository: Repository<WalletTx>;
 
     constructor(dataSource: DataSource) {
         this.repository = dataSource.getRepository(Tx);
@@ -376,48 +374,47 @@ class TxActionClass {
             date: tx.timestamp,
             status: status,
             network_type: network_type,
-            json: "{}"
         };
         if (dbTx) {
-            await this.repository.createQueryBuilder().update().set(entity).where("id=:id", {id: dbTx.id}).execute();
-            return {status: dbTx.status, tx: await this.getTxByTxId(tx.id, network_type)};
+            await this.repository.createQueryBuilder().update().set(entity).where("id=:id", { id: dbTx.id }).execute();
+            return { status: dbTx.status, tx: await this.getTxByTxId(tx.id, network_type) };
         } else {
-            return {status: TxStatus.New, tx: await this.repository.save(entity) as Tx};
+            return { status: TxStatus.New, tx: await this.repository.save(entity) as Tx };
         }
     };
 
     getTxByTxId = async (txId: string, network_type: string) => {
-        return await this.repository.findOneBy({tx_id: txId, network_type: network_type});
+        return await this.repository.findOneBy({ tx_id: txId, network_type: network_type });
     };
 
     getTxById = async (id: number) => {
-        return await this.repository.findOneBy({id: id});
+        return await this.repository.findOneBy({ id: id });
     };
 
     getWalletTx = async (wallet_id: number, limit: number, offset: number) => {
         return await this.walletRepository.createQueryBuilder()
-            .where("create_wallet_id=:wallet_id", {wallet_id: wallet_id})
+            .where("create_wallet_id=:wallet_id", { wallet_id: wallet_id })
             .limit(limit)
             .offset(offset)
-            .getMany()
+            .getMany();
     };
 
     getNetworkTxs = async (network_type: string, from_height: number, to_height: number) => {
         return this.repository
             .createQueryBuilder()
-            .where("network_type=:network_type", {network_type: network_type})
-            .andWhere("height >= :from_height", {from_height: from_height})
-            .andWhere("height <= :to_height", {to_height: to_height})
-            .getMany()
-    }
+            .where("network_type=:network_type", { network_type: network_type })
+            .andWhere("height >= :from_height", { from_height: from_height })
+            .andWhere("height <= :to_height", { to_height: to_height })
+            .getMany();
+    };
     forkTxs = async (height: number, network_type: string) => {
         await this.repository
             .createQueryBuilder()
-            .where("height >= :height", {height: height})
-            .andWhere('network_type = :network_type', {network_type: network_type})
+            .where("height >= :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
             .delete()
-            .execute()
-    }
+            .execute();
+    };
 }
 
 class BoxContentActionClass {
@@ -431,8 +428,8 @@ class BoxContentActionClass {
 
     createOrUpdateBoxContent = async (box: Box, asset: BoxAsset) => {
         const dbEntity = await this.repository.createQueryBuilder()
-            .where("boxId=:boxId AND token_id=:token_id", {boxId: box.id, token_id: asset.tokenId})
-            .getOne()
+            .where("boxId=:boxId AND token_id=:token_id", { boxId: box.id, token_id: asset.tokenId })
+            .getOne();
         const entity = {
             token_id: asset.tokenId,
             box: box,
@@ -442,7 +439,7 @@ class BoxContentActionClass {
         if (dbEntity) {
             await this.repository.createQueryBuilder().update().set(
                 entity
-            ).where("id=:id", {id: dbEntity.id}).execute();
+            ).where("id=:id", { id: dbEntity.id }).execute();
         } else {
             await this.repository.insert(entity);
         }
@@ -453,7 +450,7 @@ class BoxContentActionClass {
             .createQueryBuilder()
             .select("token_id", "tokenId")
             .innerJoin("box", "Box", "Box.id=boxId")
-            .where("network_type = :network_type", {network_type: network_type})
+            .where("network_type = :network_type", { network_type: network_type })
             .addGroupBy("token_id")
             .getRawMany()).map((item: { tokenId: string }) => item.tokenId);
     };
@@ -464,7 +461,7 @@ class BoxContentActionClass {
             .select("token_id", "tokenId")
             .addSelect("SUM(amount)", "total")
             .innerJoin("box", "Box", "Box.id=boxId")
-            .where("Box.addressId = :addressId", {addressId: addressId})
+            .where("Box.addressId = :addressId", { addressId: addressId })
             .addGroupBy("token_id")
             .getRawMany()).map((item: { tokenId: string, total: string }) => item.tokenId);
     };
@@ -476,7 +473,7 @@ class BoxContentActionClass {
             .addSelect("CAST(SUM(CAST(amount AS INT)) AS TEXT)", "total")
             .innerJoin("box", "Box", "Box.id=boxId")
             .innerJoin("address", "Address", "Box.addressId=Address.id")
-            .where("Address.walletId = :walletId and Box.spendTxId IS NULL", {walletId: walletId})
+            .where("Address.walletId = :walletId and Box.spendTxId IS NULL", { walletId: walletId })
             .addGroupBy("token_id")
             .getRawMany<{ tokenId: string, total: string }>());
     };
@@ -484,18 +481,18 @@ class BoxContentActionClass {
     forkBoxContents = async (height: number, network_type: string) => {
         await this.repository.remove(await this.repository
             .createQueryBuilder()
-            .innerJoin("box", "Box")
-            .where("create_height >= :height", {height: height})
-            .andWhere("network_type=:network_type", {network_type: network_type})
+            .innerJoin("box", "Box", "Box.id = boxId")
+            .where("create_height >= :height", { height: height })
+            .andWhere("network_type=:network_type", { network_type: network_type })
             .getMany());
     };
 
     getTokenWithAddressForWallet = async (walletId: number) => {
-        return await this.tokenWithAddressRepository.findBy({wallet_id: walletId});
+        return await this.tokenWithAddressRepository.findBy({ wallet_id: walletId });
     };
 
     getSingleTokenWithAddressForWallet = async (walletId: number, tokenId: string) => {
-        return await this.tokenWithAddressRepository.findBy({wallet_id: walletId, token_id: tokenId});
+        return await this.tokenWithAddressRepository.findBy({ wallet_id: walletId, token_id: tokenId });
     };
 }
 
@@ -508,21 +505,21 @@ class ConfigActionClass {
 
     getAllConfig = async () => {
         return await this.repository.find();
-    }
+    };
 
     setConfig = async (key: string, value: string) => {
-        const entity = await this.repository.findOneBy({key: key})
-        if(entity){
+        const entity = await this.repository.findOneBy({ key: key });
+        if (entity) {
             return await this.repository.createQueryBuilder().update().set(
-                {value: value}
-            ).where("key=:key", {key: key}).execute();
-        }else{
+                { value: value }
+            ).where("key=:key", { key: key }).execute();
+        } else {
             return await this.repository.insert({
                 key: key,
                 value: value
-            })
+            });
         }
-    }
+    };
 }
 
 let BoxContentDbAction: BoxContentActionClass;
@@ -543,7 +540,7 @@ const initializeAction = (dataSource: DataSource) => {
     BlockDbAction = new BlockActionClass(dataSource);
     BoxDbAction = new BoxActionClass(dataSource);
     TxDbAction = new TxActionClass(dataSource);
-}
+};
 
 export {
     BoxContentDbAction,
@@ -554,5 +551,5 @@ export {
     BlockDbAction,
     BoxDbAction,
     TxDbAction,
-    initializeAction,
-}
+    initializeAction
+};

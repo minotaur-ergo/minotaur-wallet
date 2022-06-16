@@ -31,13 +31,7 @@ class Address {
     wallet: Wallet | null = null;
 
     @Column('int', { default: 0 })
-    tx_load_height: number = 0;
-
-    @Column('int', { default: 0 })
-    tx_create_box_height: number = 0;
-
-    @Column('int', { default: 0 })
-    tx_spent_box_height: number = 0;
+    process_height: number = 0;
 }
 
 export default Address;
