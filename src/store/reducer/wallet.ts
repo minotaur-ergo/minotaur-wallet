@@ -5,6 +5,7 @@ export interface WalletStateType {
     wallets: Array<WalletWithErg>;
     walletValid: boolean;
     display: DisplayType;
+    loadingWallet?: number;
 }
 
 export const apiInitialState: WalletStateType = {
@@ -25,12 +26,23 @@ export const reducer = (state = apiInitialState, action: { type: string, payload
             return {
                 ...state,
                 walletValid: false,
+                loadingWallet: (action.payload && action.payload.removeLoadingWallet) ? undefined : state.loadingWallet
             };
         case actionTypes.SET_DISPLAY_MODE:
             return {
                 ...state,
                 display: (action.payload! === "advanced" ? "advanced" : "simple") as DisplayType
             };
+        case actionTypes.SET_LOADING_WALLET:
+            return {
+                ...state,
+                loadingWallet: action.payload as number
+            }
+        case actionTypes.REMOVE_LOADING_WALLET:
+            return {
+                ...state,
+                loadingWallet: undefined
+            }
     }
     return state;
 };

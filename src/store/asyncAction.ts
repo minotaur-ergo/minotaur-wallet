@@ -30,10 +30,11 @@ const loadBlockChainDataAsync = async () => {
                 await BlockChainAction.calcForkPoint(height, NETWORK_TYPE);
                 try {
                     for (let address of addresses) {
+                        store.dispatch({type: actionType.SET_LOADING_WALLET, payload: address.wallet?.id})
                         await BlockChainTxAction.getMinedTxForAddress(address)
                     }
                     await loadTokensAsync(NETWORK_TYPE.label)
-                    store.dispatch({type: actionType.INVALIDATE_WALLETS});
+                    store.dispatch({type: actionType.INVALIDATE_WALLETS, payload: {removeLoadingWallet: true}});
                 } catch (e) {
                     console.log(e)
                 }

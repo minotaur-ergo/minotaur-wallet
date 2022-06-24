@@ -124,10 +124,10 @@ class AddressActionClass {
     };
 
     getAllAddressOfNetworkType = async (networkType: string) => {
-        return await this.addressRepository.createQueryBuilder()
-            .innerJoin("wallet", "Wallet", "walletId = Wallet.id")
-            .where("Wallet.network_type = :network_type", { network_type: networkType })
-            .getMany();
+        const addresses = await this.addressRepository.find({
+            relations: ['wallet'],
+        })
+        return addresses.filter(item => item.wallet?.network_type == networkType).sort((a, b) => a.wallet?.id! - b.wallet?.id!)
     };
 
 
