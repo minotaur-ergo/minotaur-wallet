@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class refactorAddress1655184495240 implements MigrationInterface {
-    name = "refactorAddress1655184495240"
+export class refactorAddress1656038696301 implements MigrationInterface {
+    name = "refactorAddress1656038696301"
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         // create new tmp address table
@@ -55,5 +55,4 @@ export class refactorAddress1655184495240 implements MigrationInterface {
         // rename tmp address table to new table
         const rename = 'ALTER TABLE "temporary_address" RENAME TO "address"'
         await queryRunner.query(rename)
-    }
-}
+    }}

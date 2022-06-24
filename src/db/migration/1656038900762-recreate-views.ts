@@ -7,8 +7,8 @@ import {
     walletWithErgQuery
 } from "./viewsCreationQuery";
 
-export class recreateViews1655185359369 implements MigrationInterface {
-    name = "recreateViews1655185359369"
+export class recreateViews1656038900762 implements MigrationInterface {
+    name = "recreateViews1656038900762"
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(addressWithErgQuery.create)
@@ -25,5 +25,4 @@ export class recreateViews1655185359369 implements MigrationInterface {
         await queryRunner.query(addressTokenIdQuery.drop)
         await queryRunner.query(addressWithErgQuery.drop)
     }
-
 }

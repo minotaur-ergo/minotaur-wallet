@@ -7,8 +7,8 @@ import {
     walletWithErgQuery
 } from "./viewsCreationQuery";
 
-export class deleteViews1655183401850 implements MigrationInterface {
-    name = "deleteViews1655183401850";
+export class deleteViews1655183401851 implements MigrationInterface {
+    name = "deleteViews1655183401851";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(tokenWithAddressQuery.drop)

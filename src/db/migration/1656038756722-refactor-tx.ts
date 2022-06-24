@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class refactorTx1655185030188 implements MigrationInterface {
-    name = "refactorTx1655185030188"
+export class refactorTx1656038756722 implements MigrationInterface {
+    name = "refactorTx1656038756722"
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         // create new tmp tx table

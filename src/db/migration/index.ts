@@ -11,11 +11,13 @@ import { block1645511116354 } from "./1645511116354-block";
 import { tx1645511237301 } from "./1645511237301-tx";
 import { asset1645511244626 } from "./1645511244626-asset";
 import { config1650404055667 } from "./1650404055667-config";
-import { deleteViews1655183401850 } from "./1655183401850-delete-views";
-import { refactorAddress1655184495240 } from "./1655184495240-refactor-address";
-import { refactorTx1655185030188 } from "./1655185030188-refactor-tx";
-import { refreshAllEntities1655185294134 } from "./1655185294134-refresh-all-entities";
-import { recreateViews1655185359369 } from "./1655185359369-recreate-views";
+import { deleteViews1655183401851 } from "./1655183401851-delete-views";
+import { refreshAllEntities1655185294135 } from "./1655185294135-refresh-all-entities";
+import { deleteBoxAndBoxContent1656038579911 } from "./1656038579911-delete-box-and-box-content";
+import { refactorAddress1656038696301 } from "./1656038696301-refactor-address";
+import { refactorTx1656038756722 } from "./1656038756722-refactor-tx";
+import { recreateBoxAndBoxContent1656038840212 } from "./1656038840212-recreate-box-and-box-content";
+import { recreateViews1656038900762 } from "./1656038900762-recreate-views";
 
 const Migrations = [
     block1645511116354,
@@ -31,11 +33,13 @@ const Migrations = [
     walletTx1645511299711,
     tokenWithAddress1645511306482,
     config1650404055667,
-    deleteViews1655183401850,
-    refactorAddress1655184495240,
-    refactorTx1655185030188,
-    refreshAllEntities1655185294134,
-    recreateViews1655185359369
+    deleteViews1655183401851,
+    refreshAllEntities1655185294135,
+    deleteBoxAndBoxContent1656038579911,
+    refactorAddress1656038696301,
+    refactorTx1656038756722,
+    recreateBoxAndBoxContent1656038840212,
+    recreateViews1656038900762
 ];
 
 export default Migrations;

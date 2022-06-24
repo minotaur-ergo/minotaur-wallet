@@ -36,7 +36,8 @@ export const reducer = (state = apiInitialState, action: { type: string, payload
         case actionTypes.SET_LOADING_WALLET:
             return {
                 ...state,
-                loadingWallet: action.payload as number
+                loadingWallet: action.payload as number,
+                walletValid: false
             }
         case actionTypes.REMOVE_LOADING_WALLET:
             return {
