@@ -205,7 +205,8 @@ class BlockChainActionClass {
         let forkPoint = 0;
         const dbBlocks: { [height: number]: string } = {};
         const dbHeaders = await BlockDbAction.getAllHeaders();
-        dbHeaders.forEach(item => dbBlocks[item.height] = item.block_id);
+        // prune DBHeights greater than current height
+        dbHeaders.filter(item => item.height <= height).forEach(item => dbBlocks[item.height] = item.block_id);
         const dbHeight = Object.keys(dbBlocks).length > 0 ? Math.max(...Object.keys(dbBlocks).map(item => Number(item))) : 0;
         let paging: Paging = { offset: 0, limit: 2 };
         let minHeight: number = height;

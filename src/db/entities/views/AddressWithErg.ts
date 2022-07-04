@@ -1,9 +1,9 @@
-import { Connection, ViewColumn, ViewEntity } from 'typeorm';
+import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
 import Address from "../Address";
 
 @ViewEntity({
     name: "address_with_erg",
-    expression: (connection: Connection) => connection.createQueryBuilder()
+    expression: (connection: DataSource) => connection.createQueryBuilder()
         .select('Address.id', 'id')
         .addSelect('Address.name', 'name')
         .addSelect('Address.address', 'address')

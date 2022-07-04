@@ -18,6 +18,8 @@ import { refactorAddress1656038696301 } from "./1656038696301-refactor-address";
 import { refactorTx1656038756722 } from "./1656038756722-refactor-tx";
 import { recreateBoxAndBoxContent1656038840212 } from "./1656038840212-recreate-box-and-box-content";
 import { recreateViews1656038900762 } from "./1656038900762-recreate-views";
+import { createAssetsCount1656865711897 } from "./1656865711897-create-assets-count";
+import { createAssetsCountBoxes1656865730031 } from "./1656865730031-create-assets-boxes-count";
 
 const Migrations = [
     block1645511116354,
@@ -39,7 +41,9 @@ const Migrations = [
     refactorAddress1656038696301,
     refactorTx1656038756722,
     recreateBoxAndBoxContent1656038840212,
-    recreateViews1656038900762
+    recreateViews1656038900762,
+    createAssetsCount1656865711897,
+    createAssetsCountBoxes1656865730031
 ];
 
 export default Migrations;

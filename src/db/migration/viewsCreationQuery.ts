@@ -23,10 +23,16 @@ const tokenWithAddressQuery = {
     drop: `DROP VIEW "token_with_address";`
 }
 
+const AssetCountBoxesQuery = {
+    create: `CREATE VIEW "asset_count_boxes" AS SELECT "Box"."id" AS "id", "Box"."asset_count" AS "total", COUNT("BoxContent"."id") AS "inserted" FROM "box" "Box" LEFT OUTER JOIN "box_content" "BoxContent" ON "Box"."id" = "BoxContent"."boxId" GROUP BY "Box"."id"`,
+    drop: `DROP VIEW "asset_count_boxes";`
+}
+
 export {
     addressWithErgQuery,
     addressTokenIdQuery,
     walletWithErgQuery,
     walletTxQuery,
-    tokenWithAddressQuery
+    tokenWithAddressQuery,
+    AssetCountBoxesQuery
 }

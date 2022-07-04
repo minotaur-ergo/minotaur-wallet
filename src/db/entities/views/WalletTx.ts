@@ -1,9 +1,9 @@
-import { Connection, ViewColumn, ViewEntity } from 'typeorm';
+import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
 import { TxStatus } from '../Tx';
 
 @ViewEntity({
     name: "wallet_tx",
-    expression: (connection: Connection) => connection.createQueryBuilder()
+    expression: (connection: DataSource) => connection.createQueryBuilder()
         .select('Tx.id', 'id')
         .addSelect('Tx.tx_id', 'tx_id')
         .addSelect('Tx.height', 'height')

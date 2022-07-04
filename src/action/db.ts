@@ -15,6 +15,7 @@ import WalletTx from "../db/entities/views/WalletTx";
 import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
 import Config from "../db/entities/Config";
+import AssetCountBox from "../db/entities/views/AssetCountBox";
 
 class WalletActionClass {
     private walletRepository: Repository<Wallet>;
@@ -125,9 +126,9 @@ class AddressActionClass {
 
     getAllAddressOfNetworkType = async (networkType: string) => {
         const addresses = await this.addressRepository.find({
-            relations: ['wallet'],
-        })
-        return addresses.filter(item => item.wallet?.network_type == networkType).sort((a, b) => a.wallet?.id! - b.wallet?.id!)
+            relations: ["wallet"]
+        });
+        return addresses.filter(item => item.wallet?.network_type == networkType).sort((a, b) => a.wallet?.id! - b.wallet?.id!);
     };
 
 
@@ -229,9 +230,11 @@ class BlockActionClass {
 
 class BoxActionClass {
     private repository: Repository<Box>;
+    private assetCountBoxRepository: Repository<AssetCountBox>;
 
     constructor(dataSource: DataSource) {
         this.repository = dataSource.getRepository(Box);
+        this.assetCountBoxRepository = dataSource.getRepository(AssetCountBox);
     }
 
     createOrUpdateBox = async (box: ErgoBox, address: Address, tx: Tx, index: number) => {
@@ -270,6 +273,10 @@ class BoxActionClass {
 
     getBoxByBoxId = async (boxId: string, network_type: string) => {
         return await this.repository.findOneBy({ box_id: boxId, network_type: network_type });
+    };
+
+    getBoxById = async (id: number) => {
+        return await this.repository.findOneBy({ id: id });
     };
 
     getWalletBoxes = async (walletId: number) => {
@@ -354,6 +361,12 @@ class BoxActionClass {
             .delete()
             .execute();
     };
+
+    invalidAssetCountBox = async () => {
+        return await this.assetCountBoxRepository.createQueryBuilder()
+            .where("inserted <> total")
+            .getMany();
+    };
 }
 
 class TxActionClass {
@@ -373,7 +386,7 @@ class TxActionClass {
             height: tx.inclusionHeight,
             date: tx.timestamp,
             status: status,
-            network_type: network_type,
+            network_type: network_type
         };
         if (dbTx) {
             await this.repository.createQueryBuilder().update().set(entity).where("id=:id", { id: dbTx.id }).execute();
@@ -479,12 +492,13 @@ class BoxContentActionClass {
     };
 
     forkBoxContents = async (height: number, network_type: string) => {
-        await this.repository.remove(await this.repository
+        const instances = await this.repository
             .createQueryBuilder()
             .innerJoin("box", "Box", "Box.id = boxId")
             .where("create_height >= :height", { height: height })
             .andWhere("network_type=:network_type", { network_type: network_type })
-            .getMany());
+            .getMany();
+        await this.repository.remove(instances);
     };
 
     getTokenWithAddressForWallet = async (walletId: number) => {

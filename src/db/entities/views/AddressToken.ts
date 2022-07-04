@@ -1,9 +1,9 @@
-import { Connection, ViewColumn, ViewEntity } from 'typeorm';
+import { DataSource, ViewColumn, ViewEntity } from "typeorm";
 
 
 @ViewEntity({
     name: "token_with_address",
-    expression: (connection: Connection) => connection.createQueryBuilder()
+    expression: (connection: DataSource) => connection.createQueryBuilder()
         .select('BoxContent.token_id', 'token_id')
         .addSelect('CAST(SUM(CAST("BoxContent"."amount" AS INT)) AS TEXT)', 'amount_str')
         .addSelect('Address.id', 'address_id')

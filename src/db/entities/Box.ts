@@ -40,6 +40,9 @@ class Box {
     @Column("int", { nullable: true })
     spend_height: number = 0;
 
+    @Column("int", { default: 0 })
+    asset_count: number = 0;
+
     @Column("text")
     json: string = "";
 }

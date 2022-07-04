@@ -1,9 +1,9 @@
-import { Connection, ViewColumn, ViewEntity } from 'typeorm';
+import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
 import { WalletType } from '../Wallet';
 
 @ViewEntity({
     name: 'address_token_id',
-    expression: (connection: Connection) => connection.createQueryBuilder()
+    expression: (connection: DataSource) => connection.createQueryBuilder()
         .select("Address.id", "id")
         .addSelect("BoxContent.token_id", "token_id")
         .from("address", "Address")
@@ -22,7 +22,7 @@ export class AddressTokenId {
 
 @ViewEntity({
     name: "wallet_with_erg",
-    expression: (connection: Connection) => connection.createQueryBuilder()
+    expression: (connection: DataSource) => connection.createQueryBuilder()
         .select('Wallet.id', 'id')
         .addSelect('Wallet.name', 'name')
         .addSelect('Wallet.seed', 'seed')
