@@ -222,6 +222,15 @@ class BlockActionClass {
             .execute();
     };
 
+    removeOldHeaders = async (height: number, network_type: string) => {
+        return await this.repository
+            .createQueryBuilder()
+            .where("height < :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .delete()
+            .execute();
+    };
+
     InsertHeaders = async (headers: Array<{ id: string, height: number }>, network_type: string) => {
         const entities = headers.map(item => ({ block_id: item.id, height: item.height, network_type: network_type }));
         await this.repository.insert(entities);
@@ -446,7 +455,6 @@ class BoxContentActionClass {
         const entity = {
             token_id: asset.tokenId,
             box: box,
-            network_type: box.network_type,
             amount: BigInt(asset.amount)
         };
         if (dbEntity) {

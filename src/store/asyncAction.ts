@@ -40,8 +40,6 @@ const loadBlockChainDataAsync = async () => {
         for (const NETWORK_TYPE of NETWORK_TYPES) {
             const addresses = await AddressDbAction.getAllAddressOfNetworkType(NETWORK_TYPE.label);
             if (addresses.length > 0) {
-                // debugger
-                console.log(NETWORK_TYPE.label)
                 const node = NETWORK_TYPE.getNode();
                 const height = await node.getHeight();
                 // find new headers from blockchain and insert headers to database

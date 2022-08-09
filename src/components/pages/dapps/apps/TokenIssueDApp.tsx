@@ -59,7 +59,6 @@ const TokenIssueDApp = (props: DAppPropsType) => {
                 height,
                 wasm.BoxValue.from_i64(wasm.I64.from_str(constants.FEE.toString())),
                 wasm.Address.from_base58(addresses[0]),
-                wasm.BoxValue.SAFE_USER_MIN()
             ).build()
             await props.signAndSendTx({tx: tx, boxes: boxes});
         } else {

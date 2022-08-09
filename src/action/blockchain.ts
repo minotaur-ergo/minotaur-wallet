@@ -137,7 +137,6 @@ class BlockChainActionClass {
                 height,
                 this.bigintToBoxValue(FEE),
                 wasm.Address.from_base58(address.address),
-                this.bigintToBoxValue(FEE)
             ).build();
             return {
                 tx: tx,
@@ -183,25 +182,27 @@ class BlockChainActionClass {
 
 
     processResult = async (height: number, dbHeight: number, forkPoint: number, blocks: { [height: number]: string }, network_type: string) => {
-        if(dbHeight > forkPoint || dbHeight === 0) {
-            try {
-                await BoxContentDbAction.forkBoxContents(forkPoint, network_type);
-                await BoxDbAction.forkBoxes(height, network_type);
-                await TxDbAction.forkTxs(height, network_type);
-                await BlockDbAction.forkHeaders(height, network_type);
-                await AddressDbAction.setAllAddressHeight(height, network_type);
-            } catch (e) {
-                return { height: height, blocks: {} };
-            }
+        // if(dbHeight > forkPoint || dbHeight === 0) {
+        try {
+            await BoxContentDbAction.forkBoxContents(forkPoint, network_type);
+            await BoxDbAction.forkBoxes(forkPoint, network_type);
+            await TxDbAction.forkTxs(forkPoint, network_type);
+            await BlockDbAction.forkHeaders(forkPoint, network_type);
+            await AddressDbAction.setAllAddressHeight(forkPoint, network_type);
+            await BlockDbAction.InsertHeaders(Object.entries(blocks).map(value => {
+                return { id: value[1], height: Number(value[0]) };
+            }), network_type);
+            await BlockDbAction.removeOldHeaders(height - CONFIRMATION_HEIGHT, network_type)
+        } catch (e) {
+            return { height: height, blocks: {} };
         }
-        await BlockDbAction.InsertHeaders(Object.entries(blocks).map(value => {
-            return { id: value[1], height: Number(value[0]) };
-        }), network_type);
+        // }
         return { height: forkPoint, blocks: blocks };
     };
 
     calcForkPoint = async (height: number, network_type: NetworkType): Promise<{ height: number, blocks: { [height: number]: string } }> => {
         let needProcessBlocks: { [height: number]: string } = {};
+        let heights: Array<number> = [];
         let forkPoint = 0;
         const dbBlocks: { [height: number]: string } = {};
         const dbHeaders = await BlockDbAction.getAllHeaders();
@@ -218,10 +219,11 @@ class BlockChainActionClass {
                 minHeight = Math.min(minHeight, block.height);
                 if (block.height > height) continue;
                 if (dbBlocks.hasOwnProperty(block.height) && dbBlocks[block.height] === block.id) {
-                    forkPoint = Math.min(...Object.keys(needProcessBlocks).map(item => Number(item)));
+                    forkPoint = heights.length > 0 ? Math.min(...heights) : height;
                     return this.processResult(height, dbHeight, forkPoint, needProcessBlocks, network_type.label);
                 }
                 needProcessBlocks[block.height] = block.id;
+                heights.push(Number(block.height))
             }
             paging.offset += paging.limit;
             paging.limit = Math.min(pageSize, paging.limit + 5);
@@ -230,7 +232,7 @@ class BlockChainActionClass {
     };
 
     updateTokenInfo = async (tokenId: string, network_type: string) => {
-        const explorer = getNetworkType(network_type).getExplorer()
+        const explorer = getNetworkType(network_type).getExplorer();
         const info = await explorer.getFullTokenInfo(tokenId);
         if (info) {
             await AssetDbAction.createOrUpdateAsset(info, network_type);
@@ -242,37 +244,42 @@ class BlockChainActionClass {
 class BlockChainTxActionClass {
 
     getMinedTxForAddress = async (address: Address) => {
-        const blocksList = (await BlockDbAction.getAllHeaders()).map(item => ({id: item.block_id, height: item.height}))
-        const blocks = Object.assign({}, ...blocksList.map(item => ({[item.height]: item.id})))
-        const explorer = getNetworkType(address.network_type).getExplorer()
+        const blocksList = (await BlockDbAction.getAllHeaders()).map(item => ({
+            id: item.block_id,
+            height: item.height
+        }));
+        const blocks = Object.assign({}, ...blocksList.map(item => ({ [item.height]: item.id })));
+        const explorer = getNetworkType(address.network_type).getExplorer();
         // let txList: Array<ErgoTx> = [];
         const heights = blocksList.map(item => item.height);
         const maxBlockHeight = Math.max(...heights);
-        const minBlockHeight = Math.min(...heights);
-        let txList: {[height: number]: {[id: string]: ErgoTx}} = {};
+        const minBlockHeight = Math.max(Math.min(...heights), maxBlockHeight - CONFIRMATION_HEIGHT);
+        let txList: { [height: number]: { [id: string]: ErgoTx } } = {};
         let breakProcess: boolean = false;
-        const paging: Paging = {offset: 0, limit: 1}
+        const paging: Paging = { offset: 0, limit: 1 };
         const overlapTxId: string = "";
         // fetch all transaction from fromHeight to maxHeight
         while (!breakProcess) {
             let txs = (await explorer.getTxsByAddress(address.address, paging)).items;
-            if(overlapTxId) {
+            if (overlapTxId) {
                 if (txs[0].id !== overlapTxId) {
                     // overlap tx not found. so subtract one index
                     paging.offset -= 1;
-                    continue
+                    continue;
                 } else {
-                    txs = txs.slice(1, txs.length)
+                    txs = txs.slice(1, txs.length);
                 }
             }
             for (let tx of txs) {
                 if (tx.inclusionHeight > address.process_height) {
+                    console.log(tx)
+                    console.log(minBlockHeight, maxBlockHeight)
                     if (tx.inclusionHeight > maxBlockHeight) continue;
-                    if(tx.inclusionHeight >= minBlockHeight && blocks[tx.inclusionHeight] !== tx.blockId) continue;// forked transaction arrived
-                    if(!txList.hasOwnProperty(tx.inclusionHeight)){
-                        txList[tx.inclusionHeight] = {}
+                    if (tx.inclusionHeight >= minBlockHeight && blocks[tx.inclusionHeight] !== tx.blockId) continue;// forked transaction arrived
+                    if (!txList.hasOwnProperty(tx.inclusionHeight)) {
+                        txList[tx.inclusionHeight] = {};
                     }
-                    txList[tx.inclusionHeight] = {...txList[tx.inclusionHeight], [tx.id]: tx}
+                    txList[tx.inclusionHeight] = { ...txList[tx.inclusionHeight], [tx.id]: tx };
                 } else {
                     breakProcess = true;
                     break;
@@ -282,7 +289,7 @@ class BlockChainTxActionClass {
                 break;
             }
             paging.offset += paging.limit - 1; // one overlap tx.
-            paging.limit = Math.min(PAGE_SIZE, paging.limit + 10)
+            paging.limit = Math.min(PAGE_SIZE, paging.limit + 10);
         }
 
         // process heights one by one.
@@ -290,15 +297,15 @@ class BlockChainTxActionClass {
         // then store outputs in database
         // then spend tx in database
         // after that move address height one step.
-        const txHeights = Object.keys(txList)
-        txHeights.sort()
-        const storedTxEntity: {[txId: string]: Tx} = {};
-        for (let height of txHeights){
-            const heightTxList = txList[Number(height)]
-            for (let txId of Object.keys(heightTxList)){
+        const txHeights = Object.keys(txList);
+        txHeights.sort();
+        const storedTxEntity: { [txId: string]: Tx } = {};
+        for (let height of txHeights) {
+            const heightTxList = txList[Number(height)];
+            for (let txId of Object.keys(heightTxList)) {
                 const tx = heightTxList[txId];
-                const entity = await TxDbAction.updateOrCreateTx(tx, TxStatus.Mined, address.network_type)
-                if(entity && entity.tx) {
+                const entity = await TxDbAction.updateOrCreateTx(tx, TxStatus.Mined, address.network_type);
+                if (entity && entity.tx) {
                     storedTxEntity[txId] = entity.tx;
                     let index = 0;
                     for (let box of tx.outputs) {
@@ -312,13 +319,13 @@ class BlockChainTxActionClass {
                         }
                         index += 0;
                     }
-                }else{
-                    return
+                } else {
+                    return;
                 }
             }
             // now process spending boxes in height
-            for(let txId of Object.keys(heightTxList)) {
-                const txJson = heightTxList[txId]
+            for (let txId of Object.keys(heightTxList)) {
+                const txJson = heightTxList[txId];
                 const tx = storedTxEntity[txId];
                 let index = 0;
                 for (let input of txJson.inputs) {
@@ -330,11 +337,11 @@ class BlockChainTxActionClass {
             }
             await AddressDbAction.setAddressHeight(address.id, Number(height));
         }
-        console.log(`address proceed completely ${address.address}`)
+        console.log(`address proceed completely ${address.address}`);
     };
 
     processAddressOutputBoxes = async (address: Address, height: number, txs: Array<TxWithJson>) => {
-        for(let tx of txs) {
+        for (let tx of txs) {
             let index = 0;
             const txJson: ErgoTx = tx.jsonBi;
             for (let box of txJson.outputs) {
@@ -349,11 +356,11 @@ class BlockChainTxActionClass {
                 index += 0;
             }
         }
-        await AddressDbAction.setAddressHeight(address.id, height)
-    }
+        await AddressDbAction.setAddressHeight(address.id, height);
+    };
 
     processAddressInputBoxes = async (address: Address, height: number, txs: Array<TxWithJson>) => {
-        for(let tx of txs) {
+        for (let tx of txs) {
             let index = 0;
             const txJson: ErgoTx = tx.jsonBi;
             for (let input of txJson.inputs) {
@@ -363,8 +370,8 @@ class BlockChainTxActionClass {
                 index += 1;
             }
         }
-        await AddressDbAction.setAddressHeight(address.id, height)
-    }
+        await AddressDbAction.setAddressHeight(address.id, height);
+    };
 }
 
 const BlockChainAction = new BlockChainActionClass();
@@ -374,5 +381,5 @@ export {
     Receiver,
     ReceiverToken,
     BlockChainAction,
-    BlockChainTxAction,
+    BlockChainTxAction
 };

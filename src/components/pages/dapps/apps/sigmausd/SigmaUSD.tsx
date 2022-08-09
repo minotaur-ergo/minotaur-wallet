@@ -113,7 +113,6 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
             height,
             wasm.BoxValue.from_i64(wasm.I64.from_str(parameters.MINT_TX_FEE.toString())),
             user_address,
-            wasm.BoxValue.SAFE_USER_MIN()
         );
         const data_inputs = new wasm.DataInputs();
         data_inputs.add(new wasm.DataInput(oracle.box_id()));
