@@ -182,7 +182,6 @@ class BlockChainActionClass {
 
 
     processResult = async (height: number, dbHeight: number, forkPoint: number, blocks: { [height: number]: string }, network_type: string) => {
-        // if(dbHeight > forkPoint || dbHeight === 0) {
         try {
             await BoxContentDbAction.forkBoxContents(forkPoint, network_type);
             await BoxDbAction.forkBoxes(forkPoint, network_type);
@@ -196,7 +195,6 @@ class BlockChainActionClass {
         } catch (e) {
             return { height: height, blocks: {} };
         }
-        // }
         return { height: forkPoint, blocks: blocks };
     };
 

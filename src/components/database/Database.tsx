@@ -28,7 +28,7 @@ const connectSqlJs = async () => {
         type: "sqljs",
         autoSave: true,
         location: "minotaur",
-        logging: 'all',
+        logging: false,
         entities: entities,
         migrations: migrations,
         synchronize: false
