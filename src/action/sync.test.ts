@@ -5,12 +5,13 @@ import {stepForward} from './sync.js';
 
 
 
-/**
- * Test: blocks fetched correctly and inserted in db.
- * Result: failed.
- * Reason : functions is not implemented yet.
- */
 jest.mock('axios');
+/**
+ * testing stepforward function to insert given blocks correctly in local db.
+ * Dependancy: axois mocked.
+ * Scenario: Create a sample response and make mocked axios instance return it, then call stepForward function.
+ * Expected: insertToDB function must be called once with determined block.
+ */
 test('insert blocks to database',async() => {
     const spyInsertToDB = jest.spyOn(syncFunctions, 'insertToDB')
     const block = {
