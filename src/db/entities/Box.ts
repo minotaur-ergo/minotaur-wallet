@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Address from "./Address";
 import Tx from "./Tx";
 import BigIntValueTransformer from "./Transformer";
-import { Unique } from "typeorm/browser";
+import { Unique } from "typeorm";
 
 @Entity({ name: "box" })
 @Unique('box_id_in_network', ['network_type', 'box_id'])

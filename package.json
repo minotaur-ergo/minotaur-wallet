@@ -108,4 +108,5 @@
     "sql.js": "1.6.2",
     "stream-browserify": "^3.0.0"
   }
+  
 }

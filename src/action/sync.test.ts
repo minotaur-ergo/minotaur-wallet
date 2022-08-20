@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/extend-expect";
 import axios, { AxiosPromise } from "axios";
-import * as syncFunctions from './sync.js';
-import {stepForward} from './sync.js';
+import * as syncFunctions from './sync';
+import {stepForward} from './sync';
 
 
 
