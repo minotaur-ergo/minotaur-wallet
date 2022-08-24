@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import * as wasm from "ergo-lib-wasm-browser";
 import { BlockHeader, NetworkContext, NodeInfo } from "./models";
 import { JsonBI } from "../json";
+import { Block } from "../../action/sync";
 
 
 export class Node {
@@ -48,5 +49,20 @@ export class Node {
             };
         });
     };
+
+    /*
+    node api to get block headers(containing id and height) between specified heights.
+    @param fromHeight : number
+    @param toHeight : number
+    @return received headers Promise<Block[]>
+    */
+    getBlockHeaders = async(fromHeight: number, toHeight: number): Promise<Block[]> => {
+        return this.backend.request<Array<Block>>({
+            url: `/blocks/chainSlice?fromHeight=${fromHeight}&toHeight=${toHeight}`
+        }).then(res => {
+            console.log(res)
+            return res.data.reverse();
+        });           
+    }
 
 }
