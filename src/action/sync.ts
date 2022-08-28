@@ -2,13 +2,10 @@ import {BlockDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block} from './Types'
 import { Paging } from "../util/network/paging";
-import { SemanticClassificationFormat } from "typescript";
 
 //constants
 const LIMIT = 50;
 const INITIAL_LIMIT = 10;
-//global variables
-let isFirstStep = true;
 
 /*
     insert array of block headers into databse.
@@ -27,20 +24,17 @@ export function insertToDB(blocks : Block[], network_type: string):void {
     compare overlapBlocks with 2 lastRecievedBlocks, update ther overlap and remove intersections from recievedBlocks.
     @param overlapBlock : Block[]
     @param lastRecievedBlock : Block
-    @return number of intersetions : number ( 0 or 1 or 2)
+    @return forck happened or not : Boolean
 */
-export function checkFork(overlapBlocks : Block[], recievedBlocks: Block[]): number {
-    let intersections : number = 0;
-    if(overlapBlocks[0] == recievedBlocks[0]){
-        intersections ++;
-        recievedBlocks.shift();
+export function checkFork(overlapBlocks : Block[], recievedBlocks: Block[]): Boolean {
+    const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1])
+    if(sliceIndex === -1)
+        return true;
+    else {
+        recievedBlocks.slice(sliceIndex + 1)
+        overlapBlocks = recievedBlocks.slice(-2);
+        return false;
     }
-    if(overlapBlocks[1] == recievedBlocks[0]){
-        intersections ++;
-        recievedBlocks.shift();
-    }
-    overlapBlocks = recievedBlocks.slice(-2);
-    return intersections;
 
 }
 
@@ -68,21 +62,11 @@ export function createBlockArrayByID(recievedIDs : string[], current_height : nu
     @param last_height : number
     @return constructed paging : Paging
 */
-export function setPaging(current_height : number , last_height : number): Paging {
-    let isFirstStep : Boolean 
+export function setPaging(current_height : number , last_height : number, limit : number): Paging {
     return {
-        offset: Math.min(current_height + LIMIT - 2, last_height),
-        limit: setLimit()
+        offset: Math.min(current_height + limit - 2, last_height),
+        limit: limit
     }
-}
-
-/*
-    set paging's limit depending on which step the stepForward process is.
-    @return limit : number
-*/
-export function setLimit() : number{
-    let result = isFirstStep ? INITIAL_LIMIT : LIMIT;
-    return result
 }
 
 /*
@@ -94,26 +78,23 @@ export async function stepForward(currentBlock: Block, network_type: string):Pro
     const node = getNetworkType(network_type).getNode();
 
     let paging : Paging
+    let limit : number = INITIAL_LIMIT;
     let current_height : number = currentBlock.height;
-    let reach_last_height : Boolean = false;
     
     let overlapBlocks : Block[] = [currentBlock]
     
-    while(!reach_last_height){    
+    while(current_height > 0){    
         const last_height : number = await node.getHeight();
-        paging = setPaging(current_height, last_height);
-        let recievedIDs : string[] = await node.getBlockHeaders(paging);
-        
-        let recievedBlocks : Block[] = createBlockArrayByID(recievedIDs, current_height);
-        let intersectedBlocksNum : number = checkFork(overlapBlocks, recievedBlocks)
       
-        if(intersectedBlocksNum == 0) //fork happened.
+        paging = setPaging(current_height, last_height, limit);
+        let recievedIDs : string[] = await node.getBlockHeaders(paging);
+        limit = LIMIT;
+        
+        let recievedBlocks : Block[] = createBlockArrayByID(recievedIDs, current_height);      
+        if(checkFork(overlapBlocks, recievedBlocks)) //fork happened.
             return;
         insertToDB(recievedBlocks, network_type);
-        isFirstStep = false;
         current_height = paging.offset;
-        if(current_height == 0)
-            reach_last_height = true;
 
     }
 
