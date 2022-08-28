@@ -1,7 +1,9 @@
 import axios, { AxiosInstance } from "axios";
 import * as wasm from "ergo-lib-wasm-browser";
 import { BlockHeader, NetworkContext, NodeInfo } from "./models";
+import {Block} from '../../action/Types'
 import { JsonBI } from "../json";
+import { Paging } from "./paging";
 
 
 export class Node {
@@ -48,5 +50,18 @@ export class Node {
             };
         });
     };
+    
+    /*
+    node api to get block header ids between specified heights.
+    @param paging : Paging
+    @return received headers Promise<Block[]>
+    */
+    getBlockHeaders = async(paging: Paging): Promise<string[]> => {
+        return this.backend.request<string[]>({
+            url: `/blocks?limit=${paging.limit}&offset=${paging.offset}`
+        }).then(res => {
+            return res.data.reverse();
+        });           
+    }
 
 }
