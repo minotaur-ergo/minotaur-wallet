@@ -14,9 +14,7 @@ const INITIAL_LIMIT = 10;
 */
 export function insertToDB(blocks : Block[], network_type: string):void {
     blocks.forEach(block => {
-        BlockDbAction.InsertHeaders(Object.entries(block).map(value => {
-            return { id: block.id, height: block.height};
-        }), network_type);   
+        BlockDbAction.InsertHeader( block.id, block.height, network_type);   
     })
 }
 
