@@ -61,8 +61,9 @@ export function createBlockArrayByID(recievedIDs : string[], current_height : nu
     @return constructed paging : Paging
 */
 export function setPaging(current_height : number , last_height : number, limit : number): Paging {
+    let current_offset = last_height - current_height;
     return {
-        offset: Math.min(current_height + limit - 2, last_height),
+        offset: Math.max(current_offset - limit + 2, 0),
         limit: limit
     }
 }
@@ -77,13 +78,13 @@ export async function stepForward(currentBlock: Block, network_type: string):Pro
 
     let paging : Paging
     let limit : number = INITIAL_LIMIT;
+    
     let current_height : number = currentBlock.height;
+    let last_height : number = await node.getHeight();
     
     let overlapBlocks : Block[] = [currentBlock]
     
-    while(current_height > 0){    
-        const last_height : number = await node.getHeight();
-      
+    while((last_height - current_height) > 0){        
         paging = setPaging(current_height, last_height, limit);
         let recievedIDs : string[] = await node.getBlockHeaders(paging);
         limit = LIMIT;
@@ -92,7 +93,9 @@ export async function stepForward(currentBlock: Block, network_type: string):Pro
         if(checkFork(overlapBlocks, recievedBlocks)) //fork happened.
             return;
         insertToDB(recievedBlocks, network_type);
-        current_height = paging.offset;
+        
+        last_height = await node.getHeight();
+        current_height = last_height - paging.offset;
 
     }
 
