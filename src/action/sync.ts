@@ -12,11 +12,13 @@ const INITIAL_LIMIT = 10;
     @param blocks : Block[]
     @param network_type : string
 */
-export function insertToDB(blocks : Block[], network_type: string):void {
+export const insertToDB = (blocks : Block[], network_type: string): void => {
     blocks.forEach(block => {
-        BlockDbAction.InsertHeader( block.id, block.height, network_type);   
+        BlockDbAction.InsertHeaders(Object.entries(block).map(value => {
+            return { id: block.id, height: block.height};
+        }), network_type);   
     })
-}
+};
 
 /*
     compare overlapBlocks with 2 lastRecievedBlocks, update ther overlap and remove intersections from recievedBlocks.
@@ -24,7 +26,7 @@ export function insertToDB(blocks : Block[], network_type: string):void {
     @param lastRecievedBlock : Block
     @return forck happened or not : Boolean
 */
-export function checkFork(overlapBlocks : Block[], recievedBlocks: Block[]): Boolean {
+export const checkFork = (overlapBlocks : Block[], recievedBlocks: Block[]): Boolean => {
     const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1])
     if(sliceIndex === -1)
         return true;
@@ -42,7 +44,7 @@ export function checkFork(overlapBlocks : Block[], recievedBlocks: Block[]): Boo
     @param current_height : number
     @return Block[]
  */
-export function createBlockArrayByID(recievedIDs : string[], current_height : number) : Block[]{
+export const createBlockArrayByID = (recievedIDs : string[], current_height : number) : Block[] => {
     let blockArr : Block[] = [];
     recievedIDs.forEach( id => {
         let block : Block = {
@@ -60,7 +62,7 @@ export function createBlockArrayByID(recievedIDs : string[], current_height : nu
     @param last_height : number
     @return constructed paging : Paging
 */
-export function setPaging(current_height : number , last_height : number, limit : number): Paging {
+export const setPaging = (current_height : number , last_height : number, limit : number): Paging => {
     let current_offset = last_height - current_height;
     return {
         offset: Math.max(current_offset - limit + 2, 0),
@@ -73,14 +75,14 @@ export function setPaging(current_height : number , last_height : number, limit 
     @param currentBlock : Block
     @param network_type: string
 */
-export async function stepForward(currentBlock: Block, network_type: string):Promise<void>{
+export const stepForward = async(currentBlock: Block, network_type: string):Promise<void> => {
     const node = getNetworkType(network_type).getNode();
 
     let paging : Paging
     let limit : number = INITIAL_LIMIT;
     
     let current_height : number = currentBlock.height;
-    let last_height : number = await node.getHeight();
+    const last_height : number = await node.getHeight();
     
     let overlapBlocks : Block[] = [currentBlock]
     
@@ -93,8 +95,6 @@ export async function stepForward(currentBlock: Block, network_type: string):Pro
         if(checkFork(overlapBlocks, recievedBlocks)) //fork happened.
             return;
         insertToDB(recievedBlocks, network_type);
-        
-        last_height = await node.getHeight();
         current_height = last_height - paging.offset;
 
     }
