@@ -42,15 +42,13 @@ export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]):
     @return Block[]
  */
 export const createBlockArrayByID = (recievedIDs : string[], current_height : number) : Block[] => {
-    let blockArr : Block[] = [];
-    recievedIDs.forEach( id => {
-        let block : Block = {
-            id : id,
-            height : ++current_height
+    current_height++;
+    return recievedIDs.map( (id, index) => {
+        return {
+            id: id,
+            height: current_height + index
         }
-        blockArr.push(block)
-    });
-    return blockArr;
+    })
 }
 
 /*
