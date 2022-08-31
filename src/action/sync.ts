@@ -24,18 +24,15 @@ export const insertToDB = (blocks : Block[], network_type: string): void => {
     compare overlapBlocks with 2 lastRecievedBlocks, update ther overlap and remove intersections from recievedBlocks.
     @param overlapBlock : Block[]
     @param lastRecievedBlock : Block
-    @return forck happened or not : Boolean
 */
-export const checkFork = (overlapBlocks : Block[], recievedBlocks: Block[]): Boolean => {
+export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]): void => {
     const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1])
     if(sliceIndex === -1)
-        return true;
+        throw new Error("overlaps not matched.")
     else {
-        recievedBlocks.slice(sliceIndex + 1)
+        recievedBlocks.splice(sliceIndex + 1)
         overlapBlocks = recievedBlocks.slice(-2);
-        return false;
     }
-
 }
 
 /*
@@ -92,10 +89,9 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
         limit = LIMIT;
         
         let recievedBlocks : Block[] = createBlockArrayByID(recievedIDs, current_height);      
-        if(checkFork(overlapBlocks, recievedBlocks)) //fork happened.
-            return;
+        checkOverlaps(overlapBlocks, recievedBlocks)
         insertToDB(recievedBlocks, network_type);
-        current_height = last_height - paging.offset;
+        current_height += paging.limit;
 
     }
 
