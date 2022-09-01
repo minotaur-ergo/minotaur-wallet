@@ -21,7 +21,7 @@ export const insertToDB = (blocks : Block[], network_type: string): void => {
 };
 
 /*
-    compare overlapBlocks with 2 lastRecievedBlocks, update ther overlap and remove intersections from recievedBlocks.
+    compare overlapBlocks with 2 lastRecievedBlocks, update their overlap and remove intersections from recievedBlocks.
     @param overlapBlock : Block[]
     @param lastRecievedBlock : Block
 */
@@ -31,7 +31,13 @@ export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]):
         throw new Error("overlaps not matched.")
     else {
         recievedBlocks.splice(sliceIndex + 1)
-        overlapBlocks = recievedBlocks.slice(-2);
+   
+        const newOverlaps = recievedBlocks.slice(-2);
+        overlapBlocks.map((block, index) => {
+            block.id = newOverlaps[index].id;
+            block.height = newOverlaps[index].height;
+        })
+        
     }
 }
 
