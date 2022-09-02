@@ -107,13 +107,14 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
  * @param network_type : string
  */
 export const removeFromDB = (forkHeight : number, network_type: string):void => {
-        BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
+    BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
 }
 export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
 
 }
 export const checkFork = (currentBlock: Block, network_type: string):Boolean => {
     return false;
+    //const node = getNetworkType(network_type).getNode();
 }
 /**
  * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
