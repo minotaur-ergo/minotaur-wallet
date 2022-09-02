@@ -2,7 +2,6 @@ import {BlockDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block} from './Types'
 import { Paging } from "../util/network/paging";
-import { stepButtonClasses } from "@mui/material";
 
 //constants
 const LIMIT = 50;
@@ -102,10 +101,10 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
 
 };
 
-export const removeFromDB = (blocks : Block[], network_type: string) => {
-
+export const removeFromDB = (forkHeight : number, network_type: string):void => {
+        BlockDbAction.forkHeaders(forkHeight ,network_type);
 }
-export const stepBackward = async(currentBlock: Block, network_type: string):Promise<Block[]> => {
+export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
 
 }
 export const checkFork = (currentBlock: Block, network_type: string):Boolean => {
@@ -119,7 +118,7 @@ export const checkFork = (currentBlock: Block, network_type: string):Boolean => 
 export const syncBlocks = (currentBlock: Block, network_type: string):void => {
     if(checkFork(currentBlock, network_type)){
         stepBackward(currentBlock, network_type)
-            .then((forkedBlocks: Block[]) => removeFromDB(forkedBlocks, network_type));
+            .then((forkHeight: number) => removeFromDB(forkHeight, network_type));
     }
     else
         stepForward(currentBlock, network_type);

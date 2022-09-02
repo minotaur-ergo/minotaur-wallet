@@ -61,15 +61,13 @@ test('remove blocks from database', async() => {
     const spyStepBackward = jest.spyOn(syncFunctions,'stepBackward');
     const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
     const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
+    const network_type = "Testnet"
     
     const lastLoadedBlock : Block = dbJson[dbJson.length-1];
-    const receivedBlock : Block = {
-        id : "190",
-        height : 1
-    };
+    const forkPoint: number = dbJson[1].height
     
     spyCheckFork.mockReturnValueOnce(true);
-    spyStepBackward.mockReturnValueOnce(Promise.resolve([receivedBlock]));
-    syncFunctions.syncBlocks(lastLoadedBlock, "Testnet");
-    expect(spyRemovefromDB).toHaveBeenCalledWith(dbJson.filter(block => block.height > receivedBlock.height))
+    spyStepBackward.mockReturnValueOnce(Promise.resolve(forkPoint));
+    syncFunctions.syncBlocks(lastLoadedBlock, network_type);
+    expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint, network_type);
 })
