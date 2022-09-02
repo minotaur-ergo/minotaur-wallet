@@ -9,6 +9,7 @@ const db = fs.readFileSync(`${__dirname}/db.json`).toString();
 const dbJson : Block[] = JSON.parse(db);
 
 jest.mock('axios');
+
 /**
  * testing stepforward function to insert given blocks correctly in local db.
  * Dependancy: axois mocked.
@@ -46,4 +47,29 @@ test('create array of blocks with given IDs', () => {
         }
     ]
     expect(createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks)
+})
+
+/**
+ * testing syncFunction to call removeFromDB function in case of fork and remove forked blocks from db.
+ * Dependancy: -
+ * Scenario: checkFork function returns true => fork happened. 
+ *           stepBackward function returns the receivedBlock as the fork point.
+ *           then removeFromDB is called and remove forked blocks from db.
+ * Expected: blocks with height greater than receivedBlock have to be removed.
+ */
+test('remove blocks from database', async() => {
+    const spyStepBackward = jest.spyOn(syncFunctions,'stepBackward');
+    const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
+    const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
+    
+    const lastLoadedBlock : Block = dbJson[dbJson.length-1];
+    const receivedBlock : Block = {
+        id : "190",
+        height : 1
+    };
+    
+    spyCheckFork.mockReturnValueOnce(true);
+    spyStepBackward.mockReturnValueOnce(Promise.resolve([receivedBlock]));
+    syncFunctions.syncBlocks(lastLoadedBlock, "Testnet");
+    expect(spyRemovefromDB).toHaveBeenCalledWith(dbJson.filter(block => block.height > receivedBlock.height))
 })
