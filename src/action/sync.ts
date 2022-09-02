@@ -101,8 +101,13 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
 
 };
 
+/**
+ * remove blocks with height > forkheight from db.
+ * @param forkHeight : number
+ * @param network_type : string
+ */
 export const removeFromDB = (forkHeight : number, network_type: string):void => {
-        BlockDbAction.forkHeaders(forkHeight ,network_type);
+        BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
 }
 export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
 
