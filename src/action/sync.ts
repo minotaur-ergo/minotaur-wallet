@@ -109,12 +109,26 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
 export const removeFromDB = (forkHeight : number, network_type: string):void => {
     BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
 }
-export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
+/**
+ * 
+ * @param currentBlock 
+ * @param network_type 
+ * @returns 
+ */
+export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => await {
 
 }
-export const checkFork = (currentBlock: Block, network_type: string):Boolean => {
-    return false;
-    //const node = getNetworkType(network_type).getNode();
+
+/**
+ * compare current block id with block id given from node api in same height.
+ * @param currentBlock : Block
+ * @param network_type : string
+ * @returns fork happened or not : Promise<Boolean>
+ */
+export const checkFork = async(currentBlock: Block, network_type: string): Promise<Boolean> => {
+    const node = getNetworkType(network_type).getNode();
+    const receivedID:string = await node.getBlockAtHeight(currentBlock.height);
+    return currentBlock.id != receivedID;
 }
 /**
  * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
@@ -122,7 +136,7 @@ export const checkFork = (currentBlock: Block, network_type: string):Boolean => 
  * @param network_type : network_type
  */
 export const syncBlocks = (currentBlock: Block, network_type: string):void => {
-    if(checkFork(currentBlock, network_type)){
+    if(checkFork(currentBlock, network_type)){ //FIXME
         stepBackward(currentBlock, network_type)
             .then((forkHeight: number) => removeFromDB(forkHeight, network_type));
     }

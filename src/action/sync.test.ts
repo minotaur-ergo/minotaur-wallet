@@ -66,7 +66,7 @@ test('remove blocks from database', async() => {
     const lastLoadedBlock : Block = dbJson[dbJson.length-1];
     const forkPoint: number = dbJson[1].height
     
-    spyCheckFork.mockReturnValueOnce(true);
+    spyCheckFork.mockReturnValueOnce(Promise.resolve(true));
     spyStepBackward.mockReturnValueOnce(Promise.resolve(forkPoint));
     syncFunctions.syncBlocks(lastLoadedBlock, network_type);
     expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint, network_type);
