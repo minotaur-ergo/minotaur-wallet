@@ -109,14 +109,27 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
 export const removeFromDB = (forkHeight : number, network_type: string):void => {
     BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
 }
+
 /**
- * 
+ * step backward and compare loaded blocks from db and recieved blocks from node, until reach fork point.
  * @param currentBlock 
  * @param network_type 
- * @returns 
+ * @returns forkPOint height : number
  */
-export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => await {
-
+export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
+    const node = getNetworkType(network_type).getNode();
+    let forkPoint: number = -1;
+    let count: number = INITIAL_LIMIT / 2;
+    let paging: Paging = {offset: 0, limit: count};
+  
+    while(forkPoint == -1){
+        let loadedBlocks = (await BlockDbAction.getLastHeadersInPage(paging)).reverse();
+        let recievedIDs : string[] = await node.getBlockHeaders(paging);
+        let commonBlocks = loadedBlocks.filter(block => recievedIDs.includes(block.block_id));
+        forkPoint = commonBlocks.length != 0 ? commonBlocks[0].height : -1;
+        paging.offset += count;
+    }
+    return forkPoint;
 }
 
 /**
@@ -130,13 +143,14 @@ export const checkFork = async(currentBlock: Block, network_type: string): Promi
     const receivedID:string = await node.getBlockAtHeight(currentBlock.height);
     return currentBlock.id != receivedID;
 }
+
 /**
  * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
  * @param currentBlock : Block
  * @param network_type : network_type
  */
-export const syncBlocks = (currentBlock: Block, network_type: string):void => {
-    if(checkFork(currentBlock, network_type)){ //FIXME
+export const syncBlocks = async(currentBlock: Block, network_type: string):Promise<void> => {
+    if(await checkFork(currentBlock, network_type)){
         stepBackward(currentBlock, network_type)
             .then((forkHeight: number) => removeFromDB(forkHeight, network_type));
     }

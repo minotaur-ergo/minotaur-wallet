@@ -16,6 +16,7 @@ import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
 import Config from "../db/entities/Config";
 import AssetCountBox from "../db/entities/views/AssetCountBox";
+import { Paging } from "../util/network/paging";
 
 class WalletActionClass {
     private walletRepository: Repository<Wallet>;
@@ -197,6 +198,13 @@ class BlockActionClass {
             .getMany();
     };
 
+    getLastHeadersInPage = async (paging : Paging) => {
+        return await this.repository.createQueryBuilder()
+            .limit(paging.limit)
+            .offset(paging.offset)
+            .orderBy("height", "DESC")
+            .getMany();
+    };    
     getAllHeaders = async () => {
         // return await this.repository.find()
         return await this.repository.createQueryBuilder()
