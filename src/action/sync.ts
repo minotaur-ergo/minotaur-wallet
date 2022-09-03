@@ -123,7 +123,7 @@ export const stepBackward = async(currentBlock: Block, network_type: string):Pro
     let paging: Paging = {offset: 0, limit: count};
   
     while(forkPoint == -1){
-        let loadedBlocks = (await BlockDbAction.getLastHeadersInPage(paging)).reverse();
+        let loadedBlocks = (await BlockDbAction.getHeadersInPage(paging)).reverse();
         let recievedIDs : string[] = await node.getBlockHeaders(paging);
         let commonBlocks = loadedBlocks.filter(block => recievedIDs.includes(block.block_id));
         forkPoint = commonBlocks.length != 0 ? commonBlocks[0].height : -1;
