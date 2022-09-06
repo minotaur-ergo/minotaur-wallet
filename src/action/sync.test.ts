@@ -58,7 +58,7 @@ test('create array of blocks with given IDs', () => {
  * Expected: blocks with height greater than receivedBlock have to be removed.
  */
 test('remove blocks from database', async() => {
-    const spyStepBackward = jest.spyOn(syncFunctions,'stepBackward');
+    const spyStepBackward = jest.spyOn(syncFunctions,'calcFork');
     const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
     const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
     const network_type = "Testnet"

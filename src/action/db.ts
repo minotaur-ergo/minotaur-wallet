@@ -196,19 +196,6 @@ class BlockActionClass {
             .offset(0)
             .orderBy("height", "DESC")
             .getMany();
-    };
-
-    /**
-     * return list of Blocks stored in database in specified page.
-     * @param paging : Paging
-     * @returns Block[]
-     */
-    getHeadersInPage = async (paging : Paging) => {
-        return await this.repository.createQueryBuilder()
-            .limit(paging.limit)
-            .offset(paging.offset)
-            .orderBy("height", "DESC")
-            .getMany();
     };  
       
     getAllHeaders = async () => {

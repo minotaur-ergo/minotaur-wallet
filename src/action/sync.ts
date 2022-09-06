@@ -116,18 +116,16 @@ export const removeFromDB = (forkHeight : number, network_type: string):void => 
  * @param network_type 
  * @returns forkPOint height : number
  */
-export const stepBackward = async(currentBlock: Block, network_type: string):Promise<number> => {
+export const calcFork = async(currentBlock: Block, network_type: string):Promise<number> => {
     const node = getNetworkType(network_type).getNode();
     let forkPoint: number = -1;
-    let count: number = INITIAL_LIMIT / 2;
-    let paging: Paging = {offset: 0, limit: count};
+    let currHeight = currentBlock.height; 
   
+    let loadedBlocks = await BlockDbAction.getAllHeaders();
     while(forkPoint == -1){
-        let loadedBlocks = (await BlockDbAction.getHeadersInPage(paging)).reverse();
-        let recievedIDs : string[] = await node.getBlockHeaders(paging);
-        let commonBlocks = loadedBlocks.filter(block => recievedIDs.includes(block.block_id));
-        forkPoint = commonBlocks.length != 0 ? commonBlocks[0].height : -1;
-        paging.offset += count;
+        let recievedID : string = await node.getBlockIdAtHeight(currHeight);
+        forkPoint = recievedID ==  loadedBlocks[0].block_id ? currHeight : -1;
+        loadedBlocks.shift();
     }
     return forkPoint;
 }
@@ -140,7 +138,7 @@ export const stepBackward = async(currentBlock: Block, network_type: string):Pro
  */
 export const checkFork = async(currentBlock: Block, network_type: string): Promise<Boolean> => {
     const node = getNetworkType(network_type).getNode();
-    const receivedID:string = await node.getBlockAtHeight(currentBlock.height);
+    const receivedID:string = await node.getBlockIdAtHeight(currentBlock.height);
     return currentBlock.id != receivedID;
 }
 
@@ -151,7 +149,7 @@ export const checkFork = async(currentBlock: Block, network_type: string): Promi
  */
 export const syncBlocks = async(currentBlock: Block, network_type: string):Promise<void> => {
     if(await checkFork(currentBlock, network_type)){
-        stepBackward(currentBlock, network_type)
+        calcFork(currentBlock, network_type)
             .then((forkHeight: number) => removeFromDB(forkHeight, network_type));
     }
     else

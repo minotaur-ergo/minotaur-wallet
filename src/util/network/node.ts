@@ -69,9 +69,9 @@ export class Node {
      * @param height : number
      * @returns header id: Promise<string>
      */
-    getBlockAtHeight = async(height: number): Promise<string> => {
+    getBlockIdAtHeight = async(height: number): Promise<string> => {
         return this.backend.request<string[]>({
-            url: `/blocks/at/${height}`
+            url: `/blocks/chainSlice?fromHeight=${height}&toHeight=${height}`
         }).then(ids => {
             return ids.data[0]
         });           
