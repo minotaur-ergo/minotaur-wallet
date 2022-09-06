@@ -46,7 +46,7 @@ test('create array of blocks with given IDs', () => {
             height : 2
         }
     ]
-    expect(createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks)
+    expect(createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks);
 })
 
 /**
@@ -58,7 +58,7 @@ test('create array of blocks with given IDs', () => {
  * Expected: blocks with height greater than receivedBlock have to be removed.
  */
 test('remove blocks from database', async() => {
-    const spyStepBackward = jest.spyOn(syncFunctions,'calcFork');
+    const spyCalcFork= jest.spyOn(syncFunctions,'calcFork');
     const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
     const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
     const network_type = "Testnet"
@@ -67,7 +67,55 @@ test('remove blocks from database', async() => {
     const forkPoint: number = dbJson[1].height
     
     spyCheckFork.mockReturnValueOnce(Promise.resolve(true));
-    spyStepBackward.mockReturnValueOnce(Promise.resolve(forkPoint));
+    spyCalcFork.mockReturnValueOnce(Promise.resolve(forkPoint));
     syncFunctions.syncBlocks(lastLoadedBlock, network_type);
     expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint, network_type);
+})
+
+/**
+ * testing checkFork to detect fork in specified height.
+ * Dependancy: axois mocked.
+ * Scenario: axios response contains the block which is exactly the same as last loaded block from database.
+ * Expected: return false(fork is not happened.)
+ */
+test('check fork function in normal situation', async() => {
+    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
+    const receivedBlock : Block = lastLoadedBlock;
+    (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
+    expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(false);
+})
+
+/**
+ * testing checkFork to detect fork in specified height.
+ * Dependancy: axois mocked.
+ * Scenario: axios response contains the block which has different id from the last loaded block from database.
+ * Expected: return true(fork is happened.)
+ */
+ test('check fork function in case of fork', async() => {
+    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
+    const receivedBlock : Block = {
+        id: lastLoadedBlock.id.concat('1'),
+        height: lastLoadedBlock.height
+    };
+    (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
+    expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(true);
+})
+
+/**
+ * testing calcFork to find fork point correctly.
+ * Dependancy: axois mocked.
+ * Scenario: 
+ * Expected: 
+ */
+test('calc fork point function', async() => {
+    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
+    const len = dbJson.length;
+    const receivedBlocks : Block[] = dbJson.slice(-2).map((block) => {
+        return {...block, id : block.id.concat('1')}
+    });
+
+    (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[1]);
+    (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[0]);
+    (axios.get as jest.Mock).mockResolvedValueOnce(dbJson[len - 3]);
+    expect(syncFunctions.calcFork(lastLoadedBlock, "Testnet"));
 })
