@@ -104,8 +104,8 @@ test('check fork function in normal situation', async() => {
 /**
  * testing calcFork to find fork point correctly.
  * Dependancy: axois mocked.
- * Scenario: 
- * Expected: 
+ * Scenario: axios reponse set to fork last 2 blocks and return third block correctly.
+ * Expected: return len(db) - 3 as fork point's height.
  */
 test('calc fork point function', async() => {
     const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
@@ -117,5 +117,5 @@ test('calc fork point function', async() => {
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[1]);
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[0]);
     (axios.get as jest.Mock).mockResolvedValueOnce(dbJson[len - 3]);
-    expect(syncFunctions.calcFork(lastLoadedBlock, "Testnet"));
+    expect(syncFunctions.calcFork(lastLoadedBlock, "Testnet")).toStrictEqual(dbJson[len - 3].height);
 })
