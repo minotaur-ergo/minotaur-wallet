@@ -149,8 +149,8 @@ export const checkFork = async(currentBlock: Block, network_type: string): Promi
  */
 export const syncBlocks = async(currentBlock: Block, network_type: string):Promise<void> => {
     if(await checkFork(currentBlock, network_type)){
-        calcFork(currentBlock, network_type)
-            .then((forkHeight: number) => removeFromDB(forkHeight, network_type));
+        let forkPoint = await calcFork(currentBlock, network_type);
+        removeFromDB(forkPoint, network_type);
     }
     else
         stepForward(currentBlock, network_type);
