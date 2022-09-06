@@ -23,6 +23,7 @@ test('insert blocks to database',async() => {
         height : 3
     };
     const lastLoadedBlock : Block = dbJson[dbJson.length-1];
+    (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(block);
     const result = await stepForward(lastLoadedBlock, "Testnet");
     expect(spyInsertToDB).toHaveBeenCalledWith([block]);
@@ -81,6 +82,7 @@ test('remove blocks from database', async() => {
 test('check fork function in normal situation', async() => {
     const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
     const receivedBlock : Block = lastLoadedBlock;
+    (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
     expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(false);
 })
@@ -97,6 +99,7 @@ test('check fork function in normal situation', async() => {
         id: lastLoadedBlock.id.concat('1'),
         height: lastLoadedBlock.height
     };
+    (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
     expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(true);
 })
@@ -113,7 +116,7 @@ test('calc fork point function', async() => {
     const receivedBlocks : Block[] = dbJson.slice(-2).map((block) => {
         return {...block, id : block.id.concat('1')}
     });
-
+    (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[1]);
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[0]);
     (axios.get as jest.Mock).mockResolvedValueOnce(dbJson[len - 3]);
