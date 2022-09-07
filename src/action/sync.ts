@@ -37,7 +37,6 @@ export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]):
             block.id = newOverlaps[index].id;
             block.height = newOverlaps[index].height;
         })
-        
     }
 }
 
@@ -100,3 +99,59 @@ export const stepForward = async(currentBlock: Block, network_type: string):Prom
     }
 
 };
+
+/**
+ * remove blocks with height > forkheight from db.
+ * @param forkHeight : number
+ * @param network_type : string
+ */
+export const removeFromDB = (forkHeight : number, network_type: string):void => {
+    BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
+}
+
+/**
+ * step backward and compare loaded blocks from db and recieved blocks from node, until reach fork point.
+ * @param currentBlock 
+ * @param network_type 
+ * @returns forkPOint height : number
+ */
+export const calcFork = async(currentBlock: Block, network_type: string):Promise<number> => {
+    const node = getNetworkType(network_type).getNode();
+    let forkPoint: number = -1;
+    let currHeight = currentBlock.height; 
+  
+    let loadedBlocks = await BlockDbAction.getAllHeaders(network_type);
+    while(forkPoint == -1){
+        let receivedID : string = await node.getBlockIdAtHeight(currHeight);
+        forkPoint = receivedID ==  loadedBlocks[0].block_id ? currHeight : -1;
+        loadedBlocks.shift();
+        currHeight--;
+    }
+    return forkPoint;
+}
+
+/**
+ * compare current block id with block id given from node api in same height.
+ * @param currentBlock : Block
+ * @param network_type : string
+ * @returns fork happened or not : Promise<Boolean>
+ */
+export const checkFork = async(currentBlock: Block, network_type: string): Promise<Boolean> => {
+    const node = getNetworkType(network_type).getNode();
+    const receivedID:string = await node.getBlockIdAtHeight(currentBlock.height);
+    return currentBlock.id != receivedID;
+}
+
+/**
+ * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
+ * @param currentBlock : Block
+ * @param network_type : network_type
+ */
+export const syncBlocks = async(currentBlock: Block, network_type: string):Promise<void> => {
+    if(await checkFork(currentBlock, network_type)){
+        let forkPoint = await calcFork(currentBlock, network_type);
+        removeFromDB(forkPoint, network_type);
+    }
+    else
+        stepForward(currentBlock, network_type);
+}

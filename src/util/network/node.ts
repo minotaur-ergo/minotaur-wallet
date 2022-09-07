@@ -64,4 +64,17 @@ export class Node {
         });           
     }
 
+    /**
+     * node api to get block header id at given height.
+     * @param height : number
+     * @returns header id: Promise<string>
+     */
+    getBlockIdAtHeight = async(height: number): Promise<string> => {
+        return this.backend.request<string[]>({
+            url: `/blocks/chainSlice?fromHeight=${height}&toHeight=${height}`
+        }).then(ids => {
+            return ids.data[0]
+        });           
+    }
+
 }

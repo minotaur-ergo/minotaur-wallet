@@ -195,13 +195,25 @@ class BlockActionClass {
             .offset(0)
             .orderBy("height", "DESC")
             .getMany();
-    };
-
-    getAllHeaders = async () => {
+    };  
+    
+    /**
+     * get all block headers with given network type(if persent) in db
+     * @param network_type 
+     * @returns block headers
+     */
+    getAllHeaders = async (network_type ?: string) => {
         // return await this.repository.find()
+        if(typeof network_type !== 'undefined'){
+                return await this.repository.createQueryBuilder()
+                    .orderBy("height", "DESC")
+                    .where("network_type = :network_type", { network_type: network_type })
+                    .getMany();
+        }
         return await this.repository.createQueryBuilder()
-            .orderBy("height", "DESC")
-            .getMany();
+        .orderBy("height", "DESC")
+        .getMany();
+
     };
 
     InsertHeader = async (id: string, height: number, network_type: string) => {
