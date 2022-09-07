@@ -120,8 +120,7 @@ export const calcFork = async(currentBlock: Block, network_type: string):Promise
     let forkPoint: number = -1;
     let currHeight = currentBlock.height; 
   
-    let loadedBlocks = await BlockDbAction.getAllHeaders();
-    loadedBlocks = loadedBlocks.filter(block => {return block.network_type == network_type});
+    let loadedBlocks = await BlockDbAction.getAllHeaders(network_type);
     while(forkPoint == -1){
         let receivedID : string = await node.getBlockIdAtHeight(currHeight);
         forkPoint = receivedID ==  loadedBlocks[0].block_id ? currHeight : -1;
