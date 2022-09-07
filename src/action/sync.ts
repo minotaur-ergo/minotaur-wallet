@@ -37,7 +37,6 @@ export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]):
             block.id = newOverlaps[index].id;
             block.height = newOverlaps[index].height;
         })
-        
     }
 }
 
