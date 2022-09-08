@@ -1,7 +1,8 @@
 import {BlockDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
-import {Block} from './Types'
+import {Block, Trx} from './Types'
 import { Paging } from "../util/network/paging";
+import Address from "../db/entities/Address";
 
 //constants
 const LIMIT = 50;
@@ -154,4 +155,32 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
     }
     else
         stepForward(currentBlock, network_type);
+}
+
+/**
+ * 
+ */
+export const insertTrxtoDB = (trxs : Trx[], network_type:string): void => {
+
+}
+
+/**
+ * 
+ */
+export const checkTrxValidation = (trxs : Trx[], network_type:string):Boolean => {
+    return false;
+}   
+
+/**
+ * 
+ */
+export const syncTrxsWithAddress = async(address: string,currentHeight: number, network_type: string) => {
+
+}
+
+/**
+ * 
+ */
+ export const syncTrxs = async(network_type: string) => {
+
 }
