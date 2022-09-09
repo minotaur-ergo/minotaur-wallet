@@ -1,4 +1,4 @@
-import {BlockDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block, Trx} from './Types'
 import { Paging } from "../util/network/paging";
@@ -174,13 +174,18 @@ export const checkTrxValidation = (trxs : Trx[], network_type:string):Boolean =>
 /**
  * 
  */
-export const syncTrxsWithAddress = async(address: string,currentHeight: number, network_type: string) => {
+export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
 
 }
 
 /**
  * 
  */
- export const syncTrxs = async(network_type: string) => {
+ export const syncTrxs = async(network_type: string, wallet_id: number) => {
+    const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id);
+    allAddresses.forEach(address => {
+        const currentHeight = 0;
+        syncTrxsWithAddress(address, currentHeight,network_type);
+    });
 
 }

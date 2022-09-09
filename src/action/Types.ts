@@ -1,3 +1,5 @@
+import Address from "../db/entities/Address"
+
 export type Block = {
     id : string,
     height : number
@@ -5,7 +7,7 @@ export type Block = {
 export type Box = {
     boxId: string,
     value: number,
-    address: string
+    address: Address
 }
 export type Trx = {
     id: string,

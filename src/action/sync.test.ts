@@ -4,6 +4,7 @@ import * as syncFunctions from './sync';
 import {stepForward, createBlockArrayByID, syncTrxsWithAddress} from './sync';
 import {Block, Trx, Box} from './Types'
 import * as fs from "fs"
+import Address from "../db/entities/Address";
 
 
 //test values
@@ -12,17 +13,17 @@ const dbJson : Block[] = JSON.parse(db);
 
 const lastLoadedBlock : Block = dbJson[dbJson.length-1];
 const network_type = "Testnet"
-const address = '';
+const testAddress = new Address;
 
 const testBox1 : Box = {
     boxId: '12345',
     value: 2000000000,
-    address: 'test'
+    address: testAddress
 }
 const testBox2 : Box = {
     boxId: '12345',
     value: 1000000000,
-    address: 'test'
+    address: testAddress
 }
 
 jest.mock('axios');
@@ -155,6 +156,6 @@ test('insert Trx to db', async() => {
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
     spyCheckTrxValidation.mockReturnValueOnce(true);
-    syncFunctions.syncTrxsWithAddress(address, receivedTrx.inclusionHeight, network_type);
+    syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
     expect(spyInsertTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type);
 })
