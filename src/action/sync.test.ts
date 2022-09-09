@@ -5,7 +5,7 @@ import {stepForward, createBlockArrayByID, syncTrxsWithAddress} from './sync';
 import {Block, Trx, Box} from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
-
+import { ErgoTx } from "../util/network/models";
 
 //test values
 const db = fs.readFileSync(`${__dirname}/db.json`).toString();
@@ -145,17 +145,20 @@ test('calc fork point function', async() => {
 test('insert Trx to db', async() => {
     const spyInsertTrxToDB = jest.spyOn(syncFunctions, 'insertTrxtoDB');
     const spyCheckTrxValidation = jest.spyOn(syncFunctions, 'checkTrxValidation');
-    const receivedTrx: Trx = {
+    const receivedTrx: ErgoTx = {
         id: '8189',
         blockId: '111',
         inclusionHeight: 3,
-        inputs: [testBox1],
-        outputs: [testBox2]
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
     };
 
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
-    spyCheckTrxValidation.mockReturnValueOnce(true);
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[], network_type:string) => {});
     syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
     expect(spyInsertTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type);
 })
