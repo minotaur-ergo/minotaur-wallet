@@ -1,13 +1,14 @@
 import {BlockDbAction, TxDbAction, AddressDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
-import {Block, Trx} from './Types'
+import {Block, HeightRange, Trx} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
+import { ErgoTx } from "../util/network/models";
 
 //constants
 const LIMIT = 50;
 const INITIAL_LIMIT = 10;
-
+const DB_HEIGHT_RANGE = 720;
 /*
     insert array of block headers into databse.
     @param blocks : Block[]
@@ -160,22 +161,54 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
 /**
  * 
  */
-export const insertTrxtoDB = (trxs : Trx[], network_type:string): void => {
-
+export const insertTrxtoDB = (trxs : ErgoTx[], network_type:string): void => {
+    //TODO
 }
 
 /**
  * 
  */
-export const checkTrxValidation = (trxs : Trx[], network_type:string):Boolean => {
-    return false;
+export const checkTrxValidation = async(trxs : ErgoTx[], network_type:string):Promise<void> => {
+    let loadedHeaders = await BlockDbAction.getAllHeaders(network_type);
+    let extractedHeaders = trxs.map(trx => {
+        return {
+            height: trx.inclusionHeight, 
+            block_id: trx.blockId}
+        });
+    
+    extractedHeaders.forEach(extracted => {
+        const loaded = loadedHeaders.find(header => header.height == extracted.height);
+        if(loaded == undefined)
+            throw new Error('header not found.');
+        else if(extracted.block_id != loaded.id.toString())
+            throw new Error('blockIds not matched.');
+    });
 }   
 
 /**
  * 
  */
 export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
+    const explorer = getNetworkType(address.network_type).getExplorer();
+    const node = getNetworkType(network_type).getNode();
+    
+    const lastHeight : number = await node.getHeight();
+    let limit = 1;
+    let heightRange :HeightRange = {
+        fromHeight: currentHeight,
+        toHeight: currentHeight
+    };
+  
+    while(currentHeight < lastHeight){
+        const Txs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, true);
+        const filteredTxs = Txs.items.filter(tx => { tx.inclusionHeight >= lastHeight - DB_HEIGHT_RANGE});
+        checkTrxValidation(filteredTxs ,network_type);
+        insertTrxtoDB(Txs.items ,network_type);
 
+        heightRange.fromHeight = heightRange.toHeight;
+        heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + limit);
+        limit += INITIAL_LIMIT;
+    }
 }
 
 /**
@@ -184,8 +217,7 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
  export const syncTrxs = async(network_type: string, wallet_id: number) => {
     const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id);
     allAddresses.forEach(address => {
-        const currentHeight = 0;
+        const currentHeight = address.process_height;
         syncTrxsWithAddress(address, currentHeight,network_type);
     });
-
 }

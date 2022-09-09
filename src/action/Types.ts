@@ -16,3 +16,7 @@ export type Trx = {
     inputs: Box[],
     outputs: Box[]
 }
+export type HeightRange = {
+    fromHeight : number,
+    toHeight : number
+}
