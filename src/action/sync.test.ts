@@ -162,3 +162,47 @@ test('insert Trx to db', async() => {
     syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
     expect(spyInsertTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type);
 })
+
+/**
+ * testing checkValidation function in case of invalid trxs.
+ * Dependancy: -
+ * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
+ * Expected: checkValidation must throw an error.
+ */
+test('check validation of invalid tx', async() => {
+    const height = 3;
+    const ID = dbJson[height].id.concat('1');
+    const receivedTrx: ErgoTx = {
+        id: '8189',
+        blockId: ID,
+        inclusionHeight: height,
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
+    }; 
+    expect(syncFunctions.checkTrxValidation([receivedTrx], network_type)).toThrow('blockIds not matched.');
+})
+
+/**
+ * testing checkValidation function in case of nvalid trxs.
+ * Dependancy: -
+ * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
+ * Expected: checkValidation must not throw any error.
+ */
+ test('check validation of valid tx', async() => {
+    const height = 3;
+    const ID = dbJson[height].id;
+    const receivedTrx: ErgoTx = {
+        id: '8189',
+        blockId: ID,
+        inclusionHeight: height,
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
+    }; 
+    expect(syncFunctions.checkTrxValidation([receivedTrx], network_type)).not.toThrow();
+})
