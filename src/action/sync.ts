@@ -166,7 +166,9 @@ export const insertTrxtoDB = (trxs : ErgoTx[], network_type:string): void => {
 }
 
 /**
- * 
+ * check blockIds of received trxs and compare them with blckIds stored in database.
+ * @param trxs : ErgoTx[]
+ * @param network_type : string
  */
 export const checkTrxValidation = async(trxs : ErgoTx[], network_type:string):Promise<void> => {
     let loadedHeaders = await BlockDbAction.getAllHeaders(network_type);
@@ -186,7 +188,10 @@ export const checkTrxValidation = async(trxs : ErgoTx[], network_type:string):Pr
 }   
 
 /**
- * 
+ * get transactions for specific address, check if they're valid and store them.
+ * @param address : Address
+ * @param currentHeight : number
+ * @param network_type : string
  */
 export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
     const explorer = getNetworkType(address.network_type).getExplorer();
@@ -212,7 +217,9 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
 }
 
 /**
- * 
+ * sync transactions and store in db for all addresses of given wallet id.
+ * @param network_type : string
+ * @param wallet_id : number
  */
  export const syncTrxs = async(network_type: string, wallet_id: number) => {
     const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id);
