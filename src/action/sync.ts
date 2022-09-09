@@ -204,7 +204,7 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
         toHeight: currentHeight
     };
   
-    while(heightRange.toHeight < lastHeight){
+    while(heightRange.fromHeight < lastHeight){
         const Txs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, true);
         const filteredTxs = Txs.items.filter(tx => { tx.inclusionHeight >= lastHeight - DB_HEIGHT_RANGE});
         checkTrxValidation(filteredTxs ,network_type);
