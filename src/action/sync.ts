@@ -4,6 +4,7 @@ import {Block, HeightRange, Trx} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
 import { ErgoTx } from "../util/network/models";
+import { TxSignR } from "../components/qrcode/qrcode-types/QrCodeScanResult";
 
 //constants
 const LIMIT = 50;
@@ -162,7 +163,12 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
  * 
  */
 export const insertTrxToDB = (trxs : ErgoTx[], network_type:string): void => {
-    //TODO
+    let currentHeight = 0;
+    let sortedTxs : Array<> 
+    while(trxs.length != 0){
+
+    }
+
 }
 
 /**
@@ -197,7 +203,7 @@ export const checkTrxValidation = async(trxs : ErgoTx[], network_type:string):Pr
 export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
     const explorer = getNetworkType(address.network_type).getExplorer();
     const node = getNetworkType(network_type).getNode();
-    
+    let totalTxs: ErgoTx[] = [];
     const lastHeight : number = await node.getHeight();
     let limit = 1;
     let heightRange :HeightRange = {
@@ -209,12 +215,13 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
         const Txs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, true);
         const filteredTxs = Txs.items.filter(tx => { tx.inclusionHeight >= lastHeight - DB_HEIGHT_RANGE});
         checkTrxValidation(filteredTxs ,network_type);
-        insertTrxToDB(Txs.items ,network_type);
+        totalTxs.concat(Txs.items)
 
         heightRange.fromHeight = heightRange.toHeight;
         heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + limit);
         limit += INITIAL_LIMIT;
     }
+    insertTrxToDB(totalTxs ,network_type);
 }
 
 /**
