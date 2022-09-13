@@ -161,7 +161,7 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
 /**
  * 
  */
-export const insertTrxtoDB = (trxs : ErgoTx[], network_type:string): void => {
+export const insertTrxToDB = (trxs : ErgoTx[], network_type:string): void => {
     //TODO
 }
 
@@ -175,8 +175,9 @@ export const checkTrxValidation = async(trxs : ErgoTx[], network_type:string):Pr
     let extractedHeaders = trxs.map(trx => {
         return {
             height: trx.inclusionHeight, 
-            block_id: trx.blockId}
-        });
+            block_id: trx.blockId
+        }
+    });
     
     extractedHeaders.forEach(extracted => {
         const loaded = loadedHeaders.find(header => header.height == extracted.height);
@@ -208,7 +209,7 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
         const Txs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, true);
         const filteredTxs = Txs.items.filter(tx => { tx.inclusionHeight >= lastHeight - DB_HEIGHT_RANGE});
         checkTrxValidation(filteredTxs ,network_type);
-        insertTrxtoDB(Txs.items ,network_type);
+        insertTrxToDB(Txs.items ,network_type);
 
         heightRange.fromHeight = heightRange.toHeight;
         heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + limit);
@@ -221,10 +222,13 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
  * @param network_type : string
  * @param wallet_id : number
  */
- export const syncTrxs = async(network_type: string, wallet_id: number) => {
-    const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id);
-    allAddresses.forEach(address => {
-        const currentHeight = address.process_height;
-        syncTrxsWithAddress(address, currentHeight,network_type);
-    });
+ export const syncTrxs = (network_type: string, wallet_id: number) => {
+    AddressDbAction.getWalletAddresses(wallet_id)
+    .then( allAddresses => {
+            allAddresses.forEach(address => {
+                const currentHeight = address.process_height;
+                syncTrxsWithAddress(address, currentHeight,network_type);
+            });
+        }
+    )
 }

@@ -143,7 +143,7 @@ test('calc fork point function', async() => {
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
 test('insert Trx to db', async() => {
-    const spyInsertTrxToDB = jest.spyOn(syncFunctions, 'insertTrxtoDB');
+    const spyInsertTrxToDB = jest.spyOn(syncFunctions, 'insertTrxToDB');
     const spyCheckTrxValidation = jest.spyOn(syncFunctions, 'checkTrxValidation');
     const receivedTrx: ErgoTx = {
         id: '8189',
