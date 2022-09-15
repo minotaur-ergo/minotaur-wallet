@@ -20,3 +20,7 @@ export type HeightRange = {
     fromHeight : number,
     toHeight : number
 }
+export type Err = {
+    massege: string,
+    data: number
+}

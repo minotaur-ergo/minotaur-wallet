@@ -441,7 +441,7 @@ class TxActionClass {
             .andWhere("height <= :to_height", { to_height: to_height })
             .getMany();
     };
-
+    
     forkTxs = async (height: number, network_type: string) => {
         await this.repository
             .createQueryBuilder()
@@ -450,7 +450,6 @@ class TxActionClass {
             .delete()
             .execute();
     };
-    
     insertTxs = async(txs: ErgoTx[], network_type: string) => {
         const entities = txs.map(tx => ({...txs, network_type:network_type}));
         await this.repository.insert(entities);

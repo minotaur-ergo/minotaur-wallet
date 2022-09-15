@@ -143,7 +143,7 @@ test('calc fork point function', async() => {
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
 test('insert Trx to db', async() => {
-    const spyInsertTrxToDB = jest.spyOn(syncFunctions, 'insertTrxToDB');
+    const spySaveTrxToDB = jest.spyOn(syncFunctions, 'saveTxsToDB');
     const spyCheckTrxValidation = jest.spyOn(syncFunctions, 'checkTrxValidation');
     const receivedTrx: ErgoTx = {
         id: '8189',
@@ -158,9 +158,9 @@ test('insert Trx to db', async() => {
 
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
-    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[], network_type:string) => {});
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[][], network_type:string) => {});
     syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
-    expect(spyInsertTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type);
+    expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type, receivedTrx.inclusionHeight);
 })
 
 /**
@@ -182,7 +182,7 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(syncFunctions.checkTrxValidation([receivedTrx], network_type)).toThrow('blockIds not matched.');
+    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).toThrow('blockIds not matched.');
 })
 
 /**
@@ -204,5 +204,5 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(syncFunctions.checkTrxValidation([receivedTrx], network_type)).not.toThrow();
+    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).not.toThrow();
 })
