@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { ErgoBox, ErgoTx, HeadersBlockExplorer, Items, TokenInfo } from "./models";
-import { Paging } from "./paging";
+import { HeightPage, Paging } from "./paging";
 import * as wasm from 'ergo-lib-wasm-browser';
 import { JsonBI } from "../json";
 
@@ -21,6 +21,23 @@ export class Explorer {
         return await this.backend.request<Items<ErgoTx>>({
             url: `/api/v1/addresses/${address}/transactions`,
             params: paging,
+            transformResponse: data => JsonBI.parse(data)
+        }).then(response => {
+            return response.data as Items<ErgoTx>;
+        });
+    };
+
+    /**
+     * get transactions for given address between given height blocks.
+     * @param address : string
+     * @param heightRange : HeightRange
+     * @param conciseEnabled : Boolean
+     * @returns Promise<Items<ErgoTx>>
+     */
+    getTxsByAddressInHeightRange = async (address: string, heightRange: HeightPage, paging: Paging, conciseEnabled: Boolean): Promise<Items<ErgoTx>> => {
+        return await this.backend.request<Items<ErgoTx>>({
+            url: `/api/v1/addresses/${address}/transactions`,
+            params: {...heightRange, ...paging, concise: conciseEnabled},
             transformResponse: data => JsonBI.parse(data)
         }).then(response => {
             return response.data as Items<ErgoTx>;

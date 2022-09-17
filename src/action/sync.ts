@@ -1,12 +1,16 @@
-import {BlockDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
-import {Block} from './Types'
+import {Block, HeightRange, Err} from './Types'
 import { Paging } from "../util/network/paging";
+import Address from "../db/entities/Address";
+import { ErgoTx } from "../util/network/models";
+import { Items } from "../util/network/models";
+import { ListItem } from "@mui/material";
 
 //constants
 const LIMIT = 50;
 const INITIAL_LIMIT = 10;
-
+const DB_HEIGHT_RANGE = 720;
 /*
     insert array of block headers into databse.
     @param blocks : Block[]
@@ -154,4 +158,114 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
     }
     else
         stepForward(currentBlock, network_type);
+}
+
+/**
+ * 
+ * @param trxs 
+ * @param network_type 
+ * @param maxHeight 
+ */
+export const saveTxsToDB = async(trxs: ErgoTx[][], network_type: string, maxHeight: number ) => {
+    //TODO: save trxs with height <= maxHeight
+    //TODO: for each height process all txs and insert boxes to db
+
+}
+
+/**
+ * check blockIds of received trxs and compare them with blckIds stored in database.
+ * @param trxs : ErgoTx[]
+ * @param network_type : string
+ */
+export const checkTrxValidation = async(trxs: ErgoTx[][], network_type: string):Promise<void> => {
+    let dbHeaders = await BlockDbAction.getAllHeaders(network_type);
+    for(let i=0; i< trxs.length; i++){
+        trxs[i].forEach(txHeader => {
+            const foundHeader = dbHeaders.find(dbHeader => dbHeader.height == txHeader.inclusionHeight);
+            if(foundHeader == undefined)
+                return;
+            else if(txHeader.blockId != foundHeader.id.toString()){
+                throw {
+                    message: 'blockIds not matched.',
+                    data: txHeader.inclusionHeight - 1
+                };
+            }
+        });
+    }
+}   
+
+/**
+ * sort ErgoTxs using counting-sort method and create a 2d Array which maps each height to the txs whith corresponding inclusionHeight.
+ * @param trxsHeaders: ErgoTx[]
+ * @param heightRange: HeightRange
+ * @returns ErgoTx[][]
+ */
+export const sortTxs = (trxsHeaders: ErgoTx[], heightRange: HeightRange): ErgoTx[][]  => {
+    let minHeight = heightRange.fromHeight;
+    let sortedTxs : ErgoTx[][] = [];
+    trxsHeaders.forEach(header => sortedTxs[header.inclusionHeight - minHeight].push(header));
+    return sortedTxs;
+    
+}
+
+/**
+ * get transactions for specific address, check if they're valid and store them.
+ * @param address : Address
+ * @param currentHeight : number
+ * @param network_type : string
+ */
+export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
+    const explorer = getNetworkType(address.network_type).getExplorer();
+    const node = getNetworkType(network_type).getNode();
+    const lastHeight : number = await node.getHeight();
+    let heightRange :HeightRange = {
+        fromHeight: currentHeight,
+        toHeight: currentHeight
+    };
+    let paging: Paging = {
+        limit: INITIAL_LIMIT,
+        offset: 0
+    }
+    while(heightRange.fromHeight < lastHeight){
+        let Txs: ErgoTx[] = []
+        let pageTxs: Items<ErgoTx> | undefined = undefined
+        
+        while( pageTxs == undefined || pageTxs.items.length != 0){
+            pageTxs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, paging, true);
+            Txs.concat(pageTxs.items);
+            paging.offset += paging.limit;
+        }
+        
+        const sortedTxs = sortTxs(Txs, heightRange);
+        try{
+            checkTrxValidation(sortedTxs ,network_type);
+            await saveTxsToDB(sortedTxs, network_type, heightRange.toHeight);
+            AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
+        }
+        catch(err: unknown){
+            const e = err as Err
+            const ProcessedHeight = e.data;
+            await saveTxsToDB(sortedTxs, network_type, ProcessedHeight);
+            AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
+            throw new Error('Fork happened.');
+        }
+
+        heightRange.fromHeight = heightRange.toHeight;
+        heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
+        paging.offset = 0;
+    }
+}
+
+/**
+ * sync transactions and store in db for all addresses of given wallet id.
+ * @param network_type : string
+ * @param wallet_id : number
+ */
+ export const syncTrxs = async(network_type: string, wallet_id: number) => {
+    const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id)
+    allAddresses.forEach(async address => {
+        const currentHeight = address.process_height;
+        await syncTrxsWithAddress(address, currentHeight,network_type);
+        }
+    )
 }

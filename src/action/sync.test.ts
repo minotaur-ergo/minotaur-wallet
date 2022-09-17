@@ -1,12 +1,30 @@
 import "@testing-library/jest-dom/extend-expect";
 import axios, { AxiosPromise } from "axios";
 import * as syncFunctions from './sync';
-import {stepForward, createBlockArrayByID} from './sync';
-import {Block} from './Types'
+import {stepForward, createBlockArrayByID, syncTrxsWithAddress} from './sync';
+import {Block, Trx, Box} from './Types'
 import * as fs from "fs"
+import Address from "../db/entities/Address";
+import { ErgoTx } from "../util/network/models";
 
+//test values
 const db = fs.readFileSync(`${__dirname}/db.json`).toString();
 const dbJson : Block[] = JSON.parse(db);
+
+const lastLoadedBlock : Block = dbJson[dbJson.length-1];
+const network_type = "Testnet"
+const testAddress = new Address;
+
+const testBox1 : Box = {
+    boxId: '12345',
+    value: 2000000000,
+    address: testAddress
+}
+const testBox2 : Box = {
+    boxId: '12345',
+    value: 1000000000,
+    address: testAddress
+}
 
 jest.mock('axios');
 
@@ -22,7 +40,6 @@ test('insert blocks to database',async() => {
         id : '504',
         height : 3
     };
-    const lastLoadedBlock : Block = dbJson[dbJson.length-1];
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(block);
     const result = await stepForward(lastLoadedBlock, "Testnet");
@@ -62,7 +79,6 @@ test('remove blocks from database', async() => {
     const spyCalcFork= jest.spyOn(syncFunctions,'calcFork');
     const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
     const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
-    const network_type = "Testnet"
     
     const lastLoadedBlock : Block = dbJson[dbJson.length-1];
     const forkPoint: number = dbJson[1].height
@@ -80,11 +96,10 @@ test('remove blocks from database', async() => {
  * Expected: return false(fork is not happened.)
  */
 test('check fork function in normal situation', async() => {
-    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
     const receivedBlock : Block = lastLoadedBlock;
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
-    expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(false);
+    expect(syncFunctions.checkFork(lastLoadedBlock, network_type)).toStrictEqual(false);
 })
 
 /**
@@ -94,14 +109,13 @@ test('check fork function in normal situation', async() => {
  * Expected: return true(fork is happened.)
  */
  test('check fork function in case of fork', async() => {
-    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
     const receivedBlock : Block = {
         id: lastLoadedBlock.id.concat('1'),
         height: lastLoadedBlock.height
     };
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
-    expect(syncFunctions.checkFork(lastLoadedBlock, "Testnet")).toStrictEqual(true);
+    expect(syncFunctions.checkFork(lastLoadedBlock, network_type)).toStrictEqual(true);
 })
 
 /**
@@ -111,7 +125,6 @@ test('check fork function in normal situation', async() => {
  * Expected: return len(db) - 3 as fork point's height.
  */
 test('calc fork point function', async() => {
-    const lastLoadedBlock : Block = dbJson[dbJson.length-1]; 
     const len = dbJson.length;
     const receivedBlocks : Block[] = dbJson.slice(-2).map((block) => {
         return {...block, id : block.id.concat('1')}
@@ -120,5 +133,76 @@ test('calc fork point function', async() => {
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[1]);
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[0]);
     (axios.get as jest.Mock).mockResolvedValueOnce(dbJson[len - 3]);
-    expect(syncFunctions.calcFork(lastLoadedBlock, "Testnet")).toStrictEqual(dbJson[len - 3].height);
+    expect(syncFunctions.calcFork(lastLoadedBlock, network_type)).toStrictEqual(dbJson[len - 3].height);
+})
+
+/**
+ * testing insertTrxtoDB function to insert given trxs correctly.
+ * Dependancy: axois mocked.
+ * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
+ * Expected: insertTrxToDB function must be called once with determined trx.
+ */
+test('insert Trx to db', async() => {
+    const spySaveTrxToDB = jest.spyOn(syncFunctions, 'saveTxsToDB');
+    const spyCheckTrxValidation = jest.spyOn(syncFunctions, 'checkTrxValidation');
+    const receivedTrx: ErgoTx = {
+        id: '8189',
+        blockId: '111',
+        inclusionHeight: 3,
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
+    };
+
+    (axios.get as jest.Mock).mockReset();
+    (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[][], network_type:string) => {});
+    syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
+    expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type, receivedTrx.inclusionHeight);
+})
+
+/**
+ * testing checkValidation function in case of invalid trxs.
+ * Dependancy: -
+ * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
+ * Expected: checkValidation must throw an error.
+ */
+test('check validation of invalid tx', async() => {
+    const height = 3;
+    const ID = dbJson[height].id.concat('1');
+    const receivedTrx: ErgoTx = {
+        id: '8189',
+        blockId: ID,
+        inclusionHeight: height,
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
+    }; 
+    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).toThrow('blockIds not matched.');
+})
+
+/**
+ * testing checkValidation function in case of nvalid trxs.
+ * Dependancy: -
+ * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
+ * Expected: checkValidation must not throw any error.
+ */
+ test('check validation of valid tx', async() => {
+    const height = 3;
+    const ID = dbJson[height].id;
+    const receivedTrx: ErgoTx = {
+        id: '8189',
+        blockId: ID,
+        inclusionHeight: height,
+        inputs: [],
+        dataInputs: [],
+        outputs: [],
+        size: 1,
+        timestamp: 12
+    }; 
+    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).not.toThrow();
 })
