@@ -34,10 +34,10 @@ export class Explorer {
      * @param conciseEnabled : Boolean
      * @returns Promise<Items<ErgoTx>>
      */
-    getTxsByAddressInHeightRange = async (address: string, heightRange: HeightPage, conciseEnabled: Boolean): Promise<Items<ErgoTx>> => {
+    getTxsByAddressInHeightRange = async (address: string, heightRange: HeightPage, paging: Paging, conciseEnabled: Boolean): Promise<Items<ErgoTx>> => {
         return await this.backend.request<Items<ErgoTx>>({
             url: `/api/v1/addresses/${address}/transactions`,
-            params: {...heightRange, concise: conciseEnabled},
+            params: {...heightRange, ...paging, concise: conciseEnabled},
             transformResponse: data => JsonBI.parse(data)
         }).then(response => {
             return response.data as Items<ErgoTx>;

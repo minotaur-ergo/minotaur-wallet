@@ -4,6 +4,8 @@ import {Block, HeightRange, Err} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
 import { ErgoTx } from "../util/network/models";
+import { Items } from "../util/network/models";
+import { ListItem } from "@mui/material";
 
 //constants
 const LIMIT = 50;
@@ -216,16 +218,25 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
     const explorer = getNetworkType(address.network_type).getExplorer();
     const node = getNetworkType(network_type).getNode();
     const lastHeight : number = await node.getHeight();
-    let limit = 1;
     let heightRange :HeightRange = {
         fromHeight: currentHeight,
         toHeight: currentHeight
     };
-  
+    let paging: Paging = {
+        limit: INITIAL_LIMIT,
+        offset: 0
+    }
     while(heightRange.fromHeight < lastHeight){
-        const Txs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, true);
-        const sortedTxs = sortTxs(Txs.items, heightRange);
-       
+        let Txs: ErgoTx[] = []
+        let pageTxs: Items<ErgoTx> | undefined = undefined
+        
+        while( pageTxs == undefined || pageTxs.items.length != 0){
+            pageTxs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, paging, true);
+            Txs.concat(pageTxs.items);
+            paging.offset += paging.limit;
+        }
+        
+        const sortedTxs = sortTxs(Txs, heightRange);
         try{
             checkTrxValidation(sortedTxs ,network_type);
             await saveTxsToDB(sortedTxs, network_type, heightRange.toHeight);
@@ -240,8 +251,8 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
         }
 
         heightRange.fromHeight = heightRange.toHeight;
-        heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + limit);
-        limit += INITIAL_LIMIT;
+        heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
+        paging.offset = 0;
     }
 }
 
