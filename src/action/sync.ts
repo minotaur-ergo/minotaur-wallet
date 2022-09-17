@@ -229,13 +229,13 @@ export const syncTrxsWithAddress = async(address: Address, currentHeight: number
         try{
             checkTrxValidation(sortedTxs ,network_type);
             await saveTxsToDB(sortedTxs, network_type, heightRange.toHeight);
-            address.process_height = heightRange.toHeight;
+            AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
         }
         catch(err: unknown){
             const e = err as Err
             const ProcessedHeight = e.data;
             await saveTxsToDB(sortedTxs, network_type, ProcessedHeight);
-            address.process_height = ProcessedHeight;
+            AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
             throw new Error('Fork happened.');
         }
 
