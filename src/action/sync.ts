@@ -165,7 +165,7 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
  * @param boxes 
  * @param network_type 
  */
-export const updateTxBoxesInDB =  async(boxes: ErgoBox[], network_type: string): Promise<void> => {
+export const insertBoxesToDB =  async(boxes: ErgoBox[], network_type: string): Promise<void> => {
     const addressId: number = 0 //TODO: need to be one of sync class feature
     const boxAddress = await AddressDbAction.getAddress(addressId);
     boxes.forEach( async box => {
@@ -174,15 +174,21 @@ export const updateTxBoxesInDB =  async(boxes: ErgoBox[], network_type: string):
 }
 
 /**
- * 
+ * spend input boxes of given transaction in db.
  * @param boxes : InputBox[]
  * @param tx : ErgoTx
+ * @param network_type : string
  */
-export const spendBoxes = async(boxes: InputBox[], tx: ErgoTx) => {
-    //FIXME: ErgoTx type must be casted into Tx type
-    boxes.forEach( box => {
-        BoxDbAction.spentBox(box.boxId, tx, box.index);
-    })
+export const spendBoxes = async(boxes: InputBox[], tx: ErgoTx, network_type: string) => {
+    const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, network_type);
+    if (trx != null){
+        boxes.forEach( async box => {
+            await BoxDbAction.spentBox(box.boxId, trx, box.index);
+        })
+    }
+    else {
+        throw new Error('Transaction not found.');
+    } 
 }
 
 /**
@@ -196,8 +202,8 @@ export const saveTxsToDB = async(txs: ErgoTx[][], network_type: string, maxHeigh
     for(let i = 0; i <= maxHeight - minHeight; i++){
         TxDbAction.insertTxs(txs[i],network_type);
         txs[i].forEach( async tx => {
-            await updateTxBoxesInDB(tx.outputs, network_type);
-            await spendBoxes(tx.inputs, tx);
+            await insertBoxesToDB(tx.outputs, network_type);
+            await spendBoxes(tx.inputs, tx, network_type);
         })
     }
 }
