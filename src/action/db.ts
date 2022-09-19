@@ -450,8 +450,9 @@ class TxActionClass {
             .delete()
             .execute();
     };
+
     insertTxs = async(txs: ErgoTx[], network_type: string) => {
-        const entities = txs.map(tx => ({...txs, network_type:network_type}));
+        const entities = txs.map(tx => ({...txs, network_type: network_type}));
         await this.repository.insert(entities);
     };
 }

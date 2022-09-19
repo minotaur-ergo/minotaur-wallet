@@ -1,11 +1,11 @@
-import {BlockDbAction, TxDbAction, AddressDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block, HeightRange, Err} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
-import { ErgoTx } from "../util/network/models";
+import { ErgoTx, ErgoBox, InputBox } from "../util/network/models";
 import { Items } from "../util/network/models";
-import { ListItem } from "@mui/material";
+import Tx from "../db/entities/Tx";
 
 //constants
 const LIMIT = 50;
@@ -162,14 +162,45 @@ export const syncBlocks = async(currentBlock: Block, network_type: string):Promi
 
 /**
  * 
- * @param trxs 
+ * @param boxes 
  * @param network_type 
- * @param maxHeight 
  */
-export const saveTxsToDB = async(trxs: ErgoTx[][], network_type: string, maxHeight: number ) => {
-    //TODO: save trxs with height <= maxHeight
-    //TODO: for each height process all txs and insert boxes to db
+export const updateTxBoxesInDB =  async(boxes: ErgoBox[], network_type: string): Promise<void> => {
+    const addressId: number = 0 //TODO: need to be one of sync class feature
+    const boxAddress = await AddressDbAction.getAddress(addressId);
+    boxes.forEach( async box => {
+        await BoxDbAction.createOrUpdateBox(box, boxAddress, box.transactionId, box.index);
+    })
+}
 
+/**
+ * 
+ * @param boxes : InputBox[]
+ * @param tx : ErgoTx
+ */
+export const spendBoxes = async(boxes: InputBox[], tx: ErgoTx) => {
+    //FIXME: ErgoTx type must be casted into Tx type
+    boxes.forEach( box => {
+        BoxDbAction.spentBox(box.boxId, tx, box.index);
+    })
+}
+
+/**
+ * save extracted trxs to db, insert unspent boxes and update spent boxes.
+ * @param txs : ErgoTx[][]
+ * @param network_type : string
+ * @param maxHeight : number
+ */
+export const saveTxsToDB = async(txs: ErgoTx[][], network_type: string, maxHeight: number ): Promise<void> => {
+    let minHeight = txs[0][0].inclusionHeight;
+    for(let i = 0; i <= maxHeight - minHeight; i++){
+        TxDbAction.insertTxs(txs[i],network_type);
+        txs[i].forEach( async tx => {
+            const boxes = [...tx.inputs, tx.outputs];
+            await updateTxBoxesInDB(tx.outputs, network_type);
+            await spendBoxes(tx.inputs, tx);
+        })
+    }
 }
 
 /**
