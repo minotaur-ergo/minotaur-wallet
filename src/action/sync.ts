@@ -196,7 +196,6 @@ export const saveTxsToDB = async(txs: ErgoTx[][], network_type: string, maxHeigh
     for(let i = 0; i <= maxHeight - minHeight; i++){
         TxDbAction.insertTxs(txs[i],network_type);
         txs[i].forEach( async tx => {
-            const boxes = [...tx.inputs, tx.outputs];
             await updateTxBoxesInDB(tx.outputs, network_type);
             await spendBoxes(tx.inputs, tx);
         })
