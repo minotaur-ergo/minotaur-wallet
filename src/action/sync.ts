@@ -11,15 +11,16 @@ import Tx from "../db/entities/Tx";
 const LIMIT = 50;
 const INITIAL_LIMIT = 10;
 const DB_HEIGHT_RANGE = 720;
-export class Sync {
+export class SyncAddress {
     private walletId: number
-    private addressId: number
+    private address: Address
     networkType: string
 
-    constructor(wallet_id : number){
+    constructor(wallet_id : number, address: Address, network_type:string){
         this.walletId = wallet_id;
-        this.networkType = "";
-        this.addressId = 0;
+        this.networkType = network_type;
+        this.address = address;
+
     }
     /*
         insert array of block headers into databse.
@@ -165,26 +166,21 @@ export class Sync {
     }
 
     /**
-     * 
-     * @param boxes 
-     * @param tx 
+     * insert boxes to the data base.
+     * @param boxes : ErgoBox[] 
+     * @param tx : ErgoTx
      */
     insertBoxesToDB =  async(boxes: ErgoBox[], tx: ErgoTx): Promise<void> => {
-        const address = await AddressDbAction.getAddress(this.addressId);
-        if( address != null){
             const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, this.networkType);
             if(trx != null){
                 boxes.forEach( async box => {
-                    await BoxDbAction.createOrUpdateBox(box, address, trx, box.index);
+                    await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
                 })
             }
             else {
                 throw new Error('Transaction not found.');
             }
-        }
-        else {
-            throw new Error("address not found in db.")
-        }
+
     }
 
     /**
@@ -302,16 +298,18 @@ export class Sync {
         }
     }
 
-    /**
-     * sync transactions and store in db for all addresses of the walletId.
-     */
-    syncTrxs = async() => {
-        const allAddresses = await AddressDbAction.getWalletAddresses(this.walletId)
-        allAddresses.forEach(async address => {
-            const currentHeight = address.process_height;
-            this.networkType = address.network_type;
-            await this.syncTrxsWithAddress(address, currentHeight);
-            }
-        )
-    }
+}
+
+/**
+ * sync transactions and store in db for all addresses of the walletId.
+ */
+export const syncTrxs = async(walletId: number) => {
+    const allAddresses = await AddressDbAction.getWalletAddresses(walletId)
+    allAddresses.forEach(async address => {
+        const currentHeight = address.process_height;
+        let networkType = address.network_type;
+        const Sync = new SyncAddress(walletId, address, networkType);
+        await Sync.syncTrxsWithAddress(address, currentHeight);
+        }
+    )
 }

@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/extend-expect";
 import axios, { AxiosPromise } from "axios";
-import {Sync} from './sync';
+import {SyncAddress, syncTrxs} from './sync';
 import {Block, Trx, Box} from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
@@ -12,8 +12,9 @@ const dbJson : Block[] = JSON.parse(db);
 
 const lastLoadedBlock : Block = dbJson[dbJson.length-1];
 const testAddress = new Address;
+const testNetworkType = "Testnet";
 const walletId = 0;
-const TestSync = new Sync(walletId);
+const TestSync = new SyncAddress(walletId, testAddress, testNetworkType );
 
 jest.mock('axios');
 
