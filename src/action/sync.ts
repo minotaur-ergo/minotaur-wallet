@@ -205,7 +205,10 @@ export class SyncAddress {
      * @param maxHeight : number
      */
     saveTxsToDB = async(txs: TxDictionary, maxHeight: number ): Promise<void> => {
-        for(const height in txs){
+        const keyHeights = Object.keys(txs).map(Number);
+        keyHeights.sort((k1, k2) => k1 - k2);
+
+        for(const height of keyHeights){
             if( Number(height) < maxHeight){
                 await TxDbAction.insertTxs(txs[height],this.networkType);
                 
