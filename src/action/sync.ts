@@ -173,9 +173,8 @@ export class SyncAddress {
     insertBoxesToDB =  async(boxes: ErgoBox[], tx: ErgoTx): Promise<void> => {
             const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, this.networkType);
             if(trx != null){
-                boxes.forEach( async box => {
+                for(const box of boxes)
                     await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
-                })
             }
             else {
                 throw new Error('Transaction not found.');
@@ -191,9 +190,8 @@ export class SyncAddress {
     spendBoxes = async(boxes: InputBox[], tx: ErgoTx) => {
         const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, this.networkType);
         if (trx != null){
-            boxes.forEach( async box => {
+            for(const box of boxes)
                 await BoxDbAction.spentBox(box.boxId, trx, box.index);
-            })
         }
         else {
             throw new Error('Transaction not found.');
