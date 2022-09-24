@@ -208,13 +208,13 @@ export class SyncAddress {
     saveTxsToDB = async(txs: TxDictionary, maxHeight: number ): Promise<void> => {
         for(const height in txs){
             if( Number(height) < maxHeight)
-                TxDbAction.insertTxs(txs[height],this.networkType);
+                await TxDbAction.insertTxs(txs[height],this.networkType);
         }
         for(let height in txs){
-            txs[height].forEach(async tx => {
+            for(const tx of txs[height]){
                 await this.insertBoxesToDB(tx.outputs,tx);
                 await this.spendBoxes(tx.inputs, tx);
-            })
+            }
         }
     }
 
