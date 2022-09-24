@@ -306,6 +306,7 @@ export class SyncAddress {
 
 /**
  * sync transactions and store in db for all addresses of the walletId.
+ * @param walletId : number
  */
 export const syncTrxs = async(walletId: number) => {
     const allAddresses = await AddressDbAction.getWalletAddresses(walletId)
