@@ -1,4 +1,5 @@
 import Address from "../db/entities/Address"
+import { ErgoTx } from "../util/network/models"
 
 export type Block = {
     id : string,
@@ -23,4 +24,7 @@ export type HeightRange = {
 export type Err = {
     massege: string,
     data: number
+}
+export interface TxDictionary {
+    [height: number]: ErgoTx[]
 }

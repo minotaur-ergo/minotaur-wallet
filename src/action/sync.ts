@@ -1,271 +1,327 @@
-import {BlockDbAction, TxDbAction, AddressDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
-import {Block, HeightRange, Err} from './Types'
+import {Block, HeightRange, Err, TxDictionary} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
-import { ErgoTx } from "../util/network/models";
+import { ErgoTx, ErgoBox, InputBox } from "../util/network/models";
 import { Items } from "../util/network/models";
-import { ListItem } from "@mui/material";
+import Tx from "../db/entities/Tx";
 
 //constants
 const LIMIT = 50;
 const INITIAL_LIMIT = 10;
 const DB_HEIGHT_RANGE = 720;
-/*
-    insert array of block headers into databse.
-    @param blocks : Block[]
-    @param network_type : string
-*/
-export const insertToDB = (blocks : Block[], network_type: string): void => {
-    blocks.forEach(block => {
-        BlockDbAction.InsertHeaders(Object.entries(block).map(value => {
-            return { id: block.id, height: block.height};
-        }), network_type);   
-    })
-};
+export class SyncAddress {
+    private walletId: number
+    private address: Address
+    networkType: string
 
-/*
-    compare overlapBlocks with 2 lastRecievedBlocks, update their overlap and remove intersections from recievedBlocks.
-    @param overlapBlock : Block[]
-    @param lastRecievedBlock : Block
-*/
-export const checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]): void => {
-    const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1])
-    if(sliceIndex === -1)
-        throw new Error("overlaps not matched.")
-    else {
-        recievedBlocks.splice(sliceIndex + 1)
-   
-        const newOverlaps = recievedBlocks.slice(-2);
-        overlapBlocks.map((block, index) => {
-            block.id = newOverlaps[index].id;
-            block.height = newOverlaps[index].height;
+    constructor(wallet_id : number, address: Address, network_type:string){
+        this.walletId = wallet_id;
+        this.networkType = network_type;
+        this.address = address;
+
+    }
+    
+    /*
+        insert array of block headers into databse.
+        @param blocks : Block[]
+        @param networkType : string
+    */
+    insertToDB = (blocks : Block[]): void => {
+        blocks.forEach(block => {
+            BlockDbAction.InsertHeaders(Object.entries(block).map(value => {
+                return { id: block.id, height: block.height};
+            }), this.networkType);   
+        })
+    };
+
+    /*
+        compare overlapBlocks with 2 lastRecievedBlocks, update their overlap and remove intersections from recievedBlocks.
+        @param overlapBlock : Block[]
+        @param lastRecievedBlock : Block
+    */
+    checkOverlaps = (overlapBlocks : Block[], recievedBlocks: Block[]): void => {
+        const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1])
+        if(sliceIndex === -1)
+            throw new Error("overlaps not matched.")
+        else {
+            recievedBlocks.splice(sliceIndex + 1)
+    
+            const newOverlaps = recievedBlocks.slice(-2);
+            overlapBlocks.map((block, index) => {
+                block.id = newOverlaps[index].id;
+                block.height = newOverlaps[index].height;
+            })
+        }
+    }
+
+    /*
+        create array of blocks by given IDs and computed heights.
+        @param recievedIDs : string[]
+        @param current_height : number
+        @return Block[]
+    */
+    createBlockArrayByID = (recievedIDs : string[], current_height : number) : Block[] => {
+        current_height++;
+        return recievedIDs.map( (id, index) => {
+            return {
+                id: id,
+                height: current_height + index
+            }
         })
     }
-}
 
-/*
-    create array of blocks by given IDs and computed heights.
-    @param recievedIDs : string[]
-    @param current_height : number
-    @return Block[]
- */
-export const createBlockArrayByID = (recievedIDs : string[], current_height : number) : Block[] => {
-    current_height++;
-    return recievedIDs.map( (id, index) => {
+    /*
+        set paging used in request headers.
+        @param current_height : number 
+        @param last_height : number
+        @return constructed paging : Paging
+    */
+    setPaging = (current_height : number , last_height : number, limit : number): Paging => {
+        let current_offset = last_height - current_height;
         return {
-            id: id,
-            height: current_height + index
+            offset: Math.max(current_offset - limit + 2, 0),
+            limit: limit
         }
-    })
-}
-
-/*
-    set paging used in request headers.
-    @param current_height : number 
-    @param last_height : number
-    @return constructed paging : Paging
-*/
-export const setPaging = (current_height : number , last_height : number, limit : number): Paging => {
-    let current_offset = last_height - current_height;
-    return {
-        offset: Math.max(current_offset - limit + 2, 0),
-        limit: limit
     }
-}
 
-/*
-    step forward and get all block headers after current height
-    @param currentBlock : Block
-    @param network_type: string
-*/
-export const stepForward = async(currentBlock: Block, network_type: string):Promise<void> => {
-    const node = getNetworkType(network_type).getNode();
+    /*
+        step forward and get all block headers after current height
+        @param currentBlock : Block
+        @param networkType: string
+    */
+    stepForward = async(currentBlock: Block):Promise<void> => {
+        const node = getNetworkType(this.networkType).getNode();
 
-    let paging : Paging
-    let limit : number = INITIAL_LIMIT;
-    
-    let current_height : number = currentBlock.height;
-    const last_height : number = await node.getHeight();
-    
-    let overlapBlocks : Block[] = [currentBlock]
-    
-    while((last_height - current_height) > 0){        
-        paging = setPaging(current_height, last_height, limit);
-        let recievedIDs : string[] = await node.getBlockHeaders(paging);
-        limit = LIMIT;
+        let paging : Paging
+        let limit : number = INITIAL_LIMIT;
         
-        let recievedBlocks : Block[] = createBlockArrayByID(recievedIDs, current_height);      
-        checkOverlaps(overlapBlocks, recievedBlocks)
-        insertToDB(recievedBlocks, network_type);
-        current_height += paging.limit;
+        let current_height : number = currentBlock.height;
+        const last_height : number = await node.getHeight();
+        
+        let overlapBlocks : Block[] = [currentBlock]
+        
+        while((last_height - current_height) > 0){        
+            paging = this.setPaging(current_height, last_height, limit);
+            let recievedIDs : string[] = await node.getBlockHeaders(paging);
+            limit = LIMIT;
+            
+            let recievedBlocks : Block[] = this.createBlockArrayByID(recievedIDs, current_height);      
+            this.checkOverlaps(overlapBlocks, recievedBlocks)
+            this.insertToDB(recievedBlocks);
+            current_height += paging.limit;
+        }
+    };
+
+    /**
+     * remove blocks with height > forkheight from db.
+     * @param forkHeight : number
+     */
+    removeFromDB = (forkHeight : number):void => {
+        BlockDbAction.forkHeaders(forkHeight + 1 ,this.networkType);
+    }
+
+    /**
+     * step backward and compare loaded blocks from db and recieved blocks from node, until reach fork point.
+     * @param currentBlock 
+     * @returns forkPOint height : number
+     */
+    calcFork = async(currentBlock: Block):Promise<number> => {
+        const node = getNetworkType(this.networkType).getNode();
+        let forkPoint: number = -1;
+        let currHeight = currentBlock.height; 
+    
+        let loadedBlocks = await BlockDbAction.getAllHeaders(this.networkType);
+        while(forkPoint == -1){
+            let receivedID : string = await node.getBlockIdAtHeight(currHeight);
+            forkPoint = receivedID ==  loadedBlocks[0].block_id ? currHeight : -1;
+            loadedBlocks.shift();
+            currHeight--;
+        }
+        return forkPoint;
+    }
+
+    /**
+     * compare current block id with block id given from node api in same height.
+     * @param currentBlock : Block
+     * @returns fork happened or not : Promise<Boolean>
+     */
+    checkFork = async(currentBlock: Block): Promise<Boolean> => {
+        const node = getNetworkType(this.networkType).getNode();
+        const receivedID:string = await node.getBlockIdAtHeight(currentBlock.height);
+        return currentBlock.id != receivedID;
+    }
+
+    /**
+     * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
+     * @param currentBlock : Block
+     */
+    syncBlocks = async(currentBlock: Block):Promise<void> => {
+        if(await this.checkFork(currentBlock)){
+            let forkPoint = await this.calcFork(currentBlock);
+            this.removeFromDB(forkPoint);
+        }
+        else
+            this.stepForward(currentBlock);
+    }
+
+    /**
+     * insert boxes to the data base.
+     * @param boxes : ErgoBox[] 
+     * @param tx : ErgoTx
+     */
+    insertBoxesToDB =  async(boxes: ErgoBox[], tx: ErgoTx): Promise<void> => {
+            const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, this.networkType);
+            if(trx != null){
+                for(const box of boxes)
+                    await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
+            }
+            else {
+                throw new Error('Transaction not found.');
+            }
 
     }
 
-};
-
-/**
- * remove blocks with height > forkheight from db.
- * @param forkHeight : number
- * @param network_type : string
- */
-export const removeFromDB = (forkHeight : number, network_type: string):void => {
-    BlockDbAction.forkHeaders(forkHeight + 1 ,network_type);
-}
-
-/**
- * step backward and compare loaded blocks from db and recieved blocks from node, until reach fork point.
- * @param currentBlock 
- * @param network_type 
- * @returns forkPOint height : number
- */
-export const calcFork = async(currentBlock: Block, network_type: string):Promise<number> => {
-    const node = getNetworkType(network_type).getNode();
-    let forkPoint: number = -1;
-    let currHeight = currentBlock.height; 
-  
-    let loadedBlocks = await BlockDbAction.getAllHeaders(network_type);
-    while(forkPoint == -1){
-        let receivedID : string = await node.getBlockIdAtHeight(currHeight);
-        forkPoint = receivedID ==  loadedBlocks[0].block_id ? currHeight : -1;
-        loadedBlocks.shift();
-        currHeight--;
+    /**
+     * spend input boxes of given transaction in db.
+     * @param boxes : InputBox[]
+     * @param tx : ErgoTx
+     */
+    spendBoxes = async(boxes: InputBox[], tx: ErgoTx) => {
+        const trx : Tx | null = await TxDbAction.getTxByTxId(tx.id, this.networkType);
+        if (trx != null){
+            for(const box of boxes)
+                await BoxDbAction.spentBox(box.boxId, trx, box.index);
+        }
+        else {
+            throw new Error('Transaction not found.');
+        } 
     }
-    return forkPoint;
-}
 
-/**
- * compare current block id with block id given from node api in same height.
- * @param currentBlock : Block
- * @param network_type : string
- * @returns fork happened or not : Promise<Boolean>
- */
-export const checkFork = async(currentBlock: Block, network_type: string): Promise<Boolean> => {
-    const node = getNetworkType(network_type).getNode();
-    const receivedID:string = await node.getBlockIdAtHeight(currentBlock.height);
-    return currentBlock.id != receivedID;
-}
+    /**
+     * save extracted trxs to db, insert unspent boxes and update spent boxes.
+     * @param txs : TxDictionary
+     * @param maxHeight : number
+     */
+    saveTxsToDB = async(txs: TxDictionary, maxHeight: number ): Promise<void> => {
+        const keyHeights = Object.keys(txs).map(Number);
+        keyHeights.sort((k1, k2) => k1 - k2);
 
-/**
- * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
- * @param currentBlock : Block
- * @param network_type : network_type
- */
-export const syncBlocks = async(currentBlock: Block, network_type: string):Promise<void> => {
-    if(await checkFork(currentBlock, network_type)){
-        let forkPoint = await calcFork(currentBlock, network_type);
-        removeFromDB(forkPoint, network_type);
+        for(const height of keyHeights){
+            if( height < maxHeight){
+                await TxDbAction.insertTxs(txs[height],this.networkType);
+                
+                for(const tx of txs[height]){
+                    await this.insertBoxesToDB(tx.outputs,tx);
+                }
+                
+                for(const tx of txs[height]){
+                    await this.spendBoxes(tx.inputs, tx);
+                }
+            }
+        }
     }
-    else
-        stepForward(currentBlock, network_type);
-}
 
-/**
- * 
- * @param trxs 
- * @param network_type 
- * @param maxHeight 
- */
-export const saveTxsToDB = async(trxs: ErgoTx[][], network_type: string, maxHeight: number ) => {
-    //TODO: save trxs with height <= maxHeight
-    //TODO: for each height process all txs and insert boxes to db
+    /**
+     * check blockIds of received trxs and compare them with blckIds stored in database.
+     * @param txDictionary: TxDictionary
+     */
+    checkTrxValidation = async(txDictionary: TxDictionary):Promise<void> => {
+        let dbHeaders = await BlockDbAction.getAllHeaders(this.networkType);
+        for(let height in txDictionary ){
+            txDictionary[height].forEach(txHeader => {
+                const foundHeader = dbHeaders.find(dbHeader => dbHeader.height == txHeader.inclusionHeight);
+                if(foundHeader == undefined)
+                    return;
+                else if(txHeader.blockId != foundHeader.id.toString()){
+                    throw {
+                        message: 'blockIds not matched.',
+                        data: txHeader.inclusionHeight - 1
+                    };
+                }
+            });
+        }
+    }   
 
-}
-
-/**
- * check blockIds of received trxs and compare them with blckIds stored in database.
- * @param trxs : ErgoTx[]
- * @param network_type : string
- */
-export const checkTrxValidation = async(trxs: ErgoTx[][], network_type: string):Promise<void> => {
-    let dbHeaders = await BlockDbAction.getAllHeaders(network_type);
-    for(let i=0; i< trxs.length; i++){
-        trxs[i].forEach(txHeader => {
-            const foundHeader = dbHeaders.find(dbHeader => dbHeader.height == txHeader.inclusionHeight);
-            if(foundHeader == undefined)
-                return;
-            else if(txHeader.blockId != foundHeader.id.toString()){
-                throw {
-                    message: 'blockIds not matched.',
-                    data: txHeader.inclusionHeight - 1
-                };
+    /**
+     * sort ErgoTxs and return a dictionary mapping each number k in txs' heightRange to array of txs with inclusionHeight == k
+     * @param txs: ErgoTx[]
+     * @returns TxDictionary
+     */
+    sortTxs = (txs: ErgoTx[]): TxDictionary  => {
+        let sortedTxs : TxDictionary = {};
+        txs.forEach(tx => {
+            if(sortedTxs[tx.inclusionHeight] == undefined){
+                sortedTxs[tx.inclusionHeight] = [tx];
+            }
+            else{
+                sortedTxs[tx.inclusionHeight] = sortedTxs[tx.inclusionHeight].concat(tx);
             }
         });
+        return sortedTxs;
     }
-}   
 
-/**
- * sort ErgoTxs using counting-sort method and create a 2d Array which maps each height to the txs whith corresponding inclusionHeight.
- * @param trxsHeaders: ErgoTx[]
- * @param heightRange: HeightRange
- * @returns ErgoTx[][]
- */
-export const sortTxs = (trxsHeaders: ErgoTx[], heightRange: HeightRange): ErgoTx[][]  => {
-    let minHeight = heightRange.fromHeight;
-    let sortedTxs : ErgoTx[][] = [];
-    trxsHeaders.forEach(header => sortedTxs[header.inclusionHeight - minHeight].push(header));
-    return sortedTxs;
-    
+    /**
+     * get transactions for specific address, check if they're valid and store them.
+     * @param address : Address
+     * @param currentHeight : number
+     */
+    syncTrxsWithAddress = async(address: Address, currentHeight: number) => {
+        const explorer = getNetworkType(address.network_type).getExplorer();
+        const node = getNetworkType(this.networkType).getNode();
+        const lastHeight : number = await node.getHeight();
+        let heightRange :HeightRange = {
+            fromHeight: currentHeight,
+            toHeight: currentHeight
+        };
+        let paging: Paging = {
+            limit: INITIAL_LIMIT,
+            offset: 0
+        }
+        while(heightRange.fromHeight < lastHeight){
+            let Txs: ErgoTx[] = []
+            let pageTxs: Items<ErgoTx> | undefined = undefined
+            
+            while( pageTxs == undefined || pageTxs.items.length != 0){
+                pageTxs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, paging, true);
+                Txs.concat(pageTxs.items);
+                paging.offset += paging.limit;
+            }
+            
+            const sortedTxs = this.sortTxs(Txs);
+            try{
+                this.checkTrxValidation(sortedTxs);
+                await this.saveTxsToDB(sortedTxs, heightRange.toHeight);
+                AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
+            }
+            catch(err: unknown){
+                const e = err as Err
+                const ProcessedHeight = e.data;
+                await this.saveTxsToDB(sortedTxs, ProcessedHeight);
+                AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
+                throw new Error('Fork happened.');
+            }
+
+            heightRange.fromHeight = heightRange.toHeight;
+            heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
+            paging.offset = 0;
+        }
+    }
+
 }
 
 /**
- * get transactions for specific address, check if they're valid and store them.
- * @param address : Address
- * @param currentHeight : number
- * @param network_type : string
+ * sync transactions and store in db for all addresses of the walletId.
+ * @param walletId : number
  */
-export const syncTrxsWithAddress = async(address: Address, currentHeight: number, network_type: string) => {
-    const explorer = getNetworkType(address.network_type).getExplorer();
-    const node = getNetworkType(network_type).getNode();
-    const lastHeight : number = await node.getHeight();
-    let heightRange :HeightRange = {
-        fromHeight: currentHeight,
-        toHeight: currentHeight
-    };
-    let paging: Paging = {
-        limit: INITIAL_LIMIT,
-        offset: 0
-    }
-    while(heightRange.fromHeight < lastHeight){
-        let Txs: ErgoTx[] = []
-        let pageTxs: Items<ErgoTx> | undefined = undefined
-        
-        while( pageTxs == undefined || pageTxs.items.length != 0){
-            pageTxs = await explorer.getTxsByAddressInHeightRange(address.address, heightRange, paging, true);
-            Txs.concat(pageTxs.items);
-            paging.offset += paging.limit;
-        }
-        
-        const sortedTxs = sortTxs(Txs, heightRange);
-        try{
-            checkTrxValidation(sortedTxs ,network_type);
-            await saveTxsToDB(sortedTxs, network_type, heightRange.toHeight);
-            AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
-        }
-        catch(err: unknown){
-            const e = err as Err
-            const ProcessedHeight = e.data;
-            await saveTxsToDB(sortedTxs, network_type, ProcessedHeight);
-            AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
-            throw new Error('Fork happened.');
-        }
-
-        heightRange.fromHeight = heightRange.toHeight;
-        heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
-        paging.offset = 0;
-    }
-}
-
-/**
- * sync transactions and store in db for all addresses of given wallet id.
- * @param network_type : string
- * @param wallet_id : number
- */
- export const syncTrxs = async(network_type: string, wallet_id: number) => {
-    const allAddresses = await AddressDbAction.getWalletAddresses(wallet_id)
+export const syncTrxs = async(walletId: number) => {
+    const allAddresses = await AddressDbAction.getWalletAddresses(walletId)
     allAddresses.forEach(async address => {
         const currentHeight = address.process_height;
-        await syncTrxsWithAddress(address, currentHeight,network_type);
+        let networkType = address.network_type;
+        const Sync = new SyncAddress(walletId, address, networkType);
+        await Sync.syncTrxsWithAddress(address, currentHeight);
         }
     )
 }

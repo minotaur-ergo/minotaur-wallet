@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom/extend-expect";
 import axios, { AxiosPromise } from "axios";
-import * as syncFunctions from './sync';
-import {stepForward, createBlockArrayByID, syncTrxsWithAddress} from './sync';
+import {SyncAddress, syncTrxs} from './sync';
 import {Block, Trx, Box} from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
@@ -12,19 +11,10 @@ const db = fs.readFileSync(`${__dirname}/db.json`).toString();
 const dbJson : Block[] = JSON.parse(db);
 
 const lastLoadedBlock : Block = dbJson[dbJson.length-1];
-const network_type = "Testnet"
 const testAddress = new Address;
-
-const testBox1 : Box = {
-    boxId: '12345',
-    value: 2000000000,
-    address: testAddress
-}
-const testBox2 : Box = {
-    boxId: '12345',
-    value: 1000000000,
-    address: testAddress
-}
+const testNetworkType = "Testnet";
+const walletId = 0;
+const TestSync = new SyncAddress(walletId, testAddress, testNetworkType );
 
 jest.mock('axios');
 
@@ -35,14 +25,14 @@ jest.mock('axios');
  * Expected: insertToDB function must be called once with determined block.
  */
 test('insert blocks to database',async() => {
-    const spyInsertToDB = jest.spyOn(syncFunctions, 'insertToDB')
+    const spyInsertToDB = jest.spyOn(TestSync, 'insertToDB')
     const block : Block = {
         id : '504',
         height : 3
     };
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(block);
-    const result = await stepForward(lastLoadedBlock, "Testnet");
+    const result = await TestSync.stepForward(lastLoadedBlock);
     expect(spyInsertToDB).toHaveBeenCalledWith([block]);
 })
 
@@ -64,7 +54,7 @@ test('create array of blocks with given IDs', () => {
             height : 2
         }
     ]
-    expect(createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks);
+    expect(TestSync.createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks);
 })
 
 /**
@@ -76,17 +66,17 @@ test('create array of blocks with given IDs', () => {
  * Expected: blocks with height greater than receivedBlock have to be removed.
  */
 test('remove blocks from database', async() => {
-    const spyCalcFork= jest.spyOn(syncFunctions,'calcFork');
-    const spyRemovefromDB = jest.spyOn(syncFunctions,'removeFromDB');
-    const spyCheckFork = jest.spyOn(syncFunctions,'checkFork');
+    const spyCalcFork= jest.spyOn(TestSync,'calcFork');
+    const spyRemovefromDB = jest.spyOn(TestSync,'removeFromDB');
+    const spyCheckFork = jest.spyOn(TestSync,'checkFork');
     
     const lastLoadedBlock : Block = dbJson[dbJson.length-1];
     const forkPoint: number = dbJson[1].height
     
     spyCheckFork.mockReturnValueOnce(Promise.resolve(true));
     spyCalcFork.mockReturnValueOnce(Promise.resolve(forkPoint));
-    syncFunctions.syncBlocks(lastLoadedBlock, network_type);
-    expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint, network_type);
+    TestSync.syncBlocks(lastLoadedBlock);
+    expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint, );
 })
 
 /**
@@ -99,7 +89,7 @@ test('check fork function in normal situation', async() => {
     const receivedBlock : Block = lastLoadedBlock;
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
-    expect(syncFunctions.checkFork(lastLoadedBlock, network_type)).toStrictEqual(false);
+    expect(TestSync.checkFork(lastLoadedBlock)).toStrictEqual(false);
 })
 
 /**
@@ -115,7 +105,7 @@ test('check fork function in normal situation', async() => {
     };
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlock);
-    expect(syncFunctions.checkFork(lastLoadedBlock, network_type)).toStrictEqual(true);
+    expect(TestSync.checkFork(lastLoadedBlock, )).toStrictEqual(true);
 })
 
 /**
@@ -133,7 +123,7 @@ test('calc fork point function', async() => {
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[1]);
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedBlocks[0]);
     (axios.get as jest.Mock).mockResolvedValueOnce(dbJson[len - 3]);
-    expect(syncFunctions.calcFork(lastLoadedBlock, network_type)).toStrictEqual(dbJson[len - 3].height);
+    expect(TestSync.calcFork(lastLoadedBlock)).toStrictEqual(dbJson[len - 3].height);
 })
 
 /**
@@ -143,8 +133,8 @@ test('calc fork point function', async() => {
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
 test('insert Trx to db', async() => {
-    const spySaveTrxToDB = jest.spyOn(syncFunctions, 'saveTxsToDB');
-    const spyCheckTrxValidation = jest.spyOn(syncFunctions, 'checkTrxValidation');
+    const spySaveTrxToDB = jest.spyOn(TestSync, 'saveTxsToDB');
+    const spyCheckTrxValidation = jest.spyOn(TestSync, 'checkTrxValidation');
     const receivedTrx: ErgoTx = {
         id: '8189',
         blockId: '111',
@@ -158,9 +148,9 @@ test('insert Trx to db', async() => {
 
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
-    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[][], network_type:string) => {});
-    syncFunctions.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight, network_type);
-    expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx], network_type, receivedTrx.inclusionHeight);
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[][]) => {});
+    TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
+    expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx],receivedTrx.inclusionHeight);
 })
 
 /**
@@ -182,7 +172,7 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).toThrow('blockIds not matched.');
+    expect(TestSync.checkTrxValidation([[receivedTrx]])).toThrow('blockIds not matched.');
 })
 
 /**
@@ -204,5 +194,5 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(syncFunctions.checkTrxValidation([[receivedTrx]], network_type)).not.toThrow();
+    expect(TestSync.checkTrxValidation([[receivedTrx]])).not.toThrow();
 })
