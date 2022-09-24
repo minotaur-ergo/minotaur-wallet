@@ -209,7 +209,7 @@ export class SyncAddress {
         keyHeights.sort((k1, k2) => k1 - k2);
 
         for(const height of keyHeights){
-            if( Number(height) < maxHeight){
+            if( height < maxHeight){
                 await TxDbAction.insertTxs(txs[height],this.networkType);
                 
                 for(const tx of txs[height]){
