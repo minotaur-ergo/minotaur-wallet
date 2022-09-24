@@ -22,6 +22,7 @@ export class SyncAddress {
         this.address = address;
 
     }
+    
     /*
         insert array of block headers into databse.
         @param blocks : Block[]
