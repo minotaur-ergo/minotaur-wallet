@@ -1,6 +1,6 @@
 import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction} from "./db";
 import { getNetworkType} from "../util/network_type";
-import {Block, HeightRange, Err} from './Types'
+import {Block, HeightRange, Err, TxDictionary} from './Types'
 import { Paging } from "../util/network/paging";
 import Address from "../db/entities/Address";
 import { ErgoTx, ErgoBox, InputBox } from "../util/network/models";
@@ -202,15 +202,17 @@ export class SyncAddress {
 
     /**
      * save extracted trxs to db, insert unspent boxes and update spent boxes.
-     * @param txs : ErgoTx[][]
+     * @param txs : TxDictionary
      * @param maxHeight : number
      */
-    saveTxsToDB = async(txs: ErgoTx[][], maxHeight: number ): Promise<void> => {
-        let minHeight = txs[0][0].inclusionHeight;
-        for(let i = 0; i <= maxHeight - minHeight; i++){
-            TxDbAction.insertTxs(txs[i],this.networkType);
-            txs[i].forEach( async tx => {
-                await this.insertBoxesToDB(tx.outputs, tx);
+    saveTxsToDB = async(txs: TxDictionary, maxHeight: number ): Promise<void> => {
+        for(const height in txs){
+            if( Number(height) < maxHeight)
+                TxDbAction.insertTxs(txs[height],this.networkType);
+        }
+        for(let height in txs){
+            txs[height].forEach(async tx => {
+                await this.insertBoxesToDB(tx.outputs,tx);
                 await this.spendBoxes(tx.inputs, tx);
             })
         }
@@ -218,12 +220,12 @@ export class SyncAddress {
 
     /**
      * check blockIds of received trxs and compare them with blckIds stored in database.
-     * @param trxs : ErgoTx[]
+     * @param txDictionary: TxDictionary
      */
-    checkTrxValidation = async(trxs: ErgoTx[][]):Promise<void> => {
+    checkTrxValidation = async(txDictionary: TxDictionary):Promise<void> => {
         let dbHeaders = await BlockDbAction.getAllHeaders(this.networkType);
-        for(let i=0; i< trxs.length; i++){
-            trxs[i].forEach(txHeader => {
+        for(let height in txDictionary ){
+            txDictionary[height].forEach(txHeader => {
                 const foundHeader = dbHeaders.find(dbHeader => dbHeader.height == txHeader.inclusionHeight);
                 if(foundHeader == undefined)
                     return;
@@ -238,17 +240,21 @@ export class SyncAddress {
     }   
 
     /**
-     * sort ErgoTxs using counting-sort method and create a 2d Array which maps each height to the txs whith corresponding inclusionHeight.
-     * @param trxsHeaders: ErgoTx[]
-     * @param heightRange: HeightRange
-     * @returns ErgoTx[][]
+     * sort ErgoTxs and return a dictionary mapping each number k in txs' heightRange to array of txs with inclusionHeight == k
+     * @param txs: ErgoTx[]
+     * @returns TxDictionary
      */
-    sortTxs = (trxsHeaders: ErgoTx[], heightRange: HeightRange): ErgoTx[][]  => {
-        let minHeight = heightRange.fromHeight;
-        let sortedTxs : ErgoTx[][] = [];
-        trxsHeaders.forEach(header => sortedTxs[header.inclusionHeight - minHeight].push(header));
+    sortTxs = (txs: ErgoTx[]): TxDictionary  => {
+        let sortedTxs : TxDictionary = {};
+        txs.forEach(tx => {
+            if(sortedTxs[tx.inclusionHeight] == undefined){
+                sortedTxs[tx.inclusionHeight] = [tx];
+            }
+            else{
+                sortedTxs[tx.inclusionHeight] = sortedTxs[tx.inclusionHeight].concat(tx);
+            }
+        });
         return sortedTxs;
-        
     }
 
     /**
@@ -278,7 +284,7 @@ export class SyncAddress {
                 paging.offset += paging.limit;
             }
             
-            const sortedTxs = this.sortTxs(Txs, heightRange);
+            const sortedTxs = this.sortTxs(Txs);
             try{
                 this.checkTrxValidation(sortedTxs);
                 await this.saveTxsToDB(sortedTxs, heightRange.toHeight);
