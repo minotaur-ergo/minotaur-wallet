@@ -62,7 +62,7 @@
   "scripts": {
     "start": "node ./scripts/start.js",
     "build": "node ./scripts/build.js",
-    "test": "react-scripts test --watchAll=false",
+    "test": "vitest",
     "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
     "eject": "react-scripts eject",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
@@ -71,8 +71,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -88,12 +87,10 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
     "@types/chrome": "^0.0.184",
     "@types/crypto-js": "^4.1.1",
-    "@types/jest": "^27.5.0",
     "@types/json-bigint": "^1.0.1",
     "@types/node": "^16.11.33",
     "@types/react": "^18.0.6",
@@ -102,11 +99,14 @@
     "@types/sql.js": "^1.4.3",
     "@types/uuid": "^8.3.4",
     "eslint-config-react-app": "^7.0.1",
-    "jest": "^27.5.1",
+    "happy-dom": "^6.0.4",
     "madge": "^5.0.1",
     "path-browserify": "^1.0.1",
     "rewire": "^6.0.0",
     "sql.js": "1.6.2",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "vite-plugin-top-level-await": "^1.1.1",
+    "vite-plugin-wasm": "^2.1.0",
+    "vitest": "^0.23.4"
   }
 }
