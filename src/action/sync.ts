@@ -263,6 +263,15 @@ export class SyncAddress {
     }
 
     /**
+     * fork all txs with height > forkHeight, unspend boxes with spend_height > forkHeight and remove all forked boxes from db.
+     * @param forkHiehgt : number
+     */
+    forkTxs = async(forkHiehgt: number) => {
+        await BoxDbAction.forkBoxesSync(forkHiehgt, this.networkType);
+        await TxDbAction.forkTxs(forkHiehgt + 1, this.networkType);
+    }
+
+    /**
      * get transactions for specific address, check if they're valid and store them.
      * @param address : Address
      * @param currentHeight : number

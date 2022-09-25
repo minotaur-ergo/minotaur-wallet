@@ -382,6 +382,24 @@ class BoxActionClass {
             .delete()
             .execute();
     };
+    
+    forkBoxesSync = async (height: number, network_type: string) => {
+        await this.repository
+            .createQueryBuilder()
+            .where("create_height > :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .delete()
+            .execute();
+     
+        await this.repository
+            .createQueryBuilder()
+            .update()
+            .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
+            .where("spend_height > :height", { height: height })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .execute();
+     
+    };
 
     invalidAssetCountBox = async () => {
         return await this.assetCountBoxRepository.createQueryBuilder()
