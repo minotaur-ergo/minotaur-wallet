@@ -67,7 +67,8 @@
     "eject": "react-scripts eject",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
     "clean": "rimraf ./build",
-    "build:ext": "BUILD_PATH=extension node ./scripts/build-ext.js"
+    "build:ext": "BUILD_PATH=extension node ./scripts/build-ext.js",
+    "postinstall": "npx patch-package"
   },
   "eslintConfig": {
     "extends": [
@@ -101,6 +102,7 @@
     "eslint-config-react-app": "^7.0.1",
     "happy-dom": "^6.0.4",
     "madge": "^5.0.1",
+    "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
     "rewire": "^6.0.0",
     "sql.js": "1.6.2",

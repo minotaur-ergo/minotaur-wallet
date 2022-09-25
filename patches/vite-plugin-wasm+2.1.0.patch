@@ -1,0 +1,21 @@
+diff --git a/node_modules/vite-plugin-wasm/dist/wasm-helper.js b/node_modules/vite-plugin-wasm/dist/wasm-helper.js
+index 2f1e900..72ff8dc 100644
+--- a/node_modules/vite-plugin-wasm/dist/wasm-helper.js
++++ b/node_modules/vite-plugin-wasm/dist/wasm-helper.js
+@@ -33,7 +33,15 @@ const wasmHelper = async (opts = {}, url) => {
+         // a lot of static file servers, so we just work around it by getting the
+         // raw buffer.
+         // @ts-ignore
+-        const response = await fetch(url);
++        let response;
++        try {
++            response = await fetch(url);
++        } catch (err) {
++            const { readFile } = await import("fs/promises");
++            const { resolve, join } = await import("path");
++            const path = join(resolve("."), url.replace('?init', ''));
++            response = new Response(await readFile(path));
++        }
+         const contentType = response.headers.get("Content-Type") || "";
+         if ("instantiateStreaming" in WebAssembly && contentType.startsWith("application/wasm")) {
+             result = await WebAssembly.instantiateStreaming(response, opts);
