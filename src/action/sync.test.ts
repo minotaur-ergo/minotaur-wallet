@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/extend-expect";
 import axios, { AxiosPromise } from "axios";
 import {SyncAddress, syncTrxs} from './sync';
-import {Block, Trx, Box} from './Types'
+import {Block, Trx, Box, TxDictionary} from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
 import { ErgoTx } from "../util/network/models";
@@ -148,7 +148,7 @@ test('insert Trx to db', async() => {
 
     (axios.get as jest.Mock).mockReset();
     (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
-    spyCheckTrxValidation.mockImplementationOnce(async(trxs : ErgoTx[][]) => {});
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : TxDictionary) => {});
     TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
     expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx],receivedTrx.inclusionHeight);
 })
@@ -172,7 +172,9 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(TestSync.checkTrxValidation([[receivedTrx]])).toThrow('blockIds not matched.');
+    const txDictionary: TxDictionary = {};
+    txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+    expect(TestSync.checkTrxValidation(txDictionary)).toThrow('blockIds not matched.');
 })
 
 /**
@@ -194,5 +196,7 @@ test('check validation of invalid tx', async() => {
         size: 1,
         timestamp: 12
     }; 
-    expect(TestSync.checkTrxValidation([[receivedTrx]])).not.toThrow();
+    const txDictionary: TxDictionary = {};
+    txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+    expect(TestSync.checkTrxValidation(txDictionary)).not.toThrow('blockIds not matched.');
 })
