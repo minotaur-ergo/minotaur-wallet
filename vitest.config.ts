@@ -5,9 +5,12 @@ import topLevelAwait from 'vite-plugin-top-level-await';
 export default defineConfig({
   test: {
     deps: {
-      inline: [/ergo-lib-wasm-browser/],
+      inline: [/ergo-lib-wasm-browser/, /typeorm/]
     },
-    environment: 'happy-dom'
+    environment: 'happy-dom',
+    transformMode: {
+      web: [/\.([cm]?[jt]sx?|json)$/],
+    }
   },
   plugins: [
     wasm(),
