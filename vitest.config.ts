@@ -4,6 +4,10 @@ import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig({
   test: {
+    coverage: {
+      all: true,
+      reporter: ['cobertura', 'text', 'text-summary'],
+    },
     deps: {
       inline: [/ergo-lib-wasm-browser/, /typeorm/]
     },
