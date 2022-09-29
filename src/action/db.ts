@@ -1,5 +1,5 @@
 import Address from "../db/entities/Address";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, EntityManager, Repository } from "typeorm";
 import AddressWithErg from "../db/entities/views/AddressWithErg";
 import Wallet, { WalletType } from "../db/entities/Wallet";
 import WalletWithErg from "../db/entities/views/WalletWithErg";
@@ -16,6 +16,7 @@ import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
 import Config from "../db/entities/Config";
 import AssetCountBox from "../db/entities/views/AssetCountBox";
+import { QueryRunner } from "typeorm/browser";
 
 class WalletActionClass {
     private walletRepository: Repository<Wallet>;
@@ -382,24 +383,6 @@ class BoxActionClass {
             .delete()
             .execute();
     };
-    
-    forkBoxesSync = async (height: number, network_type: string) => {
-        await this.repository
-            .createQueryBuilder()
-            .where("create_height > :height", { height: height })
-            .andWhere("network_type = :network_type", { network_type: network_type })
-            .delete()
-            .execute();
-     
-        await this.repository
-            .createQueryBuilder()
-            .update()
-            .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
-            .where("spend_height > :height", { height: height })
-            .andWhere("network_type = :network_type", { network_type: network_type })
-            .execute();
-     
-    };
 
     invalidAssetCountBox = async () => {
         return await this.assetCountBoxRepository.createQueryBuilder()
@@ -580,6 +563,51 @@ class ConfigActionClass {
     };
 }
 
+class DbTransactionClass {
+    private queryRunner;
+    
+    constructor(dataSource: DataSource) {
+        this.queryRunner = dataSource.createQueryRunner(); 
+    }
+
+    fork = async(forkHeight: number, network_type: string) => {
+        this.queryRunner.connect();
+        this.queryRunner.startTransaction();
+        
+        try{
+            this.queryRunner.manager.getRepository(Tx)
+            .createQueryBuilder()
+            .where("height > :height", { height: forkHeight })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .delete()
+            .execute()
+
+            this.queryRunner.manager.getRepository(Box)
+            .createQueryBuilder()
+            .where("create_height > :height", { height: forkHeight })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .delete()
+            .execute()
+
+            this.queryRunner.manager.getRepository(Box)
+            .createQueryBuilder()
+            .update()
+            .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
+            .where("spend_height > :height", { height: forkHeight })
+            .andWhere("network_type = :network_type", { network_type: network_type })
+            .execute()
+
+            await this.queryRunner.commitTransaction();
+        }
+        catch{
+            this.queryRunner.rollbackTransaction();
+        }
+        finally{
+            this.queryRunner.release();
+        }
+    }
+}
+
 let BoxContentDbAction: BoxContentActionClass;
 let AddressDbAction: AddressActionClass;
 let WalletDbAction: WalletActionClass;
@@ -588,6 +616,8 @@ let AssetDbAction: AssetActionClass;
 let BlockDbAction: BlockActionClass;
 let BoxDbAction: BoxActionClass;
 let TxDbAction: TxActionClass;
+
+let DbTransaction: DbTransactionClass;
 
 const initializeAction = (dataSource: DataSource) => {
     BoxContentDbAction = new BoxContentActionClass(dataSource);
@@ -598,6 +628,8 @@ const initializeAction = (dataSource: DataSource) => {
     BlockDbAction = new BlockActionClass(dataSource);
     BoxDbAction = new BoxActionClass(dataSource);
     TxDbAction = new TxActionClass(dataSource);
+
+    DbTransaction = new DbTransactionClass(dataSource);
 };
 
 export {
@@ -609,5 +641,6 @@ export {
     BlockDbAction,
     BoxDbAction,
     TxDbAction,
+    DbTransaction,
     initializeAction
 };

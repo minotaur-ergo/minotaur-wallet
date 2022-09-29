@@ -1,4 +1,4 @@
-import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction, DbTransaction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block, HeightRange, Err, TxDictionary} from './Types'
 import { Paging } from "../util/network/paging";
@@ -267,8 +267,7 @@ export class SyncAddress {
      * @param forkHiehgt : number
      */
     forkTxs = async(forkHiehgt: number) => {
-        await BoxDbAction.forkBoxesSync(forkHiehgt, this.networkType);
-        await TxDbAction.forkTxs(forkHiehgt + 1, this.networkType);
+        await DbTransaction.fork(forkHiehgt, this.networkType);
     }
 
     /**
