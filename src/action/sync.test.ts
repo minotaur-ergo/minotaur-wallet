@@ -2,7 +2,7 @@ import { test, vi, expect } from 'vitest';
 
 import axios from "axios";
 import { SyncAddress } from './sync';
-import { Block } from './Types'
+import { Block, TxDictionary } from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
 import { ErgoTx } from "../util/network/models";
@@ -147,8 +147,8 @@ test('insert Trx to db', async () => {
         timestamp: 12
     };
 
-    (axios.get as jest.Mock).mockReset();
-    (axios.get as jest.Mock).mockResolvedValueOnce(receivedTrx);
+    vi.mocked(axios.get).mockReset();
+    vi.mocked(axios.get).mockResolvedValueOnce(receivedTrx);
     spyCheckTrxValidation.mockImplementationOnce(async(trxs : TxDictionary) => {});
     TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
     expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx], receivedTrx.inclusionHeight);
