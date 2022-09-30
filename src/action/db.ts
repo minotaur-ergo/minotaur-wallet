@@ -1,5 +1,5 @@
 import Address from "../db/entities/Address";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, EntityManager, Repository } from "typeorm";
 import AddressWithErg from "../db/entities/views/AddressWithErg";
 import Wallet, { WalletType } from "../db/entities/Wallet";
 import WalletWithErg from "../db/entities/views/WalletWithErg";
@@ -16,6 +16,7 @@ import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
 import Config from "../db/entities/Config";
 import AssetCountBox from "../db/entities/views/AssetCountBox";
+import { getConnection, QueryRunner } from "typeorm/browser";
 
 class WalletActionClass {
     private walletRepository: Repository<Wallet>;
@@ -562,6 +563,30 @@ class ConfigActionClass {
     };
 }
 
+class DbTransactionClass {
+    private queryRunner;
+    
+    constructor(dataSource: DataSource) {
+        this.queryRunner = dataSource.createQueryRunner(); 
+    }
+
+    fork = async(forkHeight: number, network_type: string) => {
+        this.queryRunner.connect();
+        this.queryRunner.startTransaction();
+        try{
+            await BoxDbAction.forkBoxes(forkHeight, network_type);
+            await TxDbAction.forkTxs(forkHeight, network_type);
+            await this.queryRunner.commitTransaction();
+        }
+        catch{
+            this.queryRunner.rollbackTransaction();
+        }
+        finally{
+            this.queryRunner.release();
+        }
+    }
+}
+
 let BoxContentDbAction: BoxContentActionClass;
 let AddressDbAction: AddressActionClass;
 let WalletDbAction: WalletActionClass;
@@ -570,6 +595,8 @@ let AssetDbAction: AssetActionClass;
 let BlockDbAction: BlockActionClass;
 let BoxDbAction: BoxActionClass;
 let TxDbAction: TxActionClass;
+
+let DbTransaction: DbTransactionClass;
 
 const initializeAction = (dataSource: DataSource) => {
     BoxContentDbAction = new BoxContentActionClass(dataSource);
@@ -580,6 +607,8 @@ const initializeAction = (dataSource: DataSource) => {
     BlockDbAction = new BlockActionClass(dataSource);
     BoxDbAction = new BoxActionClass(dataSource);
     TxDbAction = new TxActionClass(dataSource);
+
+    DbTransaction = new DbTransactionClass(dataSource);
 };
 
 export {
@@ -591,5 +620,6 @@ export {
     BlockDbAction,
     BoxDbAction,
     TxDbAction,
+    DbTransaction,
     initializeAction
 };

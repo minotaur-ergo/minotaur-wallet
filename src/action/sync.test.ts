@@ -2,7 +2,7 @@ import { test, vi, expect } from 'vitest';
 
 import axios from "axios";
 import { SyncAddress } from './sync';
-import { Block } from './Types'
+import { Block, TxDictionary } from './Types'
 import * as fs from "fs"
 import Address from "../db/entities/Address";
 import { ErgoTx } from "../util/network/models";
@@ -149,7 +149,7 @@ test('insert Trx to db', async () => {
 
     vi.mocked(axios.get).mockReset();
     vi.mocked(axios.get).mockResolvedValueOnce(receivedTrx);
-    spyCheckTrxValidation.mockImplementationOnce((async (trxs: ErgoTx[][]) => { }) as any); // FIXME: Use a correct type
+    spyCheckTrxValidation.mockImplementationOnce(async(trxs : TxDictionary) => {});
     TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
     expect(spySaveTrxToDB).toHaveBeenCalledWith([receivedTrx], receivedTrx.inclusionHeight);
 })
@@ -172,8 +172,10 @@ test('check validation of invalid tx', async () => {
         outputs: [],
         size: 1,
         timestamp: 12
-    };
-    expect(TestSync.checkTrxValidation([[receivedTrx]])).toThrow('blockIds not matched.');
+    }; 
+    const txDictionary: TxDictionary = {};
+    txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+    expect(TestSync.checkTrxValidation(txDictionary)).toThrow('blockIds not matched.');
 })
 
 /**
@@ -194,6 +196,8 @@ test('check validation of valid tx', async () => {
         outputs: [],
         size: 1,
         timestamp: 12
-    };
-    expect(TestSync.checkTrxValidation([[receivedTrx]])).not.toThrow();
+    }; 
+    const txDictionary: TxDictionary = {};
+    txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+    expect(TestSync.checkTrxValidation(txDictionary)).not.toThrow('blockIds not matched.');
 })

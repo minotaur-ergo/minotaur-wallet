@@ -1,4 +1,4 @@
-import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction} from "./db";
+import {BlockDbAction, TxDbAction, AddressDbAction, BoxDbAction, DbTransaction} from "./db";
 import { getNetworkType} from "../util/network_type";
 import {Block, HeightRange, Err, TxDictionary} from './Types'
 import { Paging } from "../util/network/paging";
@@ -260,6 +260,14 @@ export class SyncAddress {
             }
         });
         return sortedTxs;
+    }
+
+    /**
+     * fork all txs with height > forkHeight, unspend boxes with spend_height > forkHeight and remove all forked boxes from db.
+     * @param forkHiehgt : number
+     */
+    forkTxs = async(forkHiehgt: number) => {
+        await DbTransaction.fork(forkHiehgt + 1, this.networkType);
     }
 
     /**
