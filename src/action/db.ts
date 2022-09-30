@@ -16,7 +16,7 @@ import BoxContent from "../db/entities/BoxContent";
 import TokenWithAddress from "../db/entities/views/AddressToken";
 import Config from "../db/entities/Config";
 import AssetCountBox from "../db/entities/views/AssetCountBox";
-import { QueryRunner } from "typeorm/browser";
+import { getConnection, QueryRunner } from "typeorm/browser";
 
 class WalletActionClass {
     private walletRepository: Repository<Wallet>;
@@ -573,30 +573,9 @@ class DbTransactionClass {
     fork = async(forkHeight: number, network_type: string) => {
         this.queryRunner.connect();
         this.queryRunner.startTransaction();
-        
         try{
-            this.queryRunner.manager.getRepository(Tx)
-            .createQueryBuilder()
-            .where("height > :height", { height: forkHeight })
-            .andWhere("network_type = :network_type", { network_type: network_type })
-            .delete()
-            .execute()
-
-            this.queryRunner.manager.getRepository(Box)
-            .createQueryBuilder()
-            .where("create_height > :height", { height: forkHeight })
-            .andWhere("network_type = :network_type", { network_type: network_type })
-            .delete()
-            .execute()
-
-            this.queryRunner.manager.getRepository(Box)
-            .createQueryBuilder()
-            .update()
-            .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
-            .where("spend_height > :height", { height: forkHeight })
-            .andWhere("network_type = :network_type", { network_type: network_type })
-            .execute()
-
+            await BoxDbAction.forkBoxes(forkHeight, network_type);
+            await TxDbAction.forkTxs(forkHeight, network_type);
             await this.queryRunner.commitTransaction();
         }
         catch{

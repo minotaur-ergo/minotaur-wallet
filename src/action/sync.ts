@@ -267,7 +267,7 @@ export class SyncAddress {
      * @param forkHiehgt : number
      */
     forkTxs = async(forkHiehgt: number) => {
-        await DbTransaction.fork(forkHiehgt, this.networkType);
+        await DbTransaction.fork(forkHiehgt + 1, this.networkType);
     }
 
     /**
