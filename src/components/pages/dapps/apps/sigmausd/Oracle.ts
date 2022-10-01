@@ -1,7 +1,7 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 
 class Oracle {
-  static TOKEN_ID: string =
+  static TOKEN_ID =
     '011d3364de07e5a26f0c4eef0852cddb387039a921b7154ef3cab22c6eda887f';
   private readonly box: wasm.ErgoBox;
 

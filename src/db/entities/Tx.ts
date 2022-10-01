@@ -10,19 +10,19 @@ enum TxStatus {
 @Entity({ name: 'tx' })
 class Tx {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text', { unique: true })
-  tx_id: string = '';
+  tx_id = '';
 
   @Column('int')
-  height: number = 0;
+  height = 0;
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('int')
-  date: number = 0;
+  date = 0;
 
   @Column('text')
   status: TxStatus = TxStatus.Mined;

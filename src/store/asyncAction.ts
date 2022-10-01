@@ -18,7 +18,7 @@ const loadTokensAsync = async (network_type: string) => {
     const assets = (await AssetDbAction.getAllAsset(network_type)).map(
       (item) => item.asset_id
     );
-    for (let token of tokens) {
+    for (const token of tokens) {
       if (assets.indexOf(token) === -1) {
         await BlockChainAction.updateTokenInfo(token, network_type);
       }
@@ -28,11 +28,11 @@ const loadTokensAsync = async (network_type: string) => {
 
 const validateBoxContentModel = async () => {
   const invalidBoxes = await BoxDbAction.invalidAssetCountBox();
-  for (let box of invalidBoxes) {
+  for (const box of invalidBoxes) {
     const boxEntity = await BoxDbAction.getBoxById(box.id);
     if (boxEntity) {
       const boxJson: ErgoBox = JsonBI.parse(boxEntity.json);
-      for (let token of boxJson.assets) {
+      for (const token of boxJson.assets) {
         await BoxContentDbAction.createOrUpdateBoxContent(boxEntity, token);
       }
     }
@@ -51,7 +51,7 @@ const loadBlockChainDataAsync = async () => {
         // find new headers from blockchain and insert headers to database
         await BlockChainAction.calcForkPoint(height, NETWORK_TYPE);
         try {
-          for (let address of addresses) {
+          for (const address of addresses) {
             store.dispatch({
               type: actionType.SET_LOADING_WALLET,
               payload: address.wallet?.id,

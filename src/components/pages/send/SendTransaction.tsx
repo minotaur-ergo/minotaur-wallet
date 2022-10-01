@@ -57,7 +57,7 @@ class SendTransaction extends React.Component<
   };
 
   updateReceivers = (index: number, receiver: Receiver) => {
-    let newReceivers: Array<Receiver> = [...this.state.receivers];
+    const newReceivers: Array<Receiver> = [...this.state.receivers];
     newReceivers[index] = receiver;
     this.setState({ receivers: newReceivers });
   };
@@ -70,7 +70,7 @@ class SendTransaction extends React.Component<
   };
 
   deleteReceiver = (index: number) => {
-    let newReceivers = [...this.state.receivers];
+    const newReceivers = [...this.state.receivers];
     newReceivers.splice(index, 1);
     this.setState({ receivers: newReceivers });
   };

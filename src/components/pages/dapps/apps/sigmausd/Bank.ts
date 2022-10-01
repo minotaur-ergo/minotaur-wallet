@@ -99,8 +99,8 @@ class Bank {
     // TODO check index of stable token
     let high = BigInt(this.box.tokens().get(0).amount().as_i64().to_str());
     while (low <= high) {
-      let mid = (high - low) / BigInt(2) + low;
-      let new_reserve_ratio = this.mint_stable_coin_reserve_ratio(mid);
+      const mid = (high - low) / BigInt(2) + low;
+      const new_reserve_ratio = this.mint_stable_coin_reserve_ratio(mid);
       if (new_reserve_ratio === parameters.MIN_RESERVE_RATIO) return mid;
       if (new_reserve_ratio < parameters.MIN_RESERVE_RATIO) {
         high = mid - BigInt(1);
@@ -122,7 +122,7 @@ class Bank {
   };
 
   able_to_mint_reserve_coin_amount = (amount: bigint) => {
-    let new_reserve_ratio = this.mint_reserve_coin_reserve_ratio(amount);
+    const new_reserve_ratio = this.mint_reserve_coin_reserve_ratio(amount);
     return new_reserve_ratio <= BigInt(parameters.MAX_RESERVE_RATIO);
   };
 
@@ -148,7 +148,7 @@ class Bank {
   };
 
   mint_reserve_coin_reserve_ratio = (amount: bigint) => {
-    let new_base_reserve =
+    const new_base_reserve =
       this.base_reserve() + this.base_cost_to_mint_reserve_coin(amount);
     return reserve_ratio(
       new_base_reserve,
@@ -158,7 +158,7 @@ class Bank {
   };
 
   able_to_redeem_reserve_coin_amount = (amount: bigint) => {
-    let new_reserve_ratio = this.redeem_reserve_coin_reserve_ratio(amount);
+    const new_reserve_ratio = this.redeem_reserve_coin_reserve_ratio(amount);
     return new_reserve_ratio >= parameters.MIN_RESERVE_RATIO;
   };
 
@@ -260,7 +260,7 @@ class Bank {
     transaction_fee: bigint
   ) => {
     const base_amount = this.base_amount_from_redeeming_reserve_coin(amount);
-    let fees = transaction_fee + parameters.IMPLEMENTOR_FEE(base_amount);
+    const fees = transaction_fee + parameters.IMPLEMENTOR_FEE(base_amount);
     return base_amount < fees ? base_amount - fees : BigInt(0);
   };
 
@@ -323,7 +323,7 @@ class Bank {
     adding_reserve_count: bigint
   ) => {
     const old_value = BigInt(this.get_box().value().as_i64().to_str());
-    let adding_erg_count: bigint = BigInt(0);
+    let adding_erg_count = BigInt(0);
     if (adding_stable_count > BigInt(0)) {
       adding_erg_count +=
         this.base_cost_to_mint_stable_coin(adding_stable_count);

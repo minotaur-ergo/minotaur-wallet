@@ -8,7 +8,7 @@ import { Unique } from 'typeorm/browser';
 @Unique('box_id_in_network', ['network_type', 'box_id'])
 class Box {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @ManyToOne((type) => Address)
   address: Address | null = null;
@@ -20,31 +20,31 @@ class Box {
   spend_tx: Tx | null = null;
 
   @Column('text')
-  box_id: string = '';
+  box_id = '';
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('text', { transformer: new BigIntValueTransformer() })
-  erg: bigint = BigInt(0);
+  erg = BigInt(0);
 
   @Column('int')
-  create_index: number = 0;
+  create_index = 0;
 
   @Column('int')
-  create_height: number = 0;
+  create_height = 0;
 
   @Column('int', { nullable: true })
-  spend_index: number = 0;
+  spend_index = 0;
 
   @Column('int', { nullable: true })
-  spend_height: number = 0;
+  spend_height = 0;
 
   @Column('int', { default: 0 })
-  asset_count: number = 0;
+  asset_count = 0;
 
   @Column('text')
-  json: string = '';
+  json = '';
 }
 
 export default Box;

@@ -29,7 +29,7 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
       setAddresses(addresses.map((item) => item.address));
     });
   }, []);
-  let addressError: string = '';
+  let addressError = '';
   const base58 = get_base58_extended_public_key(props.address);
   if (is_valid_address(props.address)) {
     if (addresses.indexOf(props.address) >= 0) {

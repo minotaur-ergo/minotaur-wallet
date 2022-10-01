@@ -12,13 +12,13 @@ import BigIntValueTransformer from './Transformer';
 @Unique('token_id_in_box', ['token_id', 'box'])
 class BoxContent {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text')
-  token_id: string = '';
+  token_id = '';
 
   @Column('text', { transformer: new BigIntValueTransformer() })
-  amount: bigint = BigInt(0);
+  amount = BigInt(0);
 
   @ManyToOne(() => Box, { onDelete: 'CASCADE' })
   box: Box | null = null;

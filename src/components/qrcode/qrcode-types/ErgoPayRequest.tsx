@@ -200,7 +200,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
     const unsignedTx = wasm.ReducedTransaction.sigma_parse_bytes(
       Uint8Array.from(Buffer.from(txBytes, 'base64'))
     ).unsigned_tx();
-    let input_boxes: wasm.ErgoBoxes = wasm.ErgoBoxes.from_boxes_json([]);
+    const input_boxes: wasm.ErgoBoxes = wasm.ErgoBoxes.from_boxes_json([]);
     for (let index = 0; index < unsignedTx.inputs().len(); index++) {
       const input = unsignedTx.inputs().get(index);
       const boxJson = await network_type
@@ -208,7 +208,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
         .getBoxById(input.box_id().to_str());
       input_boxes.add(wasm.ErgoBox.from_json(JsonBI.stringify(boxJson)));
     }
-    let data_boxes: wasm.ErgoBoxes = wasm.ErgoBoxes.from_boxes_json([]);
+    const data_boxes: wasm.ErgoBoxes = wasm.ErgoBoxes.from_boxes_json([]);
     for (let index = 0; index < unsignedTx.data_inputs().len(); index++) {
       const input = unsignedTx.data_inputs().get(index);
       const boxJson = await network_type

@@ -8,23 +8,23 @@ const getPassword = (password: string): Buffer => {
 };
 
 const encrypt = (text: Buffer, password: string) => {
-  let iv = crypto.randomBytes(IV_LENGTH);
-  let cipher = crypto.createCipheriv('aes-256-cbc', getPassword(password), iv);
+  const iv = crypto.randomBytes(IV_LENGTH);
+  const cipher = crypto.createCipheriv('aes-256-cbc', getPassword(password), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
 };
 
 const decrypt = (text: string, password: string) => {
-  let textParts = text.split(':');
-  let iv = Buffer.from(textParts.shift()!, 'hex');
-  let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  let decipher = crypto.createDecipheriv(
+  const textParts = text.split(':');
+  const iv = Buffer.from(textParts.shift()!, 'hex');
+  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+  const decipher = crypto.createDecipheriv(
     'aes-256-cbc',
     getPassword(password),
     iv
   );
-  let decrypted = decipher.update(encryptedText);
+  const decrypted = decipher.update(encryptedText);
   return Buffer.concat([decrypted, decipher.final()]);
 };
 

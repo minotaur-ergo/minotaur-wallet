@@ -390,7 +390,7 @@ class BoxActionClass {
   ): Promise<CoveringResult> => {
     const requiredTokens: { [id: string]: bigint } = { ...tokens };
     let requiredAmount: bigint = amount;
-    let selectedBoxesJson: Array<string> = [];
+    const selectedBoxesJson: Array<string> = [];
     const checkIsRequired = (box: wasm.ErgoBox) => {
       if (requiredAmount > 0) return true;
       for (let index = 0; index < box.tokens().len(); index++) {
@@ -407,7 +407,7 @@ class BoxActionClass {
       requiredAmount -= BigInt(box.value().as_i64().to_str());
       for (let index = 0; index < box.tokens().len(); index++) {
         const token = box.tokens().get(index);
-        if (requiredTokens.hasOwnProperty(token.id().to_str())) {
+        if (Object.prototype.hasOwnProperty.call(requiredTokens, token.id().to_str())) {
           requiredTokens[token.id().to_str()] -= BigInt(
             token.amount().as_i64().to_str()
           );
@@ -421,7 +421,7 @@ class BoxActionClass {
     const boxes = await (address
       ? this.getAddressBoxes(address as Array<Address>)
       : this.getWalletBoxes(walletId));
-    for (let boxObject of boxes) {
+    for (const boxObject of boxes) {
       const box = wasm.ErgoBox.from_json(boxObject.json);
       if (checkIsRequired(box)) {
         addBox(box);

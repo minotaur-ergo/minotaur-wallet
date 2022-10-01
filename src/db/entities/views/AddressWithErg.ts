@@ -25,36 +25,36 @@ import Address from '../Address';
 })
 class AddressWithErg {
   @ViewColumn()
-  id: number = 0;
+  id = 0;
 
   @ViewColumn()
-  name: string = '';
+  name = '';
 
   @ViewColumn()
-  address: string = '';
+  address = '';
 
   @ViewColumn()
-  network_type: string = '';
+  network_type = '';
 
   @ViewColumn()
-  path: string = '';
+  path = '';
 
   @ViewColumn()
-  idx: number = 0;
+  idx = 0;
 
   @ViewColumn()
-  walletId: number = 0;
+  walletId = 0;
 
   @ViewColumn()
-  erg_str: bigint = BigInt(0);
+  erg_str = BigInt(0);
 
   @ViewColumn()
-  token_count: number = 0;
+  token_count = 0;
 
   erg = () => BigInt(this.erg_str ? this.erg_str : 0);
 
   addressObject = (): Address => {
-    let address = {
+    const address = {
       id: this.id,
       name: this.name,
       address: this.address,

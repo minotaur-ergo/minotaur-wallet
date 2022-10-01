@@ -23,7 +23,7 @@ export interface TxWithJson extends Tx {
   jsonBi: ErgoTx;
 }
 
-const pageSize: number = 20;
+const pageSize = 20;
 
 class ReceiverToken {
   readonly token_id: string;
@@ -78,8 +78,8 @@ class ReceiverToken {
 }
 
 class Receiver {
-  address: string = '';
-  erg_str: string = '';
+  address = '';
+  erg_str = '';
   tokens: Array<ReceiverToken> = [];
 
   clone = () => {
@@ -134,8 +134,8 @@ class BlockChainActionClass {
   ): Promise<UnsignedGeneratedTx> => {
     const node = getNetworkType(wallet.network_type).getNode();
     const height = await node.getHeight();
-    let totalRequired = this.getReceiverAmount(receivers) + FEE;
-    let candidates: wasm.ErgoBoxCandidates = wasm.ErgoBoxCandidates.empty();
+    const totalRequired = this.getReceiverAmount(receivers) + FEE;
+    const candidates: wasm.ErgoBoxCandidates = wasm.ErgoBoxCandidates.empty();
     const tokens: { [id: string]: bigint } = {};
     receivers.forEach((receiver) => {
       const contract = wasm.Contract.pay_to_address(
@@ -147,7 +147,7 @@ class BlockChainActionClass {
         height
       );
       receiver.tokens.forEach((item) => {
-        if (tokens.hasOwnProperty(item.token_id)) {
+        if (Object.prototype.hasOwnProperty.call(tokens, item.token_id)) {
           tokens[item.token_id] = tokens[item.token_id] + item.amount();
         } else {
           tokens[item.token_id] = item.amount();
@@ -224,7 +224,7 @@ class BlockChainActionClass {
     const tx = wasm.ReducedTransaction.sigma_parse_bytes(txBytes);
     const addresses = await AddressDbAction.getWalletAddresses(dbWallet.id);
     const secretKeys = new wasm.SecretKeys();
-    for (let addr of addresses) {
+    for (const addr of addresses) {
       secretKeys.add(
         await AddressAction.getWalletAddressSecret(dbWallet, password, addr)
       );
@@ -241,7 +241,7 @@ class BlockChainActionClass {
   ) => {
     const addresses = await AddressDbAction.getWalletAddresses(dbWallet.id);
     const secretKeys = new wasm.SecretKeys();
-    for (let addr of addresses) {
+    for (const addr of addresses) {
       secretKeys.add(
         await AddressAction.getWalletAddressSecret(dbWallet, password, addr)
       );
@@ -296,8 +296,8 @@ class BlockChainActionClass {
     height: number,
     network_type: NetworkType
   ): Promise<{ height: number; blocks: { [height: number]: string } }> => {
-    let needProcessBlocks: { [height: number]: string } = {};
-    let heights: Array<number> = [];
+    const needProcessBlocks: { [height: number]: string } = {};
+    const heights: Array<number> = [];
     let forkPoint = 0;
     const dbBlocks: { [height: number]: string } = {};
     const dbHeaders = await BlockDbAction.getAllHeaders();
@@ -309,7 +309,7 @@ class BlockChainActionClass {
       Object.keys(dbBlocks).length > 0
         ? Math.max(...Object.keys(dbBlocks).map((item) => Number(item)))
         : 0;
-    let paging: Paging = { offset: 0, limit: 2 };
+    const paging: Paging = { offset: 0, limit: 2 };
     let minHeight: number = height;
     while (minHeight > height - CONFIRMATION_HEIGHT) {
       const chunkHeaders = (
@@ -321,7 +321,7 @@ class BlockChainActionClass {
         minHeight = Math.min(minHeight, block.height);
         if (block.height > height) continue;
         if (
-          dbBlocks.hasOwnProperty(block.height) &&
+          Object.prototype.hasOwnProperty.call(dbBlocks, block.height) &&
           dbBlocks[block.height] === block.id
         ) {
           forkPoint = heights.length > 0 ? Math.min(...heights) : height;
@@ -375,10 +375,10 @@ class BlockChainTxActionClass {
       Math.min(...heights),
       maxBlockHeight - CONFIRMATION_HEIGHT
     );
-    let txList: { [height: number]: { [id: string]: ErgoTx } } = {};
-    let breakProcess: boolean = false;
+    const txList: { [height: number]: { [id: string]: ErgoTx } } = {};
+    let breakProcess = false;
     const paging: Paging = { offset: 0, limit: 1 };
-    const overlapTxId: string = '';
+    const overlapTxId = '';
     // fetch all transaction from fromHeight to maxHeight
     while (!breakProcess) {
       let txs = (await explorer.getTxsByAddress(address.address, paging)).items;
@@ -391,7 +391,7 @@ class BlockChainTxActionClass {
           txs = txs.slice(1, txs.length);
         }
       }
-      for (let tx of txs) {
+      for (const tx of txs) {
         if (tx.inclusionHeight > address.process_height) {
           console.log(tx);
           console.log(minBlockHeight, maxBlockHeight);
@@ -401,7 +401,7 @@ class BlockChainTxActionClass {
             blocks[tx.inclusionHeight] !== tx.blockId
           )
             continue; // forked transaction arrived
-          if (!txList.hasOwnProperty(tx.inclusionHeight)) {
+          if (!Object.prototype.hasOwnProperty.call(txList, tx.inclusionHeight)) {
             txList[tx.inclusionHeight] = {};
           }
           txList[tx.inclusionHeight] = {
@@ -428,9 +428,9 @@ class BlockChainTxActionClass {
     const txHeights = Object.keys(txList);
     txHeights.sort();
     const storedTxEntity: { [txId: string]: Tx } = {};
-    for (let height of txHeights) {
+    for (const height of txHeights) {
       const heightTxList = txList[Number(height)];
-      for (let txId of Object.keys(heightTxList)) {
+      for (const txId of Object.keys(heightTxList)) {
         const tx = heightTxList[txId];
         const entity = await TxDbAction.updateOrCreateTx(
           tx,
@@ -440,7 +440,7 @@ class BlockChainTxActionClass {
         if (entity && entity.tx) {
           storedTxEntity[txId] = entity.tx;
           let index = 0;
-          for (let box of tx.outputs) {
+          for (const box of tx.outputs) {
             if (box.address === address.address) {
               const boxEntity = await BoxDbAction.createOrUpdateBox(
                 box,
@@ -449,7 +449,7 @@ class BlockChainTxActionClass {
                 index
               );
               if (boxEntity) {
-                for (let token of box.assets) {
+                for (const token of box.assets) {
                   await BoxContentDbAction.createOrUpdateBoxContent(
                     boxEntity,
                     token
@@ -464,11 +464,11 @@ class BlockChainTxActionClass {
         }
       }
       // now process spending boxes in height
-      for (let txId of Object.keys(heightTxList)) {
+      for (const txId of Object.keys(heightTxList)) {
         const txJson = heightTxList[txId];
         const tx = storedTxEntity[txId];
         let index = 0;
-        for (let input of txJson.inputs) {
+        for (const input of txJson.inputs) {
           if (input.address === address.address) {
             await BoxDbAction.spentBox(input.boxId, tx, index);
           }
@@ -485,10 +485,10 @@ class BlockChainTxActionClass {
     height: number,
     txs: Array<TxWithJson>
   ) => {
-    for (let tx of txs) {
+    for (const tx of txs) {
       let index = 0;
       const txJson: ErgoTx = tx.jsonBi;
-      for (let box of txJson.outputs) {
+      for (const box of txJson.outputs) {
         if (box.address === address.address) {
           const boxEntity = await BoxDbAction.createOrUpdateBox(
             box,
@@ -497,7 +497,7 @@ class BlockChainTxActionClass {
             index
           );
           if (boxEntity) {
-            for (let token of box.assets) {
+            for (const token of box.assets) {
               await BoxContentDbAction.createOrUpdateBoxContent(
                 boxEntity,
                 token
@@ -516,10 +516,10 @@ class BlockChainTxActionClass {
     height: number,
     txs: Array<TxWithJson>
   ) => {
-    for (let tx of txs) {
+    for (const tx of txs) {
       let index = 0;
       const txJson: ErgoTx = tx.jsonBi;
-      for (let input of txJson.inputs) {
+      for (const input of txJson.inputs) {
         if (input.address === address.address) {
           await BoxDbAction.spentBox(input.boxId, tx, index);
         }

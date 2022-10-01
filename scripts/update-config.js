@@ -18,7 +18,7 @@ module.exports = function (config) {
     ]
     // update one of rule:
     config.module.rules = config.module.rules.map(rule => {
-        if(rule.hasOwnProperty('oneOf')){
+        if(Object.hasOwnProperty.call(rule, 'oneOf')){
             return {
                 oneOf: [
                     ...rule.oneOf.map(item => {

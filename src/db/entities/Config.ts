@@ -7,13 +7,13 @@ export enum ConfigType {
 @Entity({ name: 'config' })
 class Config {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text', { unique: true })
   key: string = ConfigType.DisplayMode;
 
   @Column('text')
-  value: string = '';
+  value = '';
 }
 
 export default Config;

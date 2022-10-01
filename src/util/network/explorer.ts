@@ -46,7 +46,7 @@ export class Explorer {
     address: string,
     heightRange: HeightPage,
     paging: Paging,
-    conciseEnabled: Boolean
+    conciseEnabled: boolean
   ): Promise<Items<ErgoTx>> => {
     return await this.backend
       .request<Items<ErgoTx>>({
@@ -130,15 +130,15 @@ export class Explorer {
     const address: string = wasm.Address.recreate_from_ergo_tree(
       box.ergo_tree()
     ).to_base58(this.network_prefix);
-    let memPoolBoxesMap = new Map<string, wasm.ErgoBox>();
+    const memPoolBoxesMap = new Map<string, wasm.ErgoBox>();
     (
       await this.getMemPoolTxForAddress(address).then((res) => {
         return res.items;
       })
     ).forEach((tx: ErgoTx) => {
-      for (let inBox of tx.inputs) {
+      for (const inBox of tx.inputs) {
         if (inBox.address === address) {
-          for (let outBox of tx.outputs) {
+          for (const outBox of tx.outputs) {
             if (outBox.address === address) {
               memPoolBoxesMap.set(
                 inBox.boxId,

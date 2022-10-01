@@ -20,16 +20,16 @@ import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
 })
 class TokenWithAddress {
   @ViewColumn()
-  token_id: string = '';
+  token_id = '';
 
   @ViewColumn()
-  amount_str: string = '';
+  amount_str = '';
 
   @ViewColumn()
-  address_id: number = 0;
+  address_id = 0;
 
   @ViewColumn()
-  wallet_id: number = 0;
+  wallet_id = 0;
 
   amount = () => BigInt(this.amount_str ? this.amount_str : 0);
 }

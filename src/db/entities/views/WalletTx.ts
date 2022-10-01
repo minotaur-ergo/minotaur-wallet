@@ -38,34 +38,34 @@ import { TxStatus } from '../Tx';
 })
 class WalletTx {
   @ViewColumn()
-  id: number = 0;
+  id = 0;
 
   @ViewColumn()
-  tx_id: string = '';
+  tx_id = '';
 
   @ViewColumn()
-  height: number = 0;
+  height = 0;
 
   @ViewColumn()
-  network_type: string = '';
+  network_type = '';
 
   @ViewColumn()
-  date: number = 0;
+  date = 0;
 
   @ViewColumn()
   status: TxStatus = TxStatus.New;
 
   @ViewColumn()
-  create_wallet_id: number = 0;
+  create_wallet_id = 0;
 
   @ViewColumn()
   spent_wallet_id: number | null = 0;
 
   @ViewColumn()
-  create_erg_str: string = '0';
+  create_erg_str = '0';
 
   @ViewColumn()
-  spent_erg_str: string = '0';
+  spent_erg_str = '0';
 
   create_erg = () => BigInt(this.create_erg_str ? this.create_erg_str : 0);
 

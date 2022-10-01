@@ -4,13 +4,13 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 @Unique('asset_id_network_type', ['asset_id', 'network_type'])
 class Asset {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text')
-  asset_id: string = '';
+  asset_id = '';
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('text', { nullable: true })
   box_id?: string = '';

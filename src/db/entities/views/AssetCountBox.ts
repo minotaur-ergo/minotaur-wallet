@@ -14,13 +14,13 @@ import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
 })
 class AssetCountBox {
   @ViewColumn()
-  id: number = 0;
+  id = 0;
 
   @ViewColumn()
-  inserted: string = '';
+  inserted = '';
 
   @ViewColumn()
-  total: number = 0;
+  total = 0;
 }
 
 export default AssetCountBox;

@@ -67,7 +67,7 @@ class GenerateTransactionBottomSheet extends React.Component<
       this.props.transaction.boxes
     ) {
       const tx = this.props.transaction.tx;
-      const unsigned_tx = tx.hasOwnProperty('unsigned_tx')
+      const unsigned_tx = Object.prototype.hasOwnProperty.call(tx, 'unsigned_tx')
         ? (tx as wasm.ReducedTransaction).unsigned_tx()
         : (tx as wasm.UnsignedTransaction);
       const boxes = this.props.transaction.boxes;

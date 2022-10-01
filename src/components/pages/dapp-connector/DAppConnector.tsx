@@ -129,7 +129,7 @@ class DAppConnector extends React.Component<
         if (token === 'ERG' || token === '') {
           res['ERG'] = wallet.erg().toString();
         } else {
-          res[token] = amounts.hasOwnProperty(token) ? amounts[token] : '0';
+          res[token] = Object.prototype.hasOwnProperty.call(amounts, token) ? amounts[token] : '0';
         }
       });
       this.sendMessageToServer(
@@ -169,7 +169,7 @@ class DAppConnector extends React.Component<
     payload: Payload
   ) => {
     const serverAddress = connection.info.server;
-    let server: Connection = this.state.servers[serverAddress];
+    const server: Connection = this.state.servers[serverAddress];
     server.send(
       connection.info.id,
       connection.info.pageId,
@@ -183,7 +183,7 @@ class DAppConnector extends React.Component<
 
   sendConnectionToServer = (connection: ConnectionState) => {
     const serverAddress = connection.info.server;
-    let server: Connection = this.state.servers.hasOwnProperty(serverAddress)
+    const server: Connection = Object.prototype.hasOwnProperty.call(this.state.servers, serverAddress)
       ? this.state.servers[serverAddress]
       : new Connection(serverAddress, this.handleError, this.handleMessage);
     server.send(
@@ -198,7 +198,7 @@ class DAppConnector extends React.Component<
         },
       })
     );
-    if (!this.state.servers.hasOwnProperty(serverAddress)) {
+    if (!Object.prototype.hasOwnProperty.call(this.state.servers, serverAddress)) {
       this.setState((state) => ({
         ...state,
         servers: {
@@ -239,7 +239,7 @@ class DAppConnector extends React.Component<
 
   selectWallet = (index: number, selected: WalletWithErg) => {
     this.setState((state) => {
-      let newConnection = [...state.connections];
+      const newConnection = [...state.connections];
       newConnection[index] = { ...newConnection[index] };
       newConnection[index].walletId = selected.id;
       this.sendConnectionToServer(newConnection[index]);

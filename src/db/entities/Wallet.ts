@@ -9,19 +9,19 @@ enum WalletType {
 @Entity({ name: 'wallet' })
 class Wallet {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text')
-  name: string = '';
+  name = '';
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('text')
-  seed: string = '';
+  seed = '';
 
   @Column('text')
-  extended_public_key: string = '';
+  extended_public_key = '';
 
   @Column('text')
   type: WalletType = WalletType.Normal;

@@ -50,8 +50,8 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
       );
       return undefined;
     }
-    let total_input_ergs: bigint = BigInt(0);
-    let recipient_tokens: { [id: string]: bigint } = {};
+    let total_input_ergs = BigInt(0);
+    const recipient_tokens: { [id: string]: bigint } = {};
     const inputs = new wasm.ErgoBoxes(bank.get_box());
     Array(boxes.boxes.len())
       .fill('')
@@ -64,7 +64,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
           .forEach((token_item, token_index) => {
             const token = box.tokens().get(token_index);
             const token_id = token.id().to_str();
-            if (!recipient_tokens.hasOwnProperty(token_id)) {
+            if (!Object.prototype.hasOwnProperty.call(recipient_tokens, token_id)) {
               recipient_tokens[token_id] = BigInt(0);
             }
             recipient_tokens[token_id] += BigInt(
@@ -240,7 +240,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
         .to_str();
       tokens[buy_token] =
         amount +
-        (tokens.hasOwnProperty(buy_token) ? tokens[buy_token] : BigInt(0));
+        (Object.prototype.hasOwnProperty.call(tokens, buy_token) ? tokens[buy_token] : BigInt(0));
       const recipient = await Boxes.recipient_box(
         covering.erg_in_box - total_process_ergs,
         amount,
@@ -311,7 +311,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
     }
   };
 
-  loadBoxes = (force: boolean = false) => {
+  loadBoxes = (force = false) => {
     this.load_data().then(() => null);
     // if (!(this.state.bank && this.state.oracle && !force)) {
     //     this.update_test_boxes();
@@ -366,7 +366,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
     this.setState({ page: this.state.page === page ? '' : page });
   };
 
-  loading = (center: boolean = false) => {
+  loading = (center = false) => {
     if (center) {
       return (
         <div style={{ textAlign: 'center', width: '100%' }}>

@@ -5,7 +5,7 @@ export class refreshAllEntities1655185294135 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     const deleting_tables_content = ['box_content', 'box', 'tx', 'block'];
-    for (let table of deleting_tables_content) {
+    for (const table of deleting_tables_content) {
       const sql = `DELETE from ${table}`;
       await queryRunner.query(sql);
     }

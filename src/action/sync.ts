@@ -93,7 +93,7 @@ export class SyncAddress {
     last_height: number,
     limit: number
   ): Paging => {
-    let current_offset = last_height - current_height;
+    const current_offset = last_height - current_height;
     return {
       offset: Math.max(current_offset - limit + 2, 0),
       limit: limit,
@@ -114,14 +114,14 @@ export class SyncAddress {
     let current_height: number = currentBlock.height;
     const last_height: number = await node.getHeight();
 
-    let overlapBlocks: Block[] = [currentBlock];
+    const overlapBlocks: Block[] = [currentBlock];
 
     while (last_height - current_height > 0) {
       paging = this.setPaging(current_height, last_height, limit);
-      let recievedIDs: string[] = await node.getBlockHeaders(paging);
+      const recievedIDs: string[] = await node.getBlockHeaders(paging);
       limit = LIMIT;
 
-      let recievedBlocks: Block[] = this.createBlockArrayByID(
+      const recievedBlocks: Block[] = this.createBlockArrayByID(
         recievedIDs,
         current_height
       );
@@ -146,12 +146,12 @@ export class SyncAddress {
    */
   calcFork = async (currentBlock: Block): Promise<number> => {
     const node = getNetworkType(this.networkType).getNode();
-    let forkPoint: number = -1;
+    let forkPoint = -1;
     let currHeight = currentBlock.height;
 
-    let loadedBlocks = await BlockDbAction.getAllHeaders(this.networkType);
+    const loadedBlocks = await BlockDbAction.getAllHeaders(this.networkType);
     while (forkPoint == -1) {
-      let receivedID: string = await node.getBlockIdAtHeight(currHeight);
+      const receivedID: string = await node.getBlockIdAtHeight(currHeight);
       forkPoint = receivedID == loadedBlocks[0].block_id ? currHeight : -1;
       loadedBlocks.shift();
       currHeight--;
@@ -164,7 +164,7 @@ export class SyncAddress {
    * @param currentBlock : Block
    * @returns fork happened or not : Promise<Boolean>
    */
-  checkFork = async (currentBlock: Block): Promise<Boolean> => {
+  checkFork = async (currentBlock: Block): Promise<boolean> => {
     const node = getNetworkType(this.networkType).getNode();
     const receivedID: string = await node.getBlockIdAtHeight(
       currentBlock.height
@@ -178,7 +178,7 @@ export class SyncAddress {
    */
   syncBlocks = async (currentBlock: Block): Promise<void> => {
     if (await this.checkFork(currentBlock)) {
-      let forkPoint = await this.calcFork(currentBlock);
+      const forkPoint = await this.calcFork(currentBlock);
       this.removeFromDB(forkPoint);
     } else this.stepForward(currentBlock);
   };
@@ -248,8 +248,8 @@ export class SyncAddress {
    * @param txDictionary: TxDictionary
    */
   checkTrxValidation = async (txDictionary: TxDictionary): Promise<void> => {
-    let dbHeaders = await BlockDbAction.getAllHeaders(this.networkType);
-    for (let height in txDictionary) {
+    const dbHeaders = await BlockDbAction.getAllHeaders(this.networkType);
+    for (const height in txDictionary) {
       txDictionary[height].forEach((txHeader) => {
         const foundHeader = dbHeaders.find(
           (dbHeader) => dbHeader.height == txHeader.inclusionHeight
@@ -271,7 +271,7 @@ export class SyncAddress {
    * @returns TxDictionary
    */
   sortTxs = (txs: ErgoTx[]): TxDictionary => {
-    let sortedTxs: TxDictionary = {};
+    const sortedTxs: TxDictionary = {};
     txs.forEach((tx) => {
       if (sortedTxs[tx.inclusionHeight] == undefined) {
         sortedTxs[tx.inclusionHeight] = [tx];
@@ -300,16 +300,16 @@ export class SyncAddress {
     const explorer = getNetworkType(address.network_type).getExplorer();
     const node = getNetworkType(this.networkType).getNode();
     const lastHeight: number = await node.getHeight();
-    let heightRange: HeightRange = {
+    const heightRange: HeightRange = {
       fromHeight: currentHeight,
       toHeight: currentHeight,
     };
-    let paging: Paging = {
+    const paging: Paging = {
       limit: INITIAL_LIMIT,
       offset: 0,
     };
     while (heightRange.fromHeight < lastHeight) {
-      let Txs: ErgoTx[] = [];
+      const Txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
 
       while (pageTxs == undefined || pageTxs.items.length != 0) {
@@ -351,7 +351,7 @@ export const syncTrxs = async (walletId: number) => {
   const allAddresses = await AddressDbAction.getWalletAddresses(walletId);
   allAddresses.forEach(async (address) => {
     const currentHeight = address.process_height;
-    let networkType = address.network_type;
+    const networkType = address.network_type;
     const Sync = new SyncAddress(walletId, address, networkType);
     await Sync.syncTrxsWithAddress(address, currentHeight);
   });

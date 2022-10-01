@@ -34,10 +34,10 @@ const info: {
 
 const createSocket = (server: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    if (!info.sockets.hasOwnProperty(server)) {
+    if (!Object.prototype.hasOwnProperty.call(info.sockets, server)) {
       const socket = new WebSocket(server);
       socket.onclose = () => {
-        if (info.sockets.hasOwnProperty(server)) {
+        if (Object.prototype.hasOwnProperty.call(info.sockets, server)) {
           delete info.sockets['server'];
         }
       };
@@ -116,7 +116,7 @@ const sendMessage = (
     },
   };
   console.log('msg: ', msg);
-  if (info.sockets.hasOwnProperty(server)) {
+  if (Object.prototype.hasOwnProperty.call(info.sockets, server)) {
     console.log('socket found');
     info.sockets[server].send(JSON.stringify(msg));
   }
@@ -130,7 +130,7 @@ const handleAuthRequests = (msg: EventData, port: chrome.runtime.Port) => {
         port: port,
         id: msg.sessionId,
         server:
-          msg.payload && msg.payload.hasOwnProperty('address')
+          msg.payload && Object.prototype.hasOwnProperty.call(msg.payload, 'address')
             ? (msg.payload.address as string)
             : DEFAULT_SERVER,
         requests: new Map<string, EventData>(),

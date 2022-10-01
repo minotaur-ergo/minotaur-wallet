@@ -100,7 +100,7 @@ class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
     tokens: Array<{ id: string; amount: bigint }>,
     address?: string
   ): Promise<CoveringResult> => {
-    let coveringTokens: { [id: string]: bigint } = {};
+    const coveringTokens: { [id: string]: bigint } = {};
     tokens.forEach((item) => (coveringTokens[item.id] = item.amount));
     const addressObject = address
       ? (

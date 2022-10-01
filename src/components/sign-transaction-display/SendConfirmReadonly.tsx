@@ -54,7 +54,7 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
           .then((reduced) => {
             AddressDbAction.getWalletAddresses(props.wallet.id).then(
               (walletAddress) => {
-                let inputs = [];
+                const inputs = [];
                 for (let index = 0; index < boxes.len(); index++) {
                   inputs.push(
                     Buffer.from(

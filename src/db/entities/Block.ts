@@ -10,16 +10,16 @@ enum ProcessStatus {
 @Unique('block_id_in_network', ['block_id', 'network_type'])
 class Block {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text')
-  block_id: string = '';
+  block_id = '';
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('int', { unique: true })
-  height: number = 0;
+  height = 0;
 
   @Column('text', { default: ProcessStatus.NotProceed })
   status: ProcessStatus = ProcessStatus.NotProceed;

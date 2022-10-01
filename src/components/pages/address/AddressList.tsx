@@ -88,7 +88,7 @@ class AddressList extends React.Component<WalletPagePropsType, StateType> {
           />
         ) : null}
         <List>
-          {!!this.props.wallet.extended_public_key.trim() ? (
+          {this.props.wallet.extended_public_key.trim() ? (
             <React.Fragment>
               <Divider />
               <ListItem onClick={this.showPublicKey}>

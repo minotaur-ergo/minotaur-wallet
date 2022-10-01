@@ -195,7 +195,7 @@ class MinotaurApi extends ExtensionConnector {
 
   get_utxos = (
     amount?: bigint,
-    token_id: string = 'ERG',
+    token_id = 'ERG',
     page?: { offset: number; limit: number }
   ) => {
     return new Promise<bigint>((resolve, reject) => {

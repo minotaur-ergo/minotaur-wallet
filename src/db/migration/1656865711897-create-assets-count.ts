@@ -10,9 +10,9 @@ export class createAssetsCount1656865711897 implements MigrationInterface {
     const oldBoxes = (await queryRunner.query(
       'SELECT * FROM box'
     )) as Array<Box>;
-    for (let item of oldBoxes) {
+    for (const item of oldBoxes) {
       const boxJson = JSON.parse(item.json);
-      const assetCount = boxJson.hasOwnProperty('assets')
+      const assetCount = Object.prototype.hasOwnProperty.call(boxJson, 'assets')
         ? boxJson.assets.length
         : 0;
       await queryRunner.query(

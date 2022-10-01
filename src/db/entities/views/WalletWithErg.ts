@@ -15,10 +15,10 @@ import { WalletType } from '../Wallet';
 })
 export class AddressTokenId {
   @ViewColumn()
-  id: number = 0;
+  id = 0;
 
   @ViewColumn()
-  token_id: string = '';
+  token_id = '';
 }
 
 @ViewEntity({
@@ -44,19 +44,19 @@ export class AddressTokenId {
 })
 export class WalletWithErg {
   @ViewColumn()
-  id: number = 0;
+  id = 0;
 
   @ViewColumn()
-  name: string = '';
+  name = '';
 
   @ViewColumn()
-  network_type: string = '';
+  network_type = '';
 
   @ViewColumn()
-  seed: string = '';
+  seed = '';
 
   @ViewColumn()
-  extended_public_key: string = '';
+  extended_public_key = '';
 
   @ViewColumn()
   type: WalletType = WalletType.Normal;
@@ -65,7 +65,7 @@ export class WalletWithErg {
   erg_str: bigint | null = BigInt(0);
 
   @ViewColumn()
-  token_count: number = 0;
+  token_count = 0;
   erg = () => BigInt(this.erg_str ? this.erg_str : 0);
 }
 

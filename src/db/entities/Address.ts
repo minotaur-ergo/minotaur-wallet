@@ -11,28 +11,28 @@ import Wallet from './Wallet';
 @Unique('address_network_type', ['address', 'network_type'])
 class Address {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id = 0;
 
   @Column('text')
-  name: string = '';
+  name = '';
 
   @Column('text')
-  address: string = '';
+  address = '';
 
   @Column('text')
-  network_type: string = '';
+  network_type = '';
 
   @Column('text')
-  path: string = '';
+  path = '';
 
   @Column('int', { default: -1 })
-  idx: number = -1;
+  idx = -1;
 
   @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
   wallet: Wallet | null = null;
 
   @Column('int', { default: 0 })
-  process_height: number = 0;
+  process_height = 0;
 }
 
 export default Address;

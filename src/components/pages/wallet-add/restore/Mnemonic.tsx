@@ -42,7 +42,7 @@ const Mnemonic = (props: PropsType) => {
     }
   };
   const handleRemoveElement = (index: number) => {
-    let mnemonicParts = mnemonic.split(' ');
+    const mnemonicParts = mnemonic.split(' ');
     mnemonicParts.splice(index, 1);
     setMnemonic(mnemonicParts.join(' '));
   };

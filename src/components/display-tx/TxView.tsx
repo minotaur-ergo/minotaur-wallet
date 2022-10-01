@@ -50,7 +50,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
     const tokens = box.tokens();
     for (let index = 0; index < tokens.len(); index++) {
       const token = tokens.get(index);
-      if (assets.hasOwnProperty(token.id().to_str())) {
+      if (Object.prototype.hasOwnProperty.call(assets, token.id().to_str())) {
         assets[token.id().to_str()] +=
           this.i64ToBigInt(token.amount().as_i64()) * signBigInt;
       } else {
@@ -74,16 +74,16 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         .map((item, index) => wasmOutputs.get(index));
       this.setState({ loading: true });
       const txId = tx.id().to_str();
-      let assets: { [id: string]: bigint } = { erg: BigInt(0) };
-      let boxes: { [id: string]: wasm.ErgoBox } = {};
+      const assets: { [id: string]: bigint } = { erg: BigInt(0) };
+      const boxes: { [id: string]: wasm.ErgoBox } = {};
       if (this.props.boxes) {
         this.props.boxes.forEach((box) => (boxes[box.box_id().to_str()] = box));
       }
       // load boxes if not available
-      let input_boxes: Array<wasm.ErgoBox> = [];
+      const input_boxes: Array<wasm.ErgoBox> = [];
       for (let index = 0; index < tx.inputs().len(); index++) {
         const input = tx.inputs().get(index);
-        if (boxes.hasOwnProperty(input.box_id().to_str())) {
+        if (Object.prototype.hasOwnProperty.call(boxes, input.box_id().to_str())) {
           input_boxes.push(boxes[input.box_id().to_str()]);
         } else {
           const boxJson = await network_type

@@ -1,6 +1,6 @@
-export const TxSignR: string = 'CSR';
-export const TxPublishR: string = 'CSTX';
-export const ErgoPayR: string = 'ergopay';
+export const TxSignR = 'CSR';
+export const TxPublishR = 'CSTX';
+export const ErgoPayR = 'ergopay';
 
 const types = [TxSignR, TxPublishR, ErgoPayR];
 export const detectType = (name: string): string => {
