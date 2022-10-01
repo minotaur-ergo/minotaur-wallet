@@ -7,7 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 450px;
   min-height: 600px;
-  background: url("./assets/bg-01.jpg");
+  background: url('./assets/bg-01.jpg');
 }
 
 code {

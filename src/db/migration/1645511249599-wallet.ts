@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class wallet1645511249599 implements MigrationInterface {
-    name = "wallet1645511249599";
+  name = 'wallet1645511249599';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        const sql = `CREATE TABLE "wallet" (
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    const sql = `CREATE TABLE "wallet" (
 	"id"	integer NOT NULL,
 	"name"	text NOT NULL,
 	"network_type"	text NOT NULL,
@@ -13,12 +13,11 @@ export class wallet1645511249599 implements MigrationInterface {
 	"type"	text NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );`;
-        await queryRunner.query(sql);
-    }
+    await queryRunner.query(sql);
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        const sql = `DROP TABLE "wallet";`;
-        await queryRunner.query(sql);
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    const sql = `DROP TABLE "wallet";`;
+    await queryRunner.query(sql);
+  }
 }

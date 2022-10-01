@@ -1,103 +1,114 @@
-import React from "react";
-import TransactionElement from "./TransactionElement";
-import WalletTx from "../../../db/entities/views/WalletTx";
-import * as wasm from "ergo-lib-wasm-browser";
-import TxBoxDisplay from "../../../components/display-tx/TxBoxDisplay";
-import { InputBox } from "../../../util/network/models";
-import { WalletPagePropsType } from "../../../util/interface";
-import { TxDbAction } from "../../../action/db";
-import { INC_LIMIT } from "../../../util/const";
-import { Button, Divider, List } from "@mui/material";
+import React from 'react';
+import TransactionElement from './TransactionElement';
+import WalletTx from '../../../db/entities/views/WalletTx';
+import * as wasm from 'ergo-lib-wasm-browser';
+import TxBoxDisplay from '../../../components/display-tx/TxBoxDisplay';
+import { InputBox } from '../../../util/network/models';
+import { WalletPagePropsType } from '../../../util/interface';
+import { TxDbAction } from '../../../action/db';
+import { INC_LIMIT } from '../../../util/const';
+import { Button, Divider, List } from '@mui/material';
 
 interface TransactionStateType {
-    transactions: Array<WalletTx>;
-    addressValid: boolean;
-    displayTx: boolean;
-    inputs: Array<InputBox>;
-    limit: number;
-    loadedLimit: number;
-    outputs: Array<wasm.ErgoBox>;
+  transactions: Array<WalletTx>;
+  addressValid: boolean;
+  displayTx: boolean;
+  inputs: Array<InputBox>;
+  limit: number;
+  loadedLimit: number;
+  outputs: Array<wasm.ErgoBox>;
 }
 
-class Transaction extends React.Component<WalletPagePropsType, TransactionStateType> {
-    state: TransactionStateType = {
-        transactions: [],
-        addressValid: false,
-        displayTx: false,
-        inputs: [],
-        outputs: [],
-        limit: 10,
-        loadedLimit: 0,
-    };
+class Transaction extends React.Component<
+  WalletPagePropsType,
+  TransactionStateType
+> {
+  state: TransactionStateType = {
+    transactions: [],
+    addressValid: false,
+    displayTx: false,
+    inputs: [],
+    outputs: [],
+    limit: 10,
+    loadedLimit: 0,
+  };
 
-    loadTransactions = () => {
-        if (this.state.limit !== this.state.loadedLimit) {
-            console.log("load new limit")
-            const loadedLimit = this.state.limit;
-            TxDbAction.getWalletTx(this.props.wallet.id, this.state.limit, 0).then(dbTransaction => {
-                this.setState({
-                    transactions: dbTransaction,
-                    loadedLimit: loadedLimit
-                });
-            });
+  loadTransactions = () => {
+    if (this.state.limit !== this.state.loadedLimit) {
+      console.log('load new limit');
+      const loadedLimit = this.state.limit;
+      TxDbAction.getWalletTx(this.props.wallet.id, this.state.limit, 0).then(
+        (dbTransaction) => {
+          this.setState({
+            transactions: dbTransaction,
+            loadedLimit: loadedLimit,
+          });
         }
-    };
-
-    loadMore = () => {
-        this.setState(state => ({...state, limit: state.limit + INC_LIMIT}))
+      );
     }
+  };
 
-    selectTransaction = (index: number) => {
-        if (index < this.state.transactions.length && index >= 0) {
-            // const txJson = JsonAllBI.parse(this.state.transactions[index].json);
-            // const inputs = txJson.inputs as Array<InputBox>;
-            // const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonAllBI.stringify(item)));
-            // this.setState({
-            //     displayTx: true,
-            //     inputs: inputs,
-            //     outputs: outputs
-            // });
-        }
-    };
+  loadMore = () => {
+    this.setState((state) => ({ ...state, limit: state.limit + INC_LIMIT }));
+  };
 
-    componentDidUpdate = () => {
-        this.loadTransactions();
-    };
+  selectTransaction = (index: number) => {
+    if (index < this.state.transactions.length && index >= 0) {
+      // const txJson = JsonAllBI.parse(this.state.transactions[index].json);
+      // const inputs = txJson.inputs as Array<InputBox>;
+      // const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonAllBI.stringify(item)));
+      // this.setState({
+      //     displayTx: true,
+      //     inputs: inputs,
+      //     outputs: outputs
+      // });
+    }
+  };
 
-    componentDidMount = () => {
-        this.loadTransactions();
-        this.props.setTab("transaction");
-    };
+  componentDidUpdate = () => {
+    this.loadTransactions();
+  };
 
-    render = () => {
-        return (
-            <React.Fragment>
-                <List>
-                    {this.state.transactions.map((transaction: WalletTx, index: number) => (
-                        <React.Fragment key={transaction.id}>
-                            <TransactionElement
-                                transaction={transaction}
-                                handleClick={() => this.selectTransaction(index)} />
-                            <Divider />
-                        </React.Fragment>
-                    ))}
-                    {this.state.transactions.length === this.state.limit ? (
-                        <Button fullWidth color={"primary"} onClick={() => this.loadMore()}>
-                            Load More Transactions
-                        </Button>
-                    ) : null}
-                </List>
-                <TxBoxDisplay
-                    network_type={this.state.transactions.length ? this.state.transactions[0].network_type : ""}
-                    show={this.state.displayTx}
-                    inputsJs={this.state.inputs}
-                    close={() => this.setState({ displayTx: false })}
-                    outputs={this.state.outputs}
+  componentDidMount = () => {
+    this.loadTransactions();
+    this.props.setTab('transaction');
+  };
+
+  render = () => {
+    return (
+      <React.Fragment>
+        <List>
+          {this.state.transactions.map(
+            (transaction: WalletTx, index: number) => (
+              <React.Fragment key={transaction.id}>
+                <TransactionElement
+                  transaction={transaction}
+                  handleClick={() => this.selectTransaction(index)}
                 />
-
-            </React.Fragment>
-        );
-    };
+                <Divider />
+              </React.Fragment>
+            )
+          )}
+          {this.state.transactions.length === this.state.limit ? (
+            <Button fullWidth color={'primary'} onClick={() => this.loadMore()}>
+              Load More Transactions
+            </Button>
+          ) : null}
+        </List>
+        <TxBoxDisplay
+          network_type={
+            this.state.transactions.length
+              ? this.state.transactions[0].network_type
+              : ''
+          }
+          show={this.state.displayTx}
+          inputsJs={this.state.inputs}
+          close={() => this.setState({ displayTx: false })}
+          outputs={this.state.outputs}
+        />
+      </React.Fragment>
+    );
+  };
 }
 
 export default Transaction;

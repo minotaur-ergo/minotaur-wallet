@@ -1,37 +1,33 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-
 enum TxStatus {
-    Mined = 'MINED',
-    MemPool = 'MEM_POOL',
-    Forked = 'FORKED',
-    New = 'New'
+  Mined = 'MINED',
+  MemPool = 'MEM_POOL',
+  Forked = 'FORKED',
+  New = 'New',
 }
 
-
-@Entity({name: 'tx'})
+@Entity({ name: 'tx' })
 class Tx {
-    @PrimaryGeneratedColumn()
-    id: number = 0;
+  @PrimaryGeneratedColumn()
+  id: number = 0;
 
-    @Column('text', { unique: true })
-    tx_id: string = '';
+  @Column('text', { unique: true })
+  tx_id: string = '';
 
-    @Column('int')
-    height: number = 0;
+  @Column('int')
+  height: number = 0;
 
-    @Column("text")
-    network_type: string = '';
+  @Column('text')
+  network_type: string = '';
 
-    @Column('int')
-    date: number = 0;
+  @Column('int')
+  date: number = 0;
 
-    @Column('text')
-    status: TxStatus = TxStatus.Mined;
+  @Column('text')
+  status: TxStatus = TxStatus.Mined;
 }
 
 export default Tx;
 
-export {
-    TxStatus,
-};
+export { TxStatus };

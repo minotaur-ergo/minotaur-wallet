@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class address1645511254267 implements MigrationInterface {
-    name = "address1645511254267";
+  name = 'address1645511254267';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        const sql = `CREATE TABLE "address" (
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    const sql = `CREATE TABLE "address" (
 	"id"	integer NOT NULL,
 	"name"	text NOT NULL,
 	"address"	text NOT NULL,
@@ -19,12 +19,11 @@ export class address1645511254267 implements MigrationInterface {
 	CONSTRAINT "FK_d64b03f42b8bcc40894545264d7" FOREIGN KEY("walletId") REFERENCES "wallet"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );`;
-        await queryRunner.query(sql);
-    }
+    await queryRunner.query(sql);
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        const sql = `DROP TABLE "address";`;
-        await queryRunner.query(sql);
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    const sql = `DROP TABLE "address";`;
+    await queryRunner.query(sql);
+  }
 }
