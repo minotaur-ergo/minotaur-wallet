@@ -28,7 +28,9 @@ const downloadDb = () => {
     a.download = filename;
     a.click();
     window.URL.revokeObjectURL(url);
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const HomeHeader = () => {

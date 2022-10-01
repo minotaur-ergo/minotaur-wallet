@@ -23,7 +23,9 @@ const loadTokensAsync = async (network_type: string) => {
         await BlockChainAction.updateTokenInfo(token, network_type);
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const validateBoxContentModel = async () => {

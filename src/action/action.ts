@@ -55,7 +55,9 @@ class AddressActionClass {
         }
         index++;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   getWalletAddressSecret = async (
