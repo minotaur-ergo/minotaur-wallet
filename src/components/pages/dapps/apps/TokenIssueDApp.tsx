@@ -31,7 +31,12 @@ const TokenIssueDApp = (props: DAppPropsType) => {
               .fill('')
               .forEach((item, token_index) => {
                 const token = box.tokens().get(token_index);
-                if (Object.prototype.hasOwnProperty.call(remainingTokens,token.id().to_str())) {
+                if (
+                  Object.prototype.hasOwnProperty.call(
+                    remainingTokens,
+                    token.id().to_str()
+                  )
+                ) {
                   remainingTokens[token.id().to_str()] += BigInt(
                     token.amount().as_i64().to_str()
                   );

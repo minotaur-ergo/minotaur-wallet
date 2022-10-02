@@ -31,7 +31,7 @@ class AddressActionClass {
     );
     try {
       let index = 1;
-      while (true) {
+      for (;;) {
         addressObject = await this.deriveAddress(
           wallet.extended_public_key,
           network_type.prefix,

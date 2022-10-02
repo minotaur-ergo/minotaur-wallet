@@ -407,7 +407,12 @@ class BoxActionClass {
       requiredAmount -= BigInt(box.value().as_i64().to_str());
       for (let index = 0; index < box.tokens().len(); index++) {
         const token = box.tokens().get(index);
-        if (Object.prototype.hasOwnProperty.call(requiredTokens, token.id().to_str())) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            requiredTokens,
+            token.id().to_str()
+          )
+        ) {
           requiredTokens[token.id().to_str()] -= BigInt(
             token.amount().as_i64().to_str()
           );

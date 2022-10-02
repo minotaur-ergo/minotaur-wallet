@@ -6,8 +6,8 @@ import updateConfig from './update-config';
 
 // required to update configs
 const configFactory = (webpackEnv) => {
-    let config = oldConfigFactory(webpackEnv);
-    return updateConfig(config)
-}
+  let config = oldConfigFactory(webpackEnv);
+  return updateConfig(config);
+};
 
-defaults.__set__('configFactory', configFactory)
+defaults.__set__('configFactory', configFactory);

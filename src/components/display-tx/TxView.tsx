@@ -83,7 +83,9 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
       const input_boxes: Array<wasm.ErgoBox> = [];
       for (let index = 0; index < tx.inputs().len(); index++) {
         const input = tx.inputs().get(index);
-        if (Object.prototype.hasOwnProperty.call(boxes, input.box_id().to_str())) {
+        if (
+          Object.prototype.hasOwnProperty.call(boxes, input.box_id().to_str())
+        ) {
           input_boxes.push(boxes[input.box_id().to_str()]);
         } else {
           const boxJson = await network_type

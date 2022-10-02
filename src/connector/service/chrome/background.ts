@@ -130,7 +130,8 @@ const handleAuthRequests = (msg: EventData, port: chrome.runtime.Port) => {
         port: port,
         id: msg.sessionId,
         server:
-          msg.payload && Object.prototype.hasOwnProperty.call(msg.payload, 'address')
+          msg.payload &&
+          Object.prototype.hasOwnProperty.call(msg.payload, 'address')
             ? (msg.payload.address as string)
             : DEFAULT_SERVER,
         requests: new Map<string, EventData>(),
@@ -231,7 +232,7 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
       case 'get_params': {
         createSocket(session.server).then(() => {
           let url = session.port?.sender?.tab?.url;
-          if(url != undefined){
+          if (url != undefined) {
             url = url.split('://')[1];
             url = url.split('/')[0];
           }
@@ -253,7 +254,7 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
         });
         break;
       }
-      case 'approve':  {
+      case 'approve': {
         const request = session.requests.get(`${msg.requestId!}`);
         if (request) {
           session.port?.postMessage({

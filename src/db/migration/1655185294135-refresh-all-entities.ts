@@ -13,5 +13,7 @@ export class refreshAllEntities1655185294135 implements MigrationInterface {
     // await queryRunner.query(addressQuery);
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> { /*empty*/ }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    /*empty*/
+  }
 }

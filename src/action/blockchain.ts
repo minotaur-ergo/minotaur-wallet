@@ -401,7 +401,9 @@ class BlockChainTxActionClass {
             blocks[tx.inclusionHeight] !== tx.blockId
           )
             continue; // forked transaction arrived
-          if (!Object.prototype.hasOwnProperty.call(txList, tx.inclusionHeight)) {
+          if (
+            !Object.prototype.hasOwnProperty.call(txList, tx.inclusionHeight)
+          ) {
             txList[tx.inclusionHeight] = {};
           }
           txList[tx.inclusionHeight] = {

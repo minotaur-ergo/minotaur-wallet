@@ -64,7 +64,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
           .forEach((token_item, token_index) => {
             const token = box.tokens().get(token_index);
             const token_id = token.id().to_str();
-            if (!Object.prototype.hasOwnProperty.call(recipient_tokens, token_id)) {
+            if (
+              !Object.prototype.hasOwnProperty.call(recipient_tokens, token_id)
+            ) {
               recipient_tokens[token_id] = BigInt(0);
             }
             recipient_tokens[token_id] += BigInt(
@@ -240,7 +242,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
         .to_str();
       tokens[buy_token] =
         amount +
-        (Object.prototype.hasOwnProperty.call(tokens, buy_token) ? tokens[buy_token] : BigInt(0));
+        (Object.prototype.hasOwnProperty.call(tokens, buy_token)
+          ? tokens[buy_token]
+          : BigInt(0));
       const recipient = await Boxes.recipient_box(
         covering.erg_in_box - total_process_ergs,
         amount,

@@ -58,9 +58,13 @@ class DAppConnector extends React.Component<
     return CryptoJS.AES.encrypt(text, secret).toString();
   };
 
-  handleError = (error: Event) => { /*empty*/ };
+  handleError = (error: Event) => {
+    /*empty*/
+  };
 
-  componentDidMount() { /*empty*/ }
+  componentDidMount() {
+    /*empty*/
+  }
 
   processConfirmed = (connection: ConnectionState) => {
     this.setState((state) => {
@@ -129,7 +133,9 @@ class DAppConnector extends React.Component<
         if (token === 'ERG' || token === '') {
           res['ERG'] = wallet.erg().toString();
         } else {
-          res[token] = Object.prototype.hasOwnProperty.call(amounts, token) ? amounts[token] : '0';
+          res[token] = Object.prototype.hasOwnProperty.call(amounts, token)
+            ? amounts[token]
+            : '0';
         }
       });
       this.sendMessageToServer(
@@ -183,7 +189,10 @@ class DAppConnector extends React.Component<
 
   sendConnectionToServer = (connection: ConnectionState) => {
     const serverAddress = connection.info.server;
-    const server: Connection = Object.prototype.hasOwnProperty.call(this.state.servers, serverAddress)
+    const server: Connection = Object.prototype.hasOwnProperty.call(
+      this.state.servers,
+      serverAddress
+    )
       ? this.state.servers[serverAddress]
       : new Connection(serverAddress, this.handleError, this.handleMessage);
     server.send(
@@ -198,7 +207,9 @@ class DAppConnector extends React.Component<
         },
       })
     );
-    if (!Object.prototype.hasOwnProperty.call(this.state.servers, serverAddress)) {
+    if (
+      !Object.prototype.hasOwnProperty.call(this.state.servers, serverAddress)
+    ) {
       this.setState((state) => ({
         ...state,
         servers: {

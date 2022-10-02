@@ -144,10 +144,9 @@ class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
       const walletWithErg = await WalletDbAction.getWalletWithErg(
         this.props.wallet.id
       );
-      if(walletWithErg?.erg()){
+      if (walletWithErg?.erg()) {
         return walletWithErg?.erg();
-      }
-      else {
+      } else {
         throw Error('returned undefined');
       }
     }

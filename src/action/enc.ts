@@ -9,7 +9,11 @@ const getPassword = (password: string): Buffer => {
 
 const encrypt = (text: Buffer, password: string) => {
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', getPassword(password), iv);
+  const cipher = crypto.createCipheriv(
+    'aes-256-cbc',
+    getPassword(password),
+    iv
+  );
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
