@@ -6,6 +6,7 @@ import Splash from '../splash/Splash';
 import entities from '../../db/entities';
 import migrations from '../../db/migration';
 import { initializeAction } from '../../action/db';
+import initSqlJs from 'sql.js/dist/sql-wasm';
 
 let dataSource: DataSource;
 
@@ -20,7 +21,6 @@ export interface DatabasePropsType {
 }
 
 const connectSqlJs = async () => {
-  const initSqlJs = require('sql.js/dist/sql-wasm');
   window.SQL = await initSqlJs({
     locateFile: (file: string) => `/${file}`,
   });

@@ -1,4 +1,4 @@
-const webpack = require("webpack");
+import webpack from "webpack";
 
 module.exports = function (config) {
     config.externals = {'react-native-sqlite-storage': 'react-native-sqlite-storage'}
