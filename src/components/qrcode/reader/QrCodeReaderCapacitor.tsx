@@ -14,7 +14,7 @@ interface QrCodeReaderCapacitorPropsType
 
 class QrCodeReaderCapacitor extends React.Component<
   QrCodeReaderCapacitorPropsType,
-  {}
+  never
 > {
   checkPermission = async () => {
     // check or request permission

@@ -16,7 +16,7 @@ interface PropsType {
   closeQrcode: (id: string) => any;
 }
 
-class RouterSwitch extends React.Component<PropsType, {}> {
+class RouterSwitch extends React.Component<PropsType, never> {
   appBackButtonListener = () => {
     if (this.props.qrCodes.length > 0) {
       this.props.closeQrcode(this.props.qrCodes[this.props.qrCodes.length - 1]);
