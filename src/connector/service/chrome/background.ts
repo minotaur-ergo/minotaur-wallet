@@ -223,11 +223,12 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
   const session = info.sessions.get(msg.id);
   if (session) {
     switch (msg.type) {
-      case 'register':
+      case 'register': {
         session.popupPort = port;
         port.postMessage({ type: 'registered' });
         break;
-      case 'get_params':
+      }
+      case 'get_params': {
         createSocket(session.server).then(() => {
           let url = session.port?.sender?.tab?.url;
           if(url != undefined){
@@ -251,7 +252,8 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
           });
         });
         break;
-      case 'approve':
+      }
+      case 'approve':  {
         const request = session.requests.get(`${msg.requestId!}`);
         if (request) {
           session.port?.postMessage({
@@ -268,6 +270,7 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
             JSON.stringify({ action: 'confirmed' })
           );
         }
+      }
     }
   }
 };

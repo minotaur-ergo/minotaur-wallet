@@ -23,7 +23,7 @@ function App() {
     port.onMessage.addListener((msg: UIResponse) => {
       console.log('ui listener: ', msg);
       switch (msg.type) {
-        case 'set_info':
+        case 'set_info': {
           const info = msg.info!;
           setId(info.id);
           setServer(info.server);
@@ -35,16 +35,20 @@ function App() {
             setFavIcon(info.favIcon);
           }
           break;
-        case 'registered':
+        }
+        case 'registered': {
           port.postMessage({ id: pageId, type: 'get_params' });
           break;
-        case 'close':
+        }
+        case 'close': {
           window.close();
           break;
-        case 'set_display':
+        }
+        case 'set_display': {
           console.log('on set display');
           setDisplay(msg.display!);
           break;
+        }
       }
       // setWalletKey(msg.params)
     });
