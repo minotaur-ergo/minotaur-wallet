@@ -152,7 +152,7 @@ test('insert Trx to db', async () => {
   vi.mocked(axios.get).mockReset();
   vi.mocked(axios.get).mockResolvedValueOnce(receivedTrx);
   spyCheckTrxValidation.mockImplementationOnce(
-    async (trxs: TxDictionary) => {}
+    async (trxs: TxDictionary) => { /*empty*/ }
   );
   TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
   expect(spySaveTrxToDB).toHaveBeenCalledWith(

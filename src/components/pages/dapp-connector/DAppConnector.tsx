@@ -58,9 +58,9 @@ class DAppConnector extends React.Component<
     return CryptoJS.AES.encrypt(text, secret).toString();
   };
 
-  handleError = (error: Event) => {};
+  handleError = (error: Event) => { /*empty*/ };
 
-  componentDidMount() {}
+  componentDidMount() { /*empty*/ }
 
   processConfirmed = (connection: ConnectionState) => {
     this.setState((state) => {
