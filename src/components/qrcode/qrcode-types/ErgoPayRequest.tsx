@@ -117,7 +117,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
       if (this.state.status !== 'Loading') {
         this.setState({ status: 'Loading' });
         const match = useMatch(RouteMap.Wallet);
-        const walletId = match?.params.id!;
+        const walletId = match?.params.id;
         const wallet = this.props.wallets.filter(
           (wallet) => wallet.id + '' === walletId
         );
@@ -137,7 +137,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
       this.state.status !== 'Loading' &&
       this.state.loadedUrl !== url
     ) {
-      const network_type = getNetworkType(this.state.wallet?.network_type!);
+      const network_type = getNetworkType(this.state?.wallet!.network_type);
       if (this.urlContainPlaceHolder(url)) {
         if (this.state.status !== 'Address')
           this.setState({ status: 'Address', selectedAddress: '' });

@@ -12,7 +12,7 @@ class Oracle {
   get_box = () => this.box;
 
   datapoint = () => {
-    return BigInt(this.box.register_value(4)?.to_i64().to_str()!);
+    return BigInt(this.box?.register_value(4)!.to_i64().to_str());
   };
 
   datapoint_in_cents = () => {

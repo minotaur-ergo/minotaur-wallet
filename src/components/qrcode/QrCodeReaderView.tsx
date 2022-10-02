@@ -91,25 +91,36 @@ class QrCodeReaderView extends React.Component<
       const selectedType = selectedTypes[0];
       const chunk = selectedType.detect(scanned);
       let chunks: Array<string> = [...this.state.chunks];
-      const total = chunk?.total!;
-      const page = chunk?.page!;
-      if (
-        (selectedType.type !== this.state.type && this.state.type) ||
-        page <= 0 ||
-        page > total
-      ) {
-        this.props.showMessage('Invalid QRCODE scanned', 'error');
-      } else {
-        if (this.state.chunks.length === 0) {
-          chunks = Array(total).fill('');
-          chunks[page - 1] = chunk?.payload!;
+      const total = chunk?.total;
+      const page = chunk?.page;
+      if(total !== undefined && page !== undefined){
+        if (
+          (selectedType.type !== this.state.type && this.state.type) ||
+          page <= 0 ||
+          page > total
+        ) {
+          this.props.showMessage('Invalid QRCODE scanned', 'error');
         } else {
-          if (total !== chunks.length) {
-            this.props.showMessage('Invalid QRCODE scanned', 'error');
+          if (this.state.chunks.length === 0) {
+            chunks = Array(total).fill('');
+            if(chunk?.payload){
+              chunks[page - 1] = chunk?.payload;
+            }
+            else { /* empty */}
           } else {
-            chunks[page - 1] = chunk?.payload!;
+            if (total !== chunks.length) {
+              this.props.showMessage('Invalid QRCODE scanned', 'error');
+            } else {
+              if(chunk?.payload){
+                chunks[page - 1] = chunk?.payload;
+              }
+              else { /* empty */ }
+            }
           }
         }
+      }
+      else {
+        /* empty */
       }
       this.setState({
         type: selectedType.type,

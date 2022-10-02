@@ -28,7 +28,7 @@ class ExtensionConnector {
 
   protected processEventType = '';
 
-  protected constructor() {}
+  protected constructor() { /* empty */}
 
   protected setup = () => {
     window.addEventListener('message', this.eventHandler);

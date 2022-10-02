@@ -41,7 +41,7 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
         setTxRequest({ valid: false, req: '', closed: false });
         const transaction: wasm.UnsignedTransaction = props.transaction
           ?.tx as wasm.UnsignedTransaction;
-        const boxes: wasm.ErgoBoxes = props.transaction?.boxes!;
+        const boxes: wasm.ErgoBoxes = props?.transaction!.boxes;
         const data_input = props.transaction?.data_inputs
           ? props.transaction.data_inputs
           : wasm.ErgoBoxes.from_boxes_json([]);

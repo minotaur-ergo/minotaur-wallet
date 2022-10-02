@@ -389,7 +389,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
             <div>
               1 ERG ≈{' '}
               {this.loaded()
-                ? utils.format_usd(this.state.bank?.get_erg_usd()!)
+                ? utils.format_usd(this.state?.bank!.get_erg_usd())
                 : this.loading()}{' '}
               SigmaUSD
             </div>
@@ -400,7 +400,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
                 <Grid item xs={12}>
                   Circulating Supply:{' '}
                   {utils.format_usd(
-                    this.state.bank?.num_circulating_stable_coins()!
+                    this.state?.bank!.num_circulating_stable_coins()
                   )}
                 </Grid>
                 <Grid item xs={12}>

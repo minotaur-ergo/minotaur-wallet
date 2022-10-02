@@ -229,9 +229,11 @@ const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
         break;
       case 'get_params':
         createSocket(session.server).then(() => {
-          let url = session.port?.sender?.tab?.url!;
-          url = url.split('://')[1];
-          url = url.split('/')[0];
+          let url = session.port?.sender?.tab?.url;
+          if(url != undefined){
+            url = url.split('://')[1];
+            url = url.split('/')[0];
+          }
           const favIconUrl = session.port?.sender?.tab?.favIconUrl
             ? session.port.sender.tab.favIconUrl
             : '';

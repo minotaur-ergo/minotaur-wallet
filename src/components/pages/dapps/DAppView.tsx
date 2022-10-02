@@ -32,6 +32,7 @@ import { useParams } from 'react-router-dom';
 import GenerateTransactionBottomSheet from '../../generate-transaction-bottom-sheet/GenerateTransactionBottomSheet';
 import { WalletQrCodeContext } from '../wallet/types';
 import { QrCodeContextType } from '../../qrcode/qrcode-types/types';
+import { assert } from 'console';
 
 interface DAppViewPropsType extends MessageEnqueueService {
   wallet: Wallet;
@@ -143,7 +144,12 @@ class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
       const walletWithErg = await WalletDbAction.getWalletWithErg(
         this.props.wallet.id
       );
-      return walletWithErg?.erg()!;
+      if(walletWithErg?.erg()){
+        return walletWithErg?.erg();
+      }
+      else {
+        throw Error('returned undefined');
+      }
     }
   };
 

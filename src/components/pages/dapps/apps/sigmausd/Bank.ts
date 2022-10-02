@@ -62,11 +62,11 @@ class Bank {
   };
 
   num_circulating_stable_coins = () => {
-    return BigInt(this.box.register_value(4)?.to_i64().to_str()!);
+    return BigInt(this.box?.register_value(4)!.to_i64().to_str());
   };
 
   num_circulating_reserve_coins = () => {
-    return BigInt(this.box.register_value(5)?.to_i64().to_str()!);
+    return BigInt(this.box?.register_value(5)!.to_i64().to_str());
   };
 
   stable_coin_nominal_price = () => {
