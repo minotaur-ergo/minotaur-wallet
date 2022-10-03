@@ -1,0 +1,5 @@
+android/*
+ios/*
+electron/app/*
+electron/build/*
+electron/dist/*

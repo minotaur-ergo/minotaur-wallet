@@ -4,4 +4,4 @@ const defaults = rewire('react-scripts/scripts/build.js');
 const config = defaults.__get__('config');
 const updateConfig = require('./update-config');
 
-defaults.__set__('config', updateConfig(config))
+defaults.__set__('config', updateConfig(config));
