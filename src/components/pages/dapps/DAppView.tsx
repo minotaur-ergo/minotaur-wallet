@@ -32,7 +32,6 @@ import { useParams } from 'react-router-dom';
 import GenerateTransactionBottomSheet from '../../generate-transaction-bottom-sheet/GenerateTransactionBottomSheet';
 import { WalletQrCodeContext } from '../wallet/types';
 import { QrCodeContextType } from '../../qrcode/qrcode-types/types';
-import { assert } from 'console';
 
 interface DAppViewPropsType extends MessageEnqueueService {
   wallet: Wallet;

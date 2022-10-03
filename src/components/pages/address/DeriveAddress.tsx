@@ -33,7 +33,6 @@ const DeriveAddress = (props: PropsType) => {
       props.wallet.type === WalletType.ReadOnly &&
       !props.wallet.extended_public_key.trim()
     ) {
-      //debugger;
       const addressError = !is_valid_address(address)
         ? 'Invalid address'
         : addresses.indexOf(address) >= 0
