@@ -1,36 +1,32 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 enum WalletType {
-    Cold = 'COLD',
-    ReadOnly = 'READ_ONLY',
-    Normal = 'NORMAL'
+  Cold = 'COLD',
+  ReadOnly = 'READ_ONLY',
+  Normal = 'NORMAL',
 }
 
-@Entity({name:"wallet"})
+@Entity({ name: 'wallet' })
 class Wallet {
+  @PrimaryGeneratedColumn()
+  id = 0;
 
-    @PrimaryGeneratedColumn()
-    id: number = 0;
+  @Column('text')
+  name = '';
 
-    @Column('text')
-    name: string = '';
+  @Column('text')
+  network_type = '';
 
-    @Column("text")
-    network_type: string = '';
+  @Column('text')
+  seed = '';
 
-    @Column("text")
-    seed: string = '';
+  @Column('text')
+  extended_public_key = '';
 
-    @Column("text")
-    extended_public_key: string = '';
-
-    @Column('text')
-    type: WalletType = WalletType.Normal;
+  @Column('text')
+  type: WalletType = WalletType.Normal;
 }
-
 
 export default Wallet;
 
-export {
-    WalletType,
-};
+export { WalletType };

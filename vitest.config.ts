@@ -9,17 +9,14 @@ export default defineConfig({
       reporter: ['cobertura', 'text', 'text-summary'],
     },
     deps: {
-      inline: [/ergo-lib-wasm-browser/, /typeorm/]
+      inline: [/ergo-lib-wasm-browser/, /typeorm/],
     },
     environment: 'happy-dom',
     transformMode: {
       web: [/\.([cm]?[jt]sx?|json)$/],
-    }
+    },
   },
-  plugins: [
-    wasm(),
-    topLevelAwait()
-  ],
+  plugins: [wasm(), topLevelAwait()],
   optimizeDeps: {
     disabled: true,
   },

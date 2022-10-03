@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'ml.minotaur.wallet',
   appName: 'minotaur-wallet',
   webDir: 'build',
-  bundledWebRuntime: true
+  bundledWebRuntime: true,
 };
 
 export default config;

@@ -1,19 +1,19 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class deleteBoxAndBoxContent1656038579911 implements MigrationInterface {
-    name = "deleteBoxAndBoxContent1656038579911";
+  name = 'deleteBoxAndBoxContent1656038579911';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        // drop old address table
-        const dropBoxContent = `DROP TABLE "box_content"`;
-        await queryRunner.query(dropBoxContent);
-        // drop old address table
-        const drop = `DROP TABLE "box"`;
-        await queryRunner.query(drop);
-    }
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // drop old address table
+    const dropBoxContent = `DROP TABLE "box_content"`;
+    await queryRunner.query(dropBoxContent);
+    // drop old address table
+    const drop = `DROP TABLE "box"`;
+    await queryRunner.query(drop);
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        const sql = `CREATE TABLE "box" (
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    const sql = `CREATE TABLE "box" (
 	"id"	integer NOT NULL,
 	"box_id"	text NOT NULL,
 	"network_type"	text NOT NULL,
@@ -32,8 +32,8 @@ export class deleteBoxAndBoxContent1656038579911 implements MigrationInterface {
 	CONSTRAINT "FK_bffbc3bffd8f3cace9337245609" FOREIGN KEY("spendTxId") REFERENCES "tx"("id") ON DELETE NO ACTION ON UPDATE NO ACTION,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );`;
-        await queryRunner.query(sql);
-        const sql2 = `CREATE TABLE "box_content" (
+    await queryRunner.query(sql);
+    const sql2 = `CREATE TABLE "box_content" (
 	"id"	integer NOT NULL,
 	"token_id"	text NOT NULL,
 	"amount"	text NOT NULL,
@@ -42,7 +42,6 @@ export class deleteBoxAndBoxContent1656038579911 implements MigrationInterface {
 	CONSTRAINT "FK_b612cfac8dfbee42efd03697b58" FOREIGN KEY("boxId") REFERENCES "box"("id") ON DELETE CASCADE ON UPDATE NO ACTION,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );`;
-        await queryRunner.query(sql2);
-    }
-
+    await queryRunner.query(sql2);
+  }
 }

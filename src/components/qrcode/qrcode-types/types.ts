@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 export interface QrCodeContextType {
-    qrCode: boolean;
-    showQrCode: React.Dispatch<boolean>;
-    value: string;
-    cleanValue: () => any;
+  qrCode: boolean;
+  showQrCode: React.Dispatch<boolean>;
+  value: string;
+  cleanValue: () => any;
 }

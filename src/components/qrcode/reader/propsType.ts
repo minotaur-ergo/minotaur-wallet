@@ -1,4 +1,4 @@
 export interface QrCodePropsType {
-    handleScan: (scan: string) => any;
-    handleError: () => any;
+  handleScan: (scan: string) => any;
+  handleError: () => any;
 }

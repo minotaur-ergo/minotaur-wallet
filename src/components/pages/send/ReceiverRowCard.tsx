@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
-import { Card, CardContent } from "@mui/material";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import { Card, CardContent } from '@mui/material';
 
 // const useStyles = makeStyles((theme: Theme) =>
 //     createStyles({
@@ -27,28 +26,27 @@ import { Card, CardContent } from "@mui/material";
 //     })
 // );
 
-
 interface PropsType {
-    children?: React.ReactNode;
-    showDelete?: boolean;
-    delete: () => any;
+  children?: React.ReactNode;
+  showDelete?: boolean;
+  delete: () => any;
 }
 
 const ReceiverRowCard = (props: PropsType) => {
-    // const classes = useStyles();
-    return (
-        <Card variant="outlined">
-            <CardContent>
-                {props.showDelete ? (
-                    <div onClick={() => props.delete()}>
-                        <FontAwesomeIcon icon={faTimes} />
-                    </div>
-                ) : null}
-                {props.children}
-            </CardContent>
-            {/*<CardContent/>*/}
-        </Card>
-    );
+  // const classes = useStyles();
+  return (
+    <Card variant="outlined">
+      <CardContent>
+        {props.showDelete ? (
+          <div onClick={() => props.delete()}>
+            <FontAwesomeIcon icon={faTimes} />
+          </div>
+        ) : null}
+        {props.children}
+      </CardContent>
+      {/*<CardContent/>*/}
+    </Card>
+  );
 };
 
 export default ReceiverRowCard;

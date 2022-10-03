@@ -1,4 +1,4 @@
-const DEFAULT_SERVER = "ws://127.0.0.1:6486"
+const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 
 // export class Session {
 //     port?: chrome.runtime.Port;
@@ -22,149 +22,150 @@ const DEFAULT_SERVER = "ws://127.0.0.1:6486"
 //     }
 // }
 export interface Session {
-    port?: chrome.runtime.Port;
-    popupPort?: chrome.runtime.Port;
-    walletId?: string;
-    requestId: string;
-    id: string;
-    server: string;
-    requests: Map<string, EventData>
+  port?: chrome.runtime.Port;
+  popupPort?: chrome.runtime.Port;
+  walletId?: string;
+  requestId: string;
+  id: string;
+  server: string;
+  requests: Map<string, EventData>;
 }
 
 export type WalletConnectorType = {
-    id: string;
-    walletId: string;
-    walletShared: string;
-    secret: string;
-    shared: string;
-    server: string;
-}
+  id: string;
+  walletId: string;
+  walletShared: string;
+  secret: string;
+  shared: string;
+  server: string;
+};
 
 export interface UIMessage {
-    id: string;
-    requestId?: number;
-    action?: "approve" | "reject";
-    type: "register" | "approve" | "get_params";
+  id: string;
+  requestId?: number;
+  action?: 'approve' | 'reject';
+  type: 'register' | 'approve' | 'get_params';
 }
 
 interface UIResponseInfo {
-    server: string;
-    enc_key: string;
-    id: string;
-    favIcon?: string;
-    origin?: string
+  server: string;
+  enc_key: string;
+  id: string;
+  favIcon?: string;
+  origin?: string;
 }
 
 export interface UIResponse {
-    type: "set_info" | "registered" | "close" | "set_display";
-    info?: UIResponseInfo;
-    display?: string;
+  type: 'set_info' | 'registered' | 'close' | 'set_display';
+  info?: UIResponseInfo;
+  display?: string;
 }
 
 export type ConnectRequest = {
-    fn: "connect";
-    host?: "";
-}
+  fn: 'connect';
+  host?: '';
+};
 
 export type RequestBody = ConnectRequest;
 
-export type EventFunction = "connect" |
-    "is_connected" |
-    "balance" |
-    "address" |
-    "boxes" |
-    "sign" |
-    "";
+export type EventFunction =
+  | 'connect'
+  | 'is_connected'
+  | 'balance'
+  | 'address'
+  | 'boxes'
+  | 'sign'
+  | '';
 export type EventData = {
-    type: string;
-    function: EventFunction;
-    sessionId: string;
-    direction: "request" | "response";
-    requestId: string;
-    isSuccess: boolean;
-    payload?: any;
-}
+  type: string;
+  function: EventFunction;
+  sessionId: string;
+  direction: 'request' | 'response';
+  requestId: string;
+  isSuccess: boolean;
+  payload?: any;
+};
 
 export interface WalletRegisterInfo {
-    id: string;
-    shared: string;
+  id: string;
+  shared: string;
 }
 
 interface WalletRegisterComplete {
-    done: boolean;
+  done: boolean;
 }
 
-type WalletMessagePayloadType = WalletRegisterInfo | WalletRegisterComplete
+type WalletMessagePayloadType = WalletRegisterInfo | WalletRegisterComplete;
 
 export interface WalletMessage {
-    requestId: number;
-    payload: WalletMessagePayloadType
+  requestId: number;
+  payload: WalletMessagePayloadType;
 }
 
 // ==================== server message format ==========================
 
 type ActionType =
-    "registered" |
-    "confirm" |
-    "confirmed" |
-    "boxes_request" |
-    "boxes_response" |
-    "balance_request" |
-    "balance_response" |
-    "address_request" |
-    "address_response" |
-    "sign_request" |
-    "sign_response" |
-    "submit_request" |
-    "submit_response";
+  | 'registered'
+  | 'confirm'
+  | 'confirmed'
+  | 'boxes_request'
+  | 'boxes_response'
+  | 'balance_request'
+  | 'balance_response'
+  | 'address_request'
+  | 'address_response'
+  | 'sign_request'
+  | 'sign_response'
+  | 'submit_request'
+  | 'submit_response';
 
 export type Page = {
-    page: number;
-    limit: number
-}
+  page: number;
+  limit: number;
+};
 export type ConfirmPayload = {
-    id: string;
-    display: string;
-}
+  id: string;
+  display: string;
+};
 
 export type BoxRequestPayload = {
-    amount: string;
-    tokenId: string;
-    page: Page;
-}
+  amount: string;
+  tokenId: string;
+  page: Page;
+};
 
 export type BalanceRequestPayload = {
-    tokenIds: Array<string>;
-}
+  tokenIds: Array<string>;
+};
 
-export type BalanceResponsePayload ={
-    amount: string;
-    extra: {[tokenId: string]: string}
-}
+export type BalanceResponsePayload = {
+  amount: string;
+  extra: { [tokenId: string]: string };
+};
 
-export type AddressRequestPayload ={
-    type: "used" | "unused" | "change" | "all";
-    page: Page
-}
+export type AddressRequestPayload = {
+  type: 'used' | 'unused' | 'change' | 'all';
+  page: Page;
+};
 
-export type AddressResponsePayload = Array<string>
+export type AddressResponsePayload = Array<string>;
 
-
-export type Payload = ConfirmPayload |
-    BoxRequestPayload |
-    BalanceRequestPayload |
-    BalanceResponsePayload |
-    AddressRequestPayload |
-    AddressResponsePayload;
+export type Payload =
+  | ConfirmPayload
+  | BoxRequestPayload
+  | BalanceRequestPayload
+  | BalanceResponsePayload
+  | AddressRequestPayload
+  | AddressResponsePayload;
 
 export interface MessageContent {
-    action: ActionType;
-    requestId: string;
-    payload: Payload;
+  action: ActionType;
+  requestId: string;
+  payload: Payload;
 }
 
 export interface MessageData {
-    sender: string;
-    pageId: string;
-    content: string;
+  sender: string;
+  pageId: string;
+  content: string;
 }

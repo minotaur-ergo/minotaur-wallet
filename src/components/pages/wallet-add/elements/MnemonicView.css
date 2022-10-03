@@ -1,12 +1,12 @@
-.mnemonic-grid{
-    height: 64px;
+.mnemonic-grid {
+  height: 64px;
 }
 
 .mnemonic-chip {
-    margin: 5px !important;
+  margin: 5px !important;
 }
 
 .mnemonic-hide-chip {
-    opacity: 0;
-    margin: 5px !important;
+  opacity: 0;
+  margin: 5px !important;
 }

@@ -1,37 +1,38 @@
 import {
-    Column,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn, Unique
-} from "typeorm";
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import Wallet from './Wallet';
 
-@Entity({name: "address"})
+@Entity({ name: 'address' })
 @Unique('address_network_type', ['address', 'network_type'])
 class Address {
-    @PrimaryGeneratedColumn()
-    id: number = 0;
+  @PrimaryGeneratedColumn()
+  id = 0;
 
-    @Column('text')
-    name: string = '';
+  @Column('text')
+  name = '';
 
-    @Column('text')
-    address: string = '';
+  @Column('text')
+  address = '';
 
-    @Column("text")
-    network_type: string = '';
+  @Column('text')
+  network_type = '';
 
-    @Column('text')
-    path: string = '';
+  @Column('text')
+  path = '';
 
-    @Column('int', { default: -1 })
-    idx: number = -1;
+  @Column('int', { default: -1 })
+  idx = -1;
 
-    @ManyToOne(() => Wallet, {onDelete: "CASCADE"})
-    wallet: Wallet | null = null;
+  @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
+  wallet: Wallet | null = null;
 
-    @Column('int', { default: 0 })
-    process_height: number = 0;
+  @Column('int', { default: 0 })
+  process_height = 0;
 }
 
 export default Address;

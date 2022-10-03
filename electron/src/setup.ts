@@ -6,7 +6,15 @@ import {
 } from '@capacitor-community/electron';
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
-import { app, BrowserWindow, Menu, MenuItem, nativeImage, Tray, session } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Menu,
+  MenuItem,
+  nativeImage,
+  Tray,
+  session,
+} from 'electron';
 import electronIsDev from 'electron-is-dev';
 import electronServe from 'electron-serve';
 import windowStateKeeper from 'electron-window-state';
@@ -18,7 +26,9 @@ const reloadWatcher = {
   ready: false,
   watcher: null,
 };
-export function setupReloadWatcher(electronCapacitorApp: ElectronCapacitorApp): void {
+export function setupReloadWatcher(
+  electronCapacitorApp: ElectronCapacitorApp
+): void {
   reloadWatcher.watcher = chokidar
     .watch(join(app.getAppPath(), 'app'), {
       ignored: /[/\\]\./,
@@ -66,7 +76,9 @@ export class ElectronCapacitorApp {
   ) {
     this.CapacitorFileConfig = capacitorFileConfig;
 
-    this.customScheme = this.CapacitorFileConfig.electron?.customUrlScheme ?? 'capacitor-electron';
+    this.customScheme =
+      this.CapacitorFileConfig.electron?.customUrlScheme ??
+      'capacitor-electron';
 
     if (trayMenuTemplate) {
       this.TrayMenuTemplate = trayMenuTemplate;
@@ -99,7 +111,11 @@ export class ElectronCapacitorApp {
 
   async init(): Promise<void> {
     const icon = nativeImage.createFromPath(
-      join(app.getAppPath(), 'assets', process.platform === 'win32' ? 'appIcon.ico' : 'appIcon.png')
+      join(
+        app.getAppPath(),
+        'assets',
+        process.platform === 'win32' ? 'appIcon.ico' : 'appIcon.png'
+      )
     );
     this.mainWindowState = windowStateKeeper({
       defaultWidth: 520,
@@ -130,12 +146,17 @@ export class ElectronCapacitorApp {
     this.MainWindow.setMenu(null);
 
     if (this.CapacitorFileConfig.backgroundColor) {
-      this.MainWindow.setBackgroundColor(this.CapacitorFileConfig.electron.backgroundColor);
+      this.MainWindow.setBackgroundColor(
+        this.CapacitorFileConfig.electron.backgroundColor
+      );
     }
 
     // If we close the main window with the splashscreen enabled we need to destory the ref.
     this.MainWindow.on('closed', () => {
-      if (this.SplashScreen?.getSplashWindow() && !this.SplashScreen.getSplashWindow().isDestroyed()) {
+      if (
+        this.SplashScreen?.getSplashWindow() &&
+        !this.SplashScreen.getSplashWindow().isDestroyed()
+      ) {
         this.SplashScreen.getSplashWindow().close();
       }
     });
@@ -164,11 +185,15 @@ export class ElectronCapacitorApp {
         }
       });
       this.TrayIcon.setToolTip(app.getName());
-      this.TrayIcon.setContextMenu(Menu.buildFromTemplate(this.TrayMenuTemplate));
+      this.TrayIcon.setContextMenu(
+        Menu.buildFromTemplate(this.TrayMenuTemplate)
+      );
     }
 
     // Setup the main manu bar at the top of our window.
-    Menu.setApplicationMenu(Menu.buildFromTemplate(this.AppMenuBarMenuTemplate));
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate(this.AppMenuBarMenuTemplate)
+    );
 
     // If the splashscreen is enabled, show it first while the main window loads then dwitch it out for the main window, or just load the main window from the start.
     if (this.CapacitorFileConfig.electron?.splashScreenEnabled) {
@@ -176,7 +201,8 @@ export class ElectronCapacitorApp {
         imageFilePath: join(
           app.getAppPath(),
           'assets',
-          this.CapacitorFileConfig.electron?.splashScreenImageName ?? 'splash.png'
+          this.CapacitorFileConfig.electron?.splashScreenImageName ??
+            'splash.png'
         ),
         windowWidth: 400,
         windowHeight: 400,
@@ -215,7 +241,10 @@ export class ElectronCapacitorApp {
         if (electronIsDev) {
           this.MainWindow.webContents.openDevTools();
         }
-        CapElectronEventEmitter.emit('CAPELECTRON_DeeplinkListenerInitialized', '');
+        CapElectronEventEmitter.emit(
+          'CAPELECTRON_DeeplinkListenerInitialized',
+          ''
+        );
       }, 400);
     });
   }
