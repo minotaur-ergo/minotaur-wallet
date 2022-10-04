@@ -53,25 +53,25 @@
     "rimraf": "^3.0.2",
     "tiny-secp256k1": "^2.2.1",
     "typeorm": "^0.3.6",
-    "typescript": "^4.6.4",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
     "websocket-ts": "^1.1.1",
     "zxing": "^0.1.2"
   },
   "scripts": {
-    "prettify": "prettier --write . --ignore-path ./.gitignore",
-    "lint": "eslint --fix . && npm run prettify",
-    "start": "node ./scripts/start.js",
-    "build": "node ./scripts/build.js",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
-    "eject": "react-scripts eject",
-    "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
-    "clean": "rimraf ./build",
     "build:ext": "BUILD_PATH=extension node ./scripts/build-ext.js",
-    "postinstall": "npx patch-package"
+    "build": "node ./scripts/build.js",
+    "clean": "rimraf ./build",
+    "coverage": "vitest run --coverage",
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix . && npm run prettify",
+    "postinstall": "npx patch-package",
+    "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
+    "prettify": "prettier --write . --ignore-path ./.gitignore",
+    "start": "node ./scripts/start.js",
+    "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
+    "test": "vitest",
+    "type-check": "tsc"
   },
   "browserslist": {
     "production": [
@@ -110,6 +110,7 @@
     "rewire": "^6.0.0",
     "sql.js": "1.6.2",
     "stream-browserify": "^3.0.0",
+    "typescript": "^4.8.4",
     "vite-plugin-top-level-await": "^1.1.1",
     "vite-plugin-wasm": "^2.1.0",
     "vitest": "^0.23.4"
