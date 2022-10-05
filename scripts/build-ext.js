@@ -1,7 +1,7 @@
 // in ./build.js
-const rewire = require('rewire');
+import rewire from 'rewire';
 const defaults = rewire('react-scripts/scripts/build.js');
 const config = defaults.__get__('config');
-const updateConfig = require('./update-connector-config');
+import updateConfig from './update-connector-config';
 
-defaults.__set__('config', updateConfig(config))
+defaults.__set__('config', updateConfig(config));
