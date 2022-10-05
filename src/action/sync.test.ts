@@ -1,11 +1,11 @@
 import { test, vi, expect } from 'vitest';
 
-import axios from 'axios';
 import { SyncAddress } from './sync';
 import { Block, TxDictionary } from './Types';
 import * as fs from 'fs';
 import Address from '../db/entities/Address';
 import { ErgoTx } from '../util/network/models';
+import axios from 'axios';
 
 //test values
 const db = fs.readFileSync(`${__dirname}/db.json`).toString();
@@ -33,7 +33,7 @@ test('insert blocks to database', async () => {
   };
   vi.mocked(axios.get).mockReset();
   vi.mocked(axios.get).mockResolvedValueOnce(block);
-  const result = await TestSync.stepForward(lastLoadedBlock);
+  await TestSync.stepForward(lastLoadedBlock);
   expect(spyInsertToDB).toHaveBeenCalledWith([block]);
 });
 
@@ -87,10 +87,10 @@ test('remove blocks from database', async () => {
  * Expected: return false(fork is not happened.)
  */
 test('check fork function in normal situation', async () => {
-  const receivedBlock: Block = lastLoadedBlock;
   vi.mocked(axios.get).mockReset();
-  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlock);
-  expect(TestSync.checkFork(lastLoadedBlock)).toStrictEqual(false);
+  vi.mocked(axios.get).mockResolvedValueOnce([lastLoadedBlock.id.concat('1')]);
+  const result = await TestSync.checkFork(lastLoadedBlock);
+  expect(result).toStrictEqual(false);
 });
 
 /**
@@ -100,13 +100,10 @@ test('check fork function in normal situation', async () => {
  * Expected: return true(fork is happened.)
  */
 test('check fork function in case of fork', async () => {
-  const receivedBlock: Block = {
-    id: lastLoadedBlock.id.concat('1'),
-    height: lastLoadedBlock.height,
-  };
   vi.mocked(axios.get).mockReset();
-  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlock);
-  expect(TestSync.checkFork(lastLoadedBlock)).toStrictEqual(true);
+  vi.mocked(axios.get).mockResolvedValueOnce([lastLoadedBlock.id.concat('1')]);
+  const result = await TestSync.checkFork(lastLoadedBlock);
+  expect(result).toStrictEqual(true);
 });
 
 /**
@@ -121,10 +118,12 @@ test('calc fork point function', async () => {
     return { ...block, id: block.id.concat('1') };
   });
   vi.mocked(axios.get).mockReset();
-  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlocks[1]);
-  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlocks[0]);
-  vi.mocked(axios.get).mockResolvedValueOnce(dbJson[len - 3]);
-  expect(TestSync.calcFork(lastLoadedBlock)).toStrictEqual(
+  vi.mocked(axios.get).mockResolvedValueOnce(dbJson);
+  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlocks[1].id);
+  vi.mocked(axios.get).mockResolvedValueOnce(receivedBlocks[0].id);
+  vi.mocked(axios.get).mockResolvedValueOnce(dbJson[len - 3].id);
+  const result = await TestSync.calcFork(lastLoadedBlock);
+  expect(result).toStrictEqual(
     dbJson[len - 3].height
   );
 });

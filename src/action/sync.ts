@@ -6,6 +6,7 @@ import {
   DbTransaction,
 } from './db';
 import { getNetworkType } from '../util/network_type';
+import { Node } from '../util/network/node';
 import { Block, HeightRange, Err, TxDictionary } from './Types';
 import { Paging } from '../util/network/paging';
 import Address from '../db/entities/Address';
@@ -21,11 +22,13 @@ export class SyncAddress {
   private walletId: number;
   private address: Address;
   networkType: string;
+  node: Node;
 
   constructor(wallet_id: number, address: Address, network_type: string) {
     this.walletId = wallet_id;
     this.networkType = network_type;
     this.address = address;
+    this.node = getNetworkType(network_type).getNode();
   }
 
   /*
@@ -106,19 +109,17 @@ export class SyncAddress {
         @param networkType: string
     */
   stepForward = async (currentBlock: Block): Promise<void> => {
-    const node = getNetworkType(this.networkType).getNode();
-
     let paging: Paging;
     let limit: number = INITIAL_LIMIT;
 
     let current_height: number = currentBlock.height;
-    const last_height: number = await node.getHeight();
+    const last_height: number = await this.node.getHeight();
 
     const overlapBlocks: Block[] = [currentBlock];
 
     while (last_height - current_height > 0) {
       paging = this.setPaging(current_height, last_height, limit);
-      const recievedIDs: string[] = await node.getBlockHeaders(paging);
+      const recievedIDs: string[] = await this.node.getBlockHeaders(paging);
       limit = LIMIT;
 
       const recievedBlocks: Block[] = this.createBlockArrayByID(
@@ -145,13 +146,13 @@ export class SyncAddress {
    * @returns forkPOint height : number
    */
   calcFork = async (currentBlock: Block): Promise<number> => {
-    const node = getNetworkType(this.networkType).getNode();
+    console.log(this.node)
     let forkPoint = -1;
     let currHeight = currentBlock.height;
 
     const loadedBlocks = await BlockDbAction.getAllHeaders(this.networkType);
     while (forkPoint == -1) {
-      const receivedID: string = await node.getBlockIdAtHeight(currHeight);
+      const receivedID: string = await this.node.getBlockIdAtHeight(currHeight);
       forkPoint = receivedID == loadedBlocks[0].block_id ? currHeight : -1;
       loadedBlocks.shift();
       currHeight--;
@@ -165,8 +166,7 @@ export class SyncAddress {
    * @returns fork happened or not : Promise<Boolean>
    */
   checkFork = async (currentBlock: Block): Promise<boolean> => {
-    const node = getNetworkType(this.networkType).getNode();
-    const receivedID: string = await node.getBlockIdAtHeight(
+    const receivedID: string = await this.node.getBlockIdAtHeight(
       currentBlock.height
     );
     return currentBlock.id != receivedID;
@@ -298,8 +298,7 @@ export class SyncAddress {
    */
   syncTrxsWithAddress = async (address: Address, currentHeight: number) => {
     const explorer = getNetworkType(address.network_type).getExplorer();
-    const node = getNetworkType(this.networkType).getNode();
-    const lastHeight: number = await node.getHeight();
+    const lastHeight: number = await this.node.getHeight();
     const heightRange: HeightRange = {
       fromHeight: currentHeight,
       toHeight: currentHeight,
