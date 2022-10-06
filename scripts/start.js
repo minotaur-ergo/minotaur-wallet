@@ -1,8 +1,8 @@
 // in ./build.js
-import rewire from 'rewire';
+const rewire = require('rewire');
 const defaults = rewire('react-scripts/scripts/start.js');
 const oldConfigFactory = defaults.__get__('configFactory');
-import updateConfig from './update-config';
+const updateConfig = require('./update-config');
 
 // required to update configs
 const configFactory = (webpackEnv) => {
