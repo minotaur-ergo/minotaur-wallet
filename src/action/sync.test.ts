@@ -1,7 +1,8 @@
 import { test, vi, expect } from 'vitest';
 
+import { DbTransaction } from './db';
 import { SyncAddress } from './sync';
-import { Block, TxDictionary } from './Types';
+import { Block, TxDictionary, Err } from './Types';
 import * as fs from 'fs';
 import Address from '../db/entities/Address';
 import { ErgoTx } from '../util/network/models';
@@ -14,7 +15,26 @@ const dbJson: Block[] = JSON.parse(db);
 const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
 const testAddress = new Address();
 const testNetworkType = 'Testnet';
+const testTx: ErgoTx = {
+  id: '0000',
+  blockId: lastLoadedBlock.id,
+  inclusionHeight: lastLoadedBlock.height,
+  inputs: [],
+  dataInputs: [],
+  outputs: [],
+  size: 1,
+  timestamp: 12,
+};
 const walletId = 0;
+
+const generateTestTxs = (count: number): ErgoTx[] => {
+  const txs: ErgoTx[] = [];
+  for (let x = 0; x < count; x++) {
+    const ID = (Math.random() * 1000).toString();
+    txs.push({ ...testTx, id: ID });
+  }
+  return txs;
+};
 const TestSync = new SyncAddress(walletId, testAddress, testNetworkType);
 
 vi.mock('axios');
@@ -26,7 +46,7 @@ vi.mock('axios');
  * Expected: insertToDB function must be called once with determined block.
  */
 test('insert blocks to database', async () => {
-  const spyInsertToDB = vi.spyOn(TestSync, 'insertToDB');
+  const spyInsertToDB = vi.spyOn(TestSync, 'insertBlockToDB');
   const block: Block = {
     id: '504',
     height: 3,
@@ -56,6 +76,36 @@ test('create array of blocks with given IDs', () => {
     },
   ];
   expect(TestSync.createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks);
+});
+
+/**
+ * testing checkOverlaps funcstion to
+ * Dependancy: -
+ * Scenario: fork happened! so overlapBlocks has no overlap with new received Block headers;
+ * Expected: throw error.
+ */
+test('check overlapBlocks (fork happened).', () => {
+  const overlapBlocks: Block[] = dbJson.slice(-2);
+  const receivedBlocks: Block[] = [
+    { ...lastLoadedBlock, id: lastLoadedBlock.id.concat('1') },
+  ];
+  expect(() => {
+    TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
+  }).toThrow();
+});
+
+/**
+ * testing checkOverlaps funcstion to
+ * Dependancy: -
+ * Scenario: fork happened! so overlapBlocks has no overlap with new received Block headers;
+ * Expected: throw error.
+ */
+test('check overlapBlocks (normal situation).', () => {
+  const overlapBlocks: Block[] = dbJson.slice(-2);
+  const receivedBlocks: Block[] = [lastLoadedBlock];
+  expect(() => {
+    TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
+  }).arguments();
 });
 
 /**
@@ -132,31 +182,31 @@ test('calc fork point function', async () => {
  * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
-// test('insert Trx to db', async () => {
-//   const spySaveTrxToDB = vi.spyOn(TestSync, 'saveTxsToDB');
-//   const spyCheckTrxValidation = vi.spyOn(TestSync, 'checkTrxValidation');
-//   const receivedTrx: ErgoTx = {
-//     id: '8189',
-//     blockId: '111',
-//     inclusionHeight: 3,
-//     inputs: [],
-//     dataInputs: [],
-//     outputs: [],
-//     size: 1,
-//     timestamp: 12,
-//   };
+test('insert Trx to db', async () => {
+  const spySaveTrxToDB = vi.spyOn(TestSync, 'saveTxsToDB');
+  const spyCheckTrxValidation = vi.spyOn(TestSync, 'checkTrxValidation');
+  const receivedTrx: ErgoTx = {
+    id: '8189',
+    blockId: '111',
+    inclusionHeight: 3,
+    inputs: [],
+    dataInputs: [],
+    outputs: [],
+    size: 1,
+    timestamp: 12,
+  };
 
-//   vi.mocked(axios.get).mockReset();
-//   vi.mocked(axios.get).mockResolvedValueOnce(receivedTrx);
-//   spyCheckTrxValidation.mockImplementationOnce(async (trxs: TxDictionary) => {
-//     /*empty*/
-//   });
-//   TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
-//   expect(spySaveTrxToDB).toHaveBeenCalledWith(
-//     [receivedTrx],
-//     receivedTrx.inclusionHeight
-//   );
-// });
+  vi.mocked(axios.get).mockReset();
+  vi.mocked(axios.get).mockResolvedValueOnce(receivedTrx);
+  spyCheckTrxValidation.mockImplementationOnce(async (trxs: TxDictionary) => {
+    /*empty*/
+  });
+  TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
+  expect(spySaveTrxToDB).toHaveBeenCalledWith(
+    [receivedTrx],
+    receivedTrx.inclusionHeight
+  );
+});
 
 /**
  * testing checkValidation function in case of invalid trxs.
@@ -164,25 +214,33 @@ test('calc fork point function', async () => {
  * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
  * Expected: checkValidation must throw an error.
  */
-// test('check validation of invalid tx', async () => {
-//   const height = 3;
-//   const ID = dbJson[height].id.concat('1');
-//   const receivedTrx: ErgoTx = {
-//     id: '8189',
-//     blockId: ID,
-//     inclusionHeight: height,
-//     inputs: [],
-//     dataInputs: [],
-//     outputs: [],
-//     size: 1,
-//     timestamp: 12,
-//   };
-//   const txDictionary: TxDictionary = {};
-//   txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
-//   expect(TestSync.checkTrxValidation(txDictionary)).toThrow(
-//     'blockIds not matched.'
-//   );
-// });
+test('check validation of invalid tx', async () => {
+  const height = 3;
+  const ID = dbJson[height].id.concat('1');
+  const receivedTrx: ErgoTx = {
+    id: '8189',
+    blockId: ID,
+    inclusionHeight: height,
+    inputs: [],
+    dataInputs: [],
+    outputs: [],
+    size: 1,
+    timestamp: 12,
+  };
+  const expectedError: Err = {
+    massege: 'blockIds not matched.',
+    data: height - 1,
+  };
+  let thrownError: Err;
+  const txDictionary: TxDictionary = {};
+  txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+  try {
+    TestSync.checkTrxValidation(txDictionary);
+  } catch (e) {
+    thrownError = e as Err;
+    expect(thrownError).toEqual(expectedError);
+  }
+});
 
 /**
  * testing checkValidation function in case of nvalid trxs.
@@ -190,22 +248,39 @@ test('calc fork point function', async () => {
  * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
  * Expected: checkValidation must not throw any error.
  */
-// test('check validation of valid tx', async () => {
-//   const height = 3;
-//   const ID = dbJson[height].id;
-//   const receivedTrx: ErgoTx = {
-//     id: '8189',
-//     blockId: ID,
-//     inclusionHeight: height,
-//     inputs: [],
-//     dataInputs: [],
-//     outputs: [],
-//     size: 1,
-//     timestamp: 12,
-//   };
-//   const txDictionary: TxDictionary = {};
-//   txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
-//   expect(TestSync.checkTrxValidation(txDictionary)).not.toThrow(
-//     'blockIds not matched.'
-//   );
-// });
+test('check validation of valid tx', async () => {
+  const height = 3;
+  const ID = dbJson[height].id;
+  const receivedTrx: ErgoTx = {
+    id: '8189',
+    blockId: ID,
+    inclusionHeight: height,
+    inputs: [],
+    dataInputs: [],
+    outputs: [],
+    size: 1,
+    timestamp: 12,
+  };
+  const txDictionary: TxDictionary = {};
+  txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+  expect(() => {
+    TestSync.checkTrxValidation(txDictionary);
+  }).not.toThrow();
+});
+
+/**
+ * testing sortTxs function.
+ * Dependancy: -
+ * Scenario: given array of two random ErgoTxs.
+ * Expected: sorted TxDictionary as expected.
+ */
+test('sort Txs and return a TxDictionary', () => {
+  const txs = generateTestTxs(2);
+  const receivedResult = TestSync.sortTxs(txs as ErgoTx[]);
+  if (txs[0].inclusionHeight == txs[1].inclusionHeight) {
+    expect(receivedResult[txs[0].inclusionHeight]).toEqual(txs);
+  } else {
+    expect(receivedResult[txs[0].inclusionHeight]).toEqual([txs[0]]);
+    expect(receivedResult[txs[1].inclusionHeight]).toEqual([txs[1]]);
+  }
+});

@@ -36,7 +36,7 @@ export class SyncAddress {
         @param blocks : Block[]
         @param networkType : string
     */
-  insertToDB = (blocks: Block[]): void => {
+  insertBlockToDB = (blocks: Block[]): void => {
     blocks.forEach((block) => {
       BlockDbAction.InsertHeaders(
         Object.entries(block).map((value) => {
@@ -127,7 +127,7 @@ export class SyncAddress {
         current_height
       );
       this.checkOverlaps(overlapBlocks, recievedBlocks);
-      this.insertToDB(recievedBlocks);
+      this.insertBlockToDB(recievedBlocks);
       current_height += paging.limit;
     }
   };
@@ -146,7 +146,7 @@ export class SyncAddress {
    * @returns forkPOint height : number
    */
   calcFork = async (currentBlock: Block): Promise<number> => {
-    console.log(this.node)
+    console.log(this.node);
     let forkPoint = -1;
     let currHeight = currentBlock.height;
 
@@ -285,10 +285,10 @@ export class SyncAddress {
 
   /**
    * fork all txs with height > forkHeight, unspend boxes with spend_height > forkHeight and remove all forked boxes from db.
-   * @param forkHiehgt : number
+   * @param forkHeight : number
    */
-  forkTxs = async (forkHiehgt: number) => {
-    await DbTransaction.fork(forkHiehgt + 1, this.networkType);
+  forkTxs = async (forkHeight: number) => {
+    await DbTransaction.fork(forkHeight + 1, this.networkType);
   };
 
   /**
