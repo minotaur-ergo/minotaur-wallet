@@ -12,7 +12,12 @@ import { connect } from 'react-redux';
 import QrCodeReaderView from '../../qrcode/QrCodeReaderView';
 import WithAppBar from '../../../layout/WithAppBar';
 import AppHeader from '../../app-header/AppHeader';
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Paper,
+} from '@mui/material';
 import {
   AssistantOutlined,
   ContactMailOutlined,
@@ -99,7 +104,7 @@ const WalletPage = (props: PropsType) => {
             />
           }
         >
-          <div>
+          <Box sx={{ pb: 7 }}>
             {wallet ? (
               <Routes>
                 <Route
@@ -134,56 +139,56 @@ const WalletPage = (props: PropsType) => {
                 />
               </Routes>
             ) : null}
-          </div>
-          {tabs.show && wallet ? (
-            <Paper
-              sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
-              elevation={3}
-            >
-              <BottomNavigation value={tabIndex} showLabels>
-                <BottomNavigationAction
-                  onClick={gotoPage(
-                    navigate,
-                    getRoute(RouteMap.WalletTransaction, { id: params.id })
-                  )}
-                  label="Transactions"
-                  icon={<FormatListBulletedOutlined />}
-                />
-                <BottomNavigationAction
-                  onClick={gotoPage(
-                    navigate,
-                    getRoute(RouteMap.WalletSend, { id: params.id })
-                  )}
-                  label="Send"
-                  icon={<ReceiptOutlined />}
-                />
-                <BottomNavigationAction
-                  onClick={gotoPage(
-                    navigate,
-                    getRoute(RouteMap.WalletAddress, { id: params.id })
-                  )}
-                  label="Addresses"
-                  icon={<ContactMailOutlined />}
-                />
-                <BottomNavigationAction
-                  onClick={gotoPage(
-                    navigate,
-                    getRoute(RouteMap.WalletAssets, { id: params.id })
-                  )}
-                  label="Assets"
-                  icon={<AccountBalanceWallet />}
-                />
-                <BottomNavigationAction
-                  onClick={gotoPage(
-                    navigate,
-                    getRoute(RouteMap.WalletDApps, { id: params.id })
-                  )}
-                  label="dApps"
-                  icon={<AssistantOutlined />}
-                />
-              </BottomNavigation>
-            </Paper>
-          ) : null}
+            {tabs.show && wallet ? (
+              <Paper
+                sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+                elevation={3}
+              >
+                <BottomNavigation value={tabIndex} showLabels>
+                  <BottomNavigationAction
+                    onClick={gotoPage(
+                      navigate,
+                      getRoute(RouteMap.WalletTransaction, { id: params.id })
+                    )}
+                    label="Transactions"
+                    icon={<FormatListBulletedOutlined />}
+                  />
+                  <BottomNavigationAction
+                    onClick={gotoPage(
+                      navigate,
+                      getRoute(RouteMap.WalletSend, { id: params.id })
+                    )}
+                    label="Send"
+                    icon={<ReceiptOutlined />}
+                  />
+                  <BottomNavigationAction
+                    onClick={gotoPage(
+                      navigate,
+                      getRoute(RouteMap.WalletAddress, { id: params.id })
+                    )}
+                    label="Addresses"
+                    icon={<ContactMailOutlined />}
+                  />
+                  <BottomNavigationAction
+                    onClick={gotoPage(
+                      navigate,
+                      getRoute(RouteMap.WalletAssets, { id: params.id })
+                    )}
+                    label="Assets"
+                    icon={<AccountBalanceWallet />}
+                  />
+                  <BottomNavigationAction
+                    onClick={gotoPage(
+                      navigate,
+                      getRoute(RouteMap.WalletDApps, { id: params.id })
+                    )}
+                    label="dApps"
+                    icon={<AssistantOutlined />}
+                  />
+                </BottomNavigation>
+              </Paper>
+            ) : null}
+          </Box>
         </WithAppBar>
       </WalletQrCodeContext.Provider>
     </QrCodeReaderView>

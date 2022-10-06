@@ -1,1 +1,7 @@
 build
+scripts
+android
+ios
+electron/build
+electron/dist
+electron/app

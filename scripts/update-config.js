@@ -1,4 +1,4 @@
-import webpack from 'webpack';
+const webpack = require('webpack');
 
 module.exports = function (config) {
   config.externals = {
@@ -18,7 +18,7 @@ module.exports = function (config) {
   ];
   // update one of rule:
   config.module.rules = config.module.rules.map((rule) => {
-    if (Object.hasOwnProperty.call(rule, 'oneOf')) {
+    if (rule.hasOwnProperty('oneOf')) {
       return {
         oneOf: [
           ...rule.oneOf.map((item) => {
