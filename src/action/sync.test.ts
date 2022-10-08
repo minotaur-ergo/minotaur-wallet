@@ -95,17 +95,23 @@ test('check overlapBlocks (fork happened).', () => {
 });
 
 /**
- * testing checkOverlaps funcstion to
+ * testing checkOverlaps funcstion in normal situation.
  * Dependancy: -
- * Scenario: fork happened! so overlapBlocks has no overlap with new received Block headers;
- * Expected: throw error.
+ * Scenario:
+ * Expected: not throw any error and update arrays correctly.
  */
 test('check overlapBlocks (normal situation).', () => {
+  const newBlock: Block = {
+    height: 4,
+    id: '430',
+  };
   const overlapBlocks: Block[] = dbJson.slice(-2);
-  const receivedBlocks: Block[] = [lastLoadedBlock];
-  expect(() => {
-    TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
-  }).arguments();
+  const receivedBlocks: Block[] = [lastLoadedBlock, newBlock];
+  const copyReceivedBlocks: Block[] = receivedBlocks.slice(-2);
+  TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
+
+  expect(overlapBlocks).toEqual(copyReceivedBlocks);
+  expect(receivedBlocks).toEqual([newBlock]);
 });
 
 /**
@@ -116,19 +122,19 @@ test('check overlapBlocks (normal situation).', () => {
  *           then removeFromDB is called and remove forked blocks from db.
  * Expected: blocks with height greater than receivedBlock have to be removed.
  */
-// test('remove blocks from database', async () => {
-//   const spyCalcFork = vi.spyOn(TestSync, 'calcFork');
-//   const spyRemovefromDB = vi.spyOn(TestSync, 'removeFromDB');
-//   const spyCheckFork = vi.spyOn(TestSync, 'checkFork');
+test('remove blocks from database', async () => {
+  const spyCalcFork = vi.spyOn(TestSync, 'calcFork');
+  const spyRemovefromDB = vi.spyOn(TestSync, 'removeFromDB');
+  const spyCheckFork = vi.spyOn(TestSync, 'checkFork');
 
-//   const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
-//   const forkPoint: number = dbJson[1].height;
+  const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
+  const forkPoint: number = dbJson[1].height;
 
-//   spyCheckFork.mockReturnValueOnce(Promise.resolve(true));
-//   spyCalcFork.mockReturnValueOnce(Promise.resolve(forkPoint));
-//   TestSync.syncBlocks(lastLoadedBlock);
-//   expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint);
-// });
+  spyCheckFork.mockReturnValueOnce(Promise.resolve(true));
+  spyCalcFork.mockReturnValueOnce(Promise.resolve(forkPoint));
+  await TestSync.syncBlocks(lastLoadedBlock);
+  expect(spyRemovefromDB).toHaveBeenCalledWith(forkPoint);
+});
 
 /**
  * testing checkFork to detect fork in specified height.

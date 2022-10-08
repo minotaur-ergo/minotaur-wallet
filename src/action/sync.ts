@@ -56,13 +56,11 @@ export class SyncAddress {
     const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1]);
     if (sliceIndex === -1) throw new Error('overlaps not matched.');
     else {
-      recievedBlocks.splice(sliceIndex + 1);
-
       const newOverlaps = recievedBlocks.slice(-2);
-      overlapBlocks.map((block, index) => {
-        block.id = newOverlaps[index].id;
-        block.height = newOverlaps[index].height;
-      });
+      recievedBlocks.splice(0, sliceIndex + 1);
+      for (let index = 0; index < newOverlaps.length; index++) {
+        overlapBlocks[index] = newOverlaps[index];
+      }
     }
   };
 
