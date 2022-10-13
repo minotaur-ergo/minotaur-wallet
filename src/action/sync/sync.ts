@@ -4,15 +4,15 @@ import {
   AddressDbAction,
   BoxDbAction,
   DbTransaction,
-} from './db';
-import { getNetworkType } from '../util/network_type';
-import { Node } from '../util/network/node';
-import { Block, HeightRange, Err, TxDictionary } from './Types';
-import { Paging } from '../util/network/paging';
-import Address from '../db/entities/Address';
-import { ErgoTx, ErgoBox, InputBox } from '../util/network/models';
-import { Items } from '../util/network/models';
-import Tx from '../db/entities/Tx';
+} from '../db';
+import { getNetworkType } from '../../util/network_type';
+import { Node } from '../../util/network/node';
+import { Block, HeightRange, Err, TxDictionary } from '../Types';
+import { Paging } from '../../util/network/paging';
+import Address from '../../db/entities/Address';
+import { ErgoTx, ErgoBox, InputBox } from '../../util/network/models';
+import { Items } from '../../util/network/models';
+import Tx from '../../db/entities/Tx';
 
 //constants
 const LIMIT = 50;
