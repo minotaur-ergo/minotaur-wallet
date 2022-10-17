@@ -144,7 +144,6 @@ export class SyncAddress {
    * @returns forkPOint height : number
    */
   calcFork = async (currentBlock: Block): Promise<number> => {
-    console.log(this.node);
     let forkPoint = -1;
     let currHeight = currentBlock.height;
 
