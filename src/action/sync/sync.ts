@@ -304,10 +304,9 @@ export class SyncAddress {
       limit: INITIAL_LIMIT,
       offset: 0,
     };
-    while (heightRange.fromHeight < lastHeight) {
+    while (heightRange.fromHeight <= lastHeight) {
       const Txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
-
       while (pageTxs == undefined || pageTxs.items.length != 0) {
         pageTxs = await explorer.getTxsByAddressInHeightRange(
           address.address,

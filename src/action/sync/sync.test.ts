@@ -3,34 +3,19 @@ import { test, vi, expect } from 'vitest';
 import { SyncAddress } from './sync';
 import { Block, TxDictionary, Err } from '../Types';
 import * as fs from 'fs';
-import Address from '../../db/entities/Address';
 import { ErgoTx } from '../../util/network/models';
-import { fakeBlockChain } from './testData';
-import { getNetworkType } from '../../util/network_type';
-import { BlockDbAction, initializeAction } from '../db';
-import { connectCapacitor } from './dbTest';
-import { DataSource } from 'typeorm';
+import {
+  fakeBlockChain,
+  fakeTxs,
+  testAddress,
+  testNetworkType,
+  walletId,
+} from './testData';
 
 const db = fs.readFileSync(`${__dirname}/db.json`).toString();
 const dbJson: Block[] = JSON.parse(db);
 const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
-const testAddress = new Address();
-const testNetworkType = 'Testnet';
 
-const dataSource = await connectCapacitor();
-initializeAction(dataSource);
-
-const testTx: ErgoTx = {
-  id: '0000',
-  blockId: lastLoadedBlock.id,
-  inclusionHeight: lastLoadedBlock.height,
-  inputs: [],
-  dataInputs: [],
-  outputs: [],
-  size: 1,
-  timestamp: 12,
-};
-const walletId = 0;
 export const TestSync = new SyncAddress(walletId, testAddress, testNetworkType);
 
 /**
@@ -159,6 +144,44 @@ test('check fork function in normal situation', async () => {
 });
 
 /**
+ * testing setPaging function used in stepForward function.
+ * -
+ * Scenario: calcuated offset is reaching lastHeight.
+ * Expected: passed.
+ */
+test('check setPaging function', () => {
+  const returnedPaging = TestSync.setPaging(
+    0,
+    fakeBlockChain.getLastBlock().height,
+    6
+  );
+  const expectedPaging = {
+    offset: 0,
+    limit: 6,
+  };
+  expect(returnedPaging).toStrictEqual(expectedPaging);
+});
+
+/**
+ * testing setPaging function used in stepForward function.
+ * -
+ * Scenario: limit is small so we don't reach the lastHeight.
+ * Expected: passed.
+ */
+test('check setPaging function', () => {
+  const returnedPaging = TestSync.setPaging(
+    0,
+    fakeBlockChain.getLastBlock().height,
+    1
+  );
+  const expectedPaging = {
+    offset: 4,
+    limit: 1,
+  };
+  expect(returnedPaging).toStrictEqual(expectedPaging);
+});
+
+/**
  * testing checkFork to detect fork in specified height.
  * Dependancy: axois mocked.
  * Scenario: axios response contains the block which has different id from the last loaded block from database.
@@ -181,36 +204,6 @@ test('calc fork point function', async () => {
   expect(result).toStrictEqual(fakeBlockChain.forkHeight);
 });
 
-// /**
-//  * testing insertTrxtoDB function to insert given trxs correctly.
-//  * Dependancy: axois mocked.
-//  * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
-//  * Expected: insertTrxToDB function must be called once with determined trx.
-//  */
-test('insert Trx to db', async () => {
-  const spySaveTrxToDB = vi.spyOn(TestSync, 'saveTxsToDB');
-  const spyCheckTrxValidation = vi.spyOn(TestSync, 'checkTrxValidation');
-  const receivedTrx: ErgoTx = {
-    id: '8189',
-    blockId: '111',
-    inclusionHeight: 3,
-    inputs: [],
-    dataInputs: [],
-    outputs: [],
-    size: 1,
-    timestamp: 12,
-  };
-
-  spyCheckTrxValidation.mockImplementationOnce(async (trxs: TxDictionary) => {
-    /*empty*/
-  });
-  TestSync.syncTrxsWithAddress(testAddress, receivedTrx.inclusionHeight);
-  expect(spySaveTrxToDB).toHaveBeenCalledWith(
-    [receivedTrx],
-    receivedTrx.inclusionHeight
-  );
-});
-
 /**
  * testing checkValidation function in case of invalid trxs.
  * Dependancy: -
@@ -218,25 +211,12 @@ test('insert Trx to db', async () => {
  * Expected: checkValidation must throw an error.
  */
 test('check validation of invalid tx', async () => {
-  const height = 3;
-  const ID = dbJson[height].id.concat('1');
-  const receivedTrx: ErgoTx = {
-    id: '8189',
-    blockId: ID,
-    inclusionHeight: height,
-    inputs: [],
-    dataInputs: [],
-    outputs: [],
-    size: 1,
-    timestamp: 12,
-  };
   const expectedError: Err = {
     massege: 'blockIds not matched.',
-    data: height - 1,
+    data: fakeBlockChain.getLastBlock().height,
   };
   let thrownError: Err;
-  const txDictionary: TxDictionary = {};
-  txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+  const txDictionary: TxDictionary = TestSync.sortTxs(fakeTxs.invalidTxs);
   try {
     TestSync.checkTrxValidation(txDictionary);
   } catch (e) {
@@ -252,20 +232,7 @@ test('check validation of invalid tx', async () => {
  * Expected: checkValidation must not throw any error.
  */
 test('check validation of valid tx', async () => {
-  const height = 3;
-  const ID = dbJson[height].id;
-  const receivedTrx: ErgoTx = {
-    id: '8189',
-    blockId: ID,
-    inclusionHeight: height,
-    inputs: [],
-    dataInputs: [],
-    outputs: [],
-    size: 1,
-    timestamp: 12,
-  };
-  const txDictionary: TxDictionary = {};
-  txDictionary[receivedTrx.inclusionHeight] = [receivedTrx];
+  const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
   expect(() => {
     TestSync.checkTrxValidation(txDictionary);
   }).not.toThrow();
@@ -277,13 +244,30 @@ test('check validation of valid tx', async () => {
  * Scenario: given array of two random ErgoTxs.
  * Expected: sorted TxDictionary as expected.
  */
-// test('sort Txs and return a TxDictionary', () => {
-//   const txs = generateTestTxs(2);
-//   const receivedResult = TestSync.sortTxs(txs as ErgoTx[]);
-//   if (txs[0].inclusionHeight == txs[1].inclusionHeight) {
-//     expect(receivedResult[txs[0].inclusionHeight]).toEqual(txs);
-//   } else {
-//     expect(receivedResult[txs[0].inclusionHeight]).toEqual([txs[0]]);
-//     expect(receivedResult[txs[1].inclusionHeight]).toEqual([txs[1]]);
-//   }
-// });
+test('sort Txs and return a TxDictionary', () => {
+  const result = TestSync.sortTxs(fakeTxs.validTxs);
+  let keys = fakeTxs.validTxs.map((tx) => tx.inclusionHeight);
+  keys = keys.sort();
+  keys = keys.filter((item, index) => keys.indexOf(item) === index);
+  const expectedResult = keys.map((key) => key.toString());
+  expect(Object.keys(result)).toEqual(expectedResult);
+});
+
+/**
+ * testing insertTrxtoDB function to insert given trxs correctly.
+ * Dependancy: axois mocked.
+ * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
+ * Expected: insertTrxToDB function must be called once with determined trx.
+ */
+test('insert Trx to db in syncTrxsWithAddress function', async () => {
+  const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
+  const spySaveTrxToDB = vi.spyOn(TestSync, 'saveTxsToDB');
+  TestSync.syncTrxsWithAddress(
+    testAddress,
+    fakeBlockChain.getLastBlock().height
+  );
+  expect(spySaveTrxToDB).toHaveBeenCalledWith(
+    txDictionary,
+    fakeBlockChain.getLastBlock().height
+  );
+});
