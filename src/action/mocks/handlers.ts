@@ -7,7 +7,7 @@ import {
   testAddress,
   testNetworkType,
   walletId,
-} from '../sync/testData';
+} from '../sync-test/testData';
 import { NodeInfo } from '../../util/network/models';
 
 const BASE_NODE_URL = `http://213.239.193.208:9052`; // Testnet Node
