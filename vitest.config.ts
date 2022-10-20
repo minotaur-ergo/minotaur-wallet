@@ -4,6 +4,7 @@ import topLevelAwait from 'vite-plugin-top-level-await';
 
 export default defineConfig({
   test: {
+    setupFiles: ['./vitest.setup.ts'],
     coverage: {
       all: true,
       reporter: ['cobertura', 'text', 'text-summary'],

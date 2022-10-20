@@ -107,6 +107,7 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "madge": "^5.0.1",
+    "msw": "^0.47.4",
     "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
