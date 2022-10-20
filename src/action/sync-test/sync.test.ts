@@ -1,6 +1,7 @@
 import { test, vi, expect } from 'vitest';
 
-import { SyncAddress } from './sync';
+import { SyncTxs } from '../sync/SyncTxs';
+import { SyncBlocks } from '../sync/SyncBlocks';
 import { Block, TxDictionary, Err } from '../Types';
 import * as fs from 'fs';
 import { ErgoTx } from '../../util/network/models';
@@ -16,7 +17,8 @@ const db = fs.readFileSync(`${__dirname}/db.json`).toString();
 const dbJson: Block[] = JSON.parse(db);
 const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
 
-export const TestSync = new SyncAddress(walletId, testAddress, testNetworkType);
+export const TestSyncTxs = new SyncTxs(testAddress, testNetworkType);
+export const TestSyncBlocks = new SyncBlocks(testNetworkType);
 
 /**
  * testing stepforward function to insert given blocks correctly in local db.
@@ -40,9 +42,9 @@ export const TestSync = new SyncAddress(walletId, testAddress, testNetworkType);
  */
 test('stepForward process -> not insert blocks to database (fork)', async () => {
   fakeBlockChain.setForked(true);
-  const spyInsertToDB = vi.spyOn(TestSync, 'insertBlockToDB');
+  const spyInsertToDB = vi.spyOn(TestSyncBlocks, 'insertBlockToDB');
   const currentBlock = dbJson[dbJson.length - 1];
-  await TestSync.stepForward(currentBlock);
+  await TestSyncBlocks.stepForward(currentBlock);
   expect(spyInsertToDB).not.toHaveBeenCalled();
 });
 
@@ -64,7 +66,9 @@ test('create array of blocks with given IDs', () => {
       height: 2,
     },
   ];
-  expect(TestSync.createBlockArrayByID(IDs, 0)).toStrictEqual(expectedBlocks);
+  expect(TestSyncBlocks.createBlockArrayByID(IDs, 0)).toStrictEqual(
+    expectedBlocks
+  );
 });
 
 /**
@@ -79,7 +83,7 @@ test('check overlapBlocks (fork happened).', () => {
     { ...lastLoadedBlock, id: lastLoadedBlock.id.concat('1') },
   ];
   expect(() => {
-    TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
+    TestSyncBlocks.checkOverlaps(overlapBlocks, receivedBlocks);
   }).toThrow();
 });
 
@@ -97,7 +101,7 @@ test('check overlapBlocks (normal situation).', () => {
   const overlapBlocks: Block[] = dbJson.slice(-2);
   const receivedBlocks: Block[] = [lastLoadedBlock, newBlock];
   const copyReceivedBlocks: Block[] = receivedBlocks.slice(-2);
-  TestSync.checkOverlaps(overlapBlocks, receivedBlocks);
+  TestSyncBlocks.checkOverlaps(overlapBlocks, receivedBlocks);
 
   expect(overlapBlocks).toEqual(copyReceivedBlocks);
   expect(receivedBlocks).toEqual([newBlock]);
@@ -124,10 +128,10 @@ test('check overlapBlocks (normal situation).', () => {
  * Scenario: fork is not happened.
  * Expected: stepForward in else block must be called.
  */
-test('syncBlocks -> stepForward process', async () => {
+test('update function -> stepForward process', async () => {
   fakeBlockChain.setForked(false);
-  const spyStepForward = vi.spyOn(TestSync, 'stepForward');
-  await TestSync.syncBlocks(lastLoadedBlock);
+  const spyStepForward = vi.spyOn(TestSyncBlocks, 'stepForward');
+  await TestSyncBlocks.update(lastLoadedBlock.height);
   expect(spyStepForward).toHaveBeenCalledWith(lastLoadedBlock);
 });
 
@@ -139,7 +143,7 @@ test('syncBlocks -> stepForward process', async () => {
  */
 test('check fork function in normal situation', async () => {
   fakeBlockChain.setForked(false);
-  const result = await TestSync.checkFork(lastLoadedBlock);
+  const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
   expect(result).toStrictEqual(false);
 });
 
@@ -150,7 +154,7 @@ test('check fork function in normal situation', async () => {
  * Expected: passed.
  */
 test('check setPaging function', () => {
-  const returnedPaging = TestSync.setPaging(
+  const returnedPaging = TestSyncBlocks.setPaging(
     0,
     fakeBlockChain.getLastBlock().height,
     6
@@ -169,7 +173,7 @@ test('check setPaging function', () => {
  * Expected: passed.
  */
 test('check setPaging function', () => {
-  const returnedPaging = TestSync.setPaging(
+  const returnedPaging = TestSyncBlocks.setPaging(
     0,
     fakeBlockChain.getLastBlock().height,
     1
@@ -189,7 +193,7 @@ test('check setPaging function', () => {
  */
 test('check fork function in case of fork', async () => {
   fakeBlockChain.setForked(true);
-  const result = await TestSync.checkFork(lastLoadedBlock);
+  const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
   expect(result).toStrictEqual(true);
 });
 
@@ -200,7 +204,7 @@ test('check fork function in case of fork', async () => {
  * Expected: return len(db) - 3 as fork point's height.
  */
 // test('calc fork point function', async () => {
-//   const result = await TestSync.calcFork(lastLoadedBlock);
+//   const result = await TestSyncBlocks.calcFork(lastLoadedBlock);
 //   expect(result).toStrictEqual(fakeBlockChain.forkHeight);
 // });
 
@@ -216,9 +220,9 @@ test('check fork function in case of fork', async () => {
 //     data: fakeBlockChain.getLastBlock().height,
 //   };
 //   let thrownError: Err;
-//   const txDictionary: TxDictionary = TestSync.sortTxs(fakeTxs.invalidTxs);
+//   const txDictionary: TxDictionary = TestSyncTxs.sortTxs(fakeTxs.invalidTxs);
 //   try {
-//     TestSync.checkTrxValidation(txDictionary);
+//     TestSyncTxs.checkTrxValidation(txDictionary);
 //   } catch (e) {
 //     thrownError = e as Err;
 //     expect(thrownError).toEqual(expectedError);
@@ -232,9 +236,9 @@ test('check fork function in case of fork', async () => {
  * Expected: checkValidation must not throw any error.
  */
 // test('check validation of valid tx', async () => {
-//   const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
+//   const txDictionary = TestSyncTxs.sortTxs(fakeTxs.validTxs);
 //   expect(() => {
-//     TestSync.checkTrxValidation(txDictionary);
+//     TestSyncTxs.checkTrxValidation(txDictionary);
 //   }).not.toThrow();
 // });
 
@@ -245,7 +249,7 @@ test('check fork function in case of fork', async () => {
  * Expected: sorted TxDictionary as expected.
  */
 test('sort Txs and return a TxDictionary', () => {
-  const result = TestSync.sortTxs(fakeTxs.validTxs);
+  const result = TestSyncTxs.sortTxs(fakeTxs.validTxs);
   let keys = fakeTxs.validTxs.map((tx) => tx.inclusionHeight);
   keys = keys.sort();
   keys = keys.filter((item, index) => keys.indexOf(item) === index);
@@ -260,9 +264,9 @@ test('sort Txs and return a TxDictionary', () => {
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
 // test('insert Trx to db in syncTrxsWithAddress function', async () => {
-//   const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
-//   const spySaveTrxToDB = vi.spyOn(TestSync, 'saveTxsToDB');
-//   TestSync.syncTrxsWithAddress(
+//   const txDictionary = TestSyncTxs.sortTxs(fakeTxs.validTxs);
+//   const spySaveTrxToDB = vi.spyOn(TestSyncTxs, 'saveTxsToDB');
+//   TestSyncTxs.syncTrxsWithAddress(
 //     testAddress,
 //     fakeBlockChain.getLastBlock().height
 //   );
