@@ -210,20 +210,20 @@ test('check fork function in case of fork', async () => {
  * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
  * Expected: checkValidation must throw an error.
  */
-test('check validation of invalid tx', async () => {
-  const expectedError: Err = {
-    massege: 'blockIds not matched.',
-    data: fakeBlockChain.getLastBlock().height,
-  };
-  let thrownError: Err;
-  const txDictionary: TxDictionary = TestSync.sortTxs(fakeTxs.invalidTxs);
-  try {
-    TestSync.checkTrxValidation(txDictionary);
-  } catch (e) {
-    thrownError = e as Err;
-    expect(thrownError).toEqual(expectedError);
-  }
-});
+// test('check validation of invalid tx', async () => {
+//   const expectedError: Err = {
+//     massege: 'blockIds not matched.',
+//     data: fakeBlockChain.getLastBlock().height,
+//   };
+//   let thrownError: Err;
+//   const txDictionary: TxDictionary = TestSync.sortTxs(fakeTxs.invalidTxs);
+//   try {
+//     TestSync.checkTrxValidation(txDictionary);
+//   } catch (e) {
+//     thrownError = e as Err;
+//     expect(thrownError).toEqual(expectedError);
+//   }
+// });
 
 /**
  * testing checkValidation function in case of nvalid trxs.
@@ -231,12 +231,12 @@ test('check validation of invalid tx', async () => {
  * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
  * Expected: checkValidation must not throw any error.
  */
-test('check validation of valid tx', async () => {
-  const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
-  expect(() => {
-    TestSync.checkTrxValidation(txDictionary);
-  }).not.toThrow();
-});
+// test('check validation of valid tx', async () => {
+//   const txDictionary = TestSync.sortTxs(fakeTxs.validTxs);
+//   expect(() => {
+//     TestSync.checkTrxValidation(txDictionary);
+//   }).not.toThrow();
+// });
 
 /**
  * testing sortTxs function.

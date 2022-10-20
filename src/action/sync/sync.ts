@@ -344,10 +344,10 @@ export class SyncAddress {
  */
 export const syncTrxs = async (walletId: number) => {
   const allAddresses = await AddressDbAction.getWalletAddresses(walletId);
-  allAddresses.forEach(async (address) => {
+  for (const address of allAddresses) {
     const currentHeight = address.process_height;
     const networkType = address.network_type;
     const Sync = new SyncAddress(walletId, address, networkType);
     await Sync.syncTrxsWithAddress(address, currentHeight);
-  });
+  }
 };
