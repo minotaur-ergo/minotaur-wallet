@@ -16,7 +16,8 @@ import BoxContent from '../db/entities/BoxContent';
 import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
-import { getConnection, QueryRunner } from 'typeorm/browser';
+import { QueryRunner } from 'typeorm/browser';
+import { InsertEmoticon } from '@mui/icons-material';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -625,6 +626,13 @@ class BoxContentActionClass {
         .addGroupBy('token_id')
         .getRawMany()
     ).map((item: { tokenId: string; total: string }) => item.tokenId);
+  };
+
+  getAddressTotalAmount = async (addressId: number) => {
+    return await this.tokenWithAddressRepository
+      .createQueryBuilder()
+      .where('address_id = :addressId', { addressId: addressId })
+      .getOne();
   };
 
   getWalletTokens = async (walletId: number) => {

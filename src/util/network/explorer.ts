@@ -156,4 +156,13 @@ export class Explorer {
       lastBox = memPoolBoxesMap.get(lastBox.box_id().to_str())!;
     return lastBox;
   };
+
+  getConfirmedBalanceByAddress = async (address: string) => {
+    return this.backend
+      .request<bigint>({
+        url: `/api/v1/addresses/${address}/balance/confirmed`,
+        transformResponse: (data) => JsonBI.parse(data),
+      })
+      .then((response) => response.data as bigint);
+  };
 }

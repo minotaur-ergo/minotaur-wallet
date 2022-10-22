@@ -4,6 +4,7 @@ import {
   AddressDbAction,
   BoxDbAction,
   DbTransaction,
+  BoxContentDbAction,
 } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
@@ -13,6 +14,8 @@ import Address from '../../db/entities/Address';
 import { ErgoTx, ErgoBox, InputBox } from '../../util/network/models';
 import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
+import { Explorer } from '../../util/network/explorer';
+import { TextRotationAngleupOutlined } from '@mui/icons-material';
 
 //constants
 const LIMIT = 50;
@@ -22,11 +25,13 @@ export class SyncTxs {
   private address: Address;
   networkType: string;
   node: Node;
+  explorer: Explorer;
 
   constructor(address: Address, network_type: string) {
     this.networkType = network_type;
     this.address = address;
     this.node = getNetworkType(network_type).getNode();
+    this.explorer = getNetworkType(address.network_type).getExplorer();
   }
 
   /**
@@ -40,8 +45,19 @@ export class SyncTxs {
       this.networkType
     );
     if (trx != null) {
-      for (const box of boxes)
-        await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
+      for (const box of boxes) {
+        const boxEntity = await BoxDbAction.createOrUpdateBox(
+          box,
+          this.address,
+          trx,
+          box.index
+        );
+        if (boxEntity) {
+          for (const token of box.assets) {
+            await BoxContentDbAction.createOrUpdateBoxContent(boxEntity, token);
+          }
+        }
+      }
     } else {
       throw new Error('Transaction not found.');
     }
@@ -142,8 +158,7 @@ export class SyncTxs {
    * @param address : Address
    * @param currentHeight : number
    */
-  syncTrxsWithAddress = async (address: Address, currentHeight: number) => {
-    const explorer = getNetworkType(address.network_type).getExplorer();
+  syncTrxsWithAddress = async (currentHeight: number) => {
     const lastHeight: number = await this.node.getHeight();
     const heightRange: HeightRange = {
       fromHeight: currentHeight,
@@ -157,8 +172,8 @@ export class SyncTxs {
       const Txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
       while (pageTxs == undefined || pageTxs.items.length != 0) {
-        pageTxs = await explorer.getTxsByAddressInHeightRange(
-          address.address,
+        pageTxs = await this.explorer.getTxsByAddressInHeightRange(
+          this.address.address,
           heightRange,
           paging,
           true
@@ -171,18 +186,34 @@ export class SyncTxs {
       try {
         this.checkTrxValidation(sortedTxs);
         await this.saveTxsToDB(sortedTxs, heightRange.toHeight);
-        AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
+        AddressDbAction.setAddressHeight(this.address.id, heightRange.toHeight);
       } catch (err: unknown) {
         const e = err as Err;
         const ProcessedHeight = e.data;
         await this.saveTxsToDB(sortedTxs, ProcessedHeight);
-        AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
+        AddressDbAction.setAddressHeight(this.address.id, ProcessedHeight);
         throw new Error('Fork happened.');
       }
 
       heightRange.fromHeight = heightRange.toHeight;
       heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
       paging.offset = 0;
+    }
+  };
+
+  verifyContent = async () => {
+    const totalExpected = await this.explorer.getConfirmedBalanceByAddress(
+      this.address.address
+    );
+    const totalLoaded = await BoxContentDbAction.getAddressTotalAmount(
+      this.address.id
+    );
+
+    if (totalLoaded) {
+      if (totalExpected.toString() !== totalLoaded.amount_str)
+        AddressDbAction.setAddressHeight(this.address.id, 0);
+    } else {
+      throw new Error('Loaded Content is null.');
     }
   };
 }

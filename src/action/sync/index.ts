@@ -16,6 +16,6 @@ export const sync = async (walletId: number) => {
     syncBlocks.update(address.process_height);
 
     const syncTxs = new SyncTxs(address, networkType);
-    await syncTxs.syncTrxsWithAddress(address, currentHeight);
+    await syncTxs.syncTrxsWithAddress(currentHeight);
   }
 };
