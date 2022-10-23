@@ -16,6 +16,7 @@ import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
 import { TextRotationAngleupOutlined } from '@mui/icons-material';
+import { ButtonGroupClassKey } from '@mui/material';
 
 //constants
 const LIMIT = 50;
@@ -202,16 +203,33 @@ export class SyncTxs {
   };
 
   verifyContent = async () => {
-    const totalExpected = await this.explorer.getConfirmedBalanceByAddress(
+    const expected = await this.explorer.getConfirmedBalanceByAddress(
       this.address.address
     );
-    const totalLoaded = await BoxContentDbAction.getAddressTotalAmount(
+
+    const totalLoadedErg = await AddressDbAction.getAddressTotalErg(
+      this.address.id
+    );
+    const LoadedTokens = await BoxContentDbAction.getAddressTokensAmount(
       this.address.id
     );
 
-    if (totalLoaded) {
-      if (totalExpected.toString() !== totalLoaded.amount_str)
-        AddressDbAction.setAddressHeight(this.address.id, 0);
+    const totalExpectedTokenAmount = expected.tokens.reduce(
+      (sum, token) => (sum += token.amount),
+      BigInt(0)
+    );
+
+    const totalLoadedTokenAmount = LoadedTokens.reduce(
+      (sum, token) => (sum += BigInt(token.amount_str)),
+      BigInt(0)
+    );
+
+    if (totalLoadedErg) {
+      if (
+        expected.nanoErgs !== totalLoadedErg.erg_str ||
+        totalExpectedTokenAmount != totalLoadedTokenAmount
+      )
+        throw new Error('invalid address content');
     } else {
       throw new Error('Loaded Content is null.');
     }

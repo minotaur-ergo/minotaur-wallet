@@ -1,6 +1,7 @@
 import { SyncTxs } from './SyncTxs';
 import { SyncBlocks } from './SyncBlocks';
-import { AddressDbAction } from '../db';
+import { AddressDbAction, BlockDbAction } from '../db';
+import { Block } from './../Types';
 
 /**
  * Sync Process: sync blocks of address 's network and then sync the transactions.
@@ -13,9 +14,21 @@ export const sync = async (walletId: number) => {
     const networkType = address.network_type;
 
     const syncBlocks = new SyncBlocks(networkType);
+    const startBlock = await BlockDbAction.getBlockByHeight(
+      address.process_height,
+      address.network_type
+    );
     syncBlocks.update(address.process_height);
 
     const syncTxs = new SyncTxs(address, networkType);
     await syncTxs.syncTrxsWithAddress(currentHeight);
+    try {
+      await syncTxs.verifyContent();
+    } catch (error) {
+      if (startBlock != null) {
+        if (!syncBlocks.checkFork(startBlock as Block))
+          AddressDbAction.setAddressHeight(address.id, startBlock.height);
+      }
+    }
   }
 };

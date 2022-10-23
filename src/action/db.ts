@@ -174,6 +174,13 @@ class AddressActionClass {
       })
       .execute();
   };
+
+  getAddressTotalErg = async (addressId: number) => {
+    return await this.addressWithErgRepository
+      .createQueryBuilder()
+      .where('address = :address', { address: addressId })
+      .getOne();
+  };
 }
 
 class AssetActionClass {
@@ -279,6 +286,21 @@ class BlockActionClass {
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
+  };
+
+  getBlockByHeight = async (height: number, network_type: string) => {
+    const entity = await this.repository
+      .createQueryBuilder()
+      .where('height = :height', { height: height })
+      .andWhere('network_type = :network_type', { network_type: network_type })
+      .getOne();
+
+    if (entity) {
+      return {
+        height: entity.height,
+        id: entity.block_id,
+      };
+    }
   };
 
   InsertHeaders = async (
@@ -628,11 +650,11 @@ class BoxContentActionClass {
     ).map((item: { tokenId: string; total: string }) => item.tokenId);
   };
 
-  getAddressTotalAmount = async (addressId: number) => {
+  getAddressTokensAmount = async (addressId: number) => {
     return await this.tokenWithAddressRepository
       .createQueryBuilder()
       .where('address_id = :addressId', { addressId: addressId })
-      .getOne();
+      .getMany();
   };
 
   getWalletTokens = async (walletId: number) => {

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import {
+  AddressInfo,
   ErgoBox,
   ErgoTx,
   HeadersBlockExplorer,
@@ -159,10 +160,10 @@ export class Explorer {
 
   getConfirmedBalanceByAddress = async (address: string) => {
     return this.backend
-      .request<bigint>({
+      .request<AddressInfo>({
         url: `/api/v1/addresses/${address}/balance/confirmed`,
         transformResponse: (data) => JsonBI.parse(data),
       })
-      .then((response) => response.data as bigint);
+      .then((response) => response.data);
   };
 }
