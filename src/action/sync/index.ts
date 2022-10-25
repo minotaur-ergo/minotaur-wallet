@@ -18,15 +18,20 @@ export const sync = async (walletId: number) => {
       address.process_height,
       address.network_type
     );
-    syncBlocks.update(address.process_height);
+    const lastBlock = (await BlockDbAction.getLastHeaders(1)).pop()!;
+    const lastBlockHeader: Block = {
+      height: lastBlock.height,
+      id: lastBlock.block_id,
+    };
 
+    syncBlocks.update(address.process_height);
     const syncTxs = new SyncTxs(address, networkType);
     await syncTxs.syncTrxsWithAddress(currentHeight);
-    try {
-      await syncTxs.verifyContent();
-    } catch (error) {
+
+    const successfullySynced = await syncTxs.verifyContent();
+    if (!successfullySynced) {
       if (startBlock != null) {
-        if (!syncBlocks.checkFork(startBlock as Block))
+        if (!(await syncBlocks.checkFork(lastBlockHeader)))
           AddressDbAction.setAddressHeight(address.id, startBlock.height);
       }
     }

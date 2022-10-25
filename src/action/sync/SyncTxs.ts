@@ -16,7 +16,7 @@ import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
 import { TextRotationAngleupOutlined } from '@mui/icons-material';
-import { ButtonGroupClassKey } from '@mui/material';
+import { validateBoxContentModel } from './../../store/asyncAction';
 
 //constants
 const LIMIT = 50;
@@ -47,17 +47,7 @@ export class SyncTxs {
     );
     if (trx != null) {
       for (const box of boxes) {
-        const boxEntity = await BoxDbAction.createOrUpdateBox(
-          box,
-          this.address,
-          trx,
-          box.index
-        );
-        if (boxEntity) {
-          for (const token of box.assets) {
-            await BoxContentDbAction.createOrUpdateBoxContent(boxEntity, token);
-          }
-        }
+        await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
       }
     } else {
       throw new Error('Transaction not found.');
@@ -104,6 +94,7 @@ export class SyncTxs {
         }
       }
     }
+    validateBoxContentModel();
   };
 
   /**
@@ -202,36 +193,26 @@ export class SyncTxs {
     }
   };
 
-  verifyContent = async () => {
+  verifyContent = async (): Promise<boolean> => {
     const expected = await this.explorer.getConfirmedBalanceByAddress(
       this.address.address
     );
+    const expectedTokenIds = expected.tokens.map((token) => token.tokenId);
 
     const totalLoadedErg = await AddressDbAction.getAddressTotalErg(
       this.address.id
     );
-    const LoadedTokens = await BoxContentDbAction.getAddressTokensAmount(
-      this.address.id
+    const LoadedTokens = await BoxContentDbAction.getTokens(
+      this.address.address
     );
 
-    const totalExpectedTokenAmount = expected.tokens.reduce(
-      (sum, token) => (sum += token.amount),
-      BigInt(0)
-    );
-
-    const totalLoadedTokenAmount = LoadedTokens.reduce(
-      (sum, token) => (sum += BigInt(token.amount_str)),
-      BigInt(0)
-    );
-
-    if (totalLoadedErg) {
-      if (
-        expected.nanoErgs !== totalLoadedErg.erg_str ||
-        totalExpectedTokenAmount != totalLoadedTokenAmount
-      )
-        throw new Error('invalid address content');
+    if (
+      totalLoadedErg?.erg_str == expected.nanoErgs &&
+      expectedTokenIds.sort() == LoadedTokens.sort()
+    ) {
+      return true;
     } else {
-      throw new Error('Loaded Content is null.');
+      return false;
     }
   };
 }

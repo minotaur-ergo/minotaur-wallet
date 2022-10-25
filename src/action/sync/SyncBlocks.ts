@@ -3,7 +3,6 @@ import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
 import { Block } from '../Types';
 import { Paging } from '../../util/network/paging';
-import { constants } from 'buffer';
 
 //constants
 const LIMIT = 50;
@@ -161,15 +160,22 @@ export class SyncBlocks {
    * @param currentHeight : number
    */
   update = async (currentHeight: number): Promise<void> => {
-    const currentBlock = await BlockDbAction.getBlockByHeight(
+    let currentBlock = await BlockDbAction.getBlockByHeight(
       currentHeight,
       this.networkType
     );
-    if (currentBlock) {
-      if (await this.checkFork(currentBlock)) {
-        const forkPoint = await this.calcFork(currentBlock);
-        this.removeFromDB(forkPoint);
-      } else this.stepForward(currentBlock);
+
+    if (!currentBlock) {
+      currentBlock = {
+        id: await this.node.getBlockIdAtHeight(currentHeight),
+        height: currentHeight,
+      };
+
+      this.insertBlockToDB([currentBlock]);
     }
+    if (await this.checkFork(currentBlock)) {
+      const forkPoint = await this.calcFork(currentBlock);
+      this.removeFromDB(forkPoint);
+    } else this.stepForward(currentBlock);
   };
 }

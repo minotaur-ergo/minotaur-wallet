@@ -84,4 +84,4 @@ const loadBlockChainData = () => {
   });
 };
 
-export { loadBlockChainData };
+export { loadBlockChainData, validateBoxContentModel };
