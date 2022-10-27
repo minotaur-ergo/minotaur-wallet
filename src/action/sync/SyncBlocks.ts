@@ -152,9 +152,12 @@ export class SyncBlocks {
   };
 
   /**
-   * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
+   * start from last dbBlock(if there is not such a block insert block with height 0.)
+   * if fork is happened, return forkHeight
+   * otherwise start stepForward process.
+   * @returns in case of fork: forkHeight. otherwise undefined
    */
-  update = async (): Promise<void | number> => {
+  update = async (): Promise<undefined | number> => {
     let currentBlock = (await BlockDbAction.getLastHeaders(1))!.pop();
     if (!currentBlock) {
       currentBlock = {
