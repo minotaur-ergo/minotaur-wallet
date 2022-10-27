@@ -26,9 +26,10 @@ export const sync = async (walletId: number) => {
     };
 
     try {
-      const forkMsg = await syncBlocks.update(address.process_height);
-      if (forkMsg !== undefined) {
-        await syncTxs.forkTxs(forkMsg.data);
+      const forkPoint = await syncBlocks.update(address.process_height);
+      if (forkPoint !== undefined) {
+        await syncTxs.forkTxs(forkPoint.data);
+        AddressDbAction.setAddressHeight(address.id, forkPoint.data);
       }
       await syncTxs.syncTrxsWithAddress(currentHeight);
     } catch {
