@@ -16,8 +16,6 @@ import BoxContent from '../db/entities/BoxContent';
 import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
-import { QueryRunner } from 'typeorm/browser';
-import { InsertEmoticon } from '@mui/icons-material';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -233,12 +231,20 @@ class BlockActionClass {
   }
 
   getLastHeaders = async (count: number) => {
-    return await this.repository
+    const entity = await this.repository
       .createQueryBuilder()
       .limit(count)
       .offset(0)
       .orderBy('height', 'DESC')
       .getMany();
+    if (entity) {
+      return entity.map((block) => {
+        return {
+          height: block.height,
+          id: block.block_id,
+        };
+      });
+    }
   };
 
   /**
@@ -493,6 +499,14 @@ class BoxActionClass {
       .execute();
   };
 
+  removeAddressBoxes = async (address: Address) => {
+    await this.repository
+      .createQueryBuilder()
+      .where('address = :address', { address: address })
+      .delete()
+      .execute();
+  };
+
   invalidAssetCountBox = async () => {
     return await this.assetCountBoxRepository
       .createQueryBuilder()
@@ -638,23 +652,14 @@ class BoxContentActionClass {
   };
 
   getAddressTokens = async (addressId: number) => {
-    return (
-      await this.repository
-        .createQueryBuilder()
-        .select('token_id', 'tokenId')
-        .addSelect('SUM(amount)', 'total')
-        .innerJoin('box', 'Box', 'Box.id=boxId')
-        .where('Box.addressId = :addressId', { addressId: addressId })
-        .addGroupBy('token_id')
-        .getRawMany()
-    ).map((item: { tokenId: string; total: string }) => item.tokenId);
-  };
-
-  getAddressTokensAmount = async (addressId: number) => {
-    return await this.tokenWithAddressRepository
+    return await this.repository
       .createQueryBuilder()
-      .where('address_id = :addressId', { addressId: addressId })
-      .getMany();
+      .select('token_id', 'tokenId')
+      .addSelect('SUM(amount)', 'total')
+      .innerJoin('box', 'Box', 'Box.id=boxId')
+      .where('Box.addressId = :addressId', { addressId: addressId })
+      .addGroupBy('token_id')
+      .getRawMany<{ tokenId: string; total: bigint }>();
   };
 
   getWalletTokens = async (walletId: number) => {
@@ -734,12 +739,28 @@ class DbTransactionClass {
     this.queryRunner = dataSource.createQueryRunner();
   }
 
-  fork = async (forkHeight: number, network_type: string) => {
+  forkAll = async (forkHeight: number, network_type: string) => {
     this.queryRunner.connect();
     this.queryRunner.startTransaction();
     try {
+      await BlockDbAction.forkHeaders(forkHeight, network_type);
       await BoxDbAction.forkBoxes(forkHeight, network_type);
+      await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
       await TxDbAction.forkTxs(forkHeight, network_type);
+      await this.queryRunner.commitTransaction();
+    } catch {
+      this.queryRunner.rollbackTransaction();
+    } finally {
+      this.queryRunner.release();
+    }
+  };
+
+  forkAddress = async (address: Address) => {
+    this.queryRunner.connect();
+    this.queryRunner.startTransaction();
+    try {
+      await BoxDbAction.removeAddressBoxes(address);
+      await TxDbAction.forkTxs(address.process_height, address.network_type);
       await this.queryRunner.commitTransaction();
     } catch {
       this.queryRunner.rollbackTransaction();

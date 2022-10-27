@@ -8,10 +8,10 @@ import {
 } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { HeightRange, Err, TxDictionary } from '../Types';
+import { HeightRange, Err, TxDictionary, TokenData } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
-import { ErgoTx, ErgoBox, InputBox } from '../../util/network/models';
+import { ErgoTx, ErgoBox, InputBox, Token } from '../../util/network/models';
 import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
@@ -138,14 +138,6 @@ export class SyncTxs {
   };
 
   /**
-   * fork all txs with height > forkHeight, unspend boxes with spend_height > forkHeight and remove all forked boxes from db.
-   * @param forkHeight : number
-   */
-  forkTxs = async (forkHeight: number) => {
-    await DbTransaction.fork(forkHeight + 1, this.networkType);
-  };
-
-  /**
    * get transactions for specific address, check if they're valid and store them.
    * @param currentHeight : number
    */
@@ -196,22 +188,43 @@ export class SyncTxs {
     const expected = await this.explorer.getConfirmedBalanceByAddress(
       this.address.address
     );
-    const expectedTokenIds = expected.tokens.map((token) => token.tokenId);
+    return (
+      (await this.verifyTokens(expected.tokens)) &&
+      (await this.verifyTotalErg(expected.nanoErgs))
+    );
+  };
 
-    const totalLoadedErg = await AddressDbAction.getAddressTotalErg(
+  /**
+   * compare dbTokens of the address with expectedTokens given from explorer.
+   * @param expectedTokens : Token[]
+   * @returns
+   */
+  verifyTokens = async (expectedTokens: Token[]): Promise<boolean> => {
+    const dbTokens: TokenData[] = await BoxContentDbAction.getAddressTokens(
       this.address.id
     );
-    const LoadedTokens = await BoxContentDbAction.getTokens(
-      this.address.address
+
+    const isSameToken = (a: TokenData, b: Token) =>
+      a.tokenId === b.tokenId && a.total === b.amount;
+    const diff1 = dbTokens.filter(
+      (dbToken) =>
+        !expectedTokens.some((expectedToken) =>
+          isSameToken(dbToken, expectedToken)
+        )
     );
 
-    if (
-      totalLoadedErg?.erg_str == expected.nanoErgs &&
-      expectedTokenIds.sort() == LoadedTokens.sort()
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    const diff2 = expectedTokens.filter(
+      (expectedToken) =>
+        !dbTokens.some((dbToken) => isSameToken(dbToken, expectedToken))
+    );
+
+    return diff1.length == 0 && diff2.length == 0;
+  };
+
+  verifyTotalErg = async (expectedTotalErg: bigint) => {
+    const totalDbErg = await AddressDbAction.getAddressTotalErg(
+      this.address.id
+    );
+    return totalDbErg?.erg_str == expectedTotalErg;
   };
 }

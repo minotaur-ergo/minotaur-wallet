@@ -1,7 +1,7 @@
 import { SyncTxs } from './SyncTxs';
 import { SyncBlocks } from './SyncBlocks';
-import { AddressDbAction, BlockDbAction } from '../db';
-import { Block, Err } from './../Types';
+import { AddressDbAction, BlockDbAction, DbTransaction } from '../db';
+import { Block } from './../Types';
 
 /**
  * Sync Process: sync blocks of address 's network and then sync the transactions.
@@ -15,32 +15,25 @@ export const sync = async (walletId: number) => {
 
     const syncBlocks = new SyncBlocks(networkType);
     const syncTxs = new SyncTxs(address, networkType);
-    const startBlock = await BlockDbAction.getBlockByHeight(
-      address.process_height,
-      address.network_type
-    );
-    const lastBlock = (await BlockDbAction.getLastHeaders(1)).pop()!;
-    const lastDbBlockHeader: Block = {
-      height: lastBlock.height,
-      id: lastBlock.block_id,
-    };
 
     try {
-      const forkPoint = await syncBlocks.update(address.process_height);
+      const forkPoint = await syncBlocks.update();
       if (forkPoint !== undefined) {
-        await syncTxs.forkTxs(forkPoint.data);
-        AddressDbAction.setAddressHeight(address.id, forkPoint.data);
+        await DbTransaction.forkAll(forkPoint, address.network_type);
+        AddressDbAction.setAddressHeight(address.id, forkPoint);
       }
       await syncTxs.syncTrxsWithAddress(currentHeight);
     } catch {
       /* empty */
     }
 
+    const lastRecievedBlock: Block = await syncTxs.node.getLastBlockHeader();
+    const lastDbBlockHeader = (await BlockDbAction.getLastHeaders(1))!.pop();
     const successfullySynced = await syncTxs.verifyContent();
     if (!successfullySynced) {
-      const lastRecievedBlock: Block = await syncTxs.node.getLastBlockHeader();
       if (lastDbBlockHeader == lastRecievedBlock)
-        AddressDbAction.setAddressHeight(address.id, startBlock!.height);
+        AddressDbAction.setAddressHeight(address.id, 0);
+      await DbTransaction.forkAddress(address);
     }
   }
 };

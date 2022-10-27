@@ -121,14 +121,6 @@ export class SyncBlocks {
   };
 
   /**
-   * remove blocks with height > forkheight from db.
-   * @param forkHeight : number
-   */
-  removeFromDB = (forkHeight: number): void => {
-    BlockDbAction.forkHeaders(forkHeight + 1, this.networkType);
-  };
-
-  /**
    * step backward and compare loaded blocks from db and recieved blocks from node, until reach fork point.
    * @param currentBlock
    * @returns forkPOint height : number
@@ -161,32 +153,18 @@ export class SyncBlocks {
 
   /**
    * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
-   * @param currentHeight : number
    */
-  update = async (currentHeight: number): Promise<undefined | Err> => {
-    let currentBlock = await BlockDbAction.getBlockByHeight(
-      currentHeight,
-      this.networkType
-    );
-
+  update = async (): Promise<void | number> => {
+    let currentBlock = (await BlockDbAction.getLastHeaders(1))!.pop();
     if (!currentBlock) {
       currentBlock = {
-        id: await this.node.getBlockIdAtHeight(currentHeight),
-        height: currentHeight,
+        id: await this.node.getBlockIdAtHeight(0),
+        height: 0,
       };
-
       this.insertBlockToDB([currentBlock]);
     }
-
-    let returnedMessage: Err | undefined;
     if (await this.checkFork(currentBlock)) {
-      const forkPoint = await this.calcFork(currentBlock);
-      this.removeFromDB(forkPoint);
-      returnedMessage = {
-        massege: 'Fork Happened',
-        data: forkPoint,
-      };
+      return await this.calcFork(currentBlock);
     } else this.stepForward(currentBlock);
-    return returnedMessage;
   };
 }
