@@ -1,7 +1,7 @@
 import { BlockDbAction } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { Block } from '../Types';
+import { Block, Err } from '../Types';
 import { Paging } from '../../util/network/paging';
 
 //constants
@@ -110,7 +110,11 @@ export class SyncBlocks {
         recievedIDs,
         current_height
       );
-      this.checkOverlaps(overlapBlocks, recievedBlocks);
+      try {
+        this.checkOverlaps(overlapBlocks, recievedBlocks);
+      } catch {
+        return;
+      }
       this.insertBlockToDB(recievedBlocks);
       current_height += paging.limit;
     }
@@ -159,7 +163,7 @@ export class SyncBlocks {
    * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
    * @param currentHeight : number
    */
-  update = async (currentHeight: number): Promise<void> => {
+  update = async (currentHeight: number): Promise<undefined | Err> => {
     let currentBlock = await BlockDbAction.getBlockByHeight(
       currentHeight,
       this.networkType
@@ -173,9 +177,16 @@ export class SyncBlocks {
 
       this.insertBlockToDB([currentBlock]);
     }
+
+    let returnedMessage: Err | undefined;
     if (await this.checkFork(currentBlock)) {
       const forkPoint = await this.calcFork(currentBlock);
       this.removeFromDB(forkPoint);
+      returnedMessage = {
+        massege: 'Fork Happened',
+        data: forkPoint,
+      };
     } else this.stepForward(currentBlock);
+    return returnedMessage;
   };
 }

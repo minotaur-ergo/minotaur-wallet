@@ -147,7 +147,6 @@ export class SyncTxs {
 
   /**
    * get transactions for specific address, check if they're valid and store them.
-   * @param address : Address
    * @param currentHeight : number
    */
   syncTrxsWithAddress = async (currentHeight: number) => {

@@ -87,4 +87,18 @@ export class Node {
         return ids.data[0];
       });
   };
+
+  getLastBlockHeader = async () => {
+    return this.backend
+      .request<Array<BlockHeader>>({
+        url: `/blocks/lastHeaders/${1}`,
+      })
+      .then((res) => {
+        const headers = res.data;
+        return {
+          height: headers[0].height,
+          id: headers[0].id,
+        };
+      });
+  };
 }
