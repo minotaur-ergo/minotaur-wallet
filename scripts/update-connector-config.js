@@ -6,12 +6,13 @@ const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
 const chromeEntries = {
   injector: 'injector.ts',
   background: 'background.ts',
-  content: 'content.ts',
+  // content: 'content.ts',
 };
 module.exports = function (config) {
   config.optimization = {
     ...config.optimization,
     runtimeChunk: false,
+    minimize: false,
   };
   config.entry = { main: resolveApp('src/connector/index.tsx') };
   Object.entries(chromeEntries).forEach(([key, value]) => {

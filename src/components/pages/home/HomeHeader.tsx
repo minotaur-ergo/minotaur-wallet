@@ -7,7 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { RouteMap } from '../../route/routerMap';
 import { Capacitor } from '@capacitor/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faGear } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDownload,
+  faGear,
+  faHandshake,
+} from '@fortawesome/free-solid-svg-icons';
 
 const downloadDb = () => {
   try {
@@ -45,9 +49,12 @@ const HomeHeader = () => {
         {' '}
         Minotaur{' '}
       </Typography>
-      {/*<IconButton color="inherit" onClick={() => navigate(RouteMap.DAppConnector)}>*/}
-      {/*    <FontAwesomeIcon icon={faHandshake} size={"xs"}/>*/}
-      {/*</IconButton>*/}
+      <IconButton
+        color="inherit"
+        onClick={() => navigate(RouteMap.DAppConnector)}
+      >
+        <FontAwesomeIcon icon={faHandshake} size={'xs'} />
+      </IconButton>
       <IconButton color="inherit" onClick={() => navigate(RouteMap.Settings)}>
         <FontAwesomeIcon icon={faGear} size={'xs'} />
       </IconButton>
