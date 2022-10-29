@@ -743,10 +743,10 @@ class DbTransactionClass {
     this.queryRunner.connect();
     this.queryRunner.startTransaction();
     try {
-      await BlockDbAction.forkHeaders(forkHeight, network_type);
-      await BoxDbAction.forkBoxes(forkHeight, network_type);
       await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
+      await BoxDbAction.forkBoxes(forkHeight, network_type);
       await TxDbAction.forkTxs(forkHeight, network_type);
+      await BlockDbAction.forkHeaders(forkHeight, network_type);
       await this.queryRunner.commitTransaction();
     } catch {
       this.queryRunner.rollbackTransaction();
