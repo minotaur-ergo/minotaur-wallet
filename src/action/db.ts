@@ -602,6 +602,16 @@ class TxActionClass {
     const entities = txs.map((tx) => ({ ...txs, network_type: network_type }));
     await this.repository.insert(entities);
   };
+
+  removeTxs = async (txs: (Tx | null)[], network_type: string) => {
+    const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
+    await this.repository
+      .createQueryBuilder()
+      .where('tx_id IN txIds', { txIds: txIdList })
+      .andWhere('network_type = :network_type', { network_type: network_type })
+      .delete()
+      .execute();
+  };
 }
 
 class BoxContentActionClass {
@@ -759,8 +769,12 @@ class DbTransactionClass {
     this.queryRunner.connect();
     this.queryRunner.startTransaction();
     try {
+      const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
       await BoxDbAction.removeAddressBoxes(address);
-      await TxDbAction.forkTxs(address.process_height, address.network_type);
+      await TxDbAction.removeTxs(
+        addressBoxes.map((box) => box.tx),
+        address.network_type
+      );
       await this.queryRunner.commitTransaction();
     } catch {
       this.queryRunner.rollbackTransaction();
