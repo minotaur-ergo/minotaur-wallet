@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import {
   AddressInfo,
   ErgoBox,
@@ -87,7 +87,7 @@ export class Explorer {
         url: `/api/v1/boxes/unspent/byTokenId/${tokenId}`,
         transformResponse: (data) => JsonBI.parse(data),
       })
-      .then((response: any) => {
+      .then((response: AxiosResponse<Items<ErgoBox>>) => {
         const converted = response.data.items.map((item: ErgoBox) =>
           wasm.ErgoBox.from_json(JsonBI.stringify(item))
         );
@@ -127,7 +127,7 @@ export class Explorer {
       .then((res) => res.data);
   };
 
-  trackMemPool = async (box: wasm.ErgoBox): Promise<any> => {
+  trackMemPool = async (box: wasm.ErgoBox) => {
     const address: string = wasm.Address.recreate_from_ergo_tree(
       box.ergo_tree()
     ).to_base58(this.network_prefix);

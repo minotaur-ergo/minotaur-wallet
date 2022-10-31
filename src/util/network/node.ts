@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { BlockHeader, NetworkContext, NodeInfo } from './models';
-import { Block } from '../../action/Types';
 import { JsonBI } from '../json';
 import { Paging } from './paging';
 

@@ -16,6 +16,7 @@ import BoxContent from '../db/entities/BoxContent';
 import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
+import TxBoxCount from '../db/entities/views/TxBoxCount';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -518,10 +519,12 @@ class BoxActionClass {
 class TxActionClass {
   private repository: Repository<Tx>;
   private walletRepository: Repository<WalletTx>;
+  private txBoxCountRepository: Repository<TxBoxCount>;
 
   constructor(dataSource: DataSource) {
     this.repository = dataSource.getRepository(Tx);
     this.walletRepository = dataSource.getRepository(WalletTx);
+    this.txBoxCountRepository = dataSource.getRepository(TxBoxCount);
   }
 
   updateOrCreateTx = async (
@@ -614,6 +617,18 @@ class TxActionClass {
       .createQueryBuilder()
       .where('tx_id  IN txIds', { txIds: txIdList })
       .andWhere('network_type = :network_type', { network_type: network_type })
+      .delete()
+      .execute();
+  };
+
+  removeUnusedAddresses = async () => {
+    const txs = await this.txBoxCountRepository.findBy({
+      input_box_count: 0,
+      output_box_count: 0,
+    });
+    await this.repository
+      .createQueryBuilder()
+      .where('tx_id  IN txIds', { txIds: txs.map((item) => item.tx_id) })
       .delete()
       .execute();
   };
@@ -789,10 +804,7 @@ class DbTransactionClass {
         address.wallet!.id
       );
       await BoxDbAction.removeAddressBoxes(address);
-      await TxDbAction.removeTxs(
-        remainingBoxes.map((box) => box.tx),
-        address.network_type
-      );
+      await TxDbAction.removeUnusedAddresses();
       await this.queryRunner.commitTransaction();
     } catch {
       this.queryRunner.rollbackTransaction();

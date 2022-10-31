@@ -11,6 +11,7 @@ import Block from './Block';
 import TokenWithAddress from './views/AddressToken';
 import Config from './Config';
 import AssetCountBox from './views/AssetCountBox';
+import TxBoxCount from './views/TxBoxCount';
 
 const Entities = [
   Wallet,
@@ -27,6 +28,7 @@ const Entities = [
   WalletTx,
   Config,
   AssetCountBox,
+  TxBoxCount,
 ];
 
 export default Entities;

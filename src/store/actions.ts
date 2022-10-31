@@ -53,7 +53,7 @@ export const loadConfig = () => {
 
 export const setDisplayMode = (mode: DisplayType) => {
   return (dispatch: Dispatch<any>) => {
-    ConfigDbAction.setConfig(ConfigType.DisplayMode, mode).then((res) => {
+    ConfigDbAction.setConfig(ConfigType.DisplayMode, mode).then(() => {
       dispatch({
         type: actionType.SET_DISPLAY_MODE,
         payload: mode,
