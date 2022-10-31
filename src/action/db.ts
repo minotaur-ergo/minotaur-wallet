@@ -603,11 +603,16 @@ class TxActionClass {
     await this.repository.insert(entities);
   };
 
+  /**
+   * remove txs which have not corresponding boxes in database.
+   * @param txs : (Tx | null)[]
+   * @param network_type : string
+   */
   removeTxs = async (txs: (Tx | null)[], network_type: string) => {
     const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
     await this.repository
       .createQueryBuilder()
-      .where('tx_id IN txIds', { txIds: txIdList })
+      .where('tx_id NOT IN txIds', { txIds: txIdList })
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
