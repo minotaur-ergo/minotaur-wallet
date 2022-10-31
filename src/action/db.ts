@@ -711,6 +711,15 @@ class BoxContentActionClass {
       token_id: tokenId,
     });
   };
+
+  removeAddressBoxContent = async (addressBoxes: Box[]) => {
+    const instances = await this.repository
+      .createQueryBuilder()
+      .innerJoin('box', 'Box', 'Box.id = boxId')
+      .where('box IN boxes', { boxes: addressBoxes })
+      .getMany();
+    await this.repository.remove(instances);
+  };
 }
 
 class ConfigActionClass {
@@ -770,6 +779,7 @@ class DbTransactionClass {
     this.queryRunner.startTransaction();
     try {
       const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
+      await BoxContentDbAction.removeAddressBoxContent(addressBoxes);
       await BoxDbAction.removeAddressBoxes(address);
       await TxDbAction.removeTxs(
         addressBoxes.map((box) => box.tx),
