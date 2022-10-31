@@ -612,7 +612,7 @@ class TxActionClass {
     const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
     await this.repository
       .createQueryBuilder()
-      .where('tx_id NOT IN txIds', { txIds: txIdList })
+      .where('tx_id  IN txIds', { txIds: txIdList })
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
@@ -785,9 +785,12 @@ class DbTransactionClass {
     try {
       const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
       await BoxContentDbAction.removeAddressBoxContent(addressBoxes);
+      const remainingBoxes = await BoxDbAction.getWalletBoxes(
+        address.wallet!.id
+      );
       await BoxDbAction.removeAddressBoxes(address);
       await TxDbAction.removeTxs(
-        addressBoxes.map((box) => box.tx),
+        remainingBoxes.map((box) => box.tx),
         address.network_type
       );
       await this.queryRunner.commitTransaction();
