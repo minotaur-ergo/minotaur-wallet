@@ -128,12 +128,12 @@ test('check overlapBlocks (normal situation).', () => {
  * Scenario: fork is not happened.
  * Expected: stepForward in else block must be called.
  */
-test('update function -> stepForward process', async () => {
-  fakeBlockChain.setForked(false);
-  const spyStepForward = vi.spyOn(TestSyncBlocks, 'stepForward');
-  await TestSyncBlocks.update(lastLoadedBlock.height);
-  expect(spyStepForward).toHaveBeenCalledWith(lastLoadedBlock);
-});
+// test('update function -> stepForward process', async () => {
+//   fakeBlockChain.setForked(false);
+//   const spyStepForward = vi.spyOn(TestSyncBlocks, 'stepForward');
+//   await TestSyncBlocks.update(lastLoadedBlock.height);
+//   expect(spyStepForward).toHaveBeenCalledWith(lastLoadedBlock);
+// });
 
 /**
  * testing checkFork to detect fork in specified height.

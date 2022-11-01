@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { BlockHeader, NetworkContext, NodeInfo } from './models';
-import { Block } from '../../action/Types';
 import { JsonBI } from '../json';
 import { Paging } from './paging';
 
@@ -85,6 +84,20 @@ export class Node {
       })
       .then((ids) => {
         return ids.data[0];
+      });
+  };
+
+  getLastBlockHeader = async () => {
+    return this.backend
+      .request<Array<BlockHeader>>({
+        url: `/blocks/lastHeaders/${1}`,
+      })
+      .then((res) => {
+        const headers = res.data;
+        return {
+          height: headers[0].height,
+          id: headers[0].id,
+        };
       });
   };
 }

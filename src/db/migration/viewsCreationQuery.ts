@@ -28,6 +28,11 @@ const AssetCountBoxesQuery = {
   drop: `DROP VIEW "asset_count_boxes";`,
 };
 
+const TxBoxCountQuery = {
+  create: `CREATE VIEW "tx_box_count" AS SELECT "Tx"."id" AS "id", "Tx"."tx_id" AS "tx_id", (SELECT count(box.id) from box WHERE box.txId = "Tx"."id") AS "input_box_count", (SELECT count(box.id) from box WHERE box.spendTxId = "Tx"."id") AS "spent_erg_str" FROM "tx" "Tx"`,
+  drop: `DROP VIEW "tx_box_count";`,
+};
+
 export {
   addressWithErgQuery,
   addressTokenIdQuery,
@@ -35,4 +40,5 @@ export {
   walletTxQuery,
   tokenWithAddressQuery,
   AssetCountBoxesQuery,
+  TxBoxCountQuery,
 };

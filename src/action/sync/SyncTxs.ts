@@ -4,15 +4,19 @@ import {
   AddressDbAction,
   BoxDbAction,
   DbTransaction,
+  BoxContentDbAction,
 } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { HeightRange, Err, TxDictionary } from '../Types';
+import { HeightRange, Err, TxDictionary, TokenData } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
-import { ErgoTx, ErgoBox, InputBox } from '../../util/network/models';
+import { ErgoTx, ErgoBox, InputBox, Token } from '../../util/network/models';
 import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
+import { Explorer } from '../../util/network/explorer';
+import { TextRotationAngleupOutlined } from '@mui/icons-material';
+import { validateBoxContentModel } from './../../store/asyncAction';
 
 //constants
 const LIMIT = 50;
@@ -22,11 +26,13 @@ export class SyncTxs {
   private address: Address;
   networkType: string;
   node: Node;
+  explorer: Explorer;
 
   constructor(address: Address, network_type: string) {
     this.networkType = network_type;
     this.address = address;
     this.node = getNetworkType(network_type).getNode();
+    this.explorer = getNetworkType(address.network_type).getExplorer();
   }
 
   /**
@@ -40,8 +46,9 @@ export class SyncTxs {
       this.networkType
     );
     if (trx != null) {
-      for (const box of boxes)
+      for (const box of boxes) {
         await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
+      }
     } else {
       throw new Error('Transaction not found.');
     }
@@ -87,6 +94,7 @@ export class SyncTxs {
         }
       }
     }
+    validateBoxContentModel();
   };
 
   /**
@@ -130,20 +138,10 @@ export class SyncTxs {
   };
 
   /**
-   * fork all txs with height > forkHeight, unspend boxes with spend_height > forkHeight and remove all forked boxes from db.
-   * @param forkHeight : number
-   */
-  forkTxs = async (forkHeight: number) => {
-    await DbTransaction.fork(forkHeight + 1, this.networkType);
-  };
-
-  /**
    * get transactions for specific address, check if they're valid and store them.
-   * @param address : Address
    * @param currentHeight : number
    */
-  syncTrxsWithAddress = async (address: Address, currentHeight: number) => {
-    const explorer = getNetworkType(address.network_type).getExplorer();
+  syncTrxsWithAddress = async (currentHeight: number) => {
     const lastHeight: number = await this.node.getHeight();
     const heightRange: HeightRange = {
       fromHeight: currentHeight,
@@ -157,8 +155,8 @@ export class SyncTxs {
       const Txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
       while (pageTxs == undefined || pageTxs.items.length != 0) {
-        pageTxs = await explorer.getTxsByAddressInHeightRange(
-          address.address,
+        pageTxs = await this.explorer.getTxsByAddressInHeightRange(
+          this.address.address,
           heightRange,
           paging,
           true
@@ -171,12 +169,12 @@ export class SyncTxs {
       try {
         this.checkTrxValidation(sortedTxs);
         await this.saveTxsToDB(sortedTxs, heightRange.toHeight);
-        AddressDbAction.setAddressHeight(address.id, heightRange.toHeight);
+        AddressDbAction.setAddressHeight(this.address.id, heightRange.toHeight);
       } catch (err: unknown) {
         const e = err as Err;
         const ProcessedHeight = e.data;
         await this.saveTxsToDB(sortedTxs, ProcessedHeight);
-        AddressDbAction.setAddressHeight(address.id, ProcessedHeight);
+        AddressDbAction.setAddressHeight(this.address.id, ProcessedHeight);
         throw new Error('Fork happened.');
       }
 
@@ -184,5 +182,49 @@ export class SyncTxs {
       heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
       paging.offset = 0;
     }
+  };
+
+  verifyContent = async (): Promise<boolean> => {
+    const expected = await this.explorer.getConfirmedBalanceByAddress(
+      this.address.address
+    );
+    return (
+      (await this.verifyTokens(expected.tokens)) &&
+      (await this.verifyTotalErg(expected.nanoErgs))
+    );
+  };
+
+  /**
+   * compare dbTokens of the address with expectedTokens given from explorer.
+   * @param expectedTokens : Token[]
+   * @returns
+   */
+  verifyTokens = async (expectedTokens: Token[]): Promise<boolean> => {
+    const dbTokens: TokenData[] = await BoxContentDbAction.getAddressTokens(
+      this.address.id
+    );
+
+    const isSameToken = (a: TokenData, b: Token) =>
+      a.tokenId === b.tokenId && a.total === b.amount;
+    const diff1 = dbTokens.filter(
+      (dbToken) =>
+        !expectedTokens.some((expectedToken) =>
+          isSameToken(dbToken, expectedToken)
+        )
+    );
+
+    const diff2 = expectedTokens.filter(
+      (expectedToken) =>
+        !dbTokens.some((dbToken) => isSameToken(dbToken, expectedToken))
+    );
+
+    return diff1.length == 0 && diff2.length == 0;
+  };
+
+  verifyTotalErg = async (expectedTotalErg: bigint) => {
+    const totalDbErg = await AddressDbAction.getAddressTotalErg(
+      this.address.id
+    );
+    return totalDbErg?.erg_str == expectedTotalErg;
   };
 }

@@ -25,6 +25,11 @@ export type Err = {
   massege: string;
   data: number;
 };
+
+export type TokenData = {
+  tokenId: string;
+  total: bigint;
+};
 export interface TxDictionary {
   [height: number]: ErgoTx[];
 }

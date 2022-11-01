@@ -113,3 +113,16 @@ export type TokenInfo = {
   readonly type: string;
   readonly decimals: number;
 };
+
+export type Token = {
+  tokenId: string;
+  amount: bigint;
+  decimals: number;
+  name: string;
+  tokenType: string;
+};
+
+export type AddressInfo = {
+  readonly nanoErgs: bigint;
+  readonly tokens: Array<Token>;
+};

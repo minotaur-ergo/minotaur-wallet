@@ -66,11 +66,11 @@ export interface DAppPropsType {
     tokens: Array<{ id: string; amount: bigint }>,
     address?: string
   ) => Promise<CoveringResult>;
-  signAndSendTx: (unsignedTx: UnsignedGeneratedTx) => Promise<any>;
+  signAndSendTx: (unsignedTx: UnsignedGeneratedTx) => Promise<unknown>;
   network_type: NetworkType;
   getTokenAmount: (tokenId?: string) => Promise<bigint>;
-  showNotification: (message: SnackbarMessage, variant: VariantType) => any;
-  scanQrCode: (callback: (response: string) => any) => any;
+  showNotification: (message: SnackbarMessage, variant: VariantType) => unknown;
+  scanQrCode: (callback: (response: string) => unknown) => unknown;
 }
 
 export type UnsignedGeneratedTx = {
@@ -81,7 +81,7 @@ export type UnsignedGeneratedTx = {
 
 export interface WalletPagePropsType {
   wallet: Wallet;
-  setTab: (name: string) => any;
+  setTab: (name: string) => unknown;
 }
 
 export { NetworkType };

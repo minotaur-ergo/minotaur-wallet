@@ -1,7 +1,7 @@
 import { BlockDbAction } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { Block } from '../Types';
+import { Block, Err } from '../Types';
 import { Paging } from '../../util/network/paging';
 
 //constants
@@ -110,18 +110,14 @@ export class SyncBlocks {
         recievedIDs,
         current_height
       );
-      this.checkOverlaps(overlapBlocks, recievedBlocks);
+      try {
+        this.checkOverlaps(overlapBlocks, recievedBlocks);
+      } catch {
+        return;
+      }
       this.insertBlockToDB(recievedBlocks);
       current_height += paging.limit;
     }
-  };
-
-  /**
-   * remove blocks with height > forkheight from db.
-   * @param forkHeight : number
-   */
-  removeFromDB = (forkHeight: number): void => {
-    BlockDbAction.forkHeaders(forkHeight + 1, this.networkType);
   };
 
   /**
@@ -156,17 +152,22 @@ export class SyncBlocks {
   };
 
   /**
-   * if case of fork stepBackward to find fork point and remove all forked blocks from db; else step forward.
-   * @param currentHeight : number
+   * start from last dbBlock(if there is not such a block insert block with height 0.)
+   * if fork is happened, return forkHeight
+   * otherwise start stepForward process.
+   * @returns in case of fork: forkHeight. otherwise undefined
    */
-  update = async (currentHeight: number): Promise<void> => {
-    const currentBlock = {
-      height: currentHeight,
-      id: await this.node.getBlockIdAtHeight(currentHeight),
-    };
+  update = async (): Promise<undefined | number> => {
+    let currentBlock = (await BlockDbAction.getLastHeaders(1))!.pop();
+    if (!currentBlock) {
+      currentBlock = {
+        id: await this.node.getBlockIdAtHeight(0),
+        height: 0,
+      };
+      this.insertBlockToDB([currentBlock]);
+    }
     if (await this.checkFork(currentBlock)) {
-      const forkPoint = await this.calcFork(currentBlock);
-      this.removeFromDB(forkPoint);
+      return await this.calcFork(currentBlock);
     } else this.stepForward(currentBlock);
   };
 }

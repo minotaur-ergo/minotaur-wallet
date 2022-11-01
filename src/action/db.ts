@@ -16,7 +16,7 @@ import BoxContent from '../db/entities/BoxContent';
 import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
-import { getConnection, QueryRunner } from 'typeorm/browser';
+import TxBoxCount from '../db/entities/views/TxBoxCount';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -173,6 +173,13 @@ class AddressActionClass {
       })
       .execute();
   };
+
+  getAddressTotalErg = async (addressId: number) => {
+    return await this.addressWithErgRepository
+      .createQueryBuilder()
+      .where('address = :address', { address: addressId })
+      .getOne();
+  };
 }
 
 class AssetActionClass {
@@ -225,12 +232,20 @@ class BlockActionClass {
   }
 
   getLastHeaders = async (count: number) => {
-    return await this.repository
+    const entity = await this.repository
       .createQueryBuilder()
       .limit(count)
       .offset(0)
       .orderBy('height', 'DESC')
       .getMany();
+    if (entity) {
+      return entity.map((block) => {
+        return {
+          height: block.height,
+          id: block.block_id,
+        };
+      });
+    }
   };
 
   /**
@@ -278,6 +293,21 @@ class BlockActionClass {
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
+  };
+
+  getBlockByHeight = async (height: number, network_type: string) => {
+    const entity = await this.repository
+      .createQueryBuilder()
+      .where('height = :height', { height: height })
+      .andWhere('network_type = :network_type', { network_type: network_type })
+      .getOne();
+
+    if (entity) {
+      return {
+        height: entity.height,
+        id: entity.block_id,
+      };
+    }
   };
 
   InsertHeaders = async (
@@ -470,6 +500,14 @@ class BoxActionClass {
       .execute();
   };
 
+  removeAddressBoxes = async (address: Address) => {
+    await this.repository
+      .createQueryBuilder()
+      .where('address = :address', { address: address })
+      .delete()
+      .execute();
+  };
+
   invalidAssetCountBox = async () => {
     return await this.assetCountBoxRepository
       .createQueryBuilder()
@@ -481,10 +519,12 @@ class BoxActionClass {
 class TxActionClass {
   private repository: Repository<Tx>;
   private walletRepository: Repository<WalletTx>;
+  private txBoxCountRepository: Repository<TxBoxCount>;
 
   constructor(dataSource: DataSource) {
     this.repository = dataSource.getRepository(Tx);
     this.walletRepository = dataSource.getRepository(WalletTx);
+    this.txBoxCountRepository = dataSource.getRepository(TxBoxCount);
   }
 
   updateOrCreateTx = async (
@@ -565,6 +605,33 @@ class TxActionClass {
     const entities = txs.map((tx) => ({ ...txs, network_type: network_type }));
     await this.repository.insert(entities);
   };
+
+  /**
+   * remove txs which have not corresponding boxes in database.
+   * @param txs : (Tx | null)[]
+   * @param network_type : string
+   */
+  removeTxs = async (txs: (Tx | null)[], network_type: string) => {
+    const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
+    await this.repository
+      .createQueryBuilder()
+      .where('tx_id  IN txIds', { txIds: txIdList })
+      .andWhere('network_type = :network_type', { network_type: network_type })
+      .delete()
+      .execute();
+  };
+
+  removeUnusedAddresses = async () => {
+    const txs = await this.txBoxCountRepository.findBy({
+      input_box_count: 0,
+      output_box_count: 0,
+    });
+    await this.repository
+      .createQueryBuilder()
+      .where('tx_id  IN txIds', { txIds: txs.map((item) => item.tx_id) })
+      .delete()
+      .execute();
+  };
 }
 
 class BoxContentActionClass {
@@ -615,16 +682,14 @@ class BoxContentActionClass {
   };
 
   getAddressTokens = async (addressId: number) => {
-    return (
-      await this.repository
-        .createQueryBuilder()
-        .select('token_id', 'tokenId')
-        .addSelect('SUM(amount)', 'total')
-        .innerJoin('box', 'Box', 'Box.id=boxId')
-        .where('Box.addressId = :addressId', { addressId: addressId })
-        .addGroupBy('token_id')
-        .getRawMany()
-    ).map((item: { tokenId: string; total: string }) => item.tokenId);
+    return await this.repository
+      .createQueryBuilder()
+      .select('token_id', 'tokenId')
+      .addSelect('SUM(amount)', 'total')
+      .innerJoin('box', 'Box', 'Box.id=boxId')
+      .where('Box.addressId = :addressId', { addressId: addressId })
+      .addGroupBy('token_id')
+      .getRawMany<{ tokenId: string; total: bigint }>();
   };
 
   getWalletTokens = async (walletId: number) => {
@@ -666,6 +731,15 @@ class BoxContentActionClass {
       token_id: tokenId,
     });
   };
+
+  removeAddressBoxContent = async (addressBoxes: Box[]) => {
+    const instances = await this.repository
+      .createQueryBuilder()
+      .innerJoin('box', 'Box', 'Box.id = boxId')
+      .where('box IN boxes', { boxes: addressBoxes })
+      .getMany();
+    await this.repository.remove(instances);
+  };
 }
 
 class ConfigActionClass {
@@ -704,12 +778,33 @@ class DbTransactionClass {
     this.queryRunner = dataSource.createQueryRunner();
   }
 
-  fork = async (forkHeight: number, network_type: string) => {
+  forkAll = async (forkHeight: number, network_type: string) => {
     this.queryRunner.connect();
     this.queryRunner.startTransaction();
     try {
+      await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
       await BoxDbAction.forkBoxes(forkHeight, network_type);
       await TxDbAction.forkTxs(forkHeight, network_type);
+      await BlockDbAction.forkHeaders(forkHeight, network_type);
+      await this.queryRunner.commitTransaction();
+    } catch {
+      this.queryRunner.rollbackTransaction();
+    } finally {
+      this.queryRunner.release();
+    }
+  };
+
+  forkAddress = async (address: Address) => {
+    this.queryRunner.connect();
+    this.queryRunner.startTransaction();
+    try {
+      const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
+      await BoxContentDbAction.removeAddressBoxContent(addressBoxes);
+      const remainingBoxes = await BoxDbAction.getWalletBoxes(
+        address.wallet!.id
+      );
+      await BoxDbAction.removeAddressBoxes(address);
+      await TxDbAction.removeUnusedAddresses();
       await this.queryRunner.commitTransaction();
     } catch {
       this.queryRunner.rollbackTransaction();
