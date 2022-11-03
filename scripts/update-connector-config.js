@@ -6,7 +6,7 @@ const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
 const chromeEntries = {
   injector: 'injector.ts',
   background: 'background.ts',
-  // content: 'content.ts',
+  content: 'content.ts',
 };
 module.exports = function (config) {
   config.optimization = {

@@ -12,6 +12,7 @@ import {
   faGear,
   faHandshake,
 } from '@fortawesome/free-solid-svg-icons';
+import DAppConnectorIcon from '../../dapp-connector-icon/DAppConnectorIcon';
 
 const downloadDb = () => {
   try {
@@ -53,7 +54,7 @@ const HomeHeader = () => {
         color="inherit"
         onClick={() => navigate(RouteMap.DAppConnector)}
       >
-        <FontAwesomeIcon icon={faHandshake} size={'xs'} />
+        <DAppConnectorIcon />
       </IconButton>
       <IconButton color="inherit" onClick={() => navigate(RouteMap.Settings)}>
         <FontAwesomeIcon icon={faGear} size={'xs'} />

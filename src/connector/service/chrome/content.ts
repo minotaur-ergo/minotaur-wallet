@@ -298,4 +298,5 @@ const setupErgo = () => {
   }
 };
 
-export default setupErgo;
+setupErgo();
+// export default setupErgo;
