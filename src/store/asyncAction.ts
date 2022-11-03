@@ -6,7 +6,6 @@ import {
   BoxContentDbAction,
   BoxDbAction,
 } from '../action/db';
-import { BlockChainAction, BlockChainTxAction } from '../action/blockchain';
 import { store } from './index';
 import * as actionType from './actionType';
 import { ErgoBox } from '../util/network/models';

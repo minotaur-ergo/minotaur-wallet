@@ -15,7 +15,6 @@ import { ErgoTx, ErgoBox, InputBox, Token } from '../../util/network/models';
 import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
-import { TextRotationAngleupOutlined } from '@mui/icons-material';
 import { validateBoxContentModel } from './../../store/asyncAction';
 
 //constants
