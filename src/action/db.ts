@@ -1,5 +1,5 @@
 import Address from '../db/entities/Address';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import AddressWithErg from '../db/entities/views/AddressWithErg';
 import Wallet, { WalletType } from '../db/entities/Wallet';
 import WalletWithErg from '../db/entities/views/WalletWithErg';
@@ -500,10 +500,10 @@ class BoxActionClass {
       .execute();
   };
 
-  removeAddressBoxes = async (address: Address) => {
+  removeAddressBoxes = async (address: Address, queryRunner?: QueryRunner) => {
     await this.repository
-      .createQueryBuilder()
-      .where('address = :address', { address: address })
+      .createQueryBuilder(undefined, queryRunner)
+      .where('addressId = :address', { address: address.id })
       .delete()
       .execute();
   };
@@ -615,7 +615,7 @@ class TxActionClass {
     const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
     await this.repository
       .createQueryBuilder()
-      .where('tx_id  IN txIds', { txIds: txIdList })
+      .where('tx_id  IN (:...txIds)', { txIds: txIdList })
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
@@ -628,7 +628,7 @@ class TxActionClass {
     });
     await this.repository
       .createQueryBuilder()
-      .where('tx_id  IN txIds', { txIds: txs.map((item) => item.tx_id) })
+      .where('tx_id  IN (:...txIds)', { txIds: txs.map((item) => item.tx_id) })
       .delete()
       .execute();
   };
@@ -732,13 +732,18 @@ class BoxContentActionClass {
     });
   };
 
-  removeAddressBoxContent = async (addressBoxes: Box[]) => {
-    const instances = await this.repository
-      .createQueryBuilder()
-      .innerJoin('box', 'Box', 'Box.id = boxId')
-      .where('box IN boxes', { boxes: addressBoxes })
-      .getMany();
-    await this.repository.remove(instances);
+  removeAddressBoxContent = async (
+    addressBoxes: Box[],
+    queryRunner?: QueryRunner
+  ) => {
+    const boxIds = addressBoxes.map((item) => item.id);
+    if (boxIds.length > 0) {
+      await this.repository
+        .createQueryBuilder(undefined, queryRunner)
+        .where('boxId IN (:...boxIds)', { boxIds: boxIds })
+        .delete()
+        .execute();
+    }
   };
 }
 
@@ -779,38 +784,38 @@ class DbTransactionClass {
   }
 
   forkAll = async (forkHeight: number, network_type: string) => {
-    this.queryRunner.connect();
-    this.queryRunner.startTransaction();
-    try {
-      await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
-      await BoxDbAction.forkBoxes(forkHeight, network_type);
-      await TxDbAction.forkTxs(forkHeight, network_type);
-      await BlockDbAction.forkHeaders(forkHeight, network_type);
-      await this.queryRunner.commitTransaction();
-    } catch {
-      this.queryRunner.rollbackTransaction();
-    } finally {
-      this.queryRunner.release();
-    }
+    // this.queryRunner.connect();
+    // this.queryRunner.startTransaction();
+    // try {
+    await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
+    await BoxDbAction.forkBoxes(forkHeight, network_type);
+    await TxDbAction.forkTxs(forkHeight, network_type);
+    await BlockDbAction.forkHeaders(forkHeight, network_type);
+    // await this.queryRunner.commitTransaction();
+    // } catch {
+    //   this.queryRunner.rollbackTransaction();
+    // } finally {
+    //   this.queryRunner.release();
+    // }
   };
 
   forkAddress = async (address: Address) => {
-    this.queryRunner.connect();
-    this.queryRunner.startTransaction();
-    try {
-      const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
-      await BoxContentDbAction.removeAddressBoxContent(addressBoxes);
-      const remainingBoxes = await BoxDbAction.getWalletBoxes(
-        address.wallet!.id
-      );
-      await BoxDbAction.removeAddressBoxes(address);
-      await TxDbAction.removeUnusedAddresses();
-      await this.queryRunner.commitTransaction();
-    } catch {
-      this.queryRunner.rollbackTransaction();
-    } finally {
-      this.queryRunner.release();
-    }
+    // this.queryRunner.connect();
+    // this.queryRunner.startTransaction();
+    // try {
+    const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
+    await BoxContentDbAction.removeAddressBoxContent(
+      addressBoxes,
+      this.queryRunner
+    );
+    await BoxDbAction.removeAddressBoxes(address, this.queryRunner);
+    await AddressDbAction.setAddressHeight(address.id, 0);
+    // await this.queryRunner.commitTransaction();
+    // } catch (exp){
+    //   this.queryRunner.rollbackTransaction();
+    // } finally {
+    //   this.queryRunner.release();
+    // }
   };
 }
 

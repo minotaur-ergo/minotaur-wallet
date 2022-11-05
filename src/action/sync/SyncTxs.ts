@@ -3,7 +3,6 @@ import {
   TxDbAction,
   AddressDbAction,
   BoxDbAction,
-  DbTransaction,
   BoxContentDbAction,
 } from '../db';
 import { getNetworkType } from '../../util/network_type';
@@ -11,18 +10,25 @@ import { Node } from '../../util/network/node';
 import { HeightRange, Err, TxDictionary, TokenData } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
-import { ErgoTx, ErgoBox, InputBox, Token } from '../../util/network/models';
+import {
+  ErgoTx,
+  ErgoBox,
+  InputBox,
+  Token,
+  AddressInfo,
+} from '../../util/network/models';
 import { Items } from '../../util/network/models';
 import Tx from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
-import { validateBoxContentModel } from './../../store/asyncAction';
+import { validateBoxContentModel } from '../../store/asyncAction';
 
 //constants
-const LIMIT = 50;
+const LIMIT = 30 * 720; // one month
+const TX_PAGE_LIMIT = 50;
 const INITIAL_LIMIT = 10;
 
 export class SyncTxs {
-  private address: Address;
+  private readonly address: Address;
   networkType: string;
   node: Node;
   explorer: Explorer;
@@ -72,14 +78,14 @@ export class SyncTxs {
   };
 
   /**
-   * save extracted trxs to db, insert unspent boxes and update spent boxes.
+   * save extracted txs to db, insert unspent boxes and update spent boxes.
    * @param txs : TxDictionary
    * @param maxHeight : number
    */
   saveTxsToDB = async (txs: TxDictionary, maxHeight: number): Promise<void> => {
     const keyHeights = Object.keys(txs).map(Number);
     keyHeights.sort((k1, k2) => k1 - k2);
-
+    console.log('saving txs', txs);
     for (const height of keyHeights) {
       if (height < maxHeight) {
         await TxDbAction.insertTxs(txs[height], this.networkType);
@@ -93,29 +99,34 @@ export class SyncTxs {
         }
       }
     }
-    validateBoxContentModel();
+    await validateBoxContentModel();
   };
 
   /**
-   * check blockIds of received trxs and compare them with blckIds stored in database.
+   * check blockIds of received txs and compare them with blckIds stored in database.
    * @param txDictionary: TxDictionary
    */
-  checkTrxValidation = async (txDictionary: TxDictionary): Promise<void> => {
-    const dbHeaders = await BlockDbAction.getAllHeaders(this.networkType);
+  checkTrxValidation = async (
+    txDictionary: TxDictionary
+  ): Promise<number | undefined> => {
+    console.log('txs to verify', txDictionary);
+    let validHeight: number | undefined = undefined;
+    let invalid = false;
     for (const height in txDictionary) {
-      txDictionary[height].forEach((txHeader) => {
-        const foundHeader = dbHeaders.find(
-          (dbHeader) => dbHeader.height == txHeader.inclusionHeight
-        );
-        if (foundHeader == undefined) return;
-        else if (txHeader.blockId != foundHeader.id.toString()) {
-          throw {
-            message: 'blockIds not matched.',
-            data: txHeader.inclusionHeight - 1,
-          };
-        }
-      });
+      const header = await BlockDbAction.getBlockByHeight(
+        parseInt(height),
+        this.networkType
+      );
+      if (header) {
+        txDictionary[height].forEach((tx) => {
+          if (tx.blockId !== header.id) {
+            invalid = true;
+          }
+        });
+      }
+      validHeight = invalid ? validHeight : parseInt(height);
     }
+    return validHeight;
   };
 
   /**
@@ -140,53 +151,52 @@ export class SyncTxs {
    * get transactions for specific address, check if they're valid and store them.
    * @param currentHeight : number
    */
-  syncTrxsWithAddress = async (currentHeight: number) => {
+  syncTxsWithAddress = async (currentHeight: number) => {
     const lastHeight: number = await this.node.getHeight();
     const heightRange: HeightRange = {
       fromHeight: currentHeight,
       toHeight: currentHeight,
     };
-    const paging: Paging = {
-      limit: INITIAL_LIMIT,
-      offset: 0,
-    };
     while (heightRange.fromHeight <= lastHeight) {
-      const Txs: ErgoTx[] = [];
+      console.log('load chunk');
+      const txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
+      const paging: Paging = {
+        limit: INITIAL_LIMIT,
+        offset: 0,
+      };
       while (pageTxs == undefined || pageTxs.items.length != 0) {
         pageTxs = await this.explorer.getTxsByAddressInHeightRange(
           this.address.address,
           heightRange,
           paging,
-          true
+          false
         );
-        Txs.concat(pageTxs.items);
+        txs.push(...pageTxs.items);
         paging.offset += paging.limit;
+        paging.limit = TX_PAGE_LIMIT;
       }
-
-      const sortedTxs = this.sortTxs(Txs);
-      try {
-        this.checkTrxValidation(sortedTxs);
-        await this.saveTxsToDB(sortedTxs, heightRange.toHeight);
-        AddressDbAction.setAddressHeight(this.address.id, heightRange.toHeight);
-      } catch (err: unknown) {
-        const e = err as Err;
-        const ProcessedHeight = e.data;
-        await this.saveTxsToDB(sortedTxs, ProcessedHeight);
-        AddressDbAction.setAddressHeight(this.address.id, ProcessedHeight);
-        throw new Error('Fork happened.');
+      console.log('fetched txs are', txs);
+      const sortedTxs = this.sortTxs(txs);
+      const validHeight = await this.checkTrxValidation(sortedTxs);
+      console.log(
+        `valid height is ${validHeight} and height is from ${heightRange.fromHeight} to ${heightRange.toHeight}`
+      );
+      await this.saveTxsToDB(sortedTxs, validHeight ? validHeight : lastHeight);
+      await AddressDbAction.setAddressHeight(
+        this.address.id,
+        validHeight ? validHeight : lastHeight
+      );
+      if (validHeight) {
+        break;
       }
-
-      heightRange.fromHeight = heightRange.toHeight;
+      heightRange.fromHeight = heightRange.toHeight + 1;
       heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
       paging.offset = 0;
     }
   };
 
-  verifyContent = async (): Promise<boolean> => {
-    const expected = await this.explorer.getConfirmedBalanceByAddress(
-      this.address.address
-    );
+  verifyContent = async (expected: AddressInfo): Promise<boolean> => {
     return (
       (await this.verifyTokens(expected.tokens)) &&
       (await this.verifyTotalErg(expected.nanoErgs))
@@ -202,7 +212,7 @@ export class SyncTxs {
     const dbTokens: TokenData[] = await BoxContentDbAction.getAddressTokens(
       this.address.id
     );
-
+    console.log(dbTokens, expectedTokens);
     const isSameToken = (a: TokenData, b: Token) =>
       a.tokenId === b.tokenId && a.total === b.amount;
     const diff1 = dbTokens.filter(

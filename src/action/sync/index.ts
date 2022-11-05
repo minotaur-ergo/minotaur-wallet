@@ -20,19 +20,35 @@ export const syncAddress = async (address: Address) => {
     const forkPoint = await syncBlocks.update();
     if (forkPoint !== undefined) {
       await DbTransaction.forkAll(forkPoint, address.network_type);
-      AddressDbAction.setAddressHeight(address.id, forkPoint);
+      await AddressDbAction.setAddressHeight(address.id, forkPoint);
+    } else {
+      await syncTxs.syncTxsWithAddress(currentHeight + 1);
     }
-    await syncTxs.syncTrxsWithAddress(currentHeight);
   } catch (e) {
     console.error(e);
   }
-
-  const lastRecievedBlock: Block = await syncTxs.node.getLastBlockHeader();
-  const lastDbBlockHeader = (await BlockDbAction.getLastHeaders(1))!.pop();
-  const successfullySynced = await syncTxs.verifyContent();
-  if (!successfullySynced) {
-    if (lastDbBlockHeader == lastRecievedBlock)
-      AddressDbAction.setAddressHeight(address.id, 0);
-    await DbTransaction.forkAddress(address);
+  const addressInDb = await AddressDbAction.getAddress(address.id);
+  if (addressInDb) {
+    const expected = await syncTxs.explorer.getConfirmedBalanceByAddress(
+      address.address
+    );
+    const lastReceivedBlock: Block = await syncTxs.node.getLastBlockHeader();
+    if (lastReceivedBlock.height == addressInDb.process_height) {
+      const lastDbBlockHeader = (await BlockDbAction.getLastHeaders(1))?.pop();
+      const successfullySynced = await syncTxs.verifyContent(expected);
+      console.log(
+        `loading status is ${successfullySynced} for address ${address.address}`
+      );
+      if (!successfullySynced && lastDbBlockHeader) {
+        console.log(lastDbBlockHeader, lastReceivedBlock);
+        if (
+          lastDbBlockHeader.id == lastReceivedBlock.id &&
+          lastReceivedBlock.height == lastReceivedBlock.height
+        ) {
+          console.log(`forking for address ${address.address}`);
+          await DbTransaction.forkAddress(address);
+        }
+      }
+    }
   }
 };

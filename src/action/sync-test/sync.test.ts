@@ -49,29 +49,6 @@ test('stepForward process -> not insert blocks to database (fork)', async () => 
 });
 
 /**
- * testing createBlockArrayByID function to build an array of blocks with given IDs and correct heights.
- * Dependancy: -
- * Scenario: Create a sample array of 2 ID-strings and assume the current height is 0.
- * Expected: createBlockArrayByID function must return array of two blocks with given IDs and heights 1 and 2 respectively.
- */
-test('create array of blocks with given IDs', () => {
-  const IDs: string[] = ['123', '190'];
-  const expectedBlocks: Block[] = [
-    {
-      id: IDs[0],
-      height: 1,
-    },
-    {
-      id: IDs[1],
-      height: 2,
-    },
-  ];
-  expect(TestSyncBlocks.createBlockArrayByID(IDs, 0)).toStrictEqual(
-    expectedBlocks
-  );
-});
-
-/**
  * testing checkOverlaps funcstion to
  * Dependancy: -
  * Scenario: fork happened! so overlapBlocks has no overlap with new received Block headers;
@@ -148,44 +125,6 @@ test('check fork function in normal situation', async () => {
 });
 
 /**
- * testing setPaging function used in stepForward function.
- * -
- * Scenario: calcuated offset is reaching lastHeight.
- * Expected: passed.
- */
-test('check setPaging function', () => {
-  const returnedPaging = TestSyncBlocks.setPaging(
-    0,
-    fakeBlockChain.getLastBlock().height,
-    6
-  );
-  const expectedPaging = {
-    offset: 0,
-    limit: 6,
-  };
-  expect(returnedPaging).toStrictEqual(expectedPaging);
-});
-
-/**
- * testing setPaging function used in stepForward function.
- * -
- * Scenario: limit is small so we don't reach the lastHeight.
- * Expected: passed.
- */
-test('check setPaging function', () => {
-  const returnedPaging = TestSyncBlocks.setPaging(
-    0,
-    fakeBlockChain.getLastBlock().height,
-    1
-  );
-  const expectedPaging = {
-    offset: 4,
-    limit: 1,
-  };
-  expect(returnedPaging).toStrictEqual(expectedPaging);
-});
-
-/**
  * testing checkFork to detect fork in specified height.
  * Dependancy: axois mocked.
  * Scenario: axios response contains the block which has different id from the last loaded block from database.
@@ -209,7 +148,7 @@ test('check fork function in case of fork', async () => {
 // });
 
 /**
- * testing checkValidation function in case of invalid trxs.
+ * testing checkValidation function in case of invalid txs.
  * Dependancy: -
  * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
  * Expected: checkValidation must throw an error.
@@ -230,7 +169,7 @@ test('check fork function in case of fork', async () => {
 // });
 
 /**
- * testing checkValidation function in case of nvalid trxs.
+ * testing checkValidation function in case of nvalid txs.
  * Dependancy: -
  * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
  * Expected: checkValidation must not throw any error.
@@ -258,7 +197,7 @@ test('sort Txs and return a TxDictionary', () => {
 });
 
 /**
- * testing insertTrxtoDB function to insert given trxs correctly.
+ * testing insertTrxtoDB function to insert given txs correctly.
  * Dependancy: axois mocked.
  * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
  * Expected: insertTrxToDB function must be called once with determined trx.
