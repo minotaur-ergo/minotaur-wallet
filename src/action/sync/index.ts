@@ -1,7 +1,7 @@
 import { SyncTxs } from './SyncTxs';
 import { SyncBlocks } from './SyncBlocks';
 import { AddressDbAction, BlockDbAction, DbTransaction } from '../db';
-import { Block } from './../Types';
+import { Block } from '../Types';
 import Address from '../../db/entities/Address';
 
 /**
@@ -36,16 +36,14 @@ export const syncAddress = async (address: Address) => {
     if (lastReceivedBlock.height == addressInDb.process_height) {
       const lastDbBlockHeader = (await BlockDbAction.getLastHeaders(1))?.pop();
       const successfullySynced = await syncTxs.verifyContent(expected);
-      console.log(
-        `loading status is ${successfullySynced} for address ${address.address}`
-      );
       if (!successfullySynced && lastDbBlockHeader) {
-        console.log(lastDbBlockHeader, lastReceivedBlock);
+        const entity = await AddressDbAction.getAddress(address.id);
         if (
           lastDbBlockHeader.id == lastReceivedBlock.id &&
-          lastReceivedBlock.height == lastReceivedBlock.height
+          lastReceivedBlock.height == lastReceivedBlock.height &&
+          entity &&
+          entity.process_height == lastReceivedBlock.height
         ) {
-          console.log(`forking for address ${address.address}`);
           await DbTransaction.forkAddress(address);
         }
       }

@@ -58,7 +58,7 @@ export class SyncBlocks {
       currentBlock.height,
       last_height - DB_HEIGHT_RANGE
     );
-
+    let checkOverlap = currentBlock.height >= last_height - DB_HEIGHT_RANGE;
     const overlapBlocks: Block[] = [currentBlock];
     while (last_height - current_height > 0) {
       const paging = {
@@ -72,12 +72,15 @@ export class SyncBlocks {
         id: item,
       }));
       try {
-        this.checkOverlaps(overlapBlocks, receivedBlocks);
+        if (checkOverlap) {
+          this.checkOverlaps(overlapBlocks, receivedBlocks);
+        }
       } catch {
         return;
       }
       await this.insertBlockToDB(receivedBlocks);
       current_height = paging.offset + receivedIDs.length;
+      checkOverlap = true;
     }
   };
 
@@ -119,11 +122,11 @@ export class SyncBlocks {
    * @returns in case of fork: forkHeight. otherwise undefined
    */
   update = async (): Promise<undefined | number> => {
-    let currentBlock = (await BlockDbAction.getLastHeaders(1))!.pop();
+    let currentBlock = (await BlockDbAction.getLastHeaders(1))?.pop();
     if (!currentBlock) {
       currentBlock = {
-        id: await this.node.getBlockIdAtHeight(0),
-        height: 0,
+        id: await this.node.getBlockIdAtHeight(1),
+        height: 1,
       };
       await this.insertBlockToDB([currentBlock]);
     }

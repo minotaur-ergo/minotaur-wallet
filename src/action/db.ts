@@ -177,7 +177,7 @@ class AddressActionClass {
   getAddressTotalErg = async (addressId: number) => {
     return await this.addressWithErgRepository
       .createQueryBuilder()
-      .where('address = :address', { address: addressId })
+      .where('id = :id', { id: addressId })
       .getOne();
   };
 }
@@ -345,6 +345,7 @@ class BoxActionClass {
       tx: tx,
       box_id: box.boxId,
       erg: erg_total,
+      asset_count: box.assets.length,
       create_index: index,
       network_type: address.network_type,
       json: JsonBI.stringify(box),
@@ -530,7 +531,8 @@ class TxActionClass {
   updateOrCreateTx = async (
     tx: ErgoTx,
     status: TxStatus,
-    network_type: string
+    network_type: string,
+    queryRunner?: QueryRunner
   ) => {
     const dbTx = await this.getTxByTxId(tx.id, network_type);
     const entity = {
@@ -542,7 +544,7 @@ class TxActionClass {
     };
     if (dbTx) {
       await this.repository
-        .createQueryBuilder()
+        .createQueryBuilder(undefined, queryRunner)
         .update()
         .set(entity)
         .where('id=:id', { id: dbTx.id })
@@ -552,9 +554,14 @@ class TxActionClass {
         tx: await this.getTxByTxId(tx.id, network_type),
       };
     } else {
+      await this.repository
+        .createQueryBuilder(undefined, queryRunner)
+        .insert()
+        .values(entity)
+        .execute();
       return {
         status: TxStatus.New,
-        tx: (await this.repository.save(entity)) as Tx,
+        tx: await this.getTxByTxId(tx.id, network_type),
       };
     }
   };
@@ -599,11 +606,6 @@ class TxActionClass {
       .andWhere('network_type = :network_type', { network_type: network_type })
       .delete()
       .execute();
-  };
-
-  insertTxs = async (txs: ErgoTx[], network_type: string) => {
-    const entities = txs.map((tx) => ({ ...txs, network_type: network_type }));
-    await this.repository.insert(entities);
   };
 
   /**
@@ -688,6 +690,7 @@ class BoxContentActionClass {
       .addSelect('SUM(amount)', 'total')
       .innerJoin('box', 'Box', 'Box.id=boxId')
       .where('Box.addressId = :addressId', { addressId: addressId })
+      .andWhere('Box.spend_tx IS NULL')
       .addGroupBy('token_id')
       .getRawMany<{ tokenId: string; total: bigint }>();
   };

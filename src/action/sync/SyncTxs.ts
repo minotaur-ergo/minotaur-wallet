@@ -1,24 +1,24 @@
 import {
-  BlockDbAction,
-  TxDbAction,
   AddressDbAction,
-  BoxDbAction,
+  BlockDbAction,
   BoxContentDbAction,
+  BoxDbAction,
+  TxDbAction,
 } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { HeightRange, Err, TxDictionary, TokenData } from '../Types';
+import { HeightRange, TokenData, TxDictionary } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
 import {
-  ErgoTx,
-  ErgoBox,
-  InputBox,
-  Token,
   AddressInfo,
+  ErgoBox,
+  ErgoTx,
+  InputBox,
+  Items,
+  Token,
 } from '../../util/network/models';
-import { Items } from '../../util/network/models';
-import Tx from '../../db/entities/Tx';
+import Tx, { TxStatus } from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
 import { validateBoxContentModel } from '../../store/asyncAction';
 
@@ -41,43 +41,6 @@ export class SyncTxs {
   }
 
   /**
-   * insert boxes to the data base.
-   * @param boxes : ErgoBox[]
-   * @param tx : ErgoTx
-   */
-  insertBoxesToDB = async (boxes: ErgoBox[], tx: ErgoTx): Promise<void> => {
-    const trx: Tx | null = await TxDbAction.getTxByTxId(
-      tx.id,
-      this.networkType
-    );
-    if (trx != null) {
-      for (const box of boxes) {
-        await BoxDbAction.createOrUpdateBox(box, this.address, trx, box.index);
-      }
-    } else {
-      throw new Error('Transaction not found.');
-    }
-  };
-
-  /**
-   * spend input boxes of given transaction in db.
-   * @param boxes : InputBox[]
-   * @param tx : ErgoTx
-   */
-  spendBoxes = async (boxes: InputBox[], tx: ErgoTx) => {
-    const trx: Tx | null = await TxDbAction.getTxByTxId(
-      tx.id,
-      this.networkType
-    );
-    if (trx != null) {
-      for (const box of boxes)
-        await BoxDbAction.spentBox(box.boxId, trx, box.index);
-    } else {
-      throw new Error('Transaction not found.');
-    }
-  };
-
-  /**
    * save extracted txs to db, insert unspent boxes and update spent boxes.
    * @param txs : TxDictionary
    * @param maxHeight : number
@@ -85,17 +48,43 @@ export class SyncTxs {
   saveTxsToDB = async (txs: TxDictionary, maxHeight: number): Promise<void> => {
     const keyHeights = Object.keys(txs).map(Number);
     keyHeights.sort((k1, k2) => k1 - k2);
-    console.log('saving txs', txs);
     for (const height of keyHeights) {
       if (height < maxHeight) {
-        await TxDbAction.insertTxs(txs[height], this.networkType);
-
+        const txMap: { [txId: string]: Tx } = {};
         for (const tx of txs[height]) {
-          await this.insertBoxesToDB(tx.outputs, tx);
+          const saved = await TxDbAction.updateOrCreateTx(
+            tx,
+            TxStatus.Mined,
+            this.networkType
+          );
+          if (saved.tx) {
+            txMap[tx.id] = saved.tx;
+            for (const box of tx.outputs) {
+              if (box.address === this.address.address) {
+                await BoxDbAction.createOrUpdateBox(
+                  box,
+                  this.address,
+                  saved.tx,
+                  box.index
+                );
+              }
+            }
+          } else {
+            throw new Error('Transaction not stored in database.');
+          }
         }
-
         for (const tx of txs[height]) {
-          await this.spendBoxes(tx.inputs, tx);
+          const entity = txMap[tx.id];
+          for (
+            let inputIndex = 0;
+            inputIndex < tx.inputs.length;
+            inputIndex++
+          ) {
+            const input = tx.inputs[inputIndex];
+            if (input.address == this.address.address) {
+              await BoxDbAction.spentBox(input.boxId, entity, inputIndex);
+            }
+          }
         }
       }
     }
@@ -106,10 +95,9 @@ export class SyncTxs {
    * check blockIds of received txs and compare them with blckIds stored in database.
    * @param txDictionary: TxDictionary
    */
-  checkTrxValidation = async (
+  checkTxValidation = async (
     txDictionary: TxDictionary
   ): Promise<number | undefined> => {
-    console.log('txs to verify', txDictionary);
     let validHeight: number | undefined = undefined;
     let invalid = false;
     for (const height in txDictionary) {
@@ -126,7 +114,7 @@ export class SyncTxs {
       }
       validHeight = invalid ? validHeight : parseInt(height);
     }
-    return validHeight;
+    return invalid ? validHeight : undefined;
   };
 
   /**
@@ -158,7 +146,6 @@ export class SyncTxs {
       toHeight: currentHeight,
     };
     while (heightRange.fromHeight <= lastHeight) {
-      console.log('load chunk');
       const txs: ErgoTx[] = [];
       let pageTxs: Items<ErgoTx> | undefined = undefined;
       const paging: Paging = {
@@ -176,12 +163,8 @@ export class SyncTxs {
         paging.offset += paging.limit;
         paging.limit = TX_PAGE_LIMIT;
       }
-      console.log('fetched txs are', txs);
       const sortedTxs = this.sortTxs(txs);
-      const validHeight = await this.checkTrxValidation(sortedTxs);
-      console.log(
-        `valid height is ${validHeight} and height is from ${heightRange.fromHeight} to ${heightRange.toHeight}`
-      );
+      const validHeight = await this.checkTxValidation(sortedTxs);
       await this.saveTxsToDB(sortedTxs, validHeight ? validHeight : lastHeight);
       await AddressDbAction.setAddressHeight(
         this.address.id,
@@ -212,7 +195,6 @@ export class SyncTxs {
     const dbTokens: TokenData[] = await BoxContentDbAction.getAddressTokens(
       this.address.id
     );
-    console.log(dbTokens, expectedTokens);
     const isSameToken = (a: TokenData, b: Token) =>
       a.tokenId === b.tokenId && a.total === b.amount;
     const diff1 = dbTokens.filter(
