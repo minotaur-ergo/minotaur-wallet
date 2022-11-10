@@ -53,6 +53,7 @@ class FakeBlockChain {
     return reversedBlocks.slice(offset, offset + limit);
   };
 }
+
 class FakeTxs {
   validTxs: ErgoTx[];
   invalidTxs: ErgoTx[];

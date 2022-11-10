@@ -118,11 +118,11 @@ test('check overlapBlocks (normal situation).', () => {
  * Scenario: axios response contains the block which is exactly the same as last loaded block from database.
  * Expected: return false(fork is not happened.)
  */
-test('check fork function in normal situation', async () => {
-  fakeBlockChain.setForked(false);
-  const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
-  expect(result).toStrictEqual(false);
-});
+// test('check fork function in normal situation', async () => {
+//   fakeBlockChain.setForked(false);
+//   const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
+//   expect(result).toStrictEqual(false);
+// });
 
 /**
  * testing checkFork to detect fork in specified height.
