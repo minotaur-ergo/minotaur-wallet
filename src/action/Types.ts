@@ -21,8 +21,9 @@ export type HeightRange = {
   fromHeight: number;
   toHeight: number;
 };
+
 export type Err = {
-  massege: string;
+  message: string;
   data: number;
 };
 

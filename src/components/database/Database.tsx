@@ -45,7 +45,7 @@ const connectCapacitor = async () => {
       type: 'capacitor',
       database: 'minotaur',
       driver: sqliteConnection,
-      logging: false,
+      logging: 'all',
       synchronize: false,
       entities: entities,
       migrations: migrations,

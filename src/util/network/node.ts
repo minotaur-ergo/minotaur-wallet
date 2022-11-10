@@ -68,7 +68,7 @@ export class Node {
         url: `/blocks?limit=${paging.limit}&offset=${paging.offset}`,
       })
       .then((res) => {
-        return res.data.reverse();
+        return res.data;
       });
   };
 
@@ -79,11 +79,11 @@ export class Node {
    */
   getBlockIdAtHeight = async (height: number): Promise<string> => {
     return this.backend
-      .request<string[]>({
+      .request<Array<{ id: string }>>({
         url: `/blocks/chainSlice?fromHeight=${height}&toHeight=${height}`,
       })
       .then((ids) => {
-        return ids.data[0];
+        return ids.data[0].id;
       });
   };
 

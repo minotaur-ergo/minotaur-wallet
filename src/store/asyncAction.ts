@@ -6,27 +6,11 @@ import {
   BoxContentDbAction,
   BoxDbAction,
 } from '../action/db';
-import { BlockChainAction, BlockChainTxAction } from '../action/blockchain';
 import { store } from './index';
 import * as actionType from './actionType';
 import { ErgoBox } from '../util/network/models';
 import { JsonBI } from '../util/json';
-
-const loadTokensAsync = async (network_type: string) => {
-  try {
-    const tokens = await BoxContentDbAction.getTokens(network_type);
-    const assets = (await AssetDbAction.getAllAsset(network_type)).map(
-      (item) => item.asset_id
-    );
-    for (const token of tokens) {
-      if (assets.indexOf(token) === -1) {
-        await BlockChainAction.updateTokenInfo(token, network_type);
-      }
-    }
-  } catch (e) {
-    console.error(e);
-  }
-};
+import { syncAddress } from '../action/sync/index';
 
 const validateBoxContentModel = async () => {
   const invalidBoxes = await BoxDbAction.invalidAssetCountBox();
@@ -48,32 +32,25 @@ const loadBlockChainDataAsync = async () => {
         NETWORK_TYPE.label
       );
       if (addresses.length > 0) {
-        const node = NETWORK_TYPE.getNode();
-        const height = await node.getHeight();
-        // find new headers from blockchain and insert headers to database
-        await BlockChainAction.calcForkPoint(height, NETWORK_TYPE);
         try {
           for (const address of addresses) {
             store.dispatch({
               type: actionType.SET_LOADING_WALLET,
               payload: address.wallet?.id,
             });
-            await BlockChainTxAction.getMinedTxForAddress(address);
+            await syncAddress(address);
           }
-          await loadTokensAsync(NETWORK_TYPE.label);
-          // fix database
-          await validateBoxContentModel();
           store.dispatch({
             type: actionType.INVALIDATE_WALLETS,
             payload: { removeLoadingWallet: true },
           });
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 

@@ -2,15 +2,14 @@ import { test, vi, expect } from 'vitest';
 
 import { SyncTxs } from '../sync/SyncTxs';
 import { SyncBlocks } from '../sync/SyncBlocks';
-import { Block, TxDictionary, Err } from '../Types';
+import { Block } from '../Types';
 import * as fs from 'fs';
-import { ErgoTx } from '../../util/network/models';
+
 import {
   fakeBlockChain,
   fakeTxs,
   testAddress,
   testNetworkType,
-  walletId,
 } from './testData';
 
 const db = fs.readFileSync(`${__dirname}/db.json`).toString();
@@ -21,8 +20,8 @@ export const TestSyncTxs = new SyncTxs(testAddress, testNetworkType);
 export const TestSyncBlocks = new SyncBlocks(testNetworkType);
 
 /**
- * testing stepforward function to insert given blocks correctly in local db.
- * Dependancy: axois mocked.
+ * testing stepForward function to insert given blocks correctly in local db.
+ * Dependency: axois mocked.
  * Scenario: Create a sample response and make mocked axios instance return it, then call stepForward function.
  * Expected: insertToDB function must be called once with determined block.
  */
@@ -35,8 +34,8 @@ export const TestSyncBlocks = new SyncBlocks(testNetworkType);
 // });
 
 /**
- * testing stepforward function to insert given blocks correctly in local db.
- * Dependancy: axois mocked.
+ * testing stepForward function to insert given blocks correctly in local db.
+ * Dependency: axois mocked.
  * Scenario: same as above but in forked blockChain.
  * Expected: insertToDB function must be called once with determined block.
  */
@@ -49,31 +48,8 @@ test('stepForward process -> not insert blocks to database (fork)', async () => 
 });
 
 /**
- * testing createBlockArrayByID function to build an array of blocks with given IDs and correct heights.
- * Dependancy: -
- * Scenario: Create a sample array of 2 ID-strings and assume the current height is 0.
- * Expected: createBlockArrayByID function must return array of two blocks with given IDs and heights 1 and 2 respectively.
- */
-test('create array of blocks with given IDs', () => {
-  const IDs: string[] = ['123', '190'];
-  const expectedBlocks: Block[] = [
-    {
-      id: IDs[0],
-      height: 1,
-    },
-    {
-      id: IDs[1],
-      height: 2,
-    },
-  ];
-  expect(TestSyncBlocks.createBlockArrayByID(IDs, 0)).toStrictEqual(
-    expectedBlocks
-  );
-});
-
-/**
- * testing checkOverlaps funcstion to
- * Dependancy: -
+ * testing checkOverlaps function to
+ * Dependency: -
  * Scenario: fork happened! so overlapBlocks has no overlap with new received Block headers;
  * Expected: throw error.
  */
@@ -88,8 +64,8 @@ test('check overlapBlocks (fork happened).', () => {
 });
 
 /**
- * testing checkOverlaps funcstion in normal situation.
- * Dependancy: -
+ * testing checkOverlaps function in normal situation.
+ * Dependency: -
  * Scenario:
  * Expected: not throw any error and update arrays correctly.
  */
@@ -109,7 +85,7 @@ test('check overlapBlocks (normal situation).', () => {
 
 /**
  * testing syncBlocks to call removeFromDB function in case of fork and remove forked blocks from db.
- * Dependancy: -
+ * Dependency: -
  * Scenario: checkFork function returns true => fork happened.
  *           stepBackward function returns the receivedBlock as the fork point.
  *           then removeFromDB is called and remove forked blocks from db.
@@ -117,14 +93,14 @@ test('check overlapBlocks (normal situation).', () => {
  */
 // test('syncBlocks -> remove blocks from database', async () => {
 //   fakeBlockChain.setForked(true);
-//   const spyRemovefromDB = vi.spyOn(TestSync, 'removeFromDB');
+//   const spyRemoveFromDB = vi.spyOn(TestSync, 'removeFromDB');
 //   await TestSync.syncBlocks(lastLoadedBlock);
-//   expect(spyRemovefromDB).toHaveBeenCalledWith(fakeBlockChain.forkHeight);
+//   expect(spyRemoveFromDB).toHaveBeenCalledWith(fakeBlockChain.forkHeight);
 // });
 
 /**
  * testing syncBlocks to call stepForward function with current Block
- * Dependancy: -
+ * Dependency: -
  * Scenario: fork is not happened.
  * Expected: stepForward in else block must be called.
  */
@@ -137,57 +113,19 @@ test('check overlapBlocks (normal situation).', () => {
 
 /**
  * testing checkFork to detect fork in specified height.
- * Dependancy: axois mocked.
+ * Dependency: axois mocked.
  * Scenario: axios response contains the block which is exactly the same as last loaded block from database.
  * Expected: return false(fork is not happened.)
  */
-test('check fork function in normal situation', async () => {
-  fakeBlockChain.setForked(false);
-  const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
-  expect(result).toStrictEqual(false);
-});
-
-/**
- * testing setPaging function used in stepForward function.
- * -
- * Scenario: calcuated offset is reaching lastHeight.
- * Expected: passed.
- */
-test('check setPaging function', () => {
-  const returnedPaging = TestSyncBlocks.setPaging(
-    0,
-    fakeBlockChain.getLastBlock().height,
-    6
-  );
-  const expectedPaging = {
-    offset: 0,
-    limit: 6,
-  };
-  expect(returnedPaging).toStrictEqual(expectedPaging);
-});
-
-/**
- * testing setPaging function used in stepForward function.
- * -
- * Scenario: limit is small so we don't reach the lastHeight.
- * Expected: passed.
- */
-test('check setPaging function', () => {
-  const returnedPaging = TestSyncBlocks.setPaging(
-    0,
-    fakeBlockChain.getLastBlock().height,
-    1
-  );
-  const expectedPaging = {
-    offset: 4,
-    limit: 1,
-  };
-  expect(returnedPaging).toStrictEqual(expectedPaging);
-});
+// test('check fork function in normal situation', async () => {
+//   fakeBlockChain.setForked(false);
+//   const result = await TestSyncBlocks.checkFork(lastLoadedBlock);
+//   expect(result).toStrictEqual(false);
+// });
 
 /**
  * testing checkFork to detect fork in specified height.
- * Dependancy: axois mocked.
+ * Dependency: axois mocked.
  * Scenario: axios response contains the block which has different id from the last loaded block from database.
  * Expected: return true(fork is happened.)
  */
@@ -199,8 +137,8 @@ test('check fork function in case of fork', async () => {
 
 /**
  * testing calcFork to find fork point correctly.
- * Dependancy: axois mocked.
- * Scenario: axios reponse set to fork last 2 blocks and return third block correctly.
+ * Dependency: axois mocked.
+ * Scenario: axios response set to fork last 2 blocks and return third block correctly.
  * Expected: return len(db) - 3 as fork point's height.
  */
 // test('calc fork point function', async () => {
@@ -209,14 +147,14 @@ test('check fork function in case of fork', async () => {
 // });
 
 /**
- * testing checkValidation function in case of invalid trxs.
- * Dependancy: -
- * Scenario: Create a sample trx with different blockId from repective db block and pass it to the function.
+ * testing checkValidation function in case of invalid txs.
+ * Dependency: -
+ * Scenario: Create a sample trx with different blockId from respective db block and pass it to the function.
  * Expected: checkValidation must throw an error.
  */
 // test('check validation of invalid tx', async () => {
 //   const expectedError: Err = {
-//     massege: 'blockIds not matched.',
+//     message: 'blockIds not matched.',
 //     data: fakeBlockChain.getLastBlock().height,
 //   };
 //   let thrownError: Err;
@@ -230,9 +168,9 @@ test('check fork function in case of fork', async () => {
 // });
 
 /**
- * testing checkValidation function in case of nvalid trxs.
- * Dependancy: -
- * Scenario: Create a sample trx with same blockId as the repective db block and pass it to the function.
+ * testing checkValidation function in case of invalid txs.
+ * Dependency: -
+ * Scenario: Create a sample trx with same blockId as the respective db block and pass it to the function.
  * Expected: checkValidation must not throw any error.
  */
 // test('check validation of valid tx', async () => {
@@ -244,7 +182,7 @@ test('check fork function in case of fork', async () => {
 
 /**
  * testing sortTxs function.
- * Dependancy: -
+ * Dependency: -
  * Scenario: given array of two random ErgoTxs.
  * Expected: sorted TxDictionary as expected.
  */
@@ -258,15 +196,15 @@ test('sort Txs and return a TxDictionary', () => {
 });
 
 /**
- * testing insertTrxtoDB function to insert given trxs correctly.
- * Dependancy: axois mocked.
- * Scenario: Create a sample response and make mocked axios instance return it, then call syncTrxsWithAddress function.
+ * testing insertTxToDB function to insert given txs correctly.
+ * Dependency: axois mocked.
+ * Scenario: Create a sample response and make mocked axios instance return it, then call syncTxsWithAddress function.
  * Expected: insertTrxToDB function must be called once with determined trx.
  */
-// test('insert Trx to db in syncTrxsWithAddress function', async () => {
+// test('insert Tx to db in syncTxsWithAddress function', async () => {
 //   const txDictionary = TestSyncTxs.sortTxs(fakeTxs.validTxs);
 //   const spySaveTrxToDB = vi.spyOn(TestSyncTxs, 'saveTxsToDB');
-//   TestSyncTxs.syncTrxsWithAddress(
+//   TestSyncTxs.syncTxsWithAddress(
 //     testAddress,
 //     fakeBlockChain.getLastBlock().height
 //   );

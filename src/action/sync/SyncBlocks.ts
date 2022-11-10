@@ -1,11 +1,10 @@
 import { BlockDbAction } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
-import { Block, Err } from '../Types';
-import { Paging } from '../../util/network/paging';
+import { Block } from '../Types';
 
 //constants
-const LIMIT = 50;
+const LIMIT = 100;
 const INITIAL_LIMIT = 10;
 const DB_HEIGHT_RANGE = 720;
 
@@ -19,31 +18,28 @@ export class SyncBlocks {
   }
 
   /**
-   * insert array of block headers into databse.
+   * insert array of block headers into database.
    * @param blocks : Block[]
    */
-  insertBlockToDB = (blocks: Block[]): void => {
-    blocks.forEach((block) => {
-      BlockDbAction.InsertHeaders(
-        Object.entries(block).map((value) => {
-          return { id: block.id, height: block.height };
-        }),
-        this.networkType
-      );
-    });
+  insertBlockToDB = async (blocks: Block[]): Promise<void> => {
+    await BlockDbAction.InsertHeaders(blocks, this.networkType);
   };
 
   /**
-   * compare overlapBlocks with 2 lastRecievedBlocks, update their overlap and remove intersections from recievedBlocks.
+   * compare overlapBlocks with 2 lastReceivedBlocks, update their overlap and remove intersections from receivedBlocks.
    * @param overlapBlocks : Block[]
-   * @param recievedBlocks : Block[]
+   * @param receivedBlocks : Block[]
    */
-  checkOverlaps = (overlapBlocks: Block[], recievedBlocks: Block[]): void => {
-    const sliceIndex = recievedBlocks.indexOf(overlapBlocks[1]);
+  checkOverlaps = (overlapBlocks: Block[], receivedBlocks: Block[]): void => {
+    const latestOverlap = overlapBlocks[overlapBlocks.length - 1];
+    const sliceIndex = receivedBlocks.findIndex(
+      (item) =>
+        item.id === latestOverlap.id && item.height === latestOverlap.height
+    );
     if (sliceIndex === -1) throw new Error('overlaps not matched.');
     else {
-      const newOverlaps = recievedBlocks.slice(-2);
-      recievedBlocks.splice(0, sliceIndex + 1);
+      const newOverlaps = receivedBlocks.slice(-2);
+      receivedBlocks.splice(0, sliceIndex + 1);
       for (let index = 0; index < newOverlaps.length; index++) {
         overlapBlocks[index] = newOverlaps[index];
       }
@@ -51,72 +47,40 @@ export class SyncBlocks {
   };
 
   /**
-   * create array of blocks by given IDs and computed heights.
-   * @param recievedIDs : string[]
-   * @param current_height : number
-   * @returns Block[]
-   */
-  createBlockArrayByID = (
-    recievedIDs: string[],
-    current_height: number
-  ): Block[] => {
-    current_height++;
-    return recievedIDs.map((id, index) => {
-      return {
-        id: id,
-        height: current_height + index,
-      };
-    });
-  };
-
-  /**
-   * set paging used in request headers.
-   * @param current_height : number
-   * @param last_height : number
-   * @param limit : number
-   * @returns constructed paging : Paging
-   */
-  setPaging = (
-    current_height: number,
-    last_height: number,
-    limit: number
-  ): Paging => {
-    const current_offset = last_height - current_height;
-    return {
-      offset: Math.max(current_offset - limit + 2, 0),
-      limit: limit,
-    };
-  };
-
-  /**
    * step forward and get all block headers with height >= currentHeight
    * @param currentBlock: Block
    */
   stepForward = async (currentBlock: Block): Promise<void> => {
-    let paging: Paging;
     let limit: number = INITIAL_LIMIT;
 
-    let current_height: number = currentBlock.height;
     const last_height: number = await this.node.getHeight();
-
+    let current_height: number = Math.max(
+      currentBlock.height,
+      last_height - DB_HEIGHT_RANGE
+    );
+    let checkOverlap = currentBlock.height >= last_height - DB_HEIGHT_RANGE;
     const overlapBlocks: Block[] = [currentBlock];
-
     while (last_height - current_height > 0) {
-      paging = this.setPaging(current_height, last_height, limit);
-      const recievedIDs: string[] = await this.node.getBlockHeaders(paging);
+      const paging = {
+        offset: current_height - 2, // Two block used for overlaps
+        limit: limit,
+      };
+      const receivedIDs: string[] = await this.node.getBlockHeaders(paging);
       limit = LIMIT;
-
-      const recievedBlocks: Block[] = this.createBlockArrayByID(
-        recievedIDs,
-        current_height
-      );
+      const receivedBlocks: Block[] = receivedIDs.map((item, index) => ({
+        height: index + paging.offset,
+        id: item,
+      }));
       try {
-        this.checkOverlaps(overlapBlocks, recievedBlocks);
+        if (checkOverlap) {
+          this.checkOverlaps(overlapBlocks, receivedBlocks);
+        }
       } catch {
         return;
       }
-      this.insertBlockToDB(recievedBlocks);
-      current_height += paging.limit;
+      await this.insertBlockToDB(receivedBlocks);
+      current_height = paging.offset + receivedIDs.length;
+      checkOverlap = true;
     }
   };
 
@@ -158,16 +122,18 @@ export class SyncBlocks {
    * @returns in case of fork: forkHeight. otherwise undefined
    */
   update = async (): Promise<undefined | number> => {
-    let currentBlock = (await BlockDbAction.getLastHeaders(1))!.pop();
+    let currentBlock = (await BlockDbAction.getLastHeaders(1))?.pop();
     if (!currentBlock) {
       currentBlock = {
-        id: await this.node.getBlockIdAtHeight(0),
-        height: 0,
+        id: await this.node.getBlockIdAtHeight(1),
+        height: 1,
       };
-      this.insertBlockToDB([currentBlock]);
+      await this.insertBlockToDB([currentBlock]);
     }
     if (await this.checkFork(currentBlock)) {
       return await this.calcFork(currentBlock);
-    } else this.stepForward(currentBlock);
+    } else {
+      await this.stepForward(currentBlock);
+    }
   };
 }
