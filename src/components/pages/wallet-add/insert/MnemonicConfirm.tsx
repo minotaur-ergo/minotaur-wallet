@@ -55,7 +55,11 @@ const MnemonicConfirm = (props: PropsType) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <p>Use above words to create your written mnemonic</p>
+          <p>
+            Your mnemonic is the only way to recover this wallet. If you lose
+            it, your money will be permanently lost. To make sure that you have
+            properly saved it, please reorder it here
+          </p>
         </Grid>
         <Grid item xs={12}>
           <MnemonicView

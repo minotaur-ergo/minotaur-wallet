@@ -42,7 +42,7 @@ const AddressElement = (props: PropsType) => {
     <ListItem onClick={props.handleClick}>
       <ListItemText
         primary={<RenderName {...props} />}
-        secondary={<DisplayId id={props.address} paddingSize={15} />}
+        secondary={<DisplayId id={props.address} />}
       />
     </ListItem>
   );

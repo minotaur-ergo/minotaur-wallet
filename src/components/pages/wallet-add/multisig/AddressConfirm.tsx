@@ -42,7 +42,9 @@ const AddressConfirm = (props: AddressConfirmPropsType) => {
     <Container>
       <Grid container>
         <Grid item xs={12} marginBottom={2}>
-          <Typography>This is your main address.</Typography>
+          <Typography>
+            This is the main address of your multi-signature wallet:
+          </Typography>
           <Typography>
             Please check it. if this is not your address you entered mnemonic or
             mnemonic passphrase wrong. double check it and try again
@@ -50,6 +52,12 @@ const AddressConfirm = (props: AddressConfirmPropsType) => {
           <div>
             <CopyableAddress address={address} />
           </div>
+          <Typography>
+            This is a multi-signature wallet. In order to send funds from it you
+            need at least
+            {props.minSig} signatures out of {props.public_keys.length + 1}{' '}
+            cosigning signatures.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={2} justifyContent="space-between">

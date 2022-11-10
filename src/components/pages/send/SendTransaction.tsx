@@ -21,6 +21,9 @@ import GenerateTransactionBottomSheet from '../../generate-transaction-bottom-sh
 import InSimpleMode from '../../display-view/InSimpleMode';
 import { AddressDbAction, BoxContentDbAction } from '../../../action/db';
 import { DisplayType } from '../../../store/reducer/wallet';
+import { WalletType } from '../../../db/entities/Wallet';
+import { getRoute, RouteMap } from '../../route/routerMap';
+import { Link } from 'react-router-dom';
 
 interface SendTransactionPropsType
   extends WalletPagePropsType,
@@ -210,6 +213,17 @@ class SendTransaction extends React.Component<
                 {this.renderSendButton()}
               </Grid>
             </InSimpleMode>
+            {this.props.wallet.type === WalletType.MultiSig ? (
+              <Grid item xs={12}>
+                <Link
+                  to={getRoute(RouteMap.WalletMultiSig, {
+                    id: this.props.wallet.id,
+                  })}
+                >
+                  Goto Multi-sig Communication page
+                </Link>
+              </Grid>
+            ) : null}
           </Grid>
         </Container>
         <GenerateTransactionBottomSheet

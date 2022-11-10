@@ -76,7 +76,7 @@ class MultiSigWallet extends WalletCreate {
       goForward={(name) => this.gotoMnemonic(name)}
     >
       <React.Fragment>
-        <Typography>Enter new multi-sig wallet name:</Typography>
+        <Typography>Choose a name for your multi-signature wallet</Typography>
         <br />
       </React.Fragment>
     </WalletName>

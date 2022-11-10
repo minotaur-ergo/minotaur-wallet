@@ -13,7 +13,7 @@ const WalletNetworkSelect = (props: PropType) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        Select network type for this wallet
+        Network Type
       </Grid>
       <Grid item xs={12}>
         <ToggleButtonGroup

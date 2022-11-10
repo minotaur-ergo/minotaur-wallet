@@ -58,15 +58,17 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
           <br />
           <Typography>This is your main address.</Typography>
           <Typography>
-            Please check it. if this is not your address you entered mnemonic or
-            mnemonic passphrase wrong. double check it and try again
+            Import an address or an extended public key. If you import an
+            extended public key, all addresses of the corresponding wallet will
+            be derived and shown in this wallet. Otherwise, you can watch only
+            one address by importing it directly.
           </Typography>
           <AddressInput
             error={addressError}
             address={props.address}
             setAddress={props.setAddress}
             contextType={CreateWalletQrCodeContext}
-            label="Enter address below"
+            label="Import Address or Extended Public Key"
           />
         </Grid>
       </Grid>

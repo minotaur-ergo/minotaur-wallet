@@ -13,6 +13,7 @@ import { Browser } from '@capacitor/browser';
 import DisplayId from '../display-id/DisplayId';
 import PasswordInput from '../inputs/PasswordInput';
 import { AddressAction } from '../../action/action';
+import PublishedTxView from '../PublishedTxView';
 
 interface SendConfirmPropsType extends MessageEnqueueService {
   close: () => any;
@@ -60,26 +61,7 @@ const SendConfirm = (props: SendConfirmPropsType) => {
     <Container>
       <Grid container spacing={2}>
         {txResponse ? (
-          <Grid item xs={12}>
-            <br />
-            Your transaction is generated and submitted to network.
-            <br />
-            <br />
-            <div
-              onClick={() =>
-                Browser.open({
-                  url: `${network_type.explorer_front}/en/transactions/${txResponse}`,
-                })
-              }
-            >
-              <DisplayId id={txResponse} />
-            </div>
-            <br />
-            It can take about 2 minutes to mine your transaction. also syncing
-            your wallet may be slow
-            <br />
-            <br />
-          </Grid>
+          <PublishedTxView txId={txResponse} networkType={network_type} />
         ) : (
           <React.Fragment>
             <Grid item xs={12}>
@@ -88,7 +70,7 @@ const SendConfirm = (props: SendConfirmPropsType) => {
             </Grid>
             <Grid item xs={12}>
               <PasswordInput
-                size={'small'}
+                size="small"
                 label="Wallet password"
                 error=""
                 password={password}

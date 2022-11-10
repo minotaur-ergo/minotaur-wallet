@@ -33,6 +33,7 @@ import AssetList from '../asset/AssetList';
 import AddressList from '../address/AddressList';
 import SendTransaction from '../send/SendTransaction';
 import { WalletQrCodeContext } from './types';
+import MultiSigCommunication from '../multi-sig/MultiSigCommunication';
 
 const TABS = ['transaction', 'send', 'address', 'assets', 'dApps'];
 
@@ -117,6 +118,12 @@ const WalletPage = (props: PropsType) => {
                   path={WalletPageSuffix.WalletSend}
                   element={
                     <SendTransaction wallet={wallet} setTab={setCurrentTab} />
+                  }
+                />
+                <Route
+                  path={WalletPageSuffix.WalletMultiSig}
+                  element={
+                    <MultiSigCommunication wallet={wallet} setTab={hideTab} />
                   }
                 />
                 <Route

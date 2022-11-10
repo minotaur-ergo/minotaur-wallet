@@ -17,7 +17,7 @@ import WalletNetworkSelect from './elements/WalletNetworkSelect';
 import { NavigateFunction } from 'react-router-dom';
 
 interface WalletCreatePropsType extends MessageEnqueueService {
-  back: () => any;
+  back: () => unknown;
   navigate: NavigateFunction;
 }
 
@@ -111,7 +111,7 @@ class WalletCreate extends React.Component<
           }
         />
       </Grid>
-      <Typography>Enter new wallet name:</Typography>
+      <Typography>Wallet Name:</Typography>
       <br />
     </WalletName>
   );

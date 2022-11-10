@@ -1,20 +1,15 @@
 import React from 'react';
 import './DisplayId.css';
+import { Typography } from '@mui/material';
 
 const DisplayId = (props: { id: string | undefined; paddingSize?: number }) => {
+  const id = props.id ? props.id : '';
   const paddingSize = props.paddingSize ? props.paddingSize : 10;
-  const idStart = props.id
-    ? props.id.substring(0, props.id.length - paddingSize)
-    : '';
-  const idEnd = props.id
-    ? props.id.substring(props.id.length - paddingSize)
-    : '';
-  return (
-    <React.Fragment>
-      <span className="address-end">{idEnd}&nbsp;&nbsp;</span>
-      <span className="truncate">{idStart}</span>
-    </React.Fragment>
-  );
+  const dotStart = id.substring(0, paddingSize);
+  const dottedEnd = id.substring(id.length - paddingSize);
+  const dotted =
+    id.length > 2 * paddingSize ? dotStart + '....' + dottedEnd : id;
+  return <Typography>{dotted}</Typography>;
 };
 
 export default DisplayId;

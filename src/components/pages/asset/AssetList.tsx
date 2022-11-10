@@ -68,7 +68,7 @@ class AssetList extends React.Component<
           <ListItem>
             <ListItemText
               primary={'You have no assets yet'}
-              secondary={'You can issue new asset using Issue Token DApp'}
+              secondary={'You can issue a new asset using Issue Token DApp'}
             />
           </ListItem>
         )}

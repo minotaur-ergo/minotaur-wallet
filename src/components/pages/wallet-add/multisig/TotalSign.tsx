@@ -28,7 +28,7 @@ const TotalSign = (props: TotalSignPropsType) => {
     <Container>
       <Grid container columnSpacing={2} marginBottom={2}>
         <Grid item xs={12}>
-          Total number of signers ({total})
+          From {total} cosigners
         </Grid>
         <Grid item xs={12}>
           <Slider
@@ -44,7 +44,7 @@ const TotalSign = (props: TotalSignPropsType) => {
         </Grid>
         <Grid item xs={12}>
           <br />
-          Minimum Signature required ({Math.min(total, minSign)})
+          Requires {Math.min(total, minSign)} signatures
         </Grid>
         <Grid item xs={12}>
           <Slider

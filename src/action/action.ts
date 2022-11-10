@@ -23,6 +23,191 @@ import { getNetworkType, NetworkType } from '../util/network_type';
 const RootPathWithoutIndex = "m/44'/429'/0'/0";
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
+class MultiSigActionClass {
+  getMultiSigWalletProver = async (
+    multiSigWallet: Wallet,
+    signingWallet: Wallet,
+    password: string
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(
+      multiSigWallet.id
+    );
+    const seed = decrypt(signingWallet.seed, password);
+    const secrets = new wasm.SecretKeys();
+    for (const address of addresses) {
+      const path = calcPathFromIndex(address.idx === -1 ? 0 : address.idx);
+      const secret = await AddressAction.getSecretFromPath(seed, path);
+      secrets.add(secret);
+    }
+    return wasm.Wallet.from_secrets(secrets);
+  };
+
+  getMultiSigWalletPublicKeys = async (
+    multiSigWallet: Wallet,
+    signingWallet: Wallet
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(
+      multiSigWallet.id
+    );
+    const extendedKeys = (
+      await MultiSigDbAction.getWalletExternalKeys(multiSigWallet.id)
+    ).map((item) => item.extended_key);
+    extendedKeys.push(signingWallet.extended_public_key);
+    const res: { [address: string]: Array<string> } = {};
+    const derive_path = extendedKeys.map((item) => bip32.fromBase58(item));
+    addresses.forEach((address) => {
+      res[address.address] = derive_path
+        .map((derive_key) =>
+          derive_key.derive(address.idx).publicKey.toString('hex')
+        )
+        .sort();
+    });
+    return res;
+  };
+
+  getMultiSigWalletMyPublicKeys = async (
+    multiSigWallet: Wallet,
+    signingWallet: Wallet
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(
+      multiSigWallet.id
+    );
+    const res: { [address: string]: string } = {};
+    const derive_path = bip32.fromBase58(signingWallet.extended_public_key);
+    addresses.forEach((address) => {
+      res[address.address] = derive_path
+        .derive(address.idx)
+        .publicKey.toString('hex');
+    });
+    return res;
+  };
+
+  getAddressToSecretMap = async (
+    multiSigWallet: Wallet,
+    signingWallet: Wallet,
+    password: string
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(
+      multiSigWallet.id
+    );
+    const seed = decrypt(signingWallet.seed, password);
+    const res: { [ergoTree: string]: wasm.SecretKey } = {};
+    for (const address of addresses) {
+      console.log(address, address.idx);
+      const path = calcPathFromIndex(address.idx === -1 ? 0 : address.idx);
+      const ergoTree = wasm.Address.from_base58(address.address)
+        .to_ergo_tree()
+        .to_base16_bytes();
+      res[ergoTree] = await AddressAction.getSecretFromPath(seed, path);
+    }
+    return res;
+  };
+
+  generateCommitments = async (
+    wallet: wasm.Wallet,
+    tx: wasm.ReducedTransaction
+  ) => {
+    const commitment = wallet.generate_commitments_for_reduced_transaction(tx);
+    const tx_known = wasm.TransactionHintsBag.empty();
+    const tx_own = wasm.TransactionHintsBag.empty();
+    for (let index = 0; index < tx.unsigned_tx().inputs().len(); index++) {
+      const input_commitments = commitment.all_hints_for_input(index);
+      const input_known = wasm.HintsBag.empty();
+      input_known.add_commitment(input_commitments.get(0));
+      tx_known.add_hints_for_input(index, input_known);
+      const input_own = wasm.HintsBag.empty();
+      input_own.add_commitment(input_commitments.get(1));
+      tx_own.add_hints_for_input(index, input_own);
+    }
+    return {
+      public: tx_known,
+      private: tx_own,
+    };
+  };
+
+  commitmentToByte = (
+    commitment: wasm.TransactionHintsBag,
+    inputPublicKeys: Array<Array<string>>
+  ): Array<Array<string>> => {
+    const json = commitment.to_json()['publicHints'];
+    return inputPublicKeys.map((rowPublicKeys, index) => {
+      const hints = json[`${index}`];
+      const rowCommitments = rowPublicKeys.map((pk) => '');
+      hints.forEach((item: { pubkey: { h: string }; a: string }) => {
+        const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
+        if (pubIndex >= 0)
+          rowCommitments[pubIndex] = Buffer.from(item.a, 'hex').toString(
+            'base64'
+          );
+      });
+      return rowCommitments;
+    });
+  };
+
+  overridePublicCommitments = (
+    baseCommitments: Array<Array<string>>,
+    override: Array<Array<string>>
+  ): { commitments: Array<Array<string>>; changed: boolean } => {
+    if (baseCommitments.length !== override.length) {
+      return { commitments: [...override], changed: true };
+    }
+    let changed = false;
+    const commitments = baseCommitments.map((inputCommitments, index) => {
+      const overrideRow = override[index];
+      return inputCommitments.map((commitment, index) => {
+        if (overrideRow[index] !== commitment && overrideRow[index] !== '')
+          changed = true;
+        return overrideRow[index] ? overrideRow[index] : commitment;
+      });
+    });
+    return {
+      commitments: commitments,
+      changed: changed,
+    };
+  };
+
+  generateHintBagJson = (
+    publicKey: string,
+    commitment: string,
+    index: number
+  ) => {
+    return {
+      hint: 'cmtReal',
+      pubkey: {
+        op: '205',
+        h: publicKey,
+      },
+      type: 'dlog',
+      a: Buffer.from(commitment, 'base64').toString('hex').toLowerCase(),
+      position: `0-${index}`,
+    };
+  };
+  getHintBags = (
+    publicKeys: Array<Array<string>>,
+    commitments: Array<Array<string>>
+  ): wasm.TransactionHintsBag => {
+    const publicJson: any = {};
+    const secretJson: any = {};
+    publicKeys.forEach((inputPublicKeys, index) => {
+      const inputCommitments = commitments[index];
+      publicJson[`${index}`] = inputPublicKeys
+        .map((inputPublicKey, pkIndex) => {
+          if (inputCommitments[pkIndex])
+            return this.generateHintBagJson(
+              inputPublicKey,
+              inputCommitments[pkIndex],
+              pkIndex
+            );
+          return undefined;
+        })
+        .filter((item) => !!item);
+      secretJson[`${index}`] = [];
+    });
+    const resJson = { secretHints: secretJson, publicHints: publicJson };
+    return wasm.TransactionHintsBag.from_json(JSON.stringify(resJson));
+  };
+}
+
 class AddressActionClass {
   addWalletAddresses = async (wallet: Wallet) => {
     const deriveAddressAtIndex = async (index: number) => {
@@ -107,6 +292,13 @@ class AddressActionClass {
       address.address,
       address.path,
       address.index
+    );
+  };
+
+  getSecretFromPath = async (seed: Buffer, path: string) => {
+    const extended = bip32.fromSeed(seed).derivePath(path);
+    return wasm.SecretKey.dlog_from_bytes(
+      Uint8Array.from(extended.privateKey!)
     );
   };
 
@@ -356,5 +548,6 @@ class AssetActionClass {
 const AssetAction = new AssetActionClass();
 const WalletAction = new WalletActionClass();
 const AddressAction = new AddressActionClass();
+const MultiSigAction = new MultiSigActionClass();
 
-export { AssetAction, WalletAction, AddressAction };
+export { AssetAction, WalletAction, AddressAction, MultiSigAction };

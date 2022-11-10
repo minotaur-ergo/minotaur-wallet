@@ -7,14 +7,14 @@ import { setDisplayMode } from '../../../store/actions';
 
 interface DisplayModeSelectPropsType {
   display: DisplayType;
-  setMode: (mode: DisplayType) => any;
+  setMode: (mode: DisplayType) => unknown;
 }
 
 const DisplayModeSelect = (props: DisplayModeSelectPropsType) => {
   return (
     <React.Fragment>
       <Grid item xs={12}>
-        Wallet details mode
+        Details Mode
       </Grid>
       <Grid item xs={12}>
         <ToggleButtonGroup

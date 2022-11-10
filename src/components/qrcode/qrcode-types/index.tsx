@@ -4,25 +4,13 @@ import TransactionSignRequest from './TransactionSignRequest';
 import TransactionPublishRequest from './TransactionPublishRequest';
 import ErgoPayRequest from './ErgoPayRequest';
 import { JsonBI } from '../../../util/json';
+import Wallet from '../../../db/entities/Wallet';
 
 interface DetectParam {
   page: number;
   total: number;
   payload: string;
 }
-//
-// const detect = (value: string, regex: RegExp) : DetectParam | null => {
-//     const match = value.match(regex);
-//     console.log(`match is ${match?.groups}`)
-//     if(match){
-//         return {
-//             page: parseInt((match.groups && match.groups.page) ? match.groups.page : "1"),
-//             total: parseInt((match.groups && match.groups.total) ? match.groups.total : "1"),
-//             payload: (match.groups && match.groups.payload) ? match.groups.payload : "",
-//         }
-//     }
-//     return null
-// }
 
 const detectPagedWithPrefix = (
   value: string,
@@ -53,8 +41,9 @@ const Types = [
   {
     render: (
       param: string,
-      close: () => any,
-      completed?: (result: string) => any
+      close: () => unknown,
+      completed?: (result: string) => unknown,
+      wallet?: Wallet
     ) => (
       <TransactionSignRequest
         completed={completed}
@@ -64,13 +53,13 @@ const Types = [
     ),
     type: TxSignR,
     detect: (value: string) => detectPagedWithPrefix(value, 'CSR'),
-    // detect: (value: string) : DetectParam | null => detect(value, new RegExp(/^CSR(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?(-)(?<payload>.*)$/))
   },
   {
     render: (
       param: string,
-      close: () => any,
-      completed?: (result: string) => any
+      close: () => unknown,
+      completed?: (result: string) => unknown,
+      wallet?: Wallet
     ) => (
       <TransactionPublishRequest
         completed={completed}
@@ -80,13 +69,13 @@ const Types = [
     ),
     type: TxPublishR,
     detect: (value: string) => detectPagedWithPrefix(value, 'CSTX'),
-    // detect: (value: string) : DetectParam | null => detect(value, new RegExp(/^CSTX(\/(?<page>[0-9]+)\/(?<total>[0-9]+))?(-)(?<payload>.*)$/))
   },
   {
     render: (
       param: string,
-      close: () => any,
-      completed?: (result: string) => any
+      close: () => unknown,
+      completed?: (result: string) => unknown,
+      wallet?: Wallet
     ) => (
       <ErgoPayRequest completed={completed} closeQrcode={close} url={param} />
     ),

@@ -26,7 +26,7 @@ class InsertWallet extends WalletCreate {
             }
           />
         </Grid>
-        <Typography>Enter new wallet name:</Typography>
+        <Typography>Wallet Name:</Typography>
         <br />
       </>
     </WalletName>

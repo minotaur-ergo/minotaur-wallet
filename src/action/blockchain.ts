@@ -111,7 +111,7 @@ class BlockChainActionClass {
   private getReceiverAmount = (receivers: Array<Receiver>) =>
     receivers.map((receiver) => receiver.erg()).reduce((a, b) => a + b);
 
-  private createContext = async (network_type: string) => {
+  createContext = async (network_type: string) => {
     const node = getNetworkType(network_type).getNode();
     const networkContext = await node.getNetworkContext();
     const blockHeaders = wasm.BlockHeaders.from_json(networkContext.lastBlocks);
@@ -192,6 +192,21 @@ class BlockChainActionClass {
     throw Error('Insufficient erg or token to generate transaction');
   };
 
+  reduceTransactionBytes = async (
+    tx: wasm.UnsignedTransaction,
+    boxes: wasm.ErgoBoxes,
+    data_boxes: wasm.ErgoBoxes,
+    network_type: string
+  ) => {
+    const reduced_transaction = await this.reduceTransaction(
+      tx,
+      boxes,
+      data_boxes,
+      network_type
+    );
+    return reduced_transaction.sigma_serialize_bytes();
+  };
+
   reduceTransaction = async (
     tx: wasm.UnsignedTransaction,
     boxes: wasm.ErgoBoxes,
@@ -199,13 +214,7 @@ class BlockChainActionClass {
     network_type: string
   ) => {
     const ctx = await this.createContext(network_type);
-    const reduced_transaction = wasm.ReducedTransaction.from_unsigned_tx(
-      tx,
-      boxes,
-      data_boxes,
-      ctx
-    );
-    return reduced_transaction.sigma_serialize_bytes();
+    return wasm.ReducedTransaction.from_unsigned_tx(tx, boxes, data_boxes, ctx);
   };
 
   signReduceTransaction = async (
@@ -261,19 +270,6 @@ class BlockChainActionClass {
     if (info) {
       await AssetDbAction.createOrUpdateAsset(info, network_type);
     }
-  };
-
-  generateHintBag = async (tx: wasm.ReducedTransaction) => {
-    const wallet = new wasm.Wallet();
-    const commitments = wallet.generate_commitments(
-      await this.createContext('mainnet'),
-      tx.unsigned_tx(),
-      wasm.ErgoBoxes.from_boxes_json([]),
-      wasm.ErgoBoxes.from_boxes_json([])
-    );
-    const hintBag = wallet.generate_commitments_for_reduced_transaction(tx);
-    const inp0 = hintBag.all_hints_for_input(0);
-    const known = inp0.get(0);
   };
 }
 const BlockChainAction = new BlockChainActionClass();
