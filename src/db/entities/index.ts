@@ -12,9 +12,11 @@ import TokenWithAddress from './views/AddressToken';
 import Config from './Config';
 import AssetCountBox from './views/AssetCountBox';
 import TxBoxCount from './views/TxBoxCount';
+import MultiSigKey from './MultiSigKey';
 
 const Entities = [
   Wallet,
+  MultiSigKey,
   Address,
   Block,
   Tx,

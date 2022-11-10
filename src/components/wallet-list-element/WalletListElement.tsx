@@ -8,7 +8,11 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { faCoffee, faWallet } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCoffee,
+  faWallet,
+  faGroupArrowsRotate,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import { WalletType } from '../../db/entities/Wallet';
@@ -57,6 +61,9 @@ const WalletElement = (props: WalletListElementPropType) => {
           ) : null}
           {props.type === WalletType.ReadOnly ? (
             <FontAwesomeIcon icon={faCoffee} />
+          ) : null}
+          {props.type === WalletType.MultiSig ? (
+            <FontAwesomeIcon icon={faGroupArrowsRotate} />
           ) : null}
         </Avatar>
         <Fade in={props.loadingWallet === props.id}>

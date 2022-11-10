@@ -33,6 +33,9 @@ const SignTransactionDisplay = (props: PropsType) => {
         />
       );
     }
+    if (props.wallet.type === WalletType.MultiSig) {
+      return <div>salam</div>;
+    }
     return (
       <SendConfirm
         display={props.show}

@@ -17,6 +17,7 @@ import TokenWithAddress from '../db/entities/views/AddressToken';
 import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
 import TxBoxCount from '../db/entities/views/TxBoxCount';
+import MultiSigKey from '../db/entities/MultiSigKey';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -58,6 +59,44 @@ class WalletActionClass {
 
   getWallets = async () => {
     return this.walletRepository.find();
+  };
+}
+
+class MultiSigActionClass {
+  private repository: Repository<MultiSigKey>;
+
+  constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(MultiSigKey);
+  }
+
+  createKey = async (
+    wallet: Wallet,
+    key_or_address: string,
+    sign_wallet: Wallet | null
+  ) => {
+    const entity = {
+      wallet: wallet,
+      extended_key: key_or_address,
+      sign_wallet: sign_wallet,
+    };
+    return this.repository.save(entity);
+  };
+
+  getWalletInternalKey = async (walletId: number) => {
+    const data = await this.repository
+      .createQueryBuilder()
+      .where('walletId = :walletId', { walletId: walletId })
+      .andWhere('signWalletId is not null')
+      .getRawOne();
+    return await WalletDbAction.getWalletById(data.MultiSigKey_signWalletId);
+  };
+
+  getWalletExternalKeys = async (walletId: number) => {
+    return await this.repository
+      .createQueryBuilder()
+      .where('walletId = :walletId', { walletId: walletId })
+      .andWhere('signWalletId is null')
+      .getMany();
   };
 }
 
@@ -128,7 +167,11 @@ class AddressActionClass {
       .select('MAX("idx")', 'lastIndex')
       .where(`walletId=${wallet_id}`);
     const res = await queryBuilder.getRawOne();
-    return res === undefined ? -1 : res.lastIndex;
+    return res === undefined ||
+      res.lastIndex === undefined ||
+      res.lastIndex === null
+      ? -1
+      : res.lastIndex;
   };
 
   updateAddressName = async (addressId: number, newName: string) => {
@@ -823,6 +866,7 @@ class DbTransactionClass {
 }
 
 let BoxContentDbAction: BoxContentActionClass;
+let MultiSigDbAction: MultiSigActionClass;
 let AddressDbAction: AddressActionClass;
 let WalletDbAction: WalletActionClass;
 let ConfigDbAction: ConfigActionClass;
@@ -835,6 +879,7 @@ let DbTransaction: DbTransactionClass;
 
 const initializeAction = (dataSource: DataSource) => {
   BoxContentDbAction = new BoxContentActionClass(dataSource);
+  MultiSigDbAction = new MultiSigActionClass(dataSource);
   AddressDbAction = new AddressActionClass(dataSource);
   WalletDbAction = new WalletActionClass(dataSource);
   ConfigDbAction = new ConfigActionClass(dataSource);
@@ -848,6 +893,7 @@ const initializeAction = (dataSource: DataSource) => {
 
 export {
   BoxContentDbAction,
+  MultiSigDbAction,
   AddressDbAction,
   WalletDbAction,
   ConfigDbAction,

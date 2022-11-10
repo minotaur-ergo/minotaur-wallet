@@ -1,27 +1,43 @@
-import { WalletType } from '../db/entities/Wallet';
+import Wallet, { WalletType } from '../db/entities/Wallet';
 import { store } from '../store';
 import * as actionTypes from '../store/actionType';
 import { mnemonicToSeedSync } from 'bip39';
-import { bip32 } from '../util/util';
-import { encrypt } from './enc';
-import { AddressDbAction, AssetDbAction, WalletDbAction } from './db';
 import * as wasm from 'ergo-lib-wasm-browser';
-import Wallet from '../db/entities/Wallet';
 import Address from '../db/entities/Address';
-import { decrypt } from './enc';
-import { getNetworkType } from '../util/network_type';
+import {
+  bip32,
+  get_base58_extended_public_key,
+  int8_vlq,
+  is_valid_address,
+  uint8_vlq,
+} from '../util/util';
+import { encrypt, decrypt } from './enc';
+import {
+  AddressDbAction,
+  AssetDbAction,
+  MultiSigDbAction,
+  WalletDbAction,
+} from './db';
+import { getNetworkType, NetworkType } from '../util/network_type';
 
 const RootPathWithoutIndex = "m/44'/429'/0'/0";
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
 class AddressActionClass {
   addWalletAddresses = async (wallet: Wallet) => {
+    const deriveAddressAtIndex = async (index: number) => {
+      if (wallet.type === WalletType.MultiSig) {
+        return await this.deriveMultiSigWalletAddress(wallet, index);
+      } else {
+        return await this.deriveAddress(
+          wallet.extended_public_key,
+          network_type.prefix,
+          index
+        );
+      }
+    };
     const network_type = getNetworkType(wallet.network_type);
-    let addressObject = await this.deriveAddress(
-      wallet.extended_public_key,
-      network_type.prefix,
-      0
-    );
+    let addressObject = await deriveAddressAtIndex(0);
     await AddressDbAction.saveAddress(
       wallet,
       'Main Address',
@@ -32,11 +48,7 @@ class AddressActionClass {
     try {
       let index = 1;
       for (;;) {
-        addressObject = await this.deriveAddress(
-          wallet.extended_public_key,
-          network_type.prefix,
-          index
-        );
+        addressObject = await deriveAddressAtIndex(index);
         const explorer = getNetworkType(wallet.network_type).getExplorer();
         const txs = await explorer.getTxsByAddress(addressObject.address, {
           offset: 0,
@@ -58,6 +70,44 @@ class AddressActionClass {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  deriveMultiSigWalletAddress = async (wallet: Wallet, index?: number) => {
+    const walletKey = await MultiSigDbAction.getWalletInternalKey(wallet.id);
+    const keys = await MultiSigDbAction.getWalletExternalKeys(wallet.id);
+    if (index === undefined) {
+      index = (await AddressDbAction.getLastAddress(wallet.id)) + 1;
+    }
+    const extended_keys = [...keys.map((item) => item.extended_key)];
+    if (walletKey) extended_keys.push(walletKey.extended_public_key);
+    const pub_keys = extended_keys.map((key) => {
+      const pub = bip32.fromBase58(key);
+      const derived1 = pub.derive(index!);
+      return derived1.publicKey.toString('hex');
+    });
+    const address = this.generateMultiSigAddressFromAddresses(
+      pub_keys,
+      parseInt(wallet.seed),
+      getNetworkType(wallet.network_type)
+    );
+    const path = calcPathFromIndex(index!);
+    return {
+      address: address,
+      path: path,
+      index: index!,
+    };
+  };
+
+  deriveNewMultiSigWalletAddress = async (wallet: Wallet, name: string) => {
+    const address = await this.deriveMultiSigWalletAddress(wallet);
+    name = name ? name : await this.getNewAddressName(wallet.id, name);
+    await AddressDbAction.saveAddress(
+      wallet,
+      name,
+      address.address,
+      address.path,
+      address.index
+    );
   };
 
   getWalletAddressSecret = async (
@@ -107,6 +157,24 @@ class AddressActionClass {
       address: secret.get_address().to_base58(NETWORK_TYPE),
       path: path,
     };
+  };
+
+  generateMultiSigAddressFromAddresses = (
+    publicKeys: Array<string>,
+    minSig: number,
+    network_type: NetworkType
+  ) => {
+    let ergoTree = '10' + uint8_vlq(publicKeys.length + 1);
+    ergoTree += '04' + int8_vlq(minSig);
+    publicKeys.sort().forEach((item) => (ergoTree += '08cd' + item));
+    ergoTree += '987300';
+    ergoTree += `83${uint8_vlq(publicKeys.length)}08`; // add coll operation
+    Array(publicKeys.length)
+      .fill('')
+      .forEach((item, index) => (ergoTree += '73' + uint8_vlq(index + 1)));
+    return wasm.Address.recreate_from_ergo_tree(
+      wasm.ErgoTree.from_base16_bytes(ergoTree)
+    ).to_base58(network_type.prefix);
   };
 
   getNewAddressName = async (walletId: number, name: string) => {
@@ -230,6 +298,41 @@ class WalletActionClass {
     );
     await AddressAction.addWalletAddresses(wallet);
     store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
+  };
+
+  createMultiSigWallet = async (
+    name: string,
+    walletId: number,
+    keys: Array<string>,
+    minSig: number
+  ) => {
+    const wallet = await WalletDbAction.getWalletById(walletId);
+    if (wallet) {
+      const is_derivable =
+        !!wallet.extended_public_key && !is_valid_address(keys[0]);
+      const createdWallet = await WalletDbAction.createWallet(
+        name,
+        WalletType.MultiSig,
+        `${minSig}`,
+        is_derivable ? wallet.extended_public_key : '',
+        wallet.network_type
+      );
+      await MultiSigDbAction.createKey(
+        createdWallet,
+        wallet.extended_public_key,
+        wallet
+      );
+      for (const key of keys) {
+        const base58 = get_base58_extended_public_key(key);
+        if (base58) {
+          await MultiSigDbAction.createKey(createdWallet, base58, null);
+        } else {
+          throw Error('unreachable');
+        }
+      }
+      await AddressAction.addWalletAddresses(createdWallet);
+      store.dispatch({ type: actionTypes.INVALIDATE_WALLETS });
+    }
   };
 
   loadWallets = async () => {

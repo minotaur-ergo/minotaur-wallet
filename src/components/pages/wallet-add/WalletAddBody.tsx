@@ -3,6 +3,7 @@ import WalletInsertOption from './WalletInsertOption';
 import InsertWallet from './insert/InsertWallet';
 import RestoreWallet from './restore/RestoreWallet';
 import ReadOnlyWallet from './readonly/ReadOnlyWallet';
+import MultiSigWallet from './multisig/MultiSigWallet';
 import { WalletCreateType } from './walletCreateType';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +23,9 @@ const WalletAddBody = () => {
       ) : null}
       {walletType === WalletCreateType.ReadOnly ? (
         <ReadOnlyWallet navigate={navigate} back={() => setWalletType(null)} />
+      ) : null}
+      {walletType === WalletCreateType.MultiSig ? (
+        <MultiSigWallet navigate={navigate} back={() => setWalletType(null)} />
       ) : null}
     </div>
   );
