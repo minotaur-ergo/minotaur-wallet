@@ -15,12 +15,12 @@ const ShareCommitmentMultiSig = (props: ShareCommitmentPropsType) => {
   const [type, setType] = useState(PUBLISH_MANUAL_TYPES.clipboard);
   return (
     <React.Fragment>
-      {props.remainCount > 0 ? (
-        <PublishManualType
-          publishType={type}
-          setPublishType={(newType) => setType(newType)}
-        />
-      ) : null}
+      {/*{props.remainCount > 0 ? (*/}
+      {/*  <PublishManualType*/}
+      {/*    publishType={type}*/}
+      {/*    setPublishType={(newType) => setType(newType)}*/}
+      {/*  />*/}
+      {/*) : null}*/}
       <Grid item xs={12}>
         {props.remainCount === 0 ? (
           <React.Fragment>

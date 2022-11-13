@@ -14,10 +14,10 @@ const ShareCommitmentMultiSig = (props: ShareCommitmentPropsType) => {
   const [type, setType] = useState(PUBLISH_MANUAL_TYPES.clipboard);
   return (
     <React.Fragment>
-      <PublishManualType
-        publishType={type}
-        setPublishType={(newType) => setType(newType)}
-      />
+      {/*<PublishManualType*/}
+      {/*  publishType={type}*/}
+      {/*  setPublishType={(newType) => setType(newType)}*/}
+      {/*/>*/}
       <Grid item xs={12}>
         Please share this data to wallet signers.
         <br />

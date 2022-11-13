@@ -3,7 +3,7 @@ import { Button, Grid, Typography } from '@mui/material';
 import clipboard from 'clipboardy';
 
 interface MultiSigDataReaderPropsType {
-  newData: (data: string) => any;
+  newData: (data: string) => unknown;
 }
 
 const MultiSigDataReader = (props: MultiSigDataReaderPropsType) => {
@@ -17,7 +17,7 @@ const MultiSigDataReader = (props: MultiSigDataReaderPropsType) => {
       <Grid item xs={12} marginTop={2}>
         <Typography>Read data from other wallets:</Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Button
           variant="contained"
           fullWidth
@@ -27,16 +27,16 @@ const MultiSigDataReader = (props: MultiSigDataReaderPropsType) => {
           Clipboard
         </Button>
       </Grid>
-      <Grid item xs={6}>
-        <Button
-          variant="contained"
-          fullWidth
-          color="primary"
-          onClick={readClipBoard}
-        >
-          QRCODE
-        </Button>
-      </Grid>
+      {/*<Grid item xs={6}>*/}
+      {/*  <Button*/}
+      {/*    variant="contained"*/}
+      {/*    fullWidth*/}
+      {/*    color="primary"*/}
+      {/*    onClick={readClipBoard}*/}
+      {/*  >*/}
+      {/*    QRCODE*/}
+      {/*  </Button>*/}
+      {/*</Grid>*/}
     </Grid>
   );
 };
