@@ -4,6 +4,7 @@ enum WalletType {
   Cold = 'COLD',
   ReadOnly = 'READ_ONLY',
   Normal = 'NORMAL',
+  MultiSig = 'MULTI_SIG',
 }
 
 @Entity({ name: 'wallet' })

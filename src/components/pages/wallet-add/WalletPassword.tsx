@@ -7,8 +7,8 @@ import ReactLoading from 'react-loading';
 interface PropsType {
   password?: string;
   saving: boolean;
-  goBack?: () => any;
-  goForward: (password: string) => any;
+  goBack?: () => unknown;
+  goForward: (password: string) => unknown;
 }
 
 const WalletPassword = (props: PropsType) => {
@@ -35,15 +35,13 @@ const WalletPassword = (props: PropsType) => {
       <Grid container spacing={2} marginBottom={2}>
         <Grid item xs={12}>
           <br />
-          Enter a valid password. this password used to encrypt your seed in
-          database.
-          <br />
-          if you forget this password only delete wallet and restore it again
-          with new password.
+          Choose a strong password to encrypt your wallet keys. If you forget
+          this password, the only way to access your funds is recovering the
+          wallet using the mnemonic.{' '}
         </Grid>
         <Grid item xs={12}>
           <PasswordInput
-            label="Wallet password"
+            label="Password"
             error={passwordError()}
             password={password}
             setPassword={setPassword}
@@ -54,7 +52,7 @@ const WalletPassword = (props: PropsType) => {
             error={passwordConfirmError()}
             password={confirmPassword}
             setPassword={setConfirmPassword}
-            label="Confirm Wallet password"
+            label="Confirm Password"
           />
         </Grid>
       </Grid>

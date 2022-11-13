@@ -12,18 +12,20 @@ import {
 } from '../../store/actions';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../app/MessageHandler';
+import Wallet from '../../db/entities/Wallet';
 
 interface QrCodeReaderViewPropsType extends MessageEnqueueService {
-  success: (scanned: string) => any;
-  fail: () => any;
-  close: () => any;
+  success: (scanned: string) => unknown;
+  fail: () => unknown;
+  close: () => unknown;
   open: boolean;
   children: React.ReactNode;
-  completed?: (result: string) => any;
+  completed?: (result: string) => unknown;
   allowedTypes?: Array<string>;
   qrCodes: Array<string>;
-  addQrcode: (id: string) => any;
-  closeQrCode: (id: string) => any;
+  addQrcode: (id: string) => unknown;
+  closeQrCode: (id: string) => unknown;
+  wallet?: Wallet;
 }
 
 interface QrCodeReaderViewStateType {
@@ -139,7 +141,8 @@ class QrCodeReaderView extends React.Component<
       return selectedType[0].render(
         this.state.chunks.join(''),
         this.props.close,
-        this.props.completed
+        this.props.completed,
+        this.props.wallet
       );
     }
     return null;

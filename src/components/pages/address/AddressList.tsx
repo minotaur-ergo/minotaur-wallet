@@ -8,6 +8,7 @@ import ExtendedPublicKeyView from './ExtendedPublicKeyView';
 import { WalletPagePropsType } from '../../../util/interface';
 import { AddressDbAction } from '../../../action/db';
 import { Divider, List, ListItem, ListItemText } from '@mui/material';
+import { WalletType } from '../../../db/entities/Wallet';
 
 interface StateType {
   addresses: Array<AddressWithErg>;
@@ -88,7 +89,8 @@ class AddressList extends React.Component<WalletPagePropsType, StateType> {
           />
         ) : null}
         <List>
-          {this.props.wallet.extended_public_key.trim() ? (
+          {this.props.wallet.extended_public_key.trim() &&
+          this.props.wallet.type !== WalletType.MultiSig ? (
             <React.Fragment>
               <Divider />
               <ListItem onClick={this.showPublicKey}>

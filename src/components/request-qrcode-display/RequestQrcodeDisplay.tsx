@@ -64,7 +64,7 @@ const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
           </Grid>
         </React.Fragment>
       ) : null}
-      <React.Fragment>
+      <Grid item xs={12}>
         <div>
           If your qrcode scanner can not scan qrcode, you can make bigger size
           qrcode.
@@ -77,7 +77,7 @@ const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
           min={200}
           max={Math.min(MAX_CHUNK_SIZE, props.requestData.length)}
         />
-      </React.Fragment>
+      </Grid>
     </React.Fragment>
   );
 };

@@ -17,7 +17,7 @@ import WalletNetworkSelect from './elements/WalletNetworkSelect';
 import { NavigateFunction } from 'react-router-dom';
 
 interface WalletCreatePropsType extends MessageEnqueueService {
-  back: () => any;
+  back: () => unknown;
   navigate: NavigateFunction;
 }
 
@@ -29,6 +29,9 @@ interface WalletCreateStateType {
   type: WalletType;
   saving: boolean;
   network_type: string;
+  public_keys: Array<string>;
+  minSig: number;
+  wallet: number;
 }
 
 class WalletCreate extends React.Component<
@@ -43,6 +46,9 @@ class WalletCreate extends React.Component<
     type: WalletType.Normal,
     saving: false,
     network_type: NETWORK_TYPES[0].label,
+    public_keys: [],
+    minSig: 1,
+    wallet: -1,
   };
 
   steps = ['Name', 'Mnemonic', 'Confirm', 'Password'];
@@ -105,7 +111,7 @@ class WalletCreate extends React.Component<
           }
         />
       </Grid>
-      <Typography>Enter new wallet name:</Typography>
+      <Typography>Wallet Name:</Typography>
       <br />
     </WalletName>
   );

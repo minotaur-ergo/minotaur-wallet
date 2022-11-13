@@ -45,7 +45,7 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
         const data_input = props.transaction?.data_inputs
           ? props.transaction.data_inputs
           : wasm.ErgoBoxes.from_boxes_json([]);
-        BlockChainAction.reduceTransaction(
+        BlockChainAction.reduceTransactionBytes(
           transaction,
           boxes,
           data_input,

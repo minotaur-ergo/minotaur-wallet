@@ -11,6 +11,23 @@ import * as actionType from './actionType';
 import { ErgoBox } from '../util/network/models';
 import { JsonBI } from '../util/json';
 import { syncAddress } from '../action/sync/index';
+import { BlockChainAction } from '../action/blockchain';
+
+const loadTokensAsync = async (network_type: string) => {
+  try {
+    const tokens = await BoxContentDbAction.getTokens(network_type);
+    const assets = (await AssetDbAction.getAllAsset(network_type)).map(
+      (item) => item.asset_id
+    );
+    for (const token of tokens) {
+      if (assets.indexOf(token) === -1) {
+        await BlockChainAction.updateTokenInfo(token, network_type);
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 const validateBoxContentModel = async () => {
   const invalidBoxes = await BoxDbAction.invalidAssetCountBox();
@@ -48,6 +65,7 @@ const loadBlockChainDataAsync = async () => {
           console.error(e);
         }
       }
+      await loadTokensAsync(NETWORK_TYPE.label);
     }
   } catch (e) {
     console.error(e);

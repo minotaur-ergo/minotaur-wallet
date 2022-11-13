@@ -99,6 +99,25 @@ const get_base58_extended_public_key = (extended_public_key: string) => {
   );
 };
 
+const int8_vlq = (value: number) => {
+  const sign = value > 0 ? 0 : 1;
+  value = (value << 1) + sign;
+  return uint8_vlq(value);
+};
+
+const uint8_vlq = (value: number) => {
+  const res = [];
+  while (value > 0) {
+    if ((value & ~0x7f) === 0) {
+      res.push(value);
+      break;
+    } else {
+      res.push((value & 0x7f) | 0x80);
+      value = value >> 7;
+    }
+  }
+  return Buffer.from(Uint8Array.from(res)).toString('hex');
+};
 export {
   sum_erg_and_nano_erg,
   html_safe_gson,
@@ -106,5 +125,7 @@ export {
   erg_nano_erg_to_str,
   is_valid_address,
   get_base58_extended_public_key,
+  int8_vlq,
+  uint8_vlq,
   bip32,
 };

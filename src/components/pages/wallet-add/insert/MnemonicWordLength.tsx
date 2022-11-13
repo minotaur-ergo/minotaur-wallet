@@ -14,7 +14,8 @@ const MnemonicWordLength = (props: MnemonicWordLengthPropsType) => {
   };
   return (
     <React.Fragment>
-      You can change mnemonic words. more mnemonic words, more security gained.
+      You can choose different mnemonic lengths. 24-words mnemonic is
+      recommended. The more mnemonic words, the more secure.
       <Slider
         size="small"
         value={props.value}

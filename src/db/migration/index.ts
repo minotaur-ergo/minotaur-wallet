@@ -21,6 +21,7 @@ import { recreateViews1656038900762 } from './1656038900762-recreate-views';
 import { createAssetsCount1656865711897 } from './1656865711897-create-assets-count';
 import { createAssetsCountBoxes1656865730031 } from './1656865730031-create-assets-boxes-count';
 import { txBoxCount1667225460029 } from './1667225460029-tx-box-count';
+import { multiSigKeys1668085091261 } from './1668085091261-multi-sig-keys';
 
 const Migrations = [
   block1645511116354,
@@ -46,6 +47,7 @@ const Migrations = [
   createAssetsCount1656865711897,
   createAssetsCountBoxes1656865730031,
   txBoxCount1667225460029,
+  multiSigKeys1668085091261,
 ];
 
 export default Migrations;

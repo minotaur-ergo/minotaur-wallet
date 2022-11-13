@@ -20,13 +20,14 @@ class ReadOnlyWallet extends WalletCreate {
       goBack={this.props.back}
       goForward={(name) => this.gotoMnemonic(name)}
     >
-      <>
-        Enter new wallet name.
+      <React.Fragment>
+        Wallet Name.
         <p style={{ color: 'red' }}>
-          This wallet is read only and to sign transactions you must use a cold
-          wallet.
+          This is a read-only wallet and cannot be used to sign any transaction.
+          You need the corresponding cold wallet in order to sign transactions
+          and send funds from this wallet.
         </p>
-      </>
+      </React.Fragment>
     </WalletName>
   );
 

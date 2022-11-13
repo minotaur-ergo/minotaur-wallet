@@ -4,12 +4,13 @@ import SendConfirm from './SendConfirm';
 import Wallet, { WalletType } from '../../db/entities/Wallet';
 import { UnsignedGeneratedTx } from '../../util/interface';
 import { QrCodeContextType } from '../qrcode/qrcode-types/types';
+import SendConfirmMultiSig from './SendConfirmMultiSig';
 
 interface PropsType {
   wallet: Wallet;
   show: boolean;
-  completed: (result: string) => any;
-  close: () => any;
+  completed: (result: string) => unknown;
+  close: () => unknown;
   transaction?: UnsignedGeneratedTx;
   contextType: React.Context<QrCodeContextType | null>;
 }
@@ -29,6 +30,16 @@ const SignTransactionDisplay = (props: PropsType) => {
           display={props.show}
           transaction={props.transaction}
           close={close}
+          wallet={props.wallet}
+        />
+      );
+    }
+    if (props.wallet.type === WalletType.MultiSig) {
+      return (
+        <SendConfirmMultiSig
+          display={props.show}
+          transaction={props.transaction}
+          close={props.close}
           wallet={props.wallet}
         />
       );

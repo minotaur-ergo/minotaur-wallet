@@ -71,8 +71,8 @@ const Mnemonic = (props: PropsType) => {
         <Grid item xs={12}>
           <h2>Restore Wallet</h2>
           <div>
-            Enter your mnemonic words below. mnemonic must contain 12, 15, 18,
-            21 or 24 words
+            Enter your mnemonic words below. Mnemonic must contain 12, 15, 18,
+            21, or 24 words
           </div>
         </Grid>
         <Grid item xs={12}>
