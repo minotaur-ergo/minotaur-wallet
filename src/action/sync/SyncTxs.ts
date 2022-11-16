@@ -23,7 +23,7 @@ import { Explorer } from '../../util/network/explorer';
 import { validateBoxContentModel } from '../../store/asyncAction';
 
 //constants
-const LIMIT = 30 * 720; // one month
+const LIMIT = 30 * 720 * 24; // one month
 const TX_PAGE_LIMIT = 50;
 const INITIAL_LIMIT = 10;
 

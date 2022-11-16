@@ -14,10 +14,10 @@ import { CreateWalletQrCodeContext } from '../types';
 
 interface PropsType {
   address: string;
-  setAddress: (address: string) => any;
-  setNetwork: (network: string) => any;
-  goBack: () => any;
-  goForward: () => any;
+  setAddress: (address: string) => unknown;
+  setNetwork: (network: string) => unknown;
+  goBack: () => unknown;
+  goForward: () => unknown;
   network: string;
   wallets: Array<WalletWithErg>;
 }
@@ -63,6 +63,7 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
             be derived and shown in this wallet. Otherwise, you can watch only
             one address by importing it directly.
           </Typography>
+          <br />
           <AddressInput
             error={addressError}
             address={props.address}

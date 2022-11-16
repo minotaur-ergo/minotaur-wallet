@@ -37,7 +37,7 @@ export const reducer = (
     case actionTypes.SET_DISPLAY_MODE:
       return {
         ...state,
-        display: (action.payload! === 'advanced'
+        display: (action.payload && action.payload === 'advanced'
           ? 'advanced'
           : 'simple') as DisplayType,
       };

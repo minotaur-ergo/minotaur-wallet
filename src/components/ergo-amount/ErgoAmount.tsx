@@ -3,7 +3,7 @@ import { FormControl, TextField } from '@mui/material';
 
 interface PropsType {
   value: string;
-  setValue: (value: string) => any;
+  setValue: (value: string) => unknown;
   size?: 'small' | 'medium';
   label: React.ReactNode;
 }

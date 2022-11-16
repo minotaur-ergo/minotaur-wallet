@@ -153,8 +153,11 @@ export class Explorer {
       }
     });
     let lastBox: wasm.ErgoBox = box;
-    while (memPoolBoxesMap.has(lastBox.box_id().to_str()))
-      lastBox = memPoolBoxesMap.get(lastBox.box_id().to_str())!;
+    let memPoolBox = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    while (memPoolBox) {
+      lastBox = memPoolBox;
+      memPoolBox = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    }
     return lastBox;
   };
 
