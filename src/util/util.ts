@@ -71,6 +71,18 @@ const is_valid_extended_public_key_base58 = (extended_public_key: string) => {
   }
 };
 
+const get_extended_public_key_from_eip_0003 = (extended_public_key: string) => {
+  try {
+    const buffer = Buffer.from(extended_public_key, 'hex');
+    if (buffer.length < 78) return undefined;
+    const epk = bip32.fromPublicKey(buffer.slice(45, 78), buffer.slice(13, 45));
+    epk.neutered();
+    return epk.toBase58();
+  } catch (e) {
+    return undefined;
+  }
+};
+
 const get_extended_public_key_base64_or_hex_to_base58 = (
   extended_public_key: string,
   encoding: 'base64' | 'hex' = 'base64'
@@ -93,10 +105,12 @@ const get_base58_extended_public_key = (extended_public_key: string) => {
     'base64'
   );
   if (fromBase64) return fromBase64;
-  return get_extended_public_key_base64_or_hex_to_base58(
+  const fromHex = get_extended_public_key_base64_or_hex_to_base58(
     extended_public_key,
     'hex'
   );
+  if (fromHex) return fromHex;
+  return get_extended_public_key_from_eip_0003(extended_public_key);
 };
 
 const int8_vlq = (value: number) => {

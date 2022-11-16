@@ -132,7 +132,7 @@ class MultiSigActionClass {
     const json = commitment.to_json()['publicHints'];
     return inputPublicKeys.map((rowPublicKeys, index) => {
       const hints = json[`${index}`];
-      const rowCommitments = rowPublicKeys.map((pk) => '');
+      const rowCommitments = rowPublicKeys.map(() => '');
       hints.forEach((item: { pubkey: { h: string }; a: string }) => {
         const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
         if (pubIndex >= 0)
