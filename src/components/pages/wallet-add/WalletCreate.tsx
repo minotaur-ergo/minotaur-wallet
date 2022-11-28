@@ -9,7 +9,6 @@ import { NETWORK_TYPES } from '../../../util/network_type';
 import { WalletAction } from '../../../action/action';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../../app/MessageHandler';
-import { GlobalStateType } from '../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { showMessage } from '../../../store/actions';
 import { Grid, Typography } from '@mui/material';
@@ -148,7 +147,7 @@ class WalletCreate extends React.Component<
   );
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

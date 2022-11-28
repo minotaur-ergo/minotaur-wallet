@@ -9,7 +9,7 @@ import { loadConfig } from '../../store/actions';
 
 interface PropsType {
   walletsValid: boolean;
-  loadConfig: () => any;
+  loadConfig: () => unknown;
 }
 interface StateType {
   loading: boolean;

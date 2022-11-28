@@ -1,7 +1,6 @@
 import React from 'react';
 import { WalletPagePropsType } from '../../../util/interface';
 import { Container, Grid } from '@mui/material';
-import { GlobalStateType } from '../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
@@ -45,7 +44,7 @@ class MultiSigCommunication extends React.Component<
     try {
       const data: InputData = JSON.parse(newData) as InputData;
       const tx = wasm.ReducedTransaction.sigma_parse_bytes(
-        Uint8Array.from(Buffer.from(data.tx!, 'base64'))
+        Uint8Array.from(Buffer.from(data.tx, 'base64'))
       );
       const boxes = wasm.ErgoBoxes.empty();
       data.boxes
@@ -97,7 +96,7 @@ class MultiSigCommunication extends React.Component<
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

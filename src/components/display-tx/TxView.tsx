@@ -105,7 +105,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
           this.processBox(box, -1, assets);
         }
       });
-      outputs.forEach((box, index) => {
+      outputs.forEach((box) => {
         if (
           this.props.addresses.indexOf(
             wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(

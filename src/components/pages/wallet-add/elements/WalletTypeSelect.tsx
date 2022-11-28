@@ -11,7 +11,7 @@ import { WalletType } from '../../../../db/entities/Wallet';
 
 interface PropsType {
   value: string | React.ReactElement;
-  setValue: (type: WalletType) => any;
+  setValue: (type: WalletType) => unknown;
 }
 
 const WalletTypeSelect = (props: PropsType) => {

@@ -85,8 +85,9 @@ class QrCodeReaderView extends React.Component<
   success = (scanned: string) => {
     let selectedTypes = Types.filter((item) => item.detect(scanned) !== null);
     if (this.props.allowedTypes) {
+      const allowedTypes: Array<string> = this.props.allowedTypes;
       selectedTypes = selectedTypes.filter(
-        (item) => this.props?.allowedTypes!.indexOf(item.type) >= 0
+        (item) => allowedTypes.indexOf(item.type) >= 0
       );
     }
     if (selectedTypes.length > 0) {

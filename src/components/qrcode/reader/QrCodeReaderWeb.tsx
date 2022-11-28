@@ -4,7 +4,6 @@ import { QrCodePropsType } from './propsType';
 import AppHeader from '../../app-header/AppHeader';
 import WithAppBar from '../../../layout/WithAppBar';
 import { Result } from '@zxing/library';
-import { GlobalStateType } from '../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
@@ -24,7 +23,7 @@ interface QrCodeWebStateType {
 }
 
 interface QrCodeWebPropsType extends QrCodePropsType, MessageEnqueueService {
-  closeQrcode: () => any;
+  closeQrcode: () => unknown;
 }
 
 const codeReader = new BrowserQRCodeReader();
@@ -70,6 +69,8 @@ class QrCodeReaderWeb extends React.Component<
   ) => {
     if (result) {
       this.props.handleScan(result.getText());
+    } else {
+      console.log(error);
     }
   };
 
@@ -139,7 +140,7 @@ class QrCodeReaderWeb extends React.Component<
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

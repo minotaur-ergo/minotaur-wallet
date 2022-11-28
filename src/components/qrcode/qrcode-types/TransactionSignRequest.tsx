@@ -18,8 +18,8 @@ import TxView from '../../display-tx/TxView';
 // import { UnsignedGeneratedTx } from "../../../utils/interface";
 
 interface TransactionSignRequestPropsType {
-  closeQrcode: () => any;
-  completed?: (result: string) => any;
+  closeQrcode: () => unknown;
+  completed?: (result: string) => unknown;
   tx: { reducedTx: string; sender: string; inputs: Array<string> };
 }
 

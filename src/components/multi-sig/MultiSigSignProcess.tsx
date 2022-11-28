@@ -23,7 +23,7 @@ import ShareTransactionMultiSig from './ShareTransactionMultiSig';
 import PublishedTxView from '../PublishedTxView';
 
 interface MultiSigSignProcessPropsType extends MessageEnqueueService {
-  close: () => any;
+  close: () => unknown;
   wallet: Wallet;
   tx: wasm.ReducedTransaction;
   boxes: wasm.ErgoBoxes;
@@ -335,26 +335,28 @@ class MultiSigSignProcess extends React.Component<
         const context = await BlockChainAction.createContext(
           this.state.relatedWallet.network_type
         );
-        const partial = this.state.partialTx!;
-        const hints = wasm.extract_hints(
-          partial,
-          context,
-          this.props.boxes,
-          wasm.ErgoBoxes.empty(),
-          realPropositions,
-          simulatedPropositions
-        );
-        Array(this.props.tx.unsigned_tx().inputs().len())
-          .fill('')
-          .forEach((item, index) => {
-            const inputHints = hints.all_hints_for_input(index);
-            publicHintBag.add_hints_for_input(index, inputHints);
-            if (this.state.myHints) {
-              const myOwnInputHints =
-                this.state.myHints.own.all_hints_for_input(index);
-              publicHintBag.add_hints_for_input(index, myOwnInputHints);
-            }
-          });
+        if (this.state.partialTx) {
+          const partial = this.state.partialTx;
+          const hints = wasm.extract_hints(
+            partial,
+            context,
+            this.props.boxes,
+            wasm.ErgoBoxes.empty(),
+            realPropositions,
+            simulatedPropositions
+          );
+          Array(this.props.tx.unsigned_tx().inputs().len())
+            .fill('')
+            .forEach((item, index) => {
+              const inputHints = hints.all_hints_for_input(index);
+              publicHintBag.add_hints_for_input(index, inputHints);
+              if (this.state.myHints) {
+                const myOwnInputHints =
+                  this.state.myHints.own.all_hints_for_input(index);
+                publicHintBag.add_hints_for_input(index, myOwnInputHints);
+              }
+            });
+        }
       }
       const tx = this.props.tx;
       const wallet = await MultiSigAction.getMultiSigWalletProver(
@@ -384,15 +386,15 @@ class MultiSigSignProcess extends React.Component<
     try {
       const data: InputData = JSON.parse(jsonStr) as InputData;
       if (Object.prototype.hasOwnProperty.call(data, 'partialTx')) {
-        if (data.tx === this.state.txBytes) {
+        if (data.tx === this.state.txBytes && data.partialTx) {
           const partial = wasm.Transaction.sigma_parse_bytes(
-            Uint8Array.from(Buffer.from(data.partialTx!, 'base64'))
+            Uint8Array.from(Buffer.from(data.partialTx, 'base64'))
           );
           this.setState({
             commitments: data.commitments,
-            signed: data.signed!,
+            signed: data.signed ? data.signed : [],
             partialTx: partial,
-            simulated: data.simulated!,
+            simulated: data.simulated ? data.simulated : [],
             mySign: false,
           });
         } else {
@@ -415,7 +417,9 @@ class MultiSigSignProcess extends React.Component<
       const tx = wasm.Transaction.sigma_parse_bytes(
         Uint8Array.from(Buffer.from(this.state.partial, 'base64'))
       );
-      getNetworkType(this.state.relatedWallet!.network_type)
+      getNetworkType(
+        this.state.relatedWallet ? this.state.relatedWallet.network_type : ''
+      )
         .getNode()
         .sendTx(tx)
         .then((res) => {
@@ -497,12 +501,12 @@ class MultiSigSignProcess extends React.Component<
               required={parseInt(this.props.wallet.seed)}
               commitment={this.state.qrCode}
             />
-          ) : (
+          ) : this.state.relatedWallet ? (
             <RenderPassword
               accept={(password) => this.acceptPassword(password)}
-              wallet={this.state.relatedWallet!}
+              wallet={this.state.relatedWallet}
             />
-          )}
+          ) : null}
           {this.state.mySign ? (
             <Grid xs={12} item>
               <Button

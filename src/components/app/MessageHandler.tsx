@@ -7,11 +7,11 @@ import { SnackbarMessage, useSnackbar, VariantType } from 'notistack';
 interface MessageHandlerPropsType {
   message: SnackbarMessage;
   variant: VariantType;
-  cleanMessage: () => any;
+  cleanMessage: () => unknown;
 }
 
 export interface MessageEnqueueService {
-  showMessage: (message: SnackbarMessage, variant: VariantType) => any;
+  showMessage: (message: SnackbarMessage, variant: VariantType) => unknown;
 }
 
 const MessageHandler = (props: MessageHandlerPropsType) => {

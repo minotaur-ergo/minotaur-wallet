@@ -29,7 +29,7 @@ import { Card, CardContent } from '@mui/material';
 interface PropsType {
   children?: React.ReactNode;
   showDelete?: boolean;
-  delete: () => any;
+  delete: () => unknown;
 }
 
 const ReceiverRowCard = (props: PropsType) => {

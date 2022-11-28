@@ -37,7 +37,7 @@ export function setupReloadWatcher(
     .on('ready', () => {
       reloadWatcher.ready = true;
     })
-    .on('all', (_event, _path) => {
+    .on('all', () => {
       if (reloadWatcher.ready) {
         clearTimeout(reloadWatcher.debouncer);
         reloadWatcher.debouncer = setTimeout(async () => {
@@ -209,7 +209,7 @@ export class ElectronCapacitorApp {
       });
       this.SplashScreen.init(this.loadMainWindow, this);
     } else {
-      this.loadMainWindow(this);
+      await this.loadMainWindow(this);
     }
 
     // Security

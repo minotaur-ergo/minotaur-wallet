@@ -1,5 +1,4 @@
 import { WalletCreate } from '../WalletCreate';
-import { GlobalStateType } from '../../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../../store/actions';
@@ -23,8 +22,8 @@ class MultiSigWallet extends WalletCreate {
         this.state.public_keys,
         this.state.minSig
       )
-        .then((res) => this.goBack())
-        .catch((err) => {
+        .then(() => this.goBack())
+        .catch(() => {
           this.props.showMessage('Error creating wallet', 'error');
           this.setState({ saving: false });
         });
@@ -95,7 +94,7 @@ class MultiSigWallet extends WalletCreate {
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

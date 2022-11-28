@@ -6,24 +6,21 @@ import { AddressDbAction } from '../../../action/db';
 import { Button, Container, Grid } from '@mui/material';
 import TextInput from '../../inputs/TextInput';
 import { MessageEnqueueService } from '../../app/MessageHandler';
-import { GlobalStateType } from '../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 
 interface AddressViewPropsType extends MessageEnqueueService {
   address: AddressWithErg;
-  invalidate: () => any;
+  invalidate: () => unknown;
 }
 
 const AddressView = (props: AddressViewPropsType) => {
   const [name, setName] = useState({ name: props.address.name, id: -1 });
   const updateName = () => {
-    AddressDbAction.updateAddressName(props.address.id, name.name).then(
-      (item) => {
-        props.invalidate();
-      }
-    );
+    AddressDbAction.updateAddressName(props.address.id, name.name).then(() => {
+      props.invalidate();
+    });
   };
   useEffect(() => {
     if (name.id !== props.address.id) {
@@ -79,7 +76,7 @@ const AddressView = (props: AddressViewPropsType) => {
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

@@ -2,7 +2,6 @@ import React from 'react';
 import Mnemonic from './Mnemonic';
 import AddressConfirm from './AddressConfirm';
 import { WalletCreate } from '../WalletCreate';
-import { GlobalStateType } from '../../../../store/reducer';
 import { connect, MapDispatchToProps } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../../store/actions';
@@ -35,7 +34,7 @@ class RestoreWallet extends WalletCreate {
   );
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

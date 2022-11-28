@@ -65,7 +65,7 @@
     "clean": "rimraf ./build",
     "coverage": "vitest run --coverage",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix . && npm run prettify",
+    "lint": "eslint --fix .",
     "postinstall": "npx patch-package",
     "prepare": "husky install",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",

@@ -74,8 +74,8 @@ const Types = [
     render: (
       param: string,
       close: () => unknown,
-      completed?: (result: string) => unknown,
-      wallet?: Wallet
+      completed?: (result: string) => unknown
+      // wallet?: Wallet
     ) => (
       <ErgoPayRequest completed={completed} closeQrcode={close} url={param} />
     ),

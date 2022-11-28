@@ -77,11 +77,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
     this.loadTx();
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<PropsType>,
-    prevState: Readonly<stateType>,
-    snapshot?: any
-  ) {
+  componentDidUpdate() {
     this.loadTx();
   }
 

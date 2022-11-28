@@ -13,7 +13,7 @@ import Settings from '../pages/settings/Settings';
 
 interface PropsType {
   qrCodes: Array<string>;
-  closeQrcode: (id: string) => any;
+  closeQrcode: (id: string) => unknown;
 }
 
 class RouterSwitch extends React.Component<PropsType, never> {

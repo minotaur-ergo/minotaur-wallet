@@ -111,12 +111,15 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
 
   get_params = async () => {
     const addresses = await this.props.getAddresses();
-    return {
-      user_address: wasm.Address.from_base58(addresses[0]),
-      bank: this.state.bank!,
-      oracle: this.state.oracle!,
-      height: await this.props.network_type.getNode().getHeight(),
-    };
+    if (this.state.bank && this.state.oracle) {
+      return {
+        user_address: wasm.Address.from_base58(addresses[0]),
+        bank: this.state.bank,
+        oracle: this.state.oracle,
+        height: await this.props.network_type.getNode().getHeight(),
+      };
+    }
+    throw Error('Bank box or oracle box not found');
   };
 
   create_tx = async (
@@ -300,13 +303,13 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
       const height = await this.props.network_type.getNode().getHeight();
       if (height > this.state.last_update_height) {
         this.update_boxes()
-          .then((res) => {
+          .then(() => {
             this.setState({
               last_update_height: height,
             });
             this.schedule_to_refresh('long');
           })
-          .catch((err) => {
+          .catch(() => {
             this.schedule_to_refresh('short');
           });
       } else {
