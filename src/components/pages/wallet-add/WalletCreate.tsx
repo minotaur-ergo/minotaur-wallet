@@ -9,11 +9,12 @@ import { NETWORK_TYPES } from '../../../util/network_type';
 import { WalletAction } from '../../../action/action';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../../app/MessageHandler';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { showMessage } from '../../../store/actions';
 import { Grid, Typography } from '@mui/material';
 import WalletNetworkSelect from './elements/WalletNetworkSelect';
 import { NavigateFunction } from 'react-router-dom';
+import { Action, Dispatch } from 'redux';
 
 interface WalletCreatePropsType extends MessageEnqueueService {
   back: () => unknown;
@@ -149,7 +150,7 @@ class WalletCreate extends React.Component<
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

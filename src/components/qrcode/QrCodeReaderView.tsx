@@ -4,7 +4,7 @@ import QrCodeMoreChunk from './qrcode-types/QrCodeMoreChunk';
 import Types from './qrcode-types';
 import crypto from 'crypto';
 import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import {
   AddQrCodeOpened,
   closeQrCodeScanner,
@@ -13,6 +13,7 @@ import {
 import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../app/MessageHandler';
 import Wallet from '../../db/entities/Wallet';
+import { Action, Dispatch } from 'redux';
 
 interface QrCodeReaderViewPropsType extends MessageEnqueueService {
   success: (scanned: string) => unknown;
@@ -180,7 +181,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   qrCodes: state.qrcode.pages,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   addQrcode: (id: string) => dispatch(AddQrCodeOpened(id)),
   closeQrCode: (id: string) => dispatch(closeQrCodeScanner(id)),
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

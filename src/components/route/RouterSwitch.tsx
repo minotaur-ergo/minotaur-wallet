@@ -2,13 +2,14 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { App } from '@capacitor/app';
 import { RouteMap } from './routerMap';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { GlobalStateType } from '../../store/reducer';
 import Home from '../pages/home/Home';
 import WalletAdd from '../pages/wallet-add/WalletAdd';
 import WalletPage from '../pages/wallet/WalletPage';
 import { closeQrCodeScanner } from '../../store/actions';
 import Settings from '../pages/settings/Settings';
+import { Action, Dispatch } from 'redux';
 // import DAppConnectorContainer from "../pages/dapp-connector/DAppConnectorContainer";
 
 interface PropsType {
@@ -58,7 +59,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   qrCodes: state.qrcode.pages,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   closeQrcode: (id: string) => dispatch(closeQrCodeScanner(id)),
 });
 

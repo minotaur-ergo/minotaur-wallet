@@ -8,7 +8,7 @@ interface PropsType {
   id: number;
   name: string;
   erg: bigint;
-  handleClick: () => any;
+  handleClick: () => unknown;
   token_count: number;
   network_type: string;
 }

@@ -5,7 +5,7 @@ import { AddressAction } from '../../action/action';
 import Wallet from '../../db/entities/Wallet';
 
 interface RenderPasswordPropsType {
-  accept: (password: string) => any;
+  accept: (password: string) => unknown;
   wallet: Wallet;
 }
 

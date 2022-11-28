@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { cleanMessage } from '../../store/actions';
 import { SnackbarMessage, useSnackbar, VariantType } from 'notistack';
+import { Action, Dispatch } from 'redux';
 
 interface MessageHandlerPropsType {
   message: SnackbarMessage;
@@ -37,7 +38,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   variant: state.message.variant,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   cleanMessage: () => dispatch(cleanMessage()),
 });
 

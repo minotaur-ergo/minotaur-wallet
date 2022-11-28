@@ -85,14 +85,14 @@ export class Connection {
   private connection?: WebSocket;
   private readonly id: string;
   private readonly server: string;
-  private readonly errorHandling: (error: Event) => any;
-  private readonly messageHandling: (message: MessageData) => any;
+  private readonly errorHandling: (error: Event) => unknown;
+  private readonly messageHandling: (message: MessageData) => unknown;
   private messageQueue: Array<string> = [];
 
   constructor(
     server: string,
-    error: (error: Event) => any,
-    message: (message: MessageData) => any
+    error: (error: Event) => unknown,
+    message: (message: MessageData) => unknown
   ) {
     this.id = uuid.v4();
     this.server = server;

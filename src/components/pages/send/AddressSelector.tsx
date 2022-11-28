@@ -21,7 +21,7 @@ interface PropsType {
     amount: bigint,
     address: Array<Address> | null,
     tokens: Array<TokenWithAddress>
-  ) => any;
+  ) => unknown;
 }
 
 interface StateType {

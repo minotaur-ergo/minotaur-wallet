@@ -6,9 +6,10 @@ import { AddressDbAction } from '../../../action/db';
 import { Button, Container, Grid } from '@mui/material';
 import TextInput from '../../inputs/TextInput';
 import { MessageEnqueueService } from '../../app/MessageHandler';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 interface AddressViewPropsType extends MessageEnqueueService {
   address: AddressWithErg;
@@ -78,7 +79,7 @@ const AddressView = (props: AddressViewPropsType) => {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

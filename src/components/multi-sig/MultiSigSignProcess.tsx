@@ -2,7 +2,7 @@ import React from 'react';
 import { MessageEnqueueService } from '../app/MessageHandler';
 import Wallet from '../../db/entities/Wallet';
 import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import {
   AddQrCodeOpened,
   closeQrCodeScanner,
@@ -21,6 +21,7 @@ import { BlockChainAction } from '../../action/blockchain';
 import MultiSigDataReader from './MultiSigDataReader';
 import ShareTransactionMultiSig from './ShareTransactionMultiSig';
 import PublishedTxView from '../PublishedTxView';
+import { Action, Dispatch } from 'redux';
 
 interface MultiSigSignProcessPropsType extends MessageEnqueueService {
   close: () => unknown;
@@ -535,7 +536,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   wallets: state.wallet.wallets,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   addQrcode: (id: string) => dispatch(AddQrCodeOpened(id)),
   closeQrCode: (id: string) => dispatch(closeQrCodeScanner(id)),
   showMessage: (message: SnackbarMessage, variant: VariantType) =>

@@ -4,10 +4,11 @@ import Mnemonic from './Mnemonic';
 import MnemonicConfirm from './MnemonicConfirm';
 import { WalletCreate } from '../WalletCreate';
 import { Grid, Typography } from '@mui/material';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../../store/actions';
 import WalletNetworkSelect from '../elements/WalletNetworkSelect';
+import { Action, Dispatch } from 'redux';
 
 class InsertWallet extends WalletCreate {
   renderName = () => (
@@ -53,7 +54,7 @@ class InsertWallet extends WalletCreate {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

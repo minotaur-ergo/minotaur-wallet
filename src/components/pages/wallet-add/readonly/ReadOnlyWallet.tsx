@@ -8,8 +8,9 @@ import {
 } from '../../../../util/util';
 import { WalletAction } from '../../../../action/action';
 import { SnackbarMessage, VariantType } from 'notistack';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { showMessage } from '../../../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 class ReadOnlyWallet extends WalletCreate {
   steps = ['Name', 'Address'];
@@ -82,7 +83,7 @@ class ReadOnlyWallet extends WalletCreate {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

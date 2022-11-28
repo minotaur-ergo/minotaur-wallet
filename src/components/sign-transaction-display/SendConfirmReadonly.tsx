@@ -7,7 +7,8 @@ import { BlockChainAction } from '../../action/blockchain';
 import { Button, Container, Grid } from '@mui/material';
 import RequestQrcodeDisplay from '../request-qrcode-display/RequestQrcodeDisplay';
 import Loading from '../loading/Loading';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch, Action } from 'redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../store/actions';
 import { MessageEnqueueService } from '../app/MessageHandler';
@@ -128,7 +129,7 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

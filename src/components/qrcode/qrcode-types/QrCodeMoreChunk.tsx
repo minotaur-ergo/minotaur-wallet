@@ -5,8 +5,8 @@ import { Button, Container, Grid, Typography } from '@mui/material';
 import qrcode from '../../../assets/qrcode.svg';
 interface PropsType {
   chunks: Array<string>;
-  close: () => any;
-  scanNext: () => any;
+  close: () => unknown;
+  scanNext: () => unknown;
 }
 
 const QrCodeMoreChunk = (props: PropsType) => {

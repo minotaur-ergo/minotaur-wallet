@@ -96,7 +96,7 @@ export class ElectronCapacitorApp {
   }
 
   // Helper function to load in the app.
-  private async loadMainWindow(thisRef: any) {
+  private async loadMainWindow(thisRef: ElectronCapacitorApp) {
     await thisRef.loadWebApp(thisRef.MainWindow);
   }
 
@@ -220,7 +220,7 @@ export class ElectronCapacitorApp {
         return { action: 'allow' };
       }
     });
-    this.MainWindow.webContents.on('will-navigate', (event, _newURL) => {
+    this.MainWindow.webContents.on('will-navigate', (event) => {
       if (!this.MainWindow.webContents.getURL().includes(this.customScheme)) {
         event.preventDefault();
       }

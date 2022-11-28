@@ -2,9 +2,10 @@ import React from 'react';
 import Mnemonic from './Mnemonic';
 import AddressConfirm from './AddressConfirm';
 import { WalletCreate } from '../WalletCreate';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 // nominee pretty fabric dance opinion lemon attend garden market rally bread own own material icon
 class RestoreWallet extends WalletCreate {
@@ -36,7 +37,7 @@ class RestoreWallet extends WalletCreate {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

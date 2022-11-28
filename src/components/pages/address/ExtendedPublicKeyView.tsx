@@ -8,11 +8,12 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
 import bs58 from 'bs58';
+import { Action, Dispatch } from 'redux';
 
 interface ExtendedPublicKeyViewPropsType extends MessageEnqueueService {
   extended: string;
@@ -82,7 +83,7 @@ const ExtendedPublicKeyView = (props: ExtendedPublicKeyViewPropsType) => {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

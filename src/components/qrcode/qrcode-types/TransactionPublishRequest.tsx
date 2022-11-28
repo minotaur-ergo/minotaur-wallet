@@ -21,8 +21,8 @@ import { AddressDbAction } from '../../../action/db';
 import TxView from '../../display-tx/TxView';
 
 interface PropsType {
-  closeQrcode: () => any;
-  completed?: (result: string) => any;
+  closeQrcode: () => unknown;
+  completed?: (result: string) => unknown;
   tx: { signedTx: string };
 }
 

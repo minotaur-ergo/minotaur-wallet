@@ -318,7 +318,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
     }
   };
 
-  loadBoxes = (force = false) => {
+  loadBoxes = () => {
     this.load_data().then(() => null);
     // if (!(this.state.bank && this.state.oracle && !force)) {
     //     this.update_test_boxes();
@@ -396,7 +396,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
             <div>
               1 ERG ≈{' '}
               {this.loaded()
-                ? utils.format_usd(this.state?.bank!.get_erg_usd())
+                ? utils.format_usd(
+                    this.state.bank ? this.state.bank.get_erg_usd() : BigInt(0)
+                  )
                 : this.loading()}{' '}
               SigmaUSD
             </div>
@@ -407,7 +409,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
                 <Grid item xs={12}>
                   Circulating Supply:{' '}
                   {utils.format_usd(
-                    this.state?.bank!.num_circulating_stable_coins()
+                    this.state.bank
+                      ? this.state.bank.num_circulating_stable_coins()
+                      : BigInt(0)
                   )}
                 </Grid>
                 <Grid item xs={12}>

@@ -4,9 +4,10 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { MessageEnqueueService } from '../app/MessageHandler';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 interface ClipboardTransferPropsType extends MessageEnqueueService {
   requestData: string;
@@ -37,7 +38,7 @@ const ClipboardTransfer = (props: ClipboardTransferPropsType) => {
 
 const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });
