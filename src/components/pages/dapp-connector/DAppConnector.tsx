@@ -3,6 +3,7 @@ import {
   ActionType,
   AddressRequestPayload,
   BalanceRequestPayload,
+  BoxRequestPayload,
   Connection,
   ConnectionData,
   ConnectionState,
@@ -16,17 +17,20 @@ import {
   AccordionSummary,
   Container,
 } from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
+import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import WalletSelect from './WalletSelect';
 import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 import * as CryptoJS from 'crypto-js';
+import * as wasm from 'ergo-lib-wasm-browser';
 import {
   AddressDbAction,
   BoxContentDbAction,
   BoxDbAction,
   WalletDbAction,
 } from '../../../action/db';
+import { ErgoBox } from '../../../util/network/models';
+import { CoveringResult } from '../../../util/interface';
 
 interface DAppConnectorPropType {
   value: string;
@@ -146,6 +150,37 @@ class DAppConnector extends React.Component<
       );
     }
   };
+
+  processBoxes = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as BoxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    let resultUtxos: wasm.ErgoBoxes | undefined;
+    if (wallet) {
+      let coveringAmount = payload.amount
+        ? payload.amount
+        : wallet.erg().toString();
+      let coveringToken: { [id: string]: bigint } = {};
+      if (payload.tokenId)
+        coveringToken[payload.tokenId] = BigInt(coveringAmount);
+      let result: CoveringResult = await BoxDbAction.getCoveringBoxFor(
+        BigInt(coveringAmount),
+        wallet.id,
+        coveringToken
+      );
+      resultUtxos = result.covered ? result.boxes : undefined;
+
+      this.sendMessageToServer(
+        connection,
+        'boxes_response',
+        content.requestId,
+        resultUtxos
+      );
+    }
+  };
+
   handleMessage = (msg: MessageData) => {
     const filteredConnections = this.state.connections.filter(
       (item) => item.info.pageId === msg.pageId
@@ -164,6 +199,10 @@ class DAppConnector extends React.Component<
           break;
         case 'balance_request':
           this.processBalance(connection, content).then(() => null);
+          break;
+        case 'boxes_request':
+          this.processBoxes(connection, content).then(() => null);
+          break;
       }
     }
   };

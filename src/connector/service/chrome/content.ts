@@ -172,7 +172,7 @@ class MinotaurApi extends ExtensionConnector {
   };
 
   get_balance = (
-    token_id: string,
+    token_id = 'ERG',
     ...token_ids: Array<string>
   ): Promise<bigint | { [id: string]: bigint }> => {
     return new Promise<bigint | { [id: string]: bigint }>((resolve, reject) => {
@@ -215,9 +215,9 @@ class MinotaurApi extends ExtensionConnector {
   };
 }
 
-//     sign_tx = (tx) => {
-//         return this._rpcCall("signTx", [tx]);
-//     }
+// sign_tx = (tx) => {
+//     return this._rpcCall("signTx", [tx]);
+// }
 //
 //     sign_tx_input = (tx, index) => {
 //         return this._rpcCall("signTxInput", [tx, index]);

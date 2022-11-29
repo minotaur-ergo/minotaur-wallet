@@ -1,4 +1,5 @@
 import * as uuid from 'uuid';
+import * as wasm from 'ergo-lib-wasm-browser';
 
 export type ActionType =
   | 'registered'
@@ -20,6 +21,10 @@ export type Page = {
   limit: number;
 };
 
+export type PaginateError = {
+  maxSize: number;
+};
+
 export type ConfirmPayload = {
   id: string;
   display: string;
@@ -30,23 +35,23 @@ export type BoxRequestPayload = {
   tokenId: string;
   page: Page;
 };
+export type BoxResponsePayload = wasm.ErgoBoxes | undefined;
 
 export type BalanceRequestPayload = {
   tokens: Array<string>;
 };
-
 export type BalanceResponsePayload = { [tokenId: string]: string };
 
 export type AddressRequestPayload = {
   type: 'used' | 'unused' | 'change' | 'all';
   page: Page;
 };
-
 export type AddressResponsePayload = Array<string>;
 
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
+  | BoxResponsePayload
   | BalanceRequestPayload
   | BalanceResponsePayload
   | AddressRequestPayload
