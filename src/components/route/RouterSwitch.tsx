@@ -9,6 +9,7 @@ import WalletAdd from '../pages/wallet-add/WalletAdd';
 import WalletPage from '../pages/wallet/WalletPage';
 import { closeQrCodeScanner } from '../../store/actions';
 import Settings from '../pages/settings/Settings';
+import V2Demo from '../v2/V2Demo';
 // import DAppConnectorContainer from "../pages/dapp-connector/DAppConnectorContainer";
 
 interface PropsType {
@@ -47,6 +48,7 @@ class RouterSwitch extends React.Component<PropsType, never> {
             <Route path={RouteMap.Wallet} element={<WalletPage />} />
             <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
             <Route path={RouteMap.Home} element={<Home />} />
+            <Route path={'v2/*'} element={<V2Demo />} />
           </Routes>
         </div>
       </React.Fragment>
