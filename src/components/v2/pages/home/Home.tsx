@@ -4,15 +4,18 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Button, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { RouterMap } from '../../V2Demo';
+import AppToolbar from '../../layouts/AppToolbar';
 
 const Home = () => {
   const navigate = useNavigate();
+  const wallet = { name: 'My First Wallet' };
 
   return (
     <AppFrame
-      title="Home"
+      title={wallet.name}
       navigation={
-        <IconButton onClick={() => navigate('/v2/wallets')}>
+        <IconButton onClick={() => navigate(RouterMap.Wallets)}>
           <AccountBalanceWalletOutlinedIcon />
         </IconButton>
       }
@@ -21,11 +24,8 @@ const Home = () => {
           <MoreVertIcon />
         </IconButton>
       }
-      toolbar={
-        <Button variant="contained" fullWidth>
-          Next
-        </Button>
-      }
+      toolbar={<AppToolbar />}
+      disableToolbarPadding
     >
       Hello
       <p>
