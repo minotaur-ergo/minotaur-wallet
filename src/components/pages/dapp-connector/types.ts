@@ -35,7 +35,9 @@ export type BoxRequestPayload = {
   tokenId: string;
   page: Page;
 };
-export type BoxResponsePayload = wasm.ErgoBoxes | undefined;
+export type BoxResponsePayload = {
+  boxes: Array<wasm.ErgoBox> | undefined;
+};
 
 export type BalanceRequestPayload = {
   tokens: Array<string>;

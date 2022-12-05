@@ -10,6 +10,7 @@ import {
 } from '../types';
 import * as uuid from 'uuid';
 import { generate } from 'generate-password';
+import { BoxResponsePayload } from '../../../components/pages/dapp-connector/types';
 
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 const info: {
@@ -90,6 +91,15 @@ const createSocket = (server: string): Promise<void> => {
                     isSuccess: true,
                     requestId: request.requestId,
                     payload: contentJson.payload as BalanceResponsePayload,
+                  });
+                  break;
+                case 'boxes_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as BoxResponsePayload,
                   });
                   break;
               }
@@ -204,6 +214,18 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
               session.id,
               JSON.stringify({
                 action: 'balance_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'boxes':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'boxes_request',
                 requestId: msg.requestId,
                 payload: msg.payload,
               })

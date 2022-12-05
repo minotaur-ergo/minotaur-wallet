@@ -1,4 +1,5 @@
 import { EventData } from '../types';
+import * as wasm from 'ergo-lib-wasm-browser';
 
 declare global {
   interface Window {
@@ -201,14 +202,15 @@ class MinotaurApi extends ExtensionConnector {
     token_id = 'ERG',
     page?: { offset: number; limit: number }
   ) => {
-    return new Promise<bigint>((resolve, reject) => {
-      this.rpcCall('get_boxes', {
+    return new Promise<wasm.ErgoBoxes | undefined>((resolve, reject) => {
+      this.rpcCall('boxes', {
         amount: amount,
         token_id: token_id,
         page: page,
       })
         .then((res) => {
-          resolve(BigInt((res as EventData).payload as string));
+          const data = (res as EventData).payload as wasm.ErgoBoxes | undefined;
+          resolve(data);
         })
         .catch(() => reject());
     });

@@ -1,3 +1,4 @@
+import * as wasm from 'ergo-lib-wasm-browser';
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 
 // export class Session {
@@ -134,6 +135,10 @@ export type BoxRequestPayload = {
   page: Page;
 };
 
+export type BoxResponsePayload = {
+  boxes: Array<wasm.ErgoBox> | undefined;
+};
+
 export type BalanceRequestPayload = {
   tokenIds: Array<string>;
 };
@@ -153,6 +158,7 @@ export type AddressResponsePayload = Array<string>;
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
+  | BoxResponsePayload
   | BalanceRequestPayload
   | BalanceResponsePayload
   | AddressRequestPayload

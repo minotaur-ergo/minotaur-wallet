@@ -4,6 +4,7 @@ import {
   AddressRequestPayload,
   BalanceRequestPayload,
   BoxRequestPayload,
+  BoxResponsePayload,
   Connection,
   ConnectionData,
   ConnectionState,
@@ -23,6 +24,7 @@ import WalletSelect from './WalletSelect';
 import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 import * as CryptoJS from 'crypto-js';
 import * as wasm from 'ergo-lib-wasm-browser';
+
 import {
   AddressDbAction,
   BoxContentDbAction,
@@ -157,21 +159,29 @@ class DAppConnector extends React.Component<
   ) => {
     const payload = content.payload as BoxRequestPayload;
     const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
-    let resultUtxos: wasm.ErgoBoxes | undefined;
+    const resultUtxos: BoxResponsePayload = {
+      boxes: [],
+    };
     if (wallet) {
-      let coveringAmount = payload.amount
+      const coveringAmount = payload.amount
         ? payload.amount
         : wallet.erg().toString();
-      let coveringToken: { [id: string]: bigint } = {};
+      const coveringToken: { [id: string]: bigint } = {};
       if (payload.tokenId)
         coveringToken[payload.tokenId] = BigInt(coveringAmount);
-      let result: CoveringResult = await BoxDbAction.getCoveringBoxFor(
+      const result: CoveringResult = await BoxDbAction.getCoveringBoxFor(
         BigInt(coveringAmount),
         wallet.id,
         coveringToken
       );
-      resultUtxos = result.covered ? result.boxes : undefined;
-
+      const ergoBoxes = result.covered ? result.boxes : undefined;
+      if (ergoBoxes) {
+        for (let index = 0; index < ergoBoxes.len(); index++) {
+          resultUtxos.boxes!.push(ergoBoxes.get(index).to_js_eip12());
+        }
+      }
+      //console.log(resultUtxos.boxes?.get(0).to_js_eip12())
+      console.log(ergoBoxes);
       this.sendMessageToServer(
         connection,
         'boxes_response',
