@@ -21,10 +21,6 @@ export type Page = {
   limit: number;
 };
 
-export type PaginateError = {
-  maxSize: number;
-};
-
 export type ConfirmPayload = {
   id: string;
   display: string;

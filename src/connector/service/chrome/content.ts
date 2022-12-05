@@ -215,36 +215,36 @@ class MinotaurApi extends ExtensionConnector {
         .catch(() => reject());
     });
   };
+
+  sign_tx = (tx: number) => {
+    return this.rpcCall('signTx', [tx]);
+  };
 }
 
-// sign_tx = (tx) => {
-//     return this._rpcCall("signTx", [tx]);
+// sign_tx_input = (tx, index) => {
+//     return this._rpcCall("signTxInput", [tx, index]);
 // }
-//
-//     sign_tx_input = (tx, index) => {
-//         return this._rpcCall("signTxInput", [tx, index]);
-//     }
-//
-//     sign_data = (addr, message) => {
-//         return this._rpcCall("signData", [addr, message]);
-//     }
-//
-//     submit_tx = (tx) => {
-//         return this._rpcCall("submitTx", [tx]);
-//     }
-//
-//     _rpcCall = (func: string, params?: any) => {
-//         return new Promise((resolve, reject) => {
-//             window.postMessage({
-//                 type: "rpc/connector-request",
-//                 requestId: this.resolver.currentId,
-//                 function: func,
-//                 params
-//             });
-//             this.resolver.requests.set(this.resolver.currentId, {resolve: resolve, reject: reject});
-//             this.resolver.currentId++;
+
+// sign_data = (addr, message) => {
+//     return this._rpcCall("signData", [addr, message]);
+// }
+
+// submit_tx = (tx) => {
+//     return this._rpcCall("submitTx", [tx]);
+// }
+
+// _rpcCall = (func: string, params?: any) => {
+//     return new Promise((resolve, reject) => {
+//         window.postMessage({
+//             type: "rpc/connector-request",
+//             requestId: this.resolver.currentId,
+//             function: func,
+//             params
 //         });
-//     }
+//         this.resolver.requests.set(this.resolver.currentId, {resolve: resolve, reject: reject});
+//         this.resolver.currentId++;
+//     });
+// }
 //
 //     eventHandler = (event) => {
 //         if (event.data.type === "rpc/connector-response") {
