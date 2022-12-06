@@ -95,7 +95,9 @@ class QrCodeReaderWeb extends React.Component<
   };
 
   componentWillUnmount = () => {
+    console.error('salam khare raftim to phaze unmount');
     if (this.state.control) {
+      console.log('inja mikhaym stopesh koonim');
       this.state.control.stop();
     }
   };

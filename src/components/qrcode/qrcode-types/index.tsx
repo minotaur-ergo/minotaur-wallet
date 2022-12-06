@@ -6,7 +6,7 @@ import ErgoPayRequest from './ErgoPayRequest';
 import { JsonBI } from '../../../util/json';
 import Wallet from '../../../db/entities/Wallet';
 
-interface DetectParam {
+export interface DetectParam {
   page: number;
   total: number;
   payload: string;
@@ -37,6 +37,27 @@ const detectPagedWithPrefix = (
   return null;
 };
 
+const detectPageFromJson = (
+  value: string,
+  prefix: string
+): DetectParam | null => {
+  try {
+    const valueJson = JSON.parse(value);
+    if (Object.prototype.hasOwnProperty.call(valueJson, prefix)) {
+      const payload = valueJson[prefix];
+      const total = Object.prototype.hasOwnProperty.call(valueJson, 'n')
+        ? valueJson['n']
+        : 1;
+      const page = Object.prototype.hasOwnProperty.call(valueJson, 'p')
+        ? valueJson['p']
+        : 1;
+      return { payload, page, total };
+    }
+  } catch (e) {
+    /* empty */
+  }
+  return null;
+};
 const Types = [
   {
     render: (
@@ -52,7 +73,7 @@ const Types = [
       />
     ),
     type: TxSignR,
-    detect: (value: string) => detectPagedWithPrefix(value, 'CSR'),
+    detect: (value: string) => detectPageFromJson(value, 'CSR'),
   },
   {
     render: (
@@ -68,7 +89,7 @@ const Types = [
       />
     ),
     type: TxPublishR,
-    detect: (value: string) => detectPagedWithPrefix(value, 'CSTX'),
+    detect: (value: string) => detectPageFromJson(value, 'CSTX'),
   },
   {
     render: (

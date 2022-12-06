@@ -1,7 +1,7 @@
 import React from 'react';
 import QrCodeReader from './reader/QrCodeReader';
 import QrCodeMoreChunk from './qrcode-types/QrCodeMoreChunk';
-import Types from './qrcode-types';
+import Types, { DetectParam } from './qrcode-types';
 import crypto from 'crypto';
 import { GlobalStateType } from '../../store/reducer';
 import { connect } from 'react-redux';
@@ -35,6 +35,7 @@ interface QrCodeReaderViewStateType {
   id: string;
   chunks: Array<string>;
   open: boolean;
+  detected: DetectParam | null;
 }
 
 class QrCodeReaderView extends React.Component<
@@ -47,6 +48,7 @@ class QrCodeReaderView extends React.Component<
     id: '',
     chunks: [],
     open: false,
+    detected: null,
   };
 
   updateOpen = () => {

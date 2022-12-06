@@ -41,8 +41,9 @@ const AddressElement = (props: PropsType) => {
   return (
     <ListItem onClick={props.handleClick}>
       <ListItemText
+        disableTypography={true}
         primary={<RenderName {...props} />}
-        secondary={<DisplayId id={props.address} />}
+        secondary={<DisplayId color="gray" id={props.address} />}
       />
     </ListItem>
   );
