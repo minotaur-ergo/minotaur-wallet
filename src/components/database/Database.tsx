@@ -12,7 +12,7 @@ let dataSource: DataSource;
 
 declare global {
   interface Window {
-    SQL: any;
+    SQL: unknown;
   }
 }
 
