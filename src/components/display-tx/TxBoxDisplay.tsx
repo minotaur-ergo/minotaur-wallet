@@ -10,7 +10,7 @@ interface TxBoxDisplayPropsType {
   show: boolean;
   inputs?: Array<wasm.ErgoBox>;
   inputsJs?: Array<InputBox>;
-  close: () => any;
+  close: () => unknown;
   outputs: Array<wasm.ErgoBox | ErgoBoxCandidate>;
   allowedAssets?: Array<string>;
   network_type: string;

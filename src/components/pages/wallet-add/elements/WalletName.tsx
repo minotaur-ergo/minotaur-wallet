@@ -4,8 +4,8 @@ import TextInput from '../../../inputs/TextInput';
 
 interface WalletNamePropsType {
   name: string;
-  goBack?: () => any;
-  goForward: (name: string) => any;
+  goBack?: () => unknown;
+  goForward: (name: string) => unknown;
   children?: React.ReactNode;
 }
 

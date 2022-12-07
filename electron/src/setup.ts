@@ -37,7 +37,7 @@ export function setupReloadWatcher(
     .on('ready', () => {
       reloadWatcher.ready = true;
     })
-    .on('all', (_event, _path) => {
+    .on('all', () => {
       if (reloadWatcher.ready) {
         clearTimeout(reloadWatcher.debouncer);
         reloadWatcher.debouncer = setTimeout(async () => {
@@ -96,7 +96,7 @@ export class ElectronCapacitorApp {
   }
 
   // Helper function to load in the app.
-  private async loadMainWindow(thisRef: any) {
+  private async loadMainWindow(thisRef: ElectronCapacitorApp) {
     await thisRef.loadWebApp(thisRef.MainWindow);
   }
 
@@ -209,7 +209,7 @@ export class ElectronCapacitorApp {
       });
       this.SplashScreen.init(this.loadMainWindow, this);
     } else {
-      this.loadMainWindow(this);
+      await this.loadMainWindow(this);
     }
 
     // Security
@@ -220,7 +220,7 @@ export class ElectronCapacitorApp {
         return { action: 'allow' };
       }
     });
-    this.MainWindow.webContents.on('will-navigate', (event, _newURL) => {
+    this.MainWindow.webContents.on('will-navigate', (event) => {
       if (!this.MainWindow.webContents.getURL().includes(this.customScheme)) {
         event.preventDefault();
       }

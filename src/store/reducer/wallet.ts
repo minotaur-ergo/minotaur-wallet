@@ -8,6 +8,14 @@ export interface WalletStateType {
   loadingWallet?: number;
 }
 
+type InvalidateWalletsPayload = { removeLoadingWallet: boolean };
+
+type Payload =
+  | Array<WalletWithErg>
+  | string
+  | number
+  | InvalidateWalletsPayload;
+
 export const apiInitialState: WalletStateType = {
   wallets: [],
   walletValid: false,
@@ -16,7 +24,7 @@ export const apiInitialState: WalletStateType = {
 
 export const reducer = (
   state = apiInitialState,
-  action: { type: string; payload?: any }
+  action: { type: string; payload?: Payload }
 ) => {
   switch (action.type) {
     case actionTypes.SET_WALLETS:
@@ -30,14 +38,15 @@ export const reducer = (
         ...state,
         walletValid: false,
         loadingWallet:
-          action.payload && action.payload.removeLoadingWallet
+          action.payload &&
+          (action.payload as InvalidateWalletsPayload).removeLoadingWallet
             ? undefined
             : state.loadingWallet,
       };
     case actionTypes.SET_DISPLAY_MODE:
       return {
         ...state,
-        display: (action.payload && action.payload === 'advanced'
+        display: (action.payload === 'advanced'
           ? 'advanced'
           : 'simple') as DisplayType,
       };

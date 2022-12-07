@@ -3,10 +3,10 @@ import { QrCodePropsType } from './propsType';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { ScanResult } from '@capacitor-community/barcode-scanner/dist/esm/definitions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
-import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 interface QrCodeReaderCapacitorPropsType
   extends QrCodePropsType,
@@ -59,9 +59,9 @@ class QrCodeReaderCapacitor extends React.Component<
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

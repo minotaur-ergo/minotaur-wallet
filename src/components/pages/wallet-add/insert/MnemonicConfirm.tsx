@@ -4,8 +4,8 @@ import MnemonicView from '../elements/MnemonicView';
 
 interface PropsType {
   mnemonic: string;
-  goBack: () => any;
-  goForward: () => any;
+  goBack: () => unknown;
+  goForward: () => unknown;
 }
 
 const MnemonicConfirm = (props: PropsType) => {

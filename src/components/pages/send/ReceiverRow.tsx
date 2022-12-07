@@ -11,7 +11,7 @@ import TokenName from '../../value/TokenName';
 interface PropsType {
   value: Receiver;
   remaining: bigint;
-  setValue: (value: Receiver) => any;
+  setValue: (value: Receiver) => unknown;
   tokens: Array<TokenWithAddress>;
   network_type: string;
 }

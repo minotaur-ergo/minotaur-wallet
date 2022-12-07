@@ -25,10 +25,13 @@ const AddressConfirm = (props: AddressConfirmPropsType) => {
       const wallet = wallets[0];
       const pks = [wallet.extended_public_key, ...props.public_keys];
       const publicKeys = pks.map((item) => {
-        const item_b58 = get_base58_extended_public_key(item)!;
-        const pub = bip32.fromBase58(item_b58);
-        const derived1 = pub.derive(0);
-        return derived1.publicKey.toString('hex');
+        const item_b58 = get_base58_extended_public_key(item);
+        if (item_b58) {
+          const pub = bip32.fromBase58(item_b58);
+          const derived1 = pub.derive(0);
+          return derived1.publicKey.toString('hex');
+        }
+        return '';
       });
       const address = AddressAction.generateMultiSigAddressFromAddresses(
         publicKeys,

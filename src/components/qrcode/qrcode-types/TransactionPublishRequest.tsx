@@ -21,8 +21,8 @@ import { AddressDbAction } from '../../../action/db';
 import TxView from '../../display-tx/TxView';
 
 interface PropsType {
-  closeQrcode: () => any;
-  completed?: (result: string) => any;
+  closeQrcode: () => unknown;
+  completed?: (result: string) => unknown;
   tx: { signedTx: string };
 }
 
@@ -77,11 +77,7 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
     this.loadTx();
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<PropsType>,
-    prevState: Readonly<stateType>,
-    snapshot?: any
-  ) {
+  componentDidUpdate() {
     this.loadTx();
   }
 

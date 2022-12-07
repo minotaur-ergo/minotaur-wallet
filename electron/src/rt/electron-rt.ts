@@ -9,7 +9,7 @@ const plugins = require('./electron-plugins');
 const randomId = (length = 5) => randomBytes(length).toString('hex');
 
 const contextApi: {
-  [plugin: string]: { [functionName: string]: () => Promise<any> };
+  [plugin: string]: { [functionName: string]: () => Promise<unknown> };
 } = {};
 
 Object.keys(plugins).forEach((pluginKey) => {

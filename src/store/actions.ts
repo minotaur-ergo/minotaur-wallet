@@ -3,7 +3,7 @@ import { SnackbarMessage, VariantType } from 'notistack';
 import { DisplayType } from './reducer/wallet';
 import { ConfigDbAction } from '../action/db';
 import { ConfigType } from '../db/entities/Config';
-import { Dispatch } from 'redux';
+import { Action, Dispatch } from 'redux';
 
 export const closeQrCodeScanner = (scannerId: string) => ({
   type: actionType.QRCODE_REMOVE,
@@ -35,7 +35,7 @@ export const cleanMessage = () => ({
 });
 
 export const loadConfig = () => {
-  return (dispatch: Dispatch<any>) => {
+  return (dispatch: Dispatch<Action>) => {
     ConfigDbAction.getAllConfig().then((configs) => {
       const display = configs.filter(
         (config) => config.key === ConfigType.DisplayMode
@@ -52,7 +52,7 @@ export const loadConfig = () => {
 };
 
 export const setDisplayMode = (mode: DisplayType) => {
-  return (dispatch: Dispatch<{ type: string; payload: DisplayType }>) => {
+  return (dispatch: Dispatch<Action>) => {
     ConfigDbAction.setConfig(ConfigType.DisplayMode, mode).then(() => {
       dispatch({
         type: actionType.SET_DISPLAY_MODE,
