@@ -4,7 +4,7 @@ import { DisplayType } from '../../../store/reducer/wallet';
 import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React from 'react';
 import { setDisplayMode } from '../../../store/actions';
-import { Action, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 
 interface DisplayModeSelectPropsType {
   display: DisplayType;

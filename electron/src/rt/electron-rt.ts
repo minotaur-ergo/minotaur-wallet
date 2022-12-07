@@ -34,7 +34,10 @@ Object.keys(plugins).forEach((pluginKey) => {
       // Events
       if (plugins[pluginKey][classKey].prototype instanceof EventEmitter) {
         const listeners: {
-          [key: string]: { type: string; listener: (...args: any[]) => void };
+          [key: string]: {
+            type: string;
+            listener: (...args: unknown[]) => void;
+          };
         } = {};
         const listenersOfTypeExist = (type) =>
           !!Object.values(listeners).find(

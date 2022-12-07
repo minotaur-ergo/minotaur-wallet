@@ -34,21 +34,19 @@ export const cleanMessage = () => ({
   },
 });
 
-export const loadConfig = () => {
-  return (dispatch: Dispatch<Action>) => {
-    ConfigDbAction.getAllConfig().then((configs) => {
-      const display = configs.filter(
-        (config) => config.key === ConfigType.DisplayMode
-      );
-      if (display.length > 0) {
-        const config = display[0];
-        dispatch({
-          type: actionType.SET_DISPLAY_MODE,
-          payload: config.value === 'advanced' ? 'advanced' : 'simple',
-        });
-      }
-    });
-  };
+export const loadConfig = (dispatch: Dispatch<Action>) => {
+  ConfigDbAction.getAllConfig().then((configs) => {
+    const display = configs.filter(
+      (config) => config.key === ConfigType.DisplayMode
+    );
+    if (display.length > 0) {
+      const config = display[0];
+      dispatch({
+        type: actionType.SET_DISPLAY_MODE,
+        payload: config.value === 'advanced' ? 'advanced' : 'simple',
+      });
+    }
+  });
 };
 
 export const setDisplayMode = (mode: DisplayType) => {

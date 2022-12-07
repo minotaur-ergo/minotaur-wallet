@@ -132,6 +132,17 @@ const uint8_vlq = (value: number) => {
   }
   return Buffer.from(Uint8Array.from(res)).toString('hex');
 };
+
+const parse_url_to_json = (url: string) => {
+  const query_params = url.split('?')[1];
+  const params = new URLSearchParams(query_params);
+  const res: { [key: string]: string } = {};
+  params.forEach((value: string, key: string) => {
+    res[key] = value;
+  });
+  return res;
+};
+
 export {
   sum_erg_and_nano_erg,
   html_safe_gson,
@@ -142,4 +153,5 @@ export {
   int8_vlq,
   uint8_vlq,
   bip32,
+  parse_url_to_json,
 };

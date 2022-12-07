@@ -40,6 +40,7 @@ export class Explorer {
    * get transactions for given address between given height blocks.
    * @param address : string
    * @param heightRange : HeightRange
+   * @param paging
    * @param conciseEnabled : Boolean
    * @returns Promise<Items<ErgoTx>>
    */
