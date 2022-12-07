@@ -63,6 +63,7 @@ const ReadOnlyWalletAddress = (props: PropsType) => {
             be derived and shown in this wallet. Otherwise, you can watch only
             one address by importing it directly.
           </Typography>
+          <br />
           <AddressInput
             error={addressError}
             address={props.address}
