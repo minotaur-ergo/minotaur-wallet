@@ -1,22 +1,6 @@
 import React, { ReactNode } from 'react';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import createTheme from '@mui/material/styles/createTheme';
-import { blueGrey } from '@mui/material/colors';
-import { PaletteColorOptions } from '@mui/material';
-
-// declare module '@mui/material/styles' {
-//   interface CustomPalette {
-//     neutral?: PaletteColorOptions;
-//   }
-//   interface Palette extends CustomPalette {}
-//   interface PaletteOptions extends CustomPalette {}
-// }
-//
-// declare module '@mui/material/Button' {
-//   interface ButtonPropsColorOverrides {
-//     neutral: true;
-//   }
-// }
 
 interface PropsType {
   children?: ReactNode;
@@ -25,7 +9,9 @@ interface PropsType {
 export default function AppTheme(props: PropsType) {
   const BORDER_RADIUS = 12;
   const INPUT_BG_COLOR = '#ffffff88';
-  const { palette } = createTheme();
+  const { shadows } = createTheme();
+  shadows[1] = 'rgba(0, 0, 0, 0.45) 0px 25px 20px -20px';
+
   const theme = createTheme({
     palette: {
       primary: {
@@ -40,11 +26,23 @@ export default function AppTheme(props: PropsType) {
         dark: '#7a5600',
         contrastText: '#fff',
       },
-      // neutral: palette.augmentColor({ color: blueGrey }),
     },
     shape: {
       borderRadius: BORDER_RADIUS,
     },
+    typography: {
+      h2: {
+        fontSize: '1rem',
+        fontWeight: 600,
+        flexGrow: 1,
+      },
+      h4: {
+        fontSize: '1rem',
+        fontWeight: 600,
+        lineHeight: 1.5,
+      },
+    },
+    shadows,
     components: {
       MuiButton: {
         defaultProps: {
@@ -54,6 +52,7 @@ export default function AppTheme(props: PropsType) {
         styleOverrides: {
           root: {
             padding: '0.75rem',
+            textTransform: 'none',
           },
         },
       },
