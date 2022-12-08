@@ -6,6 +6,8 @@ import Splash from './pages/splash/Splash';
 import Wallets from './pages/wallets/Wallets';
 import CreateWallet from './pages/createWallet/CreateWallet';
 import DApps from './pages/dApps/DApps';
+import Transactions from './pages/transaction/Transactions';
+import Assets from './pages/assets/Assets';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -14,6 +16,8 @@ export const RouterMap = {
   DApps: '/v2/dapps',
   Wallets: '/v2/wallets',
   CreateWallet: '/v2/createWallet',
+  Transactions: '/v2/wallet/transactions',
+  Assets: '/v2/wallet/assets',
 };
 
 const V2Demo = () => {
@@ -33,6 +37,14 @@ const V2Demo = () => {
         <Route
           path={RouterMap.CreateWallet.replace('/v2', '')}
           element={<CreateWallet />}
+        />
+        <Route
+          path={RouterMap.Transactions.replace('/v2', '')}
+          element={<Transactions />}
+        />
+        <Route
+          path={RouterMap.Assets.replace('/v2', '')}
+          element={<Assets />}
         />
       </Routes>
     </AppTheme>
