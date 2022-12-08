@@ -1,32 +1,46 @@
 import React from 'react';
-import AppFrame from '../../layouts/AppFrame';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Button, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import HomeFrame from '../../layouts/HomeFrame';
+import { Card, CardActionArea, Stack, Typography } from '@mui/material';
 import { RouterMap } from '../../V2Demo';
-import AppToolbar from '../../layouts/AppToolbar';
+
+interface ItemCardPropsType {
+  title: string;
+  description?: string;
+  path: string;
+}
+
+const ItemCard = ({ title, description, path }: ItemCardPropsType) => {
+  const navigate = useNavigate();
+  const handleClick = () => navigate(path);
+  return (
+    <Card sx={{ p: 3 }}>
+      <CardActionArea onClick={handleClick}>
+        <Typography>{title}</Typography>
+        <Typography variant="body2" color="textSecondary">
+          {description}
+        </Typography>
+      </CardActionArea>
+    </Card>
+  );
+};
 
 const DApps = () => {
-  const navigate = useNavigate();
-  const wallet = { name: 'My First Wallet' };
-
   return (
-    <AppFrame
-      title={wallet.name}
-      navigation={
-        <IconButton onClick={() => navigate(RouterMap.Wallets)}>
-          <AccountBalanceWalletOutlinedIcon />
-        </IconButton>
-      }
-      actions={
-        <IconButton>
-          <MoreVertIcon />
-        </IconButton>
-      }
-      toolbar={<AppToolbar />}
-      disableToolbarPadding
-    ></AppFrame>
+    <HomeFrame>
+      <Stack spacing={3}>
+        <ItemCard
+          title="Issue Token"
+          description="Issue new token using EIP-004"
+          path={RouterMap.IssueToken}
+        />
+        <ItemCard
+          title="SigmaUSD"
+          description="Buy or sell SigmaUSD or SigmaRSV"
+          path={RouterMap.SigmaUSD}
+        />
+      </Stack>
+    </HomeFrame>
   );
 };
 

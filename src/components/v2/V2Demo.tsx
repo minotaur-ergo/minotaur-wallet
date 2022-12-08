@@ -9,12 +9,16 @@ import DApps from './pages/dApps/DApps';
 import Transactions from './pages/transaction/Transactions';
 import Assets from './pages/assets/Assets';
 import Addresses from './pages/addresses/Addresses';
+import SigmaUSD from './pages/dApps/sigmaUsd/SigmaUSD';
+import IssueToken from './pages/dApps/issueToken/IssueToken';
 
 export const RouterMap = {
   Splash: '/v2/',
   Start: '/v2/start',
   Home: '/v2/home',
-  DApps: '/v2/dapps',
+  DApps: '/v2/wallet/dapps',
+  IssueToken: '/v2/wallet/dapps/issueToken',
+  SigmaUSD: '/v2/wallet/dapps/sigmaUsd',
   Wallets: '/v2/wallets',
   CreateWallet: '/v2/createWallet',
   Transactions: '/v2/wallet/transactions',
@@ -32,6 +36,14 @@ const V2Demo = () => {
         />
         <Route path={RouterMap.Home.replace('/v2', '')} element={<Home />} />
         <Route path={RouterMap.DApps.replace('/v2', '')} element={<DApps />} />
+        <Route
+          path={RouterMap.IssueToken.replace('/v2', '')}
+          element={<IssueToken />}
+        />
+        <Route
+          path={RouterMap.SigmaUSD.replace('/v2', '')}
+          element={<SigmaUSD />}
+        />
         <Route
           path={RouterMap.Wallets.replace('/v2', '')}
           element={<Wallets />}
