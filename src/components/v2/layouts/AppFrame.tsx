@@ -94,12 +94,14 @@ const AppFrame = ({
           {title}
         </Typography>
       </Box>
-      <Box className="content" px={PADDING}>
+      <Box className="content" px={PADDING + 1}>
         {children}
       </Box>
-      <Box className="toolbar" p={disableToolbarPadding ? 0 : PADDING}>
-        {toolbar}
-      </Box>
+      {toolbar && (
+        <Box className="toolbar" p={disableToolbarPadding ? 0 : PADDING}>
+          {toolbar}
+        </Box>
+      )}
     </AppBox>
   );
 };

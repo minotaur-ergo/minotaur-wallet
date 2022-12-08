@@ -46,7 +46,6 @@ const ToolbarButton = ({ label, icon, activeIcon, path }: ButtonPropsType) => {
       sx={{
         flexDirection: 'column',
         fontSize: '0.7rem',
-        textTransform: 'none',
         '&:not(.active)': {
           color: '#727272',
         },
@@ -122,7 +121,7 @@ const AppToolbar = () => {
         <Grid item xs={1}>
           <ToolbarButton
             label="Assets"
-            path={RouterMap.Wallets}
+            path={RouterMap.Assets}
             icon={BusinessCenterOutlinedIcon}
             activeIcon={BusinessCenterIcon}
           />
