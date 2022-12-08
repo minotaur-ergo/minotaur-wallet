@@ -15,6 +15,7 @@ const WalletCard = () => {
         position: 'relative',
         backgroundColor: 'transparent',
       }}
+      elevation={3}
     >
       <Box
         sx={{
