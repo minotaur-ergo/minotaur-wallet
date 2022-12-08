@@ -101,7 +101,7 @@ const AppToolbar = () => {
         <Grid item xs={1}>
           <ToolbarButton
             label="Addresses"
-            path={RouterMap.Wallets}
+            path={RouterMap.Addresses}
             icon={CreditCardOutlinedIcon}
             activeIcon={CreditCardIcon}
           />

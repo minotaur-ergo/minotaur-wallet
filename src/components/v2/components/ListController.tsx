@@ -11,6 +11,7 @@ interface PropsType {
   emptyTitle: string;
   emptyDescription?: string;
   emptyIcon?: string;
+  divider?: boolean;
 }
 
 export default function ({
@@ -19,6 +20,7 @@ export default function ({
   emptyDescription,
   emptyIcon,
   emptyTitle,
+  divider = true,
 }: PropsType) {
   const { data, isLoading, error, hasError, handleGetData } = useList(getData);
 
@@ -89,7 +91,7 @@ export default function ({
       </Box>
     );
   return (
-    <Stack divider={<Divider />} spacing={1}>
+    <Stack divider={divider ? <Divider /> : null} spacing={divider ? 1 : 2}>
       {data.map((item, index) => (
         <Fragment key={index}>{cloneElement(ListItem, item)}</Fragment>
       ))}
