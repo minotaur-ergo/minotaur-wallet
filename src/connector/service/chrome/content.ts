@@ -197,27 +197,34 @@ class MinotaurApi extends ExtensionConnector {
     });
   };
 
-  get_utxos = (
-    amount?: bigint,
-    token_id = 'ERG',
-    page?: { offset: number; limit: number }
-  ) => {
-    return new Promise<wasm.ErgoBoxes | undefined>((resolve, reject) => {
+  get_utxos = (amount?: bigint, token_id = 'ERG', paginate?: Paginate) => {
+    return new Promise<Array<wasm.ErgoBox> | undefined>((resolve, reject) => {
       this.rpcCall('boxes', {
         amount: amount,
         token_id: token_id,
-        page: page,
+        paginate: paginate,
       })
         .then((res) => {
-          const data = (res as EventData).payload as wasm.ErgoBoxes | undefined;
+          const data = (res as EventData).payload as
+            | Array<wasm.ErgoBox>
+            | undefined;
           resolve(data);
         })
         .catch(() => reject());
     });
   };
 
-  sign_tx = (tx: number) => {
-    return this.rpcCall('signTx', [tx]);
+  sign_tx = (tx: wasm.UnsignedTransaction) => {
+    return new Promise<wasm.Transaction>((resolve, reject) => {
+      this.rpcCall('sign', {
+        utx: tx,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as wasm.Transaction;
+          resolve(data);
+        })
+        .catch(() => reject());
+    });
   };
 }
 

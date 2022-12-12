@@ -6,6 +6,7 @@ import {
   MessageContent,
   MessageData,
   Session,
+  SignTxResponsePayload,
   UIMessage,
 } from '../types';
 import * as uuid from 'uuid';
@@ -100,6 +101,15 @@ const createSocket = (server: string): Promise<void> => {
                     isSuccess: true,
                     requestId: request.requestId,
                     payload: contentJson.payload as BoxResponsePayload,
+                  });
+                  break;
+                case 'sign_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SignTxResponsePayload,
                   });
                   break;
               }
@@ -230,16 +240,19 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
                 payload: msg.payload,
               })
             );
-
-          //                     case 'get_balance':
-          //                         // session.wallet
-          //                         session.port.postMessage({
-          //                             type: 'call',
-          //                             direction: 'response',
-          //                             isSuccess: true,
-          //                             payload: "1000000000",
-          //                             requestId: msg.requestId,
-          //                         })
+            break;
+          case 'sign':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'sign_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
         }
       }
     }

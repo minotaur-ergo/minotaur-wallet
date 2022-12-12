@@ -1,5 +1,7 @@
 import * as uuid from 'uuid';
 import * as wasm from 'ergo-lib-wasm-browser';
+import { TxSignError } from './errorTypes';
+import { UnsignedGeneratedTx } from '../../../util/interface';
 
 export type ActionType =
   | 'registered'
@@ -46,6 +48,14 @@ export type AddressRequestPayload = {
 };
 export type AddressResponsePayload = Array<string>;
 
+export type SignTxRequestPayload = {
+  utx: UnsignedGeneratedTx;
+};
+
+export type SignTxResponsePayload = {
+  stx: wasm.Transaction | undefined;
+  error: TxSignError | undefined;
+};
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
@@ -53,7 +63,9 @@ export type Payload =
   | BalanceRequestPayload
   | BalanceResponsePayload
   | AddressRequestPayload
-  | AddressResponsePayload;
+  | AddressResponsePayload
+  | SignTxRequestPayload
+  | SignTxResponsePayload;
 
 export interface MessageContent {
   action: ActionType;

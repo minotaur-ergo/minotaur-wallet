@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActionType,
   AddressRequestPayload,
@@ -11,6 +11,8 @@ import {
   MessageContent,
   MessageData,
   Payload,
+  SignTxRequestPayload,
+  SignTxResponsePayload,
 } from './types';
 import {
   Accordion,
@@ -23,7 +25,9 @@ import Typography from '@mui/material/Typography';
 import WalletSelect from './WalletSelect';
 import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 import * as CryptoJS from 'crypto-js';
-import * as wasm from 'ergo-lib-wasm-browser';
+
+import { BlockChainAction } from '../../../action/blockchain';
+import handleModal from './Modal';
 
 import {
   AddressDbAction,
@@ -31,7 +35,6 @@ import {
   BoxDbAction,
   WalletDbAction,
 } from '../../../action/db';
-import { ErgoBox } from '../../../util/network/models';
 import { CoveringResult } from '../../../util/interface';
 
 interface DAppConnectorPropType {
@@ -43,6 +46,7 @@ interface DAppConnectorStateType {
   servers: { [url: string]: Connection };
   connections: Array<ConnectionState>;
   active: string;
+  modalType: string;
 }
 
 class DAppConnector extends React.Component<
@@ -53,6 +57,7 @@ class DAppConnector extends React.Component<
     servers: {},
     connections: [],
     active: '',
+    modalType: '',
   };
 
   decrypt = (text: string, secret: string) => {
@@ -191,6 +196,29 @@ class DAppConnector extends React.Component<
     }
   };
 
+  processSign = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as SignTxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    const password = '';
+    const result: SignTxResponsePayload = {
+      stx: undefined,
+      error: undefined,
+    };
+    if (wallet) {
+      const uTx = payload.utx;
+      result.stx = await BlockChainAction.signTx(wallet, uTx, password);
+      this.sendMessageToServer(
+        connection,
+        'sign_response',
+        content.requestId,
+        result
+      );
+    }
+  };
+
   handleMessage = (msg: MessageData) => {
     const filteredConnections = this.state.connections.filter(
       (item) => item.info.pageId === msg.pageId
@@ -212,6 +240,9 @@ class DAppConnector extends React.Component<
           break;
         case 'boxes_request':
           this.processBoxes(connection, content).then(() => null);
+          break;
+        case 'sign_request':
+          this.processSign(connection, content).then(() => null);
           break;
       }
     }
@@ -359,7 +390,7 @@ class DAppConnector extends React.Component<
                     and verify it to connection be completed
                   </Typography>
                 ) : (
-                  <div>wallet selected</div>
+                  <div>{/*handleModal('')*/}</div>
                 )
               ) : (
                 <WalletSelect
