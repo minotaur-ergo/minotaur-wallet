@@ -11,6 +11,7 @@ import Assets from './pages/assets/Assets';
 import Addresses from './pages/addresses/Addresses';
 import SigmaUSD from './pages/dApps/sigmaUsd/SigmaUSD';
 import IssueToken from './pages/dApps/issueToken/IssueToken';
+import Send from './pages/send/Send';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -24,6 +25,7 @@ export const RouterMap = {
   Transactions: '/v2/wallet/transactions',
   Assets: '/v2/wallet/assets',
   Addresses: '/v2/wallet/addresses',
+  Send: '/v2/wallet/send',
 };
 
 const V2Demo = () => {
@@ -64,6 +66,7 @@ const V2Demo = () => {
           path={RouterMap.Addresses.replace('/v2', '')}
           element={<Addresses />}
         />
+        <Route path={RouterMap.Send.replace('/v2', '')} element={<Send />} />
       </Routes>
     </AppTheme>
   );

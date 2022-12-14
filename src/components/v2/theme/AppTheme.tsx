@@ -35,6 +35,11 @@ export default function AppTheme(props: PropsType) {
       borderRadius: BORDER_RADIUS,
     },
     typography: {
+      h1: {
+        fontSize: '1.1rem',
+        fontWeight: 600,
+        flexGrow: 1,
+      },
       h2: {
         fontSize: '1rem',
         fontWeight: 600,
@@ -60,11 +65,16 @@ export default function AppTheme(props: PropsType) {
           },
         },
       },
+      MuiFormControl: {
+        defaultProps: {
+          variant: 'filled',
+          fullWidth: true,
+        },
+      },
       MuiTextField: {
         defaultProps: {
           variant: 'filled',
           fullWidth: true,
-          margin: 'normal',
         },
       },
       MuiFilledInput: {

@@ -7,9 +7,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface PropsType {
   label?: string;
+  helperText?: string;
 }
 
-export default function PasswordField({ label }: PropsType) {
+export default function PasswordField({ label, helperText }: PropsType) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -26,6 +27,7 @@ export default function PasswordField({ label }: PropsType) {
     <TextField
       type={showPassword ? 'text' : 'password'}
       label={label}
+      helperText={helperText}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -39,6 +41,12 @@ export default function PasswordField({ label }: PropsType) {
             </IconButton>
           </InputAdornment>
         ),
+      }}
+      inputProps={{
+        autocomplete: 'new-password',
+        form: {
+          autocomplete: 'off',
+        },
       }}
     />
   );

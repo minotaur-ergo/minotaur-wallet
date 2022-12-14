@@ -64,6 +64,7 @@ const ToolbarButton = ({ label, icon, activeIcon, path }: ButtonPropsType) => {
 };
 
 const AppToolbar = () => {
+  const navigate = useNavigate();
   return (
     <RootBox>
       <Box className="toolbar-frame">
@@ -114,6 +115,7 @@ const AppToolbar = () => {
               bgcolor: 'primary.dark',
               '&:hover': { bgcolor: 'primary.dark' },
             }}
+            onClick={() => navigate(RouterMap.Send)}
           >
             <OutboxOutlinedIcon sx={{ fontSize: '1.8rem' }} />
           </IconButton>
