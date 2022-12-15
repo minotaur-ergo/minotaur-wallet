@@ -128,6 +128,16 @@ export default function AppTheme(props: PropsType) {
           },
         },
       },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            padding: '8px 24px 24px',
+            borderTopRightRadius: 20,
+            borderTopLeftRadius: 20,
+            maxHeight: 'calc(100vh - 100px)',
+          },
+        },
+      },
     },
   });
 

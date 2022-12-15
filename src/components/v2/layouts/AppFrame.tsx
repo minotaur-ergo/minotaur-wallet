@@ -15,7 +15,7 @@ const AppBox = styled(Box)(
     grid-template-rows: 1fr;
     position: sticky;
     top: 0;
-    z-index: 1300;
+    z-index: 1100;
     & .navigation { 
       grid-area: 1 / 1 / 2 / 2; 
       display: flex;
