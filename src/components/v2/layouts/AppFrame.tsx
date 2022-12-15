@@ -94,7 +94,7 @@ const AppFrame = ({
           {title}
         </Typography>
       </Box>
-      <Box className="content" px={PADDING + 1}>
+      <Box className="content" p={PADDING + 1}>
         {children}
       </Box>
       {toolbar && (

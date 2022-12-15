@@ -25,7 +25,7 @@ export default function AppTheme(props: PropsType) {
         contrastText: '#fff',
       },
       secondary: {
-        light: '#ffcb4b',
+        light: '#fde3a6',
         main: '#fbae01',
         dark: '#7a5600',
         contrastText: '#fff',
@@ -118,6 +118,13 @@ export default function AppTheme(props: PropsType) {
             height: 6,
             borderRadius: 8,
             borderWidth: 1,
+          },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
           },
         },
       },
