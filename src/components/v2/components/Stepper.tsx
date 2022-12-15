@@ -27,7 +27,7 @@ export default function Stepper({ activeStep, children }: PropsType) {
       <Stack
         direction="row"
         spacing={1}
-        sx={{ my: 2, justifyContent: 'center' }}
+        sx={{ mb: 3, justifyContent: 'center' }}
       >
         {children.map((item, index) => (
           <Step
