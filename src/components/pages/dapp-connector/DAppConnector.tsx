@@ -10,6 +10,7 @@ import {
   ConnectionState,
   MessageContent,
   MessageData,
+  modalDataProp,
   Payload,
   SignTxRequestPayload,
   SignTxResponsePayload,
@@ -20,6 +21,8 @@ import {
   AccordionSummary,
   Container,
 } from '@mui/material';
+import { TxSignErrorCode, DataSignErrorCode } from './errorTypes';
+
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import WalletSelect from './WalletSelect';
@@ -27,15 +30,14 @@ import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 import * as CryptoJS from 'crypto-js';
 
 import { BlockChainAction } from '../../../action/blockchain';
-import handleModal from './Modal';
-
 import {
   AddressDbAction,
   BoxContentDbAction,
   BoxDbAction,
   WalletDbAction,
 } from '../../../action/db';
-import { CoveringResult } from '../../../util/interface';
+import { CoveringResult, UnsignedGeneratedTx } from '../../../util/interface';
+import SendConfirm from '../../sign-transaction-display/SendConfirm';
 
 interface DAppConnectorPropType {
   value: string;
@@ -46,7 +48,7 @@ interface DAppConnectorStateType {
   servers: { [url: string]: Connection };
   connections: Array<ConnectionState>;
   active: string;
-  modalType: string;
+  modalData: modalDataProp;
 }
 
 class DAppConnector extends React.Component<
@@ -57,7 +59,7 @@ class DAppConnector extends React.Component<
     servers: {},
     connections: [],
     active: '',
-    modalType: '',
+    modalData: {} as modalDataProp,
   };
 
   decrypt = (text: string, secret: string) => {
@@ -202,21 +204,68 @@ class DAppConnector extends React.Component<
   ) => {
     const payload = content.payload as SignTxRequestPayload;
     const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
-    const password = '';
-    const result: SignTxResponsePayload = {
-      stx: undefined,
-      error: undefined,
-    };
     if (wallet) {
       const uTx = payload.utx;
-      result.stx = await BlockChainAction.signTx(wallet, uTx, password);
-      this.sendMessageToServer(
-        connection,
-        'sign_response',
-        content.requestId,
-        result
-      );
+      const sendToServer = async (result: SignTxResponsePayload) => {
+        this.sendMessageToServer(
+          connection,
+          'sign_response',
+          content.requestId,
+          result
+        );
+        this.setState({
+          ...this.state,
+          modalData: {
+            type: '',
+            data: undefined,
+            wallet: null,
+            onAccept: handleSignOnAccept,
+            onDecline: handleSignOnDecline,
+          },
+        });
+      };
+
+      const handleSignOnAccept = async (password: string) => {
+        const result: SignTxResponsePayload = {
+          stx: undefined,
+          error: undefined,
+        };
+        try {
+          result.stx = await BlockChainAction.signTx(wallet, uTx, password);
+          result.error = undefined;
+        } catch {
+          result.error!.code = TxSignErrorCode.ProofGeneration;
+        }
+        sendToServer(result);
+      };
+
+      const handleSignOnDecline = async () => {
+        const result: SignTxResponsePayload = {
+          stx: undefined,
+          error: undefined,
+        };
+        result.error!.code = TxSignErrorCode.UserDeclined;
+        sendToServer(result);
+      };
+
+      this.setState({
+        ...this.state,
+        modalData: {
+          type: 'sign',
+          data: uTx,
+          wallet: wallet,
+          onAccept: handleSignOnAccept,
+          onDecline: handleSignOnDecline,
+        },
+      });
     }
+  };
+
+  processSubmit = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    /** */
   };
 
   handleMessage = (msg: MessageData) => {
@@ -243,6 +292,9 @@ class DAppConnector extends React.Component<
           break;
         case 'sign_request':
           this.processSign(connection, content).then(() => null);
+          break;
+        case 'submit_request':
+          this.processSubmit(connection, content).then(() => null);
           break;
       }
     }
@@ -390,7 +442,18 @@ class DAppConnector extends React.Component<
                     and verify it to connection be completed
                   </Typography>
                 ) : (
-                  <div>{/*handleModal('')*/}</div>
+                  <div>
+                    <div>wallet selected</div>
+                    {this.state.modalData.type == 'sign' && (
+                      <SendConfirm
+                        display={true}
+                        transaction={this.state.modalData.data}
+                        close={() => console.log('closed.')}
+                        wallet={this.state.modalData.wallet!}
+                        signFunction={this.state.modalData.onAccept}
+                      />
+                    )}
+                  </div>
                 )
               ) : (
                 <WalletSelect

@@ -14,13 +14,16 @@ import DisplayId from '../display-id/DisplayId';
 import PasswordInput from '../inputs/PasswordInput';
 import { AddressAction } from '../../action/action';
 import PublishedTxView from '../PublishedTxView';
+import Transaction from '../pages/transaction/Transaction';
+import WalletWithErg from '../../db/entities/views/WalletWithErg';
 
 interface SendConfirmPropsType extends MessageEnqueueService {
   close: () => any;
-  wallet: Wallet;
+  wallet: Wallet | WalletWithErg;
   completed?: (txId: string) => any;
   transaction?: UnsignedGeneratedTx;
   display: boolean;
+  signFunction?: (password: string) => Promise<void>;
 }
 
 const SendConfirm = (props: SendConfirmPropsType) => {
@@ -82,7 +85,9 @@ const SendConfirm = (props: SendConfirmPropsType) => {
                 variant="contained"
                 fullWidth
                 color="primary"
-                onClick={sendTx}
+                onClick={
+                  props.signFunction ? (password) => props.signFunction : sendTx
+                }
                 disabled={!(props.transaction && passwordValid())}
               >
                 Send

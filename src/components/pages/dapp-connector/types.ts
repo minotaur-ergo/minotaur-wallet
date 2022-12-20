@@ -2,6 +2,7 @@ import * as uuid from 'uuid';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { TxSignError } from './errorTypes';
 import { UnsignedGeneratedTx } from '../../../util/interface';
+import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 
 export type ActionType =
   | 'registered'
@@ -94,6 +95,14 @@ export interface ConnectionState {
   walletId?: number;
   actions: Array<any>;
   display: string;
+}
+
+export interface modalDataProp {
+  type: string;
+  wallet: WalletWithErg | null;
+  data: UnsignedGeneratedTx | undefined;
+  onAccept: (password: string) => Promise<void>;
+  onDecline: () => Promise<void>;
 }
 
 export class Connection {
