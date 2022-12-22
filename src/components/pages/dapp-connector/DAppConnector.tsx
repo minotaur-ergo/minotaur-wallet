@@ -21,7 +21,7 @@ import {
   AccordionSummary,
   Container,
 } from '@mui/material';
-import { TxSignErrorCode, DataSignErrorCode } from './errorTypes';
+import { TxSignErrorCode, TxSignError, DataSignErrorCode } from './errorTypes';
 
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
@@ -234,7 +234,8 @@ class DAppConnector extends React.Component<
           result.stx = await BlockChainAction.signTx(wallet, uTx, password);
           result.error = undefined;
         } catch {
-          result.error!.code = TxSignErrorCode.ProofGeneration;
+          result.error = {} as TxSignError;
+          result.error.code = TxSignErrorCode.ProofGeneration;
         }
         sendToServer(result);
       };
@@ -244,7 +245,8 @@ class DAppConnector extends React.Component<
           stx: undefined,
           error: undefined,
         };
-        result.error!.code = TxSignErrorCode.UserDeclined;
+        result.error = {} as TxSignError;
+        result.error.code = TxSignErrorCode.UserDeclined;
         sendToServer(result);
       };
 
