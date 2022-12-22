@@ -14,6 +14,8 @@ import {
   Payload,
   SignTxRequestPayload,
   SignTxResponsePayload,
+  SubmitTxRequestPayload,
+  SubmitTxResponsePayload,
 } from './types';
 import {
   Accordion,
@@ -21,7 +23,13 @@ import {
   AccordionSummary,
   Container,
 } from '@mui/material';
-import { TxSignErrorCode, TxSignError, DataSignErrorCode } from './errorTypes';
+import {
+  TxSignErrorCode,
+  TxSignError,
+  DataSignErrorCode,
+  TxSendErrorCode,
+  TxSendError,
+} from './errorTypes';
 
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
@@ -37,6 +45,7 @@ import {
   WalletDbAction,
 } from '../../../action/db';
 import { CoveringResult, UnsignedGeneratedTx } from '../../../util/interface';
+import { getNetworkType } from '../../../util/network_type';
 import SendConfirm from '../../sign-transaction-display/SendConfirm';
 
 interface DAppConnectorPropType {
@@ -267,7 +276,33 @@ class DAppConnector extends React.Component<
     connection: ConnectionState,
     content: MessageContent
   ) => {
-    /** */
+    const payload = content.payload as SubmitTxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    if (wallet) {
+      const signedTx = payload.tx;
+      const result: SubmitTxResponsePayload = {
+        TxId: undefined,
+        error: undefined,
+      };
+      try {
+        await getNetworkType(wallet.network_type)
+          .getNode()
+          .sendTx(signedTx)
+          .then((res) => {
+            result.TxId = res.txId;
+          });
+      } catch {
+        result.error = {} as TxSendError;
+        result.error.code = TxSendErrorCode.Failure;
+      }
+
+      this.sendMessageToServer(
+        connection,
+        'submit_response',
+        content.requestId,
+        result
+      );
+    }
   };
 
   handleMessage = (msg: MessageData) => {

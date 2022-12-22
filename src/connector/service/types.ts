@@ -1,5 +1,8 @@
 import * as wasm from 'ergo-lib-wasm-browser';
-import { TxSignError } from '../../components/pages/dapp-connector/errorTypes';
+import {
+  TxSignError,
+  TxSendError,
+} from '../../components/pages/dapp-connector/errorTypes';
 import { UnsignedGeneratedTx } from '../../util/interface';
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 
@@ -78,6 +81,7 @@ export type EventFunction =
   | 'address'
   | 'boxes'
   | 'sign'
+  | 'submit'
   | '';
 export type EventData = {
   type: string;
@@ -166,6 +170,15 @@ export type SignTxResponsePayload = {
   error: TxSignError | undefined;
 };
 
+export type SubmitTxRequestPayload = {
+  tx: wasm.Transaction;
+};
+
+export type SubmitTxResponsePayload = {
+  TxId: string | undefined;
+  error: TxSendError | undefined;
+};
+
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
@@ -175,7 +188,9 @@ export type Payload =
   | AddressRequestPayload
   | AddressResponsePayload
   | SignTxRequestPayload
-  | SignTxResponsePayload;
+  | SignTxResponsePayload
+  | SubmitTxRequestPayload
+  | SubmitTxResponsePayload;
 
 export interface MessageContent {
   action: ActionType;

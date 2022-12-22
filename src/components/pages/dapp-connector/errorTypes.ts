@@ -23,3 +23,13 @@ export type DataSignError = {
   code: DataSignErrorCode;
   info: string;
 };
+
+export enum TxSendErrorCode {
+  Refused = 1,
+  Failure = 2,
+}
+
+export type TxSendError = {
+  code: TxSendErrorCode;
+  info: string;
+};

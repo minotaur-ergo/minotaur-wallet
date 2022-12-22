@@ -1,5 +1,13 @@
-import { EventData } from '../types';
+import {
+  EventData,
+  SignTxResponsePayload,
+  SubmitTxResponsePayload,
+} from '../types';
 import * as wasm from 'ergo-lib-wasm-browser';
+import {
+  TxSendError,
+  TxSignError,
+} from '../../../components/pages/dapp-connector/errorTypes';
 
 declare global {
   interface Window {
@@ -215,13 +223,28 @@ class MinotaurApi extends ExtensionConnector {
   };
 
   sign_tx = (tx: wasm.UnsignedTransaction) => {
-    return new Promise<wasm.Transaction>((resolve, reject) => {
+    return new Promise<wasm.Transaction | TxSignError>((resolve, reject) => {
       this.rpcCall('sign', {
         utx: tx,
       })
         .then((res) => {
-          const data = (res as EventData).payload as wasm.Transaction;
-          resolve(data);
+          const data = (res as EventData).payload as SignTxResponsePayload;
+          const response = data.error ? data.error : data.stx;
+          resolve(response!);
+        })
+        .catch(() => reject());
+    });
+  };
+
+  submit_tx = (tx: wasm.Transaction) => {
+    return new Promise<string | TxSendError>((resolve, reject) => {
+      this.rpcCall('submit', {
+        utx: tx,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as SubmitTxResponsePayload;
+          const response = data.error ? data.error : data.TxId;
+          resolve(response!);
         })
         .catch(() => reject());
     });
@@ -234,10 +257,6 @@ class MinotaurApi extends ExtensionConnector {
 
 // sign_data = (addr, message) => {
 //     return this._rpcCall("signData", [addr, message]);
-// }
-
-// submit_tx = (tx) => {
-//     return this._rpcCall("submitTx", [tx]);
 // }
 
 // _rpcCall = (func: string, params?: any) => {
