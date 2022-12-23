@@ -23,7 +23,8 @@ interface SendConfirmPropsType extends MessageEnqueueService {
   completed?: (txId: string) => any;
   transaction?: UnsignedGeneratedTx;
   display: boolean;
-  signFunction?: (password: string) => Promise<void>;
+  function?: (password: string) => Promise<void>;
+  name?: string;
 }
 
 const SendConfirm = (props: SendConfirmPropsType) => {
@@ -86,11 +87,11 @@ const SendConfirm = (props: SendConfirmPropsType) => {
                 fullWidth
                 color="primary"
                 onClick={
-                  props.signFunction ? (password) => props.signFunction : sendTx
+                  props.function ? () => props.function!(password) : sendTx
                 }
                 disabled={!(props.transaction && passwordValid())}
               >
-                Send
+                {props.name || 'Send'}
               </Button>
             </Grid>
           </React.Fragment>

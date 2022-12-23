@@ -235,6 +235,7 @@ class DAppConnector extends React.Component<
       };
 
       const handleSignOnAccept = async (password: string) => {
+        console.log('sign accepted.');
         const result: SignTxResponsePayload = {
           stx: undefined,
           error: undefined,
@@ -262,7 +263,7 @@ class DAppConnector extends React.Component<
       this.setState({
         ...this.state,
         modalData: {
-          type: 'sign',
+          type: 'Sign',
           data: uTx,
           wallet: wallet,
           onAccept: handleSignOnAccept,
@@ -271,7 +272,6 @@ class DAppConnector extends React.Component<
       });
     }
   };
-
   processSubmit = async (
     connection: ConnectionState,
     content: MessageContent
@@ -481,13 +481,14 @@ class DAppConnector extends React.Component<
                 ) : (
                   <div>
                     <div>wallet selected</div>
-                    {this.state.modalData.type == 'sign' && (
+                    {this.state.modalData.type == 'Sign' && (
                       <SendConfirm
                         display={true}
                         transaction={this.state.modalData.data}
                         close={() => console.log('closed.')}
                         wallet={this.state.modalData.wallet!}
-                        signFunction={this.state.modalData.onAccept}
+                        function={this.state.modalData.onAccept}
+                        name={this.state.modalData.type}
                       />
                     )}
                   </div>
