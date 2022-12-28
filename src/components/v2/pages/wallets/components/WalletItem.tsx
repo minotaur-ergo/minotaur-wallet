@@ -3,6 +3,8 @@ import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getRoute } from '../../../../route/routerMap';
 import { RouterMap } from '../../../V2Demo';
+import { ReactComponent as ErgoIcon } from '../../../icons/ergo.svg';
+import SvgIcon from '../../../icons/SvgIcon';
 
 interface PropsType {
   id: string;
@@ -35,16 +37,16 @@ export default function ({
       >
         <Box
           sx={{
-            bgcolor: '#00000054',
+            bgcolor: '#ffffff8f',
             p: 1,
             my: 2,
             borderTopRightRadius: 12,
             borderBottomRightRadius: 12,
           }}
         >
-          <img
-            src="/ergo.svg"
-            style={{ width: '1.6rem', filter: 'invert(0.9)' }}
+          <SvgIcon
+            icon="ergo"
+            style={{ width: '1.6rem', fill: COLORS[index % COLORS.length] }}
           />
         </Box>
         <Box sx={{ p: 2, flexGrow: 1 }}>
