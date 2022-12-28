@@ -4,7 +4,7 @@ import AppTheme from './theme/AppTheme';
 import Home from './pages/home/Home';
 import Splash from './pages/splash/Splash';
 import Wallets from './pages/wallets/Wallets';
-import CreateWallet from './pages/createWallet/CreateWallet';
+import CreateWallet from './pages/addWallet/createWallet/CreateWallet';
 import DApps from './pages/dApps/DApps';
 import Transactions from './pages/transaction/Transactions';
 import Assets from './pages/assets/Assets';
@@ -58,6 +58,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.AddWallet.replace('/v2', '')}
           element={<AddWallet />}
+        />
+        <Route
+          path={RouterMap.CreateWallet.replace('/v2', '')}
+          element={<CreateWallet />}
         />
         <Route
           path={RouterMap.Transactions.replace('/v2', '')}

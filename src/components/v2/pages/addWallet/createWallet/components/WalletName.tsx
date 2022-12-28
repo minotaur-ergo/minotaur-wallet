@@ -17,10 +17,10 @@ export default function WalletName() {
       </Typography>
       <ToggleButtonGroup value={'MAINNET'} color="primary">
         <ToggleButton value="MAINNET" aria-label="left aligned">
-          MAINNET
+          MAIN-NET
         </ToggleButton>
         <ToggleButton value="TESTNET" aria-label="left aligned">
-          TESTNET
+          TEST-NET
         </ToggleButton>
       </ToggleButtonGroup>
       <Typography variant="body2" sx={{ mt: 1, p: 1 }}>

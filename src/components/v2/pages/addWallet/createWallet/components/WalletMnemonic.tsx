@@ -9,7 +9,7 @@ import {
   Alert,
   AlertTitle,
 } from '@mui/material';
-import PasswordField from '../../../components/PasswordField';
+import PasswordField from '../../../../components/PasswordField';
 
 export default function WalletMnemonic() {
   const words = ['east', 'when', 'betray', 'also', 'rescue', 'subway'];

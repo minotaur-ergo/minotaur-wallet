@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
-import AppFrame from '../../layouts/AppFrame';
-import BackButton from '../../components/BackButton';
-import Stepper from '../../components/Stepper';
-import WalletName from './steps/WalletName';
-import WalletMnemonic from './steps/WalletMnemonic';
-import ConfirmMnemonic from './steps/ConfirmMnemonic';
-import WalletPassword from './steps/WalletPassword';
+import AppFrame from '../../../layouts/AppFrame';
+import BackButton from '../../../components/BackButton';
+import Stepper from '../../../components/Stepper';
+import WalletName from './components/WalletName';
+import WalletMnemonic from './components/WalletMnemonic';
+import ConfirmMnemonic from './components/ConfirmMnemonic';
+import WalletPassword from './components/WalletPassword';
 
 const CreateWallet = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const CreateWallet = () => {
 
   return (
     <AppFrame
-      title="Create Wallet"
+      title="Create New Wallet"
       navigation={<BackButton onClick={handleBack} />}
       toolbar={
         <Button onClick={handleNext}>
