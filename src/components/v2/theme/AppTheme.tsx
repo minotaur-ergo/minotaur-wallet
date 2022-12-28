@@ -30,6 +30,18 @@ export default function AppTheme(props: PropsType) {
         dark: '#7a5600',
         contrastText: '#fff',
       },
+      success: {
+        light: '#00ff0a',
+        main: '#2e7d32',
+        dark: '#1b5e20',
+        contrastText: '#fff',
+      },
+      error: {
+        light: '#ff2828',
+        main: '#d32f2f',
+        dark: '#c62828',
+        contrastText: '#fff',
+      },
     },
     shape: {
       borderRadius: BORDER_RADIUS,
@@ -140,6 +152,8 @@ export default function AppTheme(props: PropsType) {
       },
     },
   });
+
+  console.log(theme.palette);
 
   return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>;
 }

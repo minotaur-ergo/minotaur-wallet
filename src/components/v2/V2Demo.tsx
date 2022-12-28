@@ -16,7 +16,7 @@ import Send from './pages/send/Send';
 export const RouterMap = {
   Splash: '/v2/',
   Start: '/v2/start',
-  Home: '/v2/home',
+  Home: '/v2/wallet/:id',
   DApps: '/v2/wallet/dapps',
   IssueToken: '/v2/wallet/dapps/issueToken',
   SigmaUSD: '/v2/wallet/dapps/sigmaUsd',
