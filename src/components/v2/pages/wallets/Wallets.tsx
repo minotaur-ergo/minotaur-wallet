@@ -67,7 +67,7 @@ const Wallets = () => {
       title="My Wallets"
       navigation={<BackButton />}
       actions={
-        <IconButton onClick={() => navigate(RouterMap.CreateWallet)}>
+        <IconButton onClick={() => navigate(RouterMap.AddWallet)}>
           <AddIcon />
         </IconButton>
       }

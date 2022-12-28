@@ -123,6 +123,13 @@ export default function AppTheme(props: PropsType) {
           },
         },
       },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#ffffffa8',
+          },
+        },
+      },
       MuiSlider: {
         styleOverrides: {
           mark: {
