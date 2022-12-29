@@ -24,6 +24,7 @@ interface SendConfirmPropsType extends MessageEnqueueService {
   transaction?: UnsignedGeneratedTx;
   display: boolean;
   function?: (password: string) => Promise<void>;
+  declineFunction?: () => Promise<void>;
   name?: string;
 }
 
@@ -93,6 +94,16 @@ const SendConfirm = (props: SendConfirmPropsType) => {
               >
                 {props.name || 'Send'}
               </Button>
+              {props.declineFunction && (
+                <Button
+                  variant="contained"
+                  fullWidth
+                  style={{ marginTop: '10px', backgroundColor: 'gray' }}
+                  onClick={props.declineFunction}
+                >
+                  Decline
+                </Button>
+              )}
             </Grid>
           </React.Fragment>
         )}

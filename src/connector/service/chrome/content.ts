@@ -8,6 +8,7 @@ import {
   TxSendError,
   TxSignError,
 } from '../../../components/pages/dapp-connector/errorTypes';
+import { UnsignedGeneratedTx } from '../../../util/interface';
 
 declare global {
   interface Window {
@@ -222,7 +223,7 @@ class MinotaurApi extends ExtensionConnector {
     });
   };
 
-  sign_tx = (tx: wasm.UnsignedTransaction) => {
+  sign_tx = (tx: UnsignedGeneratedTx) => {
     return new Promise<wasm.Transaction | TxSignError>((resolve, reject) => {
       this.rpcCall('sign', {
         utx: tx,

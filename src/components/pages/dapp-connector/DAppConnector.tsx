@@ -488,6 +488,7 @@ class DAppConnector extends React.Component<
                         close={() => console.log('closed.')}
                         wallet={this.state.modalData.wallet!}
                         function={this.state.modalData.onAccept}
+                        declineFunction={this.state.modalData.onDecline}
                         name={this.state.modalData.type}
                       />
                     )}
