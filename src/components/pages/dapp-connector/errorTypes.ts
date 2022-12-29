@@ -33,3 +33,13 @@ export type TxSendError = {
   code: TxSendErrorCode;
   info: string;
 };
+
+export enum APIErrorCode {
+  InvalidRequest = -1,
+  InternalError = -2,
+  Refused = -3,
+}
+export type APIError = {
+  code: APIErrorCode;
+  info: string;
+};
