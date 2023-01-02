@@ -34,6 +34,11 @@ export const toSignedTx = async (stx: wasm.Transaction): Promise<SignedTx> => {
   return JSONBig.parse(stx.to_json());
 };
 
+/**
+ * convert signedTx (EIP type) to wasm.Transaction
+ * @param signed : SignedTx
+ * @returns Promise<wasm.Transaction>
+ */
 export const toTransaction = async (
   signed: SignedTx
 ): Promise<wasm.Transaction> => {
