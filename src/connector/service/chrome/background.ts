@@ -1,18 +1,16 @@
+import { EventData, Session, UIMessage } from '../types';
+import * as uuid from 'uuid';
+import { generate } from 'generate-password';
 import {
   AddressResponsePayload,
   BalanceResponsePayload,
+  BoxResponsePayload,
   ConfirmPayload,
-  EventData,
   MessageContent,
   MessageData,
-  Session,
   SignTxResponsePayload,
   SubmitTxResponsePayload,
-  UIMessage,
-} from '../types';
-import * as uuid from 'uuid';
-import { generate } from 'generate-password';
-import { BoxResponsePayload } from '../../../components/pages/dapp-connector/types';
+} from '../../../components/pages/dapp-connector/types/types';
 
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 const info: {

@@ -7,7 +7,7 @@ import * as wasm from 'ergo-lib-wasm-browser';
 import {
   TxSendError,
   TxSignError,
-} from '../../../components/pages/dapp-connector/errorTypes';
+} from '../../../components/pages/dapp-connector/types/errorTypes';
 import { UnsignedGeneratedTx } from '../../../util/interface';
 
 declare global {

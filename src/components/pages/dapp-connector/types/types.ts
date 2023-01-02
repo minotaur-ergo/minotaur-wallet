@@ -1,8 +1,9 @@
 import * as uuid from 'uuid';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { TxSendError, TxSignError } from './errorTypes';
-import { UnsignedGeneratedTx } from '../../../util/interface';
-import WalletWithErg from '../../../db/entities/views/WalletWithErg';
+import { UnsignedGeneratedTx } from '../../../../util/interface';
+import WalletWithErg from '../../../../db/entities/views/WalletWithErg';
+import { SignedTx, Tx } from './eipTypes';
 
 export type ActionType =
   | 'registered'
@@ -50,16 +51,16 @@ export type AddressRequestPayload = {
 export type AddressResponsePayload = Array<string>;
 
 export type SignTxRequestPayload = {
-  utx: UnsignedGeneratedTx;
+  utx: Tx;
 };
 
 export type SignTxResponsePayload = {
-  stx: wasm.Transaction | undefined;
+  stx: SignedTx | undefined;
   error: TxSignError | undefined;
 };
 
 export type SubmitTxRequestPayload = {
-  tx: wasm.Transaction;
+  tx: SignedTx;
 };
 
 export type SubmitTxResponsePayload = {

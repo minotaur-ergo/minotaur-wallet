@@ -16,7 +16,7 @@ import {
   SignTxResponsePayload,
   SubmitTxRequestPayload,
   SubmitTxResponsePayload,
-} from './types';
+} from './types/types';
 import {
   Accordion,
   AccordionDetails,
@@ -29,7 +29,7 @@ import {
   DataSignErrorCode,
   TxSendErrorCode,
   TxSendError,
-} from './errorTypes';
+} from './types/errorTypes';
 
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
@@ -47,6 +47,11 @@ import {
 import { CoveringResult, UnsignedGeneratedTx } from '../../../util/interface';
 import { getNetworkType } from '../../../util/network_type';
 import SendConfirm from '../../sign-transaction-display/SendConfirm';
+import {
+  toSignedTx,
+  toTransaction,
+  toUnsignedGeneratedTx,
+} from './types/typeConverter';
 
 interface DAppConnectorPropType {
   value: string;
@@ -213,6 +218,7 @@ class DAppConnector extends React.Component<
   ) => {
     const payload = content.payload as SignTxRequestPayload;
     const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    let unsignedGenerated = {} as UnsignedGeneratedTx;
     if (wallet) {
       const uTx = payload.utx;
       const sendToServer = async (result: SignTxResponsePayload) => {
@@ -241,7 +247,13 @@ class DAppConnector extends React.Component<
           error: undefined,
         };
         try {
-          result.stx = await BlockChainAction.signTx(wallet, uTx, password);
+          unsignedGenerated = await toUnsignedGeneratedTx(uTx);
+          const signed = await BlockChainAction.signTx(
+            wallet,
+            unsignedGenerated,
+            password
+          );
+          result.stx = await toSignedTx(signed);
           result.error = undefined;
         } catch {
           result.error = {} as TxSignError;
@@ -264,7 +276,7 @@ class DAppConnector extends React.Component<
         ...this.state,
         modalData: {
           type: 'Sign',
-          data: uTx,
+          data: unsignedGenerated,
           wallet: wallet,
           onAccept: handleSignOnAccept,
           onDecline: handleSignOnDecline,
@@ -285,9 +297,10 @@ class DAppConnector extends React.Component<
         error: undefined,
       };
       try {
+        const wasmSignedTx = await toTransaction(signedTx);
         await getNetworkType(wallet.network_type)
           .getNode()
-          .sendTx(signedTx)
+          .sendTx(wasmSignedTx)
           .then((res) => {
             result.TxId = res.txId;
           });

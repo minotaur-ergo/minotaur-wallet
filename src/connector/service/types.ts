@@ -2,7 +2,7 @@ import * as wasm from 'ergo-lib-wasm-browser';
 import {
   TxSignError,
   TxSendError,
-} from '../../components/pages/dapp-connector/errorTypes';
+} from '../../components/pages/dapp-connector/types/errorTypes';
 import { UnsignedGeneratedTx } from '../../util/interface';
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 
