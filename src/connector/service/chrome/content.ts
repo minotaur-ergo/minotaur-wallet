@@ -1,14 +1,15 @@
 import {
-  EventData,
   SignTxResponsePayload,
   SubmitTxResponsePayload,
-} from '../types';
+} from '../../../components/pages/dapp-connector/types/types';
+import { EventData } from '../types';
 import * as wasm from 'ergo-lib-wasm-browser';
 import {
   TxSendError,
   TxSignError,
 } from '../../../components/pages/dapp-connector/types/errorTypes';
 import { UnsignedGeneratedTx } from '../../../util/interface';
+import { SignedTx } from '../../../components/pages/dapp-connector/types/eipTypes';
 
 declare global {
   interface Window {
@@ -224,7 +225,7 @@ class MinotaurApi extends ExtensionConnector {
   };
 
   sign_tx = (tx: UnsignedGeneratedTx) => {
-    return new Promise<wasm.Transaction | TxSignError>((resolve, reject) => {
+    return new Promise<SignedTx | TxSignError>((resolve, reject) => {
       this.rpcCall('sign', {
         utx: tx,
       })
