@@ -9,7 +9,10 @@ import {
   TxSignError,
 } from '../../../components/pages/dapp-connector/types/errorTypes';
 import { UnsignedGeneratedTx } from '../../../util/interface';
-import { SignedTx } from '../../../components/pages/dapp-connector/types/eipTypes';
+import {
+  SignedTx,
+  Tx,
+} from '../../../components/pages/dapp-connector/types/eipTypes';
 
 declare global {
   interface Window {
@@ -224,7 +227,7 @@ class MinotaurApi extends ExtensionConnector {
     });
   };
 
-  sign_tx = (tx: UnsignedGeneratedTx) => {
+  sign_tx = (tx: Tx) => {
     return new Promise<SignedTx | TxSignError>((resolve, reject) => {
       this.rpcCall('sign', {
         utx: tx,
@@ -238,7 +241,7 @@ class MinotaurApi extends ExtensionConnector {
     });
   };
 
-  submit_tx = (tx: wasm.Transaction) => {
+  submit_tx = (tx: SignedTx) => {
     return new Promise<string | TxSendError>((resolve, reject) => {
       this.rpcCall('submit', {
         utx: tx,
