@@ -12,6 +12,8 @@ import {
   MessageData,
   modalDataProp,
   Payload,
+  SignDataRequestPayload,
+  SignDataResponsePayload,
   SignTxRequestPayload,
   SignTxResponsePayload,
   SubmitTxRequestPayload,
@@ -29,6 +31,7 @@ import {
   DataSignErrorCode,
   TxSendErrorCode,
   TxSendError,
+  DataSignError,
 } from './types/errorTypes';
 
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
@@ -318,6 +321,82 @@ class DAppConnector extends React.Component<
     }
   };
 
+  processSignData = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as SignDataRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    if (wallet) {
+      const msg = payload.message;
+      const addr = payload.address;
+      const sendToServer = async (result: SignDataResponsePayload) => {
+        this.sendMessageToServer(
+          connection,
+          'sign_response',
+          content.requestId,
+          result
+        );
+        this.setState({
+          ...this.state,
+          modalData: {
+            type: '',
+            data: undefined,
+            wallet: null,
+            onAccept: handleSignOnAccept,
+            onDecline: handleSignOnDecline,
+          },
+        });
+      };
+
+      const handleSignOnAccept = async (password: string) => {
+        console.log('sign accepted.');
+        const result: SignDataResponsePayload = {
+          sData: undefined,
+          error: undefined,
+        };
+        try {
+          result.sData = await BlockChainAction.signData(
+            wallet,
+            addr,
+            msg,
+            password
+          );
+          result.error = undefined;
+        } catch (e) {
+          result.error = {} as DataSignError;
+          if (e instanceof Error && e.message == '') {
+            result.error.code = DataSignErrorCode.AddressNotPK;
+          } else {
+            result.error.code = DataSignErrorCode.ProofGeneration;
+          }
+        }
+        sendToServer(result);
+      };
+
+      const handleSignOnDecline = async () => {
+        const result: SignDataResponsePayload = {
+          sData: undefined,
+          error: undefined,
+        };
+        result.error = {} as DataSignError;
+        result.error.code = DataSignErrorCode.UserDeclined;
+        sendToServer(result);
+      };
+
+      this.setState({
+        ...this.state,
+        modalData: {
+          type: 'Sign',
+          data: undefined,
+          wallet: wallet,
+          onAccept: handleSignOnAccept,
+          onDecline: handleSignOnDecline,
+        },
+      });
+    }
+  };
+
   handleMessage = (msg: MessageData) => {
     const filteredConnections = this.state.connections.filter(
       (item) => item.info.pageId === msg.pageId
@@ -346,6 +425,8 @@ class DAppConnector extends React.Component<
         case 'submit_request':
           this.processSubmit(connection, content).then(() => null);
           break;
+        case 'sign_data_request':
+          this.processSignData(connection, content).then(() => null);
       }
     }
   };

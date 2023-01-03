@@ -262,6 +262,34 @@ class BlockChainActionClass {
     }
   };
 
+  signData = async (
+    dbWallet: Wallet,
+    address: string,
+    msg: string,
+    password: string
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(dbWallet.id);
+    const dbAddress = addresses.find((a) => {
+      a.address == address;
+    });
+    if (!dbAddress) {
+      throw new Error('wallet does not own this address');
+    }
+    const secretKeys = new wasm.SecretKeys();
+    secretKeys.add(
+      await AddressAction.getWalletAddressSecret(dbWallet, password, dbAddress!)
+    );
+    const wasmAddr =
+      dbAddress!.network_type == 'Testnet'
+        ? wasm.Address.from_testnet_str(address)
+        : wasm.Address.from_mainnet_str(address);
+
+    const wallet = wasm.Wallet.from_secrets(secretKeys);
+    return wallet
+      .sign_message_using_p2pk(wasmAddr, Uint8Array.from(Buffer.from(msg)))
+      .toString();
+  };
+
   updateTokenInfo = async (tokenId: string, network_type: string) => {
     const explorer = getNetworkType(network_type).getExplorer();
     const info = await explorer.getFullTokenInfo(tokenId);
