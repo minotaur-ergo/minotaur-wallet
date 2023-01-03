@@ -1,10 +1,12 @@
 import {
+  SignDataResponsePayload,
   SignTxResponsePayload,
   SubmitTxResponsePayload,
 } from '../../../components/pages/dapp-connector/types/types';
 import { EventData } from '../types';
 import * as wasm from 'ergo-lib-wasm-browser';
 import {
+  DataSignError,
   TxSendError,
   TxSignError,
 } from '../../../components/pages/dapp-connector/types/errorTypes';
@@ -254,14 +256,25 @@ class MinotaurApi extends ExtensionConnector {
         .catch(() => reject());
     });
   };
+
+  sign_data = (addr: string, message: string) => {
+    return new Promise<string | DataSignError>((resolve, reject) => {
+      this.rpcCall('signData', {
+        address: addr,
+        message: message,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as SignDataResponsePayload;
+          const response = data.error ? data.error : data.sData;
+          resolve(response!);
+        })
+        .catch(() => reject());
+    });
+  };
 }
 
 // sign_tx_input = (tx, index) => {
 //     return this._rpcCall("signTxInput", [tx, index]);
-// }
-
-// sign_data = (addr, message) => {
-//     return this._rpcCall("signData", [addr, message]);
 // }
 
 // _rpcCall = (func: string, params?: any) => {

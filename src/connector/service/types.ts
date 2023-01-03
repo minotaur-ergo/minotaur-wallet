@@ -76,6 +76,7 @@ export type EventFunction =
   | 'boxes'
   | 'sign'
   | 'submit'
+  | 'signData'
   | '';
 export type EventData = {
   type: string;

@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { TxSendError, TxSignError } from './errorTypes';
+import { DataSignError, TxSendError, TxSignError } from './errorTypes';
 import { UnsignedGeneratedTx } from '../../../../util/interface';
 import WalletWithErg from '../../../../db/entities/views/WalletWithErg';
 import { SignedTx, Tx } from './eipTypes';
@@ -18,7 +18,9 @@ export type ActionType =
   | 'sign_request'
   | 'sign_response'
   | 'submit_request'
-  | 'submit_response';
+  | 'submit_response'
+  | 'sign_data_request'
+  | 'sign_data_response';
 
 export type Page = {
   page: number;
@@ -68,6 +70,16 @@ export type SubmitTxResponsePayload = {
   error: TxSendError | undefined;
 };
 
+export type SignDataRequestPayload = {
+  address: string;
+  message: string;
+};
+
+export type SignDataResponsePayload = {
+  sData: string | undefined;
+  error: DataSignError | undefined;
+};
+
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
@@ -79,7 +91,9 @@ export type Payload =
   | SignTxRequestPayload
   | SignTxResponsePayload
   | SubmitTxRequestPayload
-  | SubmitTxResponsePayload;
+  | SubmitTxResponsePayload
+  | SignDataRequestPayload
+  | SignDataResponsePayload;
 export interface MessageContent {
   action: ActionType;
   requestId: string;
