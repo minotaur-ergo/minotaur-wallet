@@ -1,9 +1,15 @@
 import * as uuid from 'uuid';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { DataSignError, TxSendError, TxSignError } from './errorTypes';
+import {
+  APIError,
+  DataSignError,
+  TxSendError,
+  TxSignError,
+} from './errorTypes';
 import { UnsignedGeneratedTx } from '../../../../util/interface';
 import WalletWithErg from '../../../../db/entities/views/WalletWithErg';
-import { SignedTx, Tx } from './eipTypes';
+import { SignedInput, SignedTx, Tx } from './eipTypes';
+import { T } from 'vitest/dist/global-e98f203b';
 
 export type ActionType =
   | 'registered'
@@ -20,7 +26,9 @@ export type ActionType =
   | 'submit_request'
   | 'submit_response'
   | 'sign_data_request'
-  | 'sign_data_response';
+  | 'sign_data_response'
+  | 'sign_tx_input_request'
+  | 'sign_tx_input_response';
 
 export type Page = {
   page: number;
@@ -80,6 +88,16 @@ export type SignDataResponsePayload = {
   error: DataSignError | undefined;
 };
 
+export type SignTxInputRequestPayload = {
+  tx: Tx;
+  index: number;
+};
+
+export type SignTxInputResponsePayload = {
+  sInput: SignedInput | undefined;
+  error: TxSignError | APIError | undefined;
+};
+
 export type Payload =
   | ConfirmPayload
   | BoxRequestPayload
@@ -93,7 +111,9 @@ export type Payload =
   | SubmitTxRequestPayload
   | SubmitTxResponsePayload
   | SignDataRequestPayload
-  | SignDataResponsePayload;
+  | SignDataResponsePayload
+  | SignTxInputRequestPayload
+  | SignTxInputResponsePayload;
 export interface MessageContent {
   action: ActionType;
   requestId: string;

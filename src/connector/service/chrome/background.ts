@@ -9,6 +9,7 @@ import {
   MessageContent,
   MessageData,
   SignDataResponsePayload,
+  SignTxInputResponsePayload,
   SignTxResponsePayload,
   SubmitTxResponsePayload,
 } from '../../../components/pages/dapp-connector/types/types';
@@ -128,6 +129,15 @@ const createSocket = (server: string): Promise<void> => {
                     isSuccess: true,
                     requestId: request.requestId,
                     payload: contentJson.payload as SignDataResponsePayload,
+                  });
+                  break;
+                case 'sign_tx_input_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SignTxInputResponsePayload,
                   });
                   break;
               }
@@ -290,6 +300,18 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
               session.id,
               JSON.stringify({
                 action: 'sign_data_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'signTxInput':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'sign_tx_input_request',
                 requestId: msg.requestId,
                 payload: msg.payload,
               })

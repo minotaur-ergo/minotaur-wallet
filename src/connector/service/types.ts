@@ -77,6 +77,7 @@ export type EventFunction =
   | 'sign'
   | 'submit'
   | 'signData'
+  | 'signTxInput'
   | '';
 export type EventData = {
   type: string;

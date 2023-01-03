@@ -39,7 +39,13 @@ export enum APIErrorCode {
   InternalError = -2,
   Refused = -3,
 }
+
 export type APIError = {
   code: APIErrorCode;
   info: string;
+};
+
+export const NotImplementedError: APIError = {
+  code: APIErrorCode.InvalidRequest,
+  info: 'Not implemented.',
 };

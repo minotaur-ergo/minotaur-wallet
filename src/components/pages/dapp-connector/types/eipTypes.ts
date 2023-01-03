@@ -29,7 +29,7 @@ type DataInput = {
   boxId: string;
 };
 
-type SignedInput = {
+export type SignedInput = {
   boxId: string;
   spendingProof: ProverResult;
 };
