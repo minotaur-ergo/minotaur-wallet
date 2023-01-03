@@ -44,8 +44,3 @@ export type APIError = {
   code: APIErrorCode;
   info: string;
 };
-
-export const NotImplementedError: APIError = {
-  code: APIErrorCode.InvalidRequest,
-  info: 'Not implemented.',
-};

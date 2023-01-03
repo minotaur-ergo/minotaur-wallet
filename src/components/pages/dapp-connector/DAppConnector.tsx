@@ -14,6 +14,7 @@ import {
   Payload,
   SignDataRequestPayload,
   SignDataResponsePayload,
+  SignTxInputResponsePayload,
   SignTxRequestPayload,
   SignTxResponsePayload,
   SubmitTxRequestPayload,
@@ -32,6 +33,8 @@ import {
   TxSendErrorCode,
   TxSendError,
   DataSignError,
+  APIError,
+  APIErrorCode,
 } from './types/errorTypes';
 
 import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
@@ -397,6 +400,27 @@ class DAppConnector extends React.Component<
     }
   };
 
+  processSignTxInput = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const NotImplementedError: APIError = {
+      code: APIErrorCode.InvalidRequest,
+      info: 'Not implemented.',
+    };
+
+    const result: SignTxInputResponsePayload = {
+      sInput: undefined,
+      error: NotImplementedError,
+    };
+    this.sendMessageToServer(
+      connection,
+      'sign_tx_input_response',
+      content.requestId,
+      result
+    );
+  };
+
   handleMessage = (msg: MessageData) => {
     const filteredConnections = this.state.connections.filter(
       (item) => item.info.pageId === msg.pageId
@@ -427,6 +451,10 @@ class DAppConnector extends React.Component<
           break;
         case 'sign_data_request':
           this.processSignData(connection, content).then(() => null);
+          break;
+        case 'sign_tx_input_request':
+          this.processSignTxInput(connection, content).then(() => null);
+          break;
       }
     }
   };
