@@ -8,7 +8,7 @@ import {
 } from './errorTypes';
 import { UnsignedGeneratedTx } from '../../../../util/interface';
 import WalletWithErg from '../../../../db/entities/views/WalletWithErg';
-import { SignedInput, SignedTx, Tx } from './eipTypes';
+import { Box, SignedInput, SignedTx, Tx } from './eipTypes';
 import { T } from 'vitest/dist/global-e98f203b';
 
 export type ActionType =
@@ -46,7 +46,7 @@ export type BoxRequestPayload = {
   page: Page;
 };
 export type BoxResponsePayload = {
-  boxes: Array<wasm.ErgoBox> | undefined;
+  boxes: Array<Box> | undefined;
 };
 
 export type BalanceRequestPayload = {

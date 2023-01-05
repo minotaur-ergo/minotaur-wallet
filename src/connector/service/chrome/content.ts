@@ -14,6 +14,7 @@ import {
 } from '../../../components/pages/dapp-connector/types/errorTypes';
 import { UnsignedGeneratedTx } from '../../../util/interface';
 import {
+  Box,
   SignedInput,
   SignedTx,
   Tx,
@@ -216,16 +217,14 @@ class MinotaurApi extends ExtensionConnector {
   };
 
   get_utxos = (amount?: bigint, token_id = 'ERG', paginate?: Paginate) => {
-    return new Promise<Array<wasm.ErgoBox> | undefined>((resolve, reject) => {
+    return new Promise<Array<Box> | undefined>((resolve, reject) => {
       this.rpcCall('boxes', {
         amount: amount,
         token_id: token_id,
         paginate: paginate,
       })
         .then((res) => {
-          const data = (res as EventData).payload as
-            | Array<wasm.ErgoBox>
-            | undefined;
+          const data = (res as EventData).payload as Array<Box> | undefined;
           resolve(data);
         })
         .catch(() => reject());
