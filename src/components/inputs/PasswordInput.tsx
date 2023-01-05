@@ -13,7 +13,7 @@ interface PropsType {
   password: string;
   label: string;
   error?: string;
-  setPassword: (password: string) => any;
+  setPassword: (password: string) => unknown;
   size?: 'small' | 'medium';
 }
 

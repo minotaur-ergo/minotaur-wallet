@@ -30,7 +30,7 @@ interface WalletListElementPropType {
   erg: bigint;
   tokens: number;
   network_type: string;
-  onClick?: () => any;
+  onClick?: () => unknown;
   loadingWallet?: number;
 }
 

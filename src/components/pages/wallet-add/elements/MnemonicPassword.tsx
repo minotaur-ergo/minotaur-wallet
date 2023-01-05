@@ -6,8 +6,8 @@ interface PropsType {
   password: string;
   valid: boolean;
   confirm?: boolean;
-  goBack?: () => any;
-  setPassword: (password: string, valid: boolean) => any;
+  goBack?: () => unknown;
+  setPassword: (password: string, valid: boolean) => unknown;
 }
 
 const MnemonicPassword = (props: PropsType) => {

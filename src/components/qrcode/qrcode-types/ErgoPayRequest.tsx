@@ -35,9 +35,9 @@ const ip_regex = RegExp(
 );
 
 interface PropsType {
-  closeQrcode: () => any;
+  closeQrcode: () => unknown;
   wallets: Array<Wallet>;
-  completed?: (result: string) => any;
+  completed?: (result: string) => unknown;
   url: string;
 }
 
@@ -137,7 +137,9 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
       this.state.status !== 'Loading' &&
       this.state.loadedUrl !== url
     ) {
-      const network_type = getNetworkType(this.state?.wallet!.network_type);
+      const network_type = getNetworkType(
+        this.state.wallet ? this.state.wallet.network_type : ''
+      );
       if (this.urlContainPlaceHolder(url)) {
         if (this.state.status !== 'Address')
           this.setState({ status: 'Address', selectedAddress: '' });
@@ -185,11 +187,7 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
     this.loadUrl();
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<PropsType>,
-    prevState: Readonly<stateType>,
-    snapshot?: any
-  ) {
+  componentDidUpdate() {
     this.loadUrl();
   }
 

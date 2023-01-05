@@ -5,8 +5,8 @@ import { Button, Container, Grid, Typography } from '@mui/material';
 import qrcode from '../../../assets/qrcode.svg';
 interface PropsType {
   chunks: Array<string>;
-  close: () => any;
-  scanNext: () => any;
+  close: () => unknown;
+  scanNext: () => unknown;
 }
 
 const QrCodeMoreChunk = (props: PropsType) => {
@@ -30,7 +30,7 @@ const QrCodeMoreChunk = (props: PropsType) => {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography align="center">
+            <div style={{ textAlign: 'center' }}>
               <h3>more pages are required for this qrcode to compete</h3>
               <h3>
                 {completed} / {props.chunks.length}
@@ -43,7 +43,7 @@ const QrCodeMoreChunk = (props: PropsType) => {
               >
                 Scan next qrcode
               </Button>
-            </Typography>
+            </div>
           </Grid>
         </Grid>
       </Container>

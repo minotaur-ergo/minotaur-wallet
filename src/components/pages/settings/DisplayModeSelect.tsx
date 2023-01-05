@@ -1,9 +1,10 @@
 import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { DisplayType } from '../../../store/reducer/wallet';
 import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React from 'react';
 import { setDisplayMode } from '../../../store/actions';
+import { Dispatch } from 'redux';
 
 interface DisplayModeSelectPropsType {
   display: DisplayType;
@@ -41,7 +42,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   display: state.wallet.display,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   setMode: (mode: DisplayType) => dispatch(setDisplayMode(mode)),
 });
 

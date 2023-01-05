@@ -5,13 +5,13 @@ import TokenSelect from './TokenSelect';
 import TokenWithAddress from '../../../db/entities/views/AddressToken';
 import AddressInput from '../../inputs/AddressInput';
 import { WalletQrCodeContext } from '../wallet/types';
-import { is_valid_address } from '../../../util/util';
+import { is_valid_address, parse_url_to_json } from '../../../util/util';
 import TokenName from '../../value/TokenName';
 
 interface PropsType {
   value: Receiver;
   remaining: bigint;
-  setValue: (value: Receiver) => any;
+  setValue: (value: Receiver) => unknown;
   tokens: Array<TokenWithAddress>;
   network_type: string;
 }
@@ -23,7 +23,21 @@ interface StateType {
 }
 
 class ReceiverRow extends React.Component<PropsType, StateType> {
-  fillAddress = (newAddress: string) => {
+  fillAddressFromQrCode = (newAddress: string) => {
+    console.log(newAddress);
+    if (newAddress.indexOf('explorer.ergoplatform.com')) {
+      const query_params = parse_url_to_json(newAddress) as {
+        address?: string;
+        amount?: string;
+      };
+      const toBeUpdate = this.props.value.clone();
+      if (query_params.address) {
+        toBeUpdate.address = query_params.address;
+        if (query_params.amount) toBeUpdate.erg_str = query_params.amount;
+        this.props.setValue(toBeUpdate);
+        return;
+      }
+    }
     const newReceiver = this.props.value.clone();
     newReceiver.address = newAddress;
     this.props.setValue(newReceiver);
@@ -64,7 +78,7 @@ class ReceiverRow extends React.Component<PropsType, StateType> {
         <AddressInput
           address={this.props.value.address}
           size={'small'}
-          setAddress={this.fillAddress}
+          setAddress={this.fillAddressFromQrCode}
           contextType={WalletQrCodeContext}
           error={
             is_valid_address(this.props.value.address) ? '' : 'Invalid Address'

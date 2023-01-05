@@ -1,6 +1,6 @@
 import React from 'react';
 import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { DisplayType } from '../../../store/reducer/wallet';
 import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,6 +8,7 @@ import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 interface DisplayModeSelectPropsType {
   display: DisplayType;
+  setDisplay: (newDisplay: DisplayType) => unknown;
 }
 
 const DisplayModeSelect = (props: DisplayModeSelectPropsType) => {
@@ -23,7 +24,7 @@ const DisplayModeSelect = (props: DisplayModeSelectPropsType) => {
           style={{ width: '100%' }}
           value="light"
           exclusive
-          // onChange={(event, newType) => props.setDisplay(newType)}
+          onChange={(event, newType) => props.setDisplay(newType)}
         >
           <ToggleButton style={{ width: `50%` }} value="light">
             <FontAwesomeIcon icon={faSun} size={'lg'} /> &nbsp; Light
@@ -41,8 +42,4 @@ const mapStateToProps = (state: GlobalStateType) => ({
   display: state.wallet.display,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-  // showMessage: (message: SnackbarMessage, variant: VariantType) => dispatch(showMessage(message, variant))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayModeSelect);
+export default connect(mapStateToProps)(DisplayModeSelect);

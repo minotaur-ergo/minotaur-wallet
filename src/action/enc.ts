@@ -21,15 +21,19 @@ const encrypt = (text: Buffer, password: string) => {
 
 const decrypt = (text: string, password: string) => {
   const textParts = text.split(':');
-  const iv = Buffer.from(textParts.shift()!, 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(
-    'aes-256-cbc',
-    getPassword(password),
-    iv
-  );
-  const decrypted = decipher.update(encryptedText);
-  return Buffer.concat([decrypted, decipher.final()]);
+  const shifted = textParts.shift();
+  if (shifted) {
+    const iv = Buffer.from(shifted, 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv(
+      'aes-256-cbc',
+      getPassword(password),
+      iv
+    );
+    const decrypted = decipher.update(encryptedText);
+    return Buffer.concat([decrypted, decipher.final()]);
+  }
+  return Buffer.from('', 'hex');
 };
 
 export { encrypt, decrypt };

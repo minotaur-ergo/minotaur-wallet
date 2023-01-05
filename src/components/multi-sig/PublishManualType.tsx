@@ -3,7 +3,7 @@ import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 interface PublishTypePropsType {
   publishType: PUBLISH_MANUAL_TYPES;
-  setPublishType: (newType: PUBLISH_MANUAL_TYPES) => any;
+  setPublishType: (newType: PUBLISH_MANUAL_TYPES) => unknown;
 }
 
 export enum PUBLISH_MANUAL_TYPES {

@@ -4,9 +4,9 @@ import QrCodeReaderWeb from './QrCodeReaderWeb';
 import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
 
 interface PropsType {
-  success: (scanned: string) => any;
-  fail: () => any;
-  closeQrCode: () => any;
+  success: (scanned: string) => unknown;
+  fail: () => unknown;
+  closeQrCode: () => unknown;
 }
 
 const QrCodeReader = (props: PropsType) => {

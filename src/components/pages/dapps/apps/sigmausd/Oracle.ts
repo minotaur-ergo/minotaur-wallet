@@ -12,7 +12,8 @@ class Oracle {
   get_box = () => this.box;
 
   datapoint = () => {
-    return BigInt(this.box?.register_value(4)!.to_i64().to_str());
+    const R4 = this.box.register_value(4);
+    return BigInt(R4 ? R4.to_i64().to_str() : 0);
   };
 
   datapoint_in_cents = () => {

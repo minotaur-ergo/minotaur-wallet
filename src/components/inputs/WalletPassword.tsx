@@ -9,8 +9,8 @@ import { AddressAction } from '../../action/action';
 
 interface PropsType {
   password: string;
-  setPassword: (password: string) => any;
-  complete: () => any;
+  setPassword: (password: string) => unknown;
+  complete: () => unknown;
   size?: 'small' | 'medium';
   wallet?: Wallet;
   address?: Address | AddressWithErg;
