@@ -13,7 +13,7 @@ import { Button, Container, Grid } from '@mui/material';
 import { FEE } from '../../../util/const';
 import InAdvancedMode from '../../display-view/InAdvancedMode';
 import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
@@ -24,6 +24,7 @@ import { DisplayType } from '../../../store/reducer/wallet';
 import { WalletType } from '../../../db/entities/Wallet';
 import { getRoute, RouteMap } from '../../route/routerMap';
 import { Link } from 'react-router-dom';
+import { Action, Dispatch } from 'redux';
 
 interface SendTransactionPropsType
   extends WalletPagePropsType,
@@ -241,7 +242,7 @@ const mapStateToProps = (state: GlobalStateType) => ({
   display: state.wallet.display,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

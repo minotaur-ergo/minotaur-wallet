@@ -7,7 +7,7 @@ import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 
 interface WalletSelectPropType {
   wallets: Array<WalletWithErg>;
-  select: (selected: WalletWithErg) => any;
+  select: (selected: WalletWithErg) => unknown;
 }
 const WalletSelect = (props: WalletSelectPropType) => {
   return (

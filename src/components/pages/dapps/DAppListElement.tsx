@@ -6,7 +6,7 @@ interface PropsType {
   description: string;
   icon?: string;
   url?: string;
-  handleClick?: () => any;
+  handleClick?: () => unknown;
 }
 
 const DAppListElement = (props: PropsType) => {

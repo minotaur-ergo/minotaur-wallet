@@ -1,0 +1,28 @@
+{
+  "short_name": "Minotaur wallet connector",
+  "name": "Minotaur wallet dApp connector",
+  "icons": {
+    "192": "logo192.png"
+  },
+  "version": "1",
+  "manifest_version": 3,
+  "minimum_chrome_version": "48",
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/injector.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "host_permissions": ["<all_urls>"],
+  "web_accessible_resources": [
+    {
+      "resources": ["scripts/content.js"],
+      "matches": ["file://*/*", "http://*/*", "https://*/*"]
+    }
+  ]
+}

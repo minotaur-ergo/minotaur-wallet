@@ -15,9 +15,9 @@ import InAdvancedMode from '../../../display-view/InAdvancedMode';
 
 interface PropsType {
   mnemonic?: string;
-  goBack: () => any;
+  goBack: () => unknown;
   mnemonic_passphrase: string;
-  goForward: (mnemonic: string, mnemonic_passphrase: string) => any;
+  goForward: (mnemonic: string, mnemonic_passphrase: string) => unknown;
 }
 
 const words = wordlists[getDefaultWordlist()];
@@ -89,7 +89,7 @@ const Mnemonic = (props: PropsType) => {
               inputValue={selected}
               options={filteredWords.map((item) => ({ title: item }))}
               getOptionLabel={(option) => option.title}
-              onChange={(event, value, reason) => {
+              onChange={(event, value) => {
                 if (value) {
                   selectElement(value.title);
                 }

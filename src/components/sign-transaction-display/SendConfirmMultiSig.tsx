@@ -47,11 +47,11 @@ const SendConfirmMultiSig = (props: SendConfirmMultiSigPropsType) => {
       setTx(undefined);
     }
   });
-  return tx ? (
+  return tx && props.transaction ? (
     <MultiSigSignProcess
       wallet={props.wallet}
-      tx={tx!}
-      boxes={props.transaction!.boxes}
+      tx={tx}
+      boxes={props.transaction.boxes}
       close={props.close}
     />
   ) : (

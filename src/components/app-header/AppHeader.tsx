@@ -8,9 +8,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface WalletHeaderPropTypes {
   title: string;
-  back?: () => any;
+  back?: () => unknown;
   hideQrCode?: boolean;
-  openQrCode?: () => any;
+  openQrCode?: () => unknown;
   extraIcons?: React.ReactNode | Array<React.ReactNode>;
 }
 

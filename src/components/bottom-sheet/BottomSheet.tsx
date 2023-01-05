@@ -4,7 +4,7 @@ import './BottomSheet.css';
 export interface BottomSheetPropsType {
   show: boolean;
   children?: React.ReactNode;
-  close: () => any;
+  close: () => unknown;
 }
 
 const BottomSheet = (props: BottomSheetPropsType) => {

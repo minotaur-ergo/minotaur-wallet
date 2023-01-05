@@ -8,7 +8,7 @@ import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 interface DAppConnectorHeaderPropsType {
-  openQrCode: () => any;
+  openQrCode: () => unknown;
 }
 const DAppConnectorHeader = (props: DAppConnectorHeaderPropsType) => {
   const navigate = useNavigate();

@@ -3,24 +3,20 @@ import Wallet from '../../db/entities/Wallet';
 import { UnsignedGeneratedTx } from '../../util/interface';
 import { BlockChainAction } from '../../action/blockchain';
 import { getNetworkType } from '../../util/network_type';
-import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../store/actions';
 import { MessageEnqueueService } from '../app/MessageHandler';
 import { Button, Container, Grid } from '@mui/material';
-import { Browser } from '@capacitor/browser';
-import DisplayId from '../display-id/DisplayId';
 import PasswordInput from '../inputs/PasswordInput';
 import { AddressAction } from '../../action/action';
 import PublishedTxView from '../PublishedTxView';
-import Transaction from '../pages/transaction/Transaction';
-import WalletWithErg from '../../db/entities/views/WalletWithErg';
+import { Action, Dispatch } from 'redux';
 
 interface SendConfirmPropsType extends MessageEnqueueService {
-  close: () => any;
-  wallet: Wallet | WalletWithErg;
-  completed?: (txId: string) => any;
+  close: () => unknown;
+  wallet: Wallet;
+  completed?: (txId: string) => unknown;
   transaction?: UnsignedGeneratedTx;
   display: boolean;
   function?: (password: string) => Promise<void>;
@@ -112,9 +108,9 @@ const SendConfirm = (props: SendConfirmPropsType) => {
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

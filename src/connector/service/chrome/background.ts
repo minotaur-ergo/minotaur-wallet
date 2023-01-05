@@ -40,13 +40,11 @@ const createSocket = (server: string): Promise<void> => {
     if (!Object.prototype.hasOwnProperty.call(info.sockets, server)) {
       const socket = new WebSocket(server);
       socket.onclose = () => {
-        console.log('socket closed');
         if (Object.prototype.hasOwnProperty.call(info.sockets, server)) {
           delete info.sockets['server'];
         }
       };
       socket.onopen = () => {
-        console.log('socket opened');
         // send registration to server
         socket.send(
           JSON.stringify({
@@ -58,7 +56,6 @@ const createSocket = (server: string): Promise<void> => {
         );
       };
       socket.onmessage = (message: MessageEvent<string>) => {
-        console.log(`new message from server ${message.data}`);
         const content = JSON.parse(message.data) as MessageData;
         if (content.sender === '') {
           resolve();
@@ -197,7 +194,6 @@ const handleAuthRequests = (msg: EventData, port: chrome.runtime.Port) => {
     }
     session.requests.set(`${msg.requestId}`, { ...msg });
     const fn = msg.function;
-    console.log(`function call information ${JSON.stringify(msg)}`);
     switch (fn) {
       case 'connect':
         session.requests.set(`${msg.requestId}`, msg);
@@ -325,7 +321,6 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
 
 const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
   const session = info.sessions.get(msg.id);
-  console.log(`UI message is ${JSON.stringify(msg)}`);
   if (session) {
     switch (msg.type) {
       case 'register': {

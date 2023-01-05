@@ -7,7 +7,7 @@ import Erg from '../../value/Erg';
 
 interface PropsType {
   transaction: WalletTx;
-  handleClick: () => any;
+  handleClick: () => unknown;
 }
 
 const TransactionElement = (props: PropsType) => {

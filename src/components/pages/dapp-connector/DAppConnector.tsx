@@ -61,7 +61,7 @@ import {
 
 interface DAppConnectorPropType {
   value: string;
-  clearValue: () => any;
+  clearValue: () => unknown;
 }
 
 interface DAppConnectorStateType {
@@ -78,8 +78,8 @@ class DAppConnector extends React.Component<
   state: DAppConnectorStateType = {
     servers: {},
     connections: [],
-    active: '',
     modalData: {} as modalDataProp,
+    active: '31b2a127-c028-4fa7-b167-68b60d21619f',
   };
 
   decrypt = (text: string, secret: string) => {
@@ -91,7 +91,7 @@ class DAppConnector extends React.Component<
     return CryptoJS.AES.encrypt(text, secret).toString();
   };
 
-  handleError = (error: Event) => {
+  handleError = () => {
     /*empty*/
   };
 
@@ -117,7 +117,9 @@ class DAppConnector extends React.Component<
     content: MessageContent
   ) => {
     const payload = content.payload as AddressRequestPayload;
-    const wallet = await WalletDbAction.getWalletById(connection.walletId!);
+    const wallet = await WalletDbAction.getWalletById(
+      connection.walletId ? connection.walletId : 1
+    );
     if (wallet) {
       const addresses = await AddressDbAction.getWalletAddresses(wallet.id);
       let resultAddress: Array<string> = [];
@@ -154,7 +156,9 @@ class DAppConnector extends React.Component<
     content: MessageContent
   ) => {
     const payload = content.payload as BalanceRequestPayload;
-    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    const wallet = await WalletDbAction.getWalletWithErg(
+      connection.walletId ? connection.walletId : 1
+    );
     if (wallet) {
       const tokens = payload.tokens;
       const res: { [id: string]: string } = {};

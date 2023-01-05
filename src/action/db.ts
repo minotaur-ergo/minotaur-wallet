@@ -193,7 +193,10 @@ class AddressActionClass {
     });
     return addresses
       .filter((item) => item.wallet?.network_type == networkType)
-      .sort((a, b) => a?.wallet!.id - b?.wallet!.id);
+      .sort(
+        (a, b) =>
+          (a && a.wallet ? a.wallet.id : 0) - (b && b.wallet ? b.wallet.id : 0)
+      );
   };
 
   setAddressHeight = async (addressId: number, height: number) => {

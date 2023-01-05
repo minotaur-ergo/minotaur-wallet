@@ -4,7 +4,7 @@ import { NETWORK_TYPES } from '../../../../util/network_type';
 
 interface PropType {
   network: string;
-  setNetworkType: (network: string) => any;
+  setNetworkType: (network: string) => unknown;
 }
 
 const WalletNetworkSelect = (props: PropType) => {
