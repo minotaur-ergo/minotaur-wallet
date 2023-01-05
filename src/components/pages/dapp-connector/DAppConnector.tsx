@@ -46,7 +46,7 @@ class DAppConnector extends React.Component<
   state: DAppConnectorStateType = {
     servers: {},
     connections: [],
-    active: '',
+    active: '31b2a127-c028-4fa7-b167-68b60d21619f',
   };
 
   decrypt = (text: string, secret: string) => {

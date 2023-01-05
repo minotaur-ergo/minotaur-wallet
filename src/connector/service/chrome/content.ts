@@ -184,12 +184,11 @@ class MinotaurApi extends ExtensionConnector {
           if (token_ids.length) {
             output[token_id] = BigInt(data[token_id]);
             token_ids.forEach((token) => {
-              const tokenIdOrErg = token ? token : 'ERG';
-              output[tokenIdOrErg] = BigInt(data[tokenIdOrErg]);
+              output[token] = BigInt(data[token]);
             });
             resolve(output);
           } else {
-            resolve(BigInt(data[token_id ? token_id : 'ERG']));
+            resolve(BigInt(data[token_id]));
           }
         })
         .catch(() => reject());
@@ -262,41 +261,36 @@ class MinotaurApi extends ExtensionConnector {
 //
 // }
 
-const setupErgo = () => {
-  if (window.ergoConnector !== undefined) {
-    window.ergoConnector = {
-      ...window.ergoConnector,
-      minotaur: Object.freeze(MinotaurConnector.getInstance()),
-    };
-  } else {
-    window.ergoConnector = {
-      minotaur: Object.freeze(MinotaurConnector.getInstance()),
-    };
-  }
-
-  const warnDeprecated = function (func: string) {
-    console.warn(
-      "[Deprecated] In order to avoid conflicts with another wallets, this method will be disabled and replaced by '" +
-        func +
-        "' soon."
-    );
+if (window.ergoConnector !== undefined) {
+  window.ergoConnector = {
+    ...window.ergoConnector,
+    minotaur: Object.freeze(MinotaurConnector.getInstance()),
   };
+} else {
+  window.ergoConnector = {
+    minotaur: Object.freeze(MinotaurConnector.getInstance()),
+  };
+}
 
-  if (!window.ergo_request_read_access && !window.ergo_check_read_access) {
-    window.ergo_request_read_access = function () {
-      warnDeprecated('ergoConnector.minotaur.connect()');
-      return MinotaurConnector.getInstance()
-        .connect()
-        .then((res) => null);
-    };
-    window.ergo_check_read_access = function () {
-      warnDeprecated('ergoConnector.minotaur.isConnected()');
-      return MinotaurConnector.getInstance()
-        .is_connected()
-        .then((res) => null);
-    };
-  }
+const warnDeprecated = function (func: string) {
+  console.warn(
+    "[Deprecated] In order to avoid conflicts with another wallets, this method will be disabled and replaced by '" +
+      func +
+      "' soon."
+  );
 };
 
-setupErgo();
-// export default setupErgo;
+if (!window.ergo_request_read_access && !window.ergo_check_read_access) {
+  window.ergo_request_read_access = function () {
+    warnDeprecated('ergoConnector.nautilus.connect()');
+    return MinotaurConnector.getInstance()
+      .connect()
+      .then((res) => null);
+  };
+  window.ergo_check_read_access = function () {
+    warnDeprecated('ergoConnector.nautilus.isConnected()');
+    return MinotaurConnector.getInstance()
+      .is_connected()
+      .then((res) => null);
+  };
+}
