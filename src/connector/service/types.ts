@@ -75,6 +75,9 @@ export type EventFunction =
   | 'address'
   | 'boxes'
   | 'sign'
+  | 'submit'
+  | 'signData'
+  | 'signTxInput'
   | '';
 export type EventData = {
   type: string;
@@ -100,72 +103,4 @@ type WalletMessagePayloadType = WalletRegisterInfo | WalletRegisterComplete;
 export interface WalletMessage {
   requestId: number;
   payload: WalletMessagePayloadType;
-}
-
-// ==================== server message format ==========================
-
-type ActionType =
-  | 'registered'
-  | 'confirm'
-  | 'confirmed'
-  | 'boxes_request'
-  | 'boxes_response'
-  | 'balance_request'
-  | 'balance_response'
-  | 'address_request'
-  | 'address_response'
-  | 'sign_request'
-  | 'sign_response'
-  | 'submit_request'
-  | 'submit_response';
-
-export type Page = {
-  page: number;
-  limit: number;
-};
-export type ConfirmPayload = {
-  id: string;
-  display: string;
-};
-
-export type BoxRequestPayload = {
-  amount: string;
-  tokenId: string;
-  page: Page;
-};
-
-export type BalanceRequestPayload = {
-  tokenIds: Array<string>;
-};
-
-export type BalanceResponsePayload = {
-  amount: string;
-  extra: { [tokenId: string]: string };
-};
-
-export type AddressRequestPayload = {
-  type: 'used' | 'unused' | 'change' | 'all';
-  page: Page;
-};
-
-export type AddressResponsePayload = Array<string>;
-
-export type Payload =
-  | ConfirmPayload
-  | BoxRequestPayload
-  | BalanceRequestPayload
-  | BalanceResponsePayload
-  | AddressRequestPayload
-  | AddressResponsePayload;
-
-export interface MessageContent {
-  action: ActionType;
-  requestId: string;
-  payload: Payload;
-}
-
-export interface MessageData {
-  sender: string;
-  pageId: string;
-  content: string;
 }

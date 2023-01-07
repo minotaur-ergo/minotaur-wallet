@@ -10,7 +10,7 @@ import WalletPage from '../pages/wallet/WalletPage';
 import { closeQrCodeScanner } from '../../store/actions';
 import Settings from '../pages/settings/Settings';
 import { Action, Dispatch } from 'redux';
-// import DAppConnectorContainer from "../pages/dapp-connector/DAppConnectorContainer";
+import DAppConnectorContainer from '../pages/dapp-connector/DAppConnectorContainer';
 
 interface PropsType {
   qrCodes: Array<string>;
@@ -44,7 +44,10 @@ class RouterSwitch extends React.Component<PropsType, never> {
         <div>
           <Routes>
             <Route path={RouteMap.Settings} element={<Settings />} />
-            {/*<Route path={RouteMap.DAppConnector} element={<DAppConnectorContainer/>} />*/}
+            <Route
+              path={RouteMap.DAppConnector}
+              element={<DAppConnectorContainer />}
+            />
             <Route path={RouteMap.Wallet} element={<WalletPage />} />
             <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
             <Route path={RouteMap.Home} element={<Home />} />
