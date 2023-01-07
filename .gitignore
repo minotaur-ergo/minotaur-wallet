@@ -10,6 +10,7 @@
 
 # production
 /build
+/extension
 
 # misc
 .DS_Store
@@ -24,4 +25,3 @@ yarn-error.log*
 
 .idea/*
 /dist/*
-/extension/*
