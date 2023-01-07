@@ -88,9 +88,9 @@ const SendConfirm = (props: SendConfirmPropsType) => {
                 }
                 disabled={!(props.transaction && passwordValid())}
               >
-                {props.name || 'Send'}
+                {props.name ? props.name : 'Send'}
               </Button>
-              {props.declineFunction && (
+              {props.declineFunction ? (
                 <Button
                   variant="contained"
                   fullWidth
@@ -99,7 +99,7 @@ const SendConfirm = (props: SendConfirmPropsType) => {
                 >
                   Decline
                 </Button>
-              )}
+              ) : null}
             </Grid>
           </React.Fragment>
         )}
