@@ -277,7 +277,7 @@ class BlockChainActionClass {
     }
     const secretKeys = new wasm.SecretKeys();
     secretKeys.add(
-      await AddressAction.getWalletAddressSecret(dbWallet, password, dbAddress!)
+      await AddressAction.getWalletAddressSecret(dbWallet, password, dbAddress)
     );
     const wasmAddr =
       dbAddress!.network_type == 'Testnet'

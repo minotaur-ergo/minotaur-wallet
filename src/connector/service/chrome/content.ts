@@ -292,37 +292,6 @@ class MinotaurApi extends ExtensionConnector {
   };
 }
 
-// _rpcCall = (func: string, params?: any) => {
-//     return new Promise((resolve, reject) => {
-//         window.postMessage({
-//             type: "rpc/connector-request",
-//             requestId: this.resolver.currentId,
-//             function: func,
-//             params
-//         });
-//         this.resolver.requests.set(this.resolver.currentId, {resolve: resolve, reject: reject});
-//         this.resolver.currentId++;
-//     });
-// }
-//
-//     eventHandler = (event) => {
-//         if (event.data.type === "rpc/connector-response") {
-//             console.debug(JSON.stringify(event.data));
-//             const promise = this.resolver.requests.get(event.data.requestId);
-//             if (promise !== undefined) {
-//                 this.resolver.requests.delete(event.data.requestId);
-//                 const ret = event.data.return;
-//                 if (ret.isSuccess) {
-//                     promise.resolve(ret.data);
-//                 } else {
-//                     promise.reject(ret.data);
-//                 }
-//             }
-//         }
-//     };
-//
-// }
-
 const setupErgo = () => {
   if (window.ergoConnector !== undefined) {
     window.ergoConnector = {

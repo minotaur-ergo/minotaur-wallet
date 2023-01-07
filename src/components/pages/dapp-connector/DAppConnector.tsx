@@ -211,8 +211,6 @@ class DAppConnector extends React.Component<
           resultUtxos.boxes!.push(ergoBoxes.get(index).to_js_eip12());
         }
       }
-      //console.log(resultUtxos.boxes?.get(0).to_js_eip12())
-      console.log(ergoBoxes);
       this.sendMessageToServer(
         connection,
         'boxes_response',
@@ -251,7 +249,6 @@ class DAppConnector extends React.Component<
       };
 
       const handleSignOnAccept = async (password: string) => {
-        console.log('sign accepted.');
         const result: SignTxResponsePayload = {
           stx: undefined,
           error: undefined,
@@ -357,7 +354,6 @@ class DAppConnector extends React.Component<
       };
 
       const handleSignOnAccept = async (password: string) => {
-        console.log('sign accepted.');
         const result: SignDataResponsePayload = {
           sData: undefined,
           error: undefined,
