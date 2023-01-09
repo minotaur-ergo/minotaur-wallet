@@ -66,12 +66,12 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
     }
   };
 
-  calcBurningBalance = (assets: { [id: string]: bigint }) => {
-    return Object.keys(assets)
+  calcBurningBalance = (totalAssets: { [id: string]: bigint }) => {
+    return Object.keys(totalAssets)
       .map((key) => {
         return {
           tokenId: key,
-          total: assets[key],
+          total: totalAssets[key],
         };
       })
       .filter((x) => {
@@ -98,6 +98,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
       this.setState({ loading: true });
       const txId = tx.id().to_str();
       const assets: { [id: string]: bigint } = { erg: BigInt(0) };
+      const totalAssets: { [id: string]: bigint } = { erg: BigInt(0) };
       const boxes: { [id: string]: wasm.ErgoBox } = {};
       if (this.props.boxes) {
         this.props.boxes.forEach((box) => (boxes[box.box_id().to_str()] = box));
@@ -118,6 +119,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         }
       }
       input_boxes.forEach((box) => {
+        this.processBox(box, 1, totalAssets);
         if (
           this.props.addresses.indexOf(
             wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
@@ -129,6 +131,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         }
       });
       outputs.forEach((box) => {
+        this.processBox(box, -1, totalAssets);
         if (
           this.props.addresses.indexOf(
             wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
@@ -139,7 +142,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
           this.processBox(box, 1, assets);
         }
       });
-      const burningBalance = this.calcBurningBalance(assets);
+      const burningBalance = this.calcBurningBalance(totalAssets);
       this.setState({
         assets: assets,
         burningBalance: burningBalance,
@@ -191,7 +194,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
                 <Fire style={{ color: 'red' }} />
               </ListItemIcon>
               <ListItemText
-                primary="Show Burning Tokens"
+                primary="Some token(s) burn during transaction. click to view"
                 style={{ color: 'red' }}
               />
             </ListItem>

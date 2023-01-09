@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Grid, List, ListItem, ListItemText } from '@mui/material';
 import BottomSheet from '../bottom-sheet/BottomSheet';
 import { TokenData } from '../../action/Types';
-import Erg from '../value/Erg';
+import TokenName from '../value/TokenName';
 
 interface BurningTokenDisplayPropsType {
   show: boolean;
@@ -28,18 +28,15 @@ const BurningTokenDisplay = (props: BurningTokenDisplayPropsType) => {
             {props.burningBalance.map((token) => (
               <ListItem>
                 <ListItemText
-                  primary={token.tokenId}
-                  secondary={
+                  primary={
                     <React.Fragment>
-                      <span style={{ display: 'block' }}>
-                        <Erg
-                          network_type={props.network_type}
-                          erg={token.total}
-                          showUnit={true}
-                        />
-                      </span>
+                      <TokenName
+                        token_id={token.tokenId}
+                        network_type={props.network_type}
+                      />
                     </React.Fragment>
                   }
+                  secondary={token.total.toString()}
                 />
               </ListItem>
             ))}
