@@ -24,7 +24,9 @@ const DisplayModeSelect = (props: DisplayModeSelectPropsType) => {
           style={{ width: '100%' }}
           value="light"
           exclusive
-          onChange={(event, newType) => props.setDisplay(newType)}
+          onChange={(event, newType) => {
+            if (newType !== null) props.setDisplay(newType);
+          }}
         >
           <ToggleButton style={{ width: `50%` }} value="light">
             <FontAwesomeIcon icon={faSun} size={'lg'} /> &nbsp; Light

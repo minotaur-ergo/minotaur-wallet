@@ -48,7 +48,9 @@ const ExtendedPublicKeyView = (props: ExtendedPublicKeyViewPropsType) => {
             style={{ width: '100%' }}
             value={encoding}
             exclusive
-            onChange={(event, newEncoding) => setEncoding(newEncoding)}
+            onChange={(event, newEncoding) => {
+              if (newEncoding !== null) setEncoding(newEncoding);
+            }}
           >
             {['hex', 'base58', 'base64'].map((item, index) => (
               <ToggleButton

@@ -24,7 +24,9 @@ const DisplayModeSelect = (props: DisplayModeSelectPropsType) => {
           style={{ width: '100%' }}
           value={props.display}
           exclusive
-          onChange={(event, newType) => props.setMode(newType)}
+          onChange={(event, newType) => {
+            if (newType !== null) props.setMode(newType);
+          }}
         >
           <ToggleButton style={{ width: `50%` }} value="simple">
             Simple

@@ -22,7 +22,9 @@ const WalletNetworkSelect = (props: PropType) => {
           style={{ width: '100%' }}
           value={props.network}
           exclusive
-          onChange={(event, newType) => props.setNetworkType(newType)}
+          onChange={(event, newType) => {
+            if (newType != null) props.setNetworkType(newType);
+          }}
         >
           {NETWORK_TYPES.map((item, index) => (
             <ToggleButton

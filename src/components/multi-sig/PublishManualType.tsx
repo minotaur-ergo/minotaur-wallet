@@ -20,9 +20,10 @@ const PublishManualType = (props: PublishTypePropsType) => {
         style={{ width: '100%' }}
         value={props.publishType}
         exclusive
-        onChange={(event, newType) =>
-          props.setPublishType(newType as PUBLISH_MANUAL_TYPES)
-        }
+        onChange={(event, newType) => {
+          if (newType !== null)
+            props.setPublishType(newType as PUBLISH_MANUAL_TYPES);
+        }}
       >
         <ToggleButton
           style={{ width: `${50}%` }}
