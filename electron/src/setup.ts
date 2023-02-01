@@ -143,7 +143,6 @@ export class ElectronCapacitorApp {
       },
     });
     this.mainWindowState.manage(this.MainWindow);
-    this.MainWindow.setMenu(null);
 
     if (this.CapacitorFileConfig.backgroundColor) {
       this.MainWindow.setBackgroundColor(
