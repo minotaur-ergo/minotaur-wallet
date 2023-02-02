@@ -50,12 +50,12 @@ const HomeHeader = () => {
         {' '}
         Minotaur{' '}
       </Typography>
-      <IconButton
-        color="inherit"
-        onClick={() => navigate(RouteMap.DAppConnector)}
-      >
-        <DAppConnectorIcon />
-      </IconButton>
+      {/*<IconButton*/}
+      {/*  color="inherit"*/}
+      {/*  onClick={() => navigate(RouteMap.DAppConnector)}*/}
+      {/*>*/}
+      {/*  <DAppConnectorIcon />*/}
+      {/*</IconButton>*/}
       <IconButton color="inherit" onClick={() => navigate(RouteMap.Settings)}>
         <FontAwesomeIcon icon={faGear} size={'xs'} />
       </IconButton>
