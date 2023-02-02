@@ -1,5 +1,4 @@
 import { DataSource, ViewColumn, ViewEntity } from 'typeorm';
-import { TxStatus } from '../Tx';
 
 @ViewEntity({
   name: 'tx_box_count',

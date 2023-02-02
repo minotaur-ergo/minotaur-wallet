@@ -5,7 +5,7 @@ import './MnemonicView.css';
 interface PropsType {
   mnemonic: string;
   hideIndex?: Array<number>;
-  handleClick?: (index: number) => any;
+  handleClick?: (index: number) => unknown;
 }
 
 const MnemonicView = (props: PropsType) => {

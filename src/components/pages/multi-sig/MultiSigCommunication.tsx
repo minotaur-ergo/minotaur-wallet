@@ -1,8 +1,7 @@
 import React from 'react';
 import { WalletPagePropsType } from '../../../util/interface';
 import { Container, Grid } from '@mui/material';
-import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
@@ -11,6 +10,7 @@ import WithAppBar from '../../../layout/WithAppBar';
 import * as wasm from 'ergo-lib-wasm-browser';
 import MultiSigSignProcess from '../../multi-sig/MultiSigSignProcess';
 import MultiSigDataReader from '../../multi-sig/MultiSigDataReader';
+import { Action, Dispatch } from 'redux';
 
 interface MultiSigCommunicationPropsType
   extends WalletPagePropsType,
@@ -45,7 +45,7 @@ class MultiSigCommunication extends React.Component<
     try {
       const data: InputData = JSON.parse(newData) as InputData;
       const tx = wasm.ReducedTransaction.sigma_parse_bytes(
-        Uint8Array.from(Buffer.from(data.tx!, 'base64'))
+        Uint8Array.from(Buffer.from(data.tx, 'base64'))
       );
       const boxes = wasm.ErgoBoxes.empty();
       data.boxes
@@ -97,9 +97,9 @@ class MultiSigCommunication extends React.Component<
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

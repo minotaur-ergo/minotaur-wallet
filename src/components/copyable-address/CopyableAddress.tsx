@@ -3,11 +3,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DisplayId from '../display-id/DisplayId';
-import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { showMessage } from '../../store/actions';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../app/MessageHandler';
+import { Action, Dispatch } from 'redux';
 
 interface CopyableAddressPropsType extends MessageEnqueueService {
   address?: string;
@@ -30,9 +30,9 @@ const CopyableAddress = (props: CopyableAddressPropsType) => {
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

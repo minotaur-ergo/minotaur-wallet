@@ -5,7 +5,7 @@ interface TextInputPropsType {
   label: string | React.ReactElement;
   error: string;
   value: string;
-  setValue: (value: string) => any;
+  setValue: (value: string) => unknown;
   type?: string;
   size?: 'small' | 'medium';
 }

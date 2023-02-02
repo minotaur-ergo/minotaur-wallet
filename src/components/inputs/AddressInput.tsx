@@ -15,7 +15,7 @@ interface PropsType {
   contextType: React.Context<QrCodeContextType | null>;
   label: string;
   error?: string;
-  setAddress: (password: string) => any;
+  setAddress: (password: string) => unknown;
   size?: 'small' | 'medium';
 }
 

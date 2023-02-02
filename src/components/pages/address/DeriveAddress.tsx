@@ -10,7 +10,7 @@ import { WalletQrCodeContext } from '../wallet/types';
 
 interface PropsType {
   wallet: Wallet;
-  addressDerived: () => any;
+  addressDerived: () => unknown;
 }
 
 const DeriveAddress = (props: PropsType) => {

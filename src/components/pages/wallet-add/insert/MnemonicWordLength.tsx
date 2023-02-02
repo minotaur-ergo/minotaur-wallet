@@ -2,7 +2,7 @@ import React from 'react';
 import { Slider } from '@mui/material';
 
 interface MnemonicWordLengthPropsType {
-  setValue: (value: number) => any;
+  setValue: (value: number) => unknown;
   value: number;
 }
 

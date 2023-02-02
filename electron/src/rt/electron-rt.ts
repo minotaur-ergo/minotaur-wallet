@@ -9,7 +9,7 @@ const plugins = require('./electron-plugins');
 const randomId = (length = 5) => randomBytes(length).toString('hex');
 
 const contextApi: {
-  [plugin: string]: { [functionName: string]: () => Promise<any> };
+  [plugin: string]: { [functionName: string]: () => Promise<unknown> };
 } = {};
 
 Object.keys(plugins).forEach((pluginKey) => {
@@ -34,7 +34,10 @@ Object.keys(plugins).forEach((pluginKey) => {
       // Events
       if (plugins[pluginKey][classKey].prototype instanceof EventEmitter) {
         const listeners: {
-          [key: string]: { type: string; listener: (...args: any[]) => void };
+          [key: string]: {
+            type: string;
+            listener: (...args: unknown[]) => void;
+          };
         } = {};
         const listenersOfTypeExist = (type) =>
           !!Object.values(listeners).find(

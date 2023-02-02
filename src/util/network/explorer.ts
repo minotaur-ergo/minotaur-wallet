@@ -40,6 +40,7 @@ export class Explorer {
    * get transactions for given address between given height blocks.
    * @param address : string
    * @param heightRange : HeightRange
+   * @param paging
    * @param conciseEnabled : Boolean
    * @returns Promise<Items<ErgoTx>>
    */
@@ -153,8 +154,11 @@ export class Explorer {
       }
     });
     let lastBox: wasm.ErgoBox = box;
-    while (memPoolBoxesMap.has(lastBox.box_id().to_str()))
-      lastBox = memPoolBoxesMap.get(lastBox.box_id().to_str())!;
+    let tracked = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    while (tracked) {
+      lastBox = tracked;
+      tracked = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    }
     return lastBox;
   };
 

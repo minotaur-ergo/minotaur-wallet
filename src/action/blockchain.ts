@@ -1,12 +1,12 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 import { is_valid_address, sum_erg_and_nano_erg } from '../util/util';
-import { CONFIRMATION_HEIGHT, FEE, PAGE_SIZE } from '../util/const';
+import { FEE } from '../util/const';
 import Wallet from '../db/entities/Wallet';
 import Address from '../db/entities/Address';
 import Asset from '../db/entities/Asset';
-import { getNetworkType, NetworkType } from '../util/network_type';
+import { getNetworkType } from '../util/network_type';
 import { UnsignedGeneratedTx } from '../util/interface';
-import { AddressDbAction, AssetDbAction, BoxDbAction, TxDbAction } from './db';
+import { AddressDbAction, AssetDbAction, BoxDbAction } from './db';
 import { AddressAction } from './action';
 import Tx from '../db/entities/Tx';
 import { ErgoTx } from '../util/network/models';
@@ -14,8 +14,6 @@ import { ErgoTx } from '../util/network/models';
 export interface TxWithJson extends Tx {
   jsonBi: ErgoTx;
 }
-
-const pageSize = 20;
 
 class ReceiverToken {
   readonly token_id: string;
@@ -262,6 +260,34 @@ class BlockChainActionClass {
         data_inputs
       );
     }
+  };
+
+  signData = async (
+    dbWallet: Wallet,
+    address: string,
+    msg: string,
+    password: string
+  ) => {
+    const addresses = await AddressDbAction.getWalletAddresses(dbWallet.id);
+    const dbAddress = addresses.find((a) => {
+      a.address == address;
+    });
+    if (!dbAddress) {
+      throw new Error('wallet does not own this address');
+    }
+    const secretKeys = new wasm.SecretKeys();
+    secretKeys.add(
+      await AddressAction.getWalletAddressSecret(dbWallet, password, dbAddress)
+    );
+    const wasmAddr =
+      dbAddress!.network_type == 'Testnet'
+        ? wasm.Address.from_testnet_str(address)
+        : wasm.Address.from_mainnet_str(address);
+
+    const wallet = wasm.Wallet.from_secrets(secretKeys);
+    return wallet
+      .sign_message_using_p2pk(wasmAddr, Uint8Array.from(Buffer.from(msg)))
+      .toString();
   };
 
   updateTokenInfo = async (tokenId: string, network_type: string) => {

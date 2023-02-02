@@ -10,13 +10,13 @@ class Box {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @ManyToOne((type) => Address)
+  @ManyToOne(() => Address)
   address: Address | null = null;
 
-  @ManyToOne((type) => Tx)
+  @ManyToOne(() => Tx)
   tx: Tx | null = null;
 
-  @ManyToOne((type) => Tx, { nullable: true })
+  @ManyToOne(() => Tx, { nullable: true })
   spend_tx: Tx | null = null;
 
   @Column('text')

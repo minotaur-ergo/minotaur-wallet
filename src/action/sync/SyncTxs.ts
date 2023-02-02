@@ -10,20 +10,13 @@ import { Node } from '../../util/network/node';
 import { HeightRange, TokenData, TxDictionary } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
-import {
-  AddressInfo,
-  ErgoBox,
-  ErgoTx,
-  InputBox,
-  Items,
-  Token,
-} from '../../util/network/models';
+import { AddressInfo, ErgoTx, Items, Token } from '../../util/network/models';
 import Tx, { TxStatus } from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
 import { validateBoxContentModel } from '../../store/asyncAction';
 
 //constants
-const LIMIT = 30 * 720; // one month
+const LIMIT = 30 * 720 * 24; // one month
 const TX_PAGE_LIMIT = 50;
 const INITIAL_LIMIT = 10;
 

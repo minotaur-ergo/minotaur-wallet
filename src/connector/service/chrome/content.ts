@@ -1,4 +1,24 @@
+import {
+  SignDataResponsePayload,
+  SignTxInputResponsePayload,
+  SignTxResponsePayload,
+  SubmitTxResponsePayload,
+} from '../../../components/pages/dapp-connector/types/types';
 import { EventData } from '../types';
+import * as wasm from 'ergo-lib-wasm-browser';
+import {
+  APIError,
+  DataSignError,
+  TxSendError,
+  TxSignError,
+} from '../../../components/pages/dapp-connector/types/errorTypes';
+import { UnsignedGeneratedTx } from '../../../util/interface';
+import {
+  Box,
+  SignedInput,
+  SignedTx,
+  Tx,
+} from '../../../components/pages/dapp-connector/types/eipTypes';
 
 declare global {
   interface Window {
@@ -172,7 +192,7 @@ class MinotaurApi extends ExtensionConnector {
   };
 
   get_balance = (
-    token_id: string,
+    token_id = 'ERG',
     ...token_ids: Array<string>
   ): Promise<bigint | { [id: string]: bigint }> => {
     return new Promise<bigint | { [id: string]: bigint }>((resolve, reject) => {
@@ -184,113 +204,129 @@ class MinotaurApi extends ExtensionConnector {
           if (token_ids.length) {
             output[token_id] = BigInt(data[token_id]);
             token_ids.forEach((token) => {
-              output[token] = BigInt(data[token]);
+              const tokenIdOrErg = token ? token : 'ERG';
+              output[tokenIdOrErg] = BigInt(data[tokenIdOrErg]);
             });
             resolve(output);
           } else {
-            resolve(BigInt(data[token_id]));
+            resolve(BigInt(data[token_id ? token_id : 'ERG']));
           }
         })
         .catch(() => reject());
     });
   };
 
-  get_utxos = (
-    amount?: bigint,
-    token_id = 'ERG',
-    page?: { offset: number; limit: number }
-  ) => {
-    return new Promise<bigint>((resolve, reject) => {
-      this.rpcCall('get_boxes', {
+  get_utxos = (amount?: bigint, token_id = 'ERG', paginate?: Paginate) => {
+    return new Promise<Array<Box> | undefined>((resolve, reject) => {
+      this.rpcCall('boxes', {
         amount: amount,
         token_id: token_id,
-        page: page,
+        paginate: paginate,
       })
         .then((res) => {
-          resolve(BigInt((res as EventData).payload as string));
+          const data = (res as EventData).payload as Array<Box> | undefined;
+          resolve(data);
         })
         .catch(() => reject());
     });
   };
+
+  sign_tx = (tx: Tx) => {
+    return new Promise<SignedTx | TxSignError>((resolve, reject) => {
+      this.rpcCall('sign', {
+        utx: tx,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as SignTxResponsePayload;
+          const response = data.error ? data.error : data.stx;
+          resolve(response!);
+        })
+        .catch(() => reject());
+    });
+  };
+
+  submit_tx = (tx: SignedTx) => {
+    return new Promise<string | TxSendError>((resolve, reject) => {
+      this.rpcCall('submit', {
+        utx: tx,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as SubmitTxResponsePayload;
+          const response = data.error ? data.error : data.TxId;
+          resolve(response!);
+        })
+        .catch(() => reject());
+    });
+  };
+
+  sign_data = (addr: string, message: string) => {
+    return new Promise<string | DataSignError>((resolve, reject) => {
+      this.rpcCall('signData', {
+        address: addr,
+        message: message,
+      })
+        .then((res) => {
+          const data = (res as EventData).payload as SignDataResponsePayload;
+          const response = data.error ? data.error : data.sData;
+          resolve(response!);
+        })
+        .catch(() => reject());
+    });
+  };
+  sign_tx_input = (tx: Tx, index: number) => {
+    return new Promise<SignedInput | APIError | TxSignError>(
+      (resolve, reject) => {
+        this.rpcCall('signTxInput', {
+          tx: tx,
+          index: index,
+        })
+          .then((res) => {
+            const data = (res as EventData)
+              .payload as SignTxInputResponsePayload;
+            const response = data.error ? data.error : data.sInput;
+            resolve(response!);
+          })
+          .catch(() => reject());
+      }
+    );
+  };
 }
 
-//     sign_tx = (tx) => {
-//         return this._rpcCall("signTx", [tx]);
-//     }
-//
-//     sign_tx_input = (tx, index) => {
-//         return this._rpcCall("signTxInput", [tx, index]);
-//     }
-//
-//     sign_data = (addr, message) => {
-//         return this._rpcCall("signData", [addr, message]);
-//     }
-//
-//     submit_tx = (tx) => {
-//         return this._rpcCall("submitTx", [tx]);
-//     }
-//
-//     _rpcCall = (func: string, params?: any) => {
-//         return new Promise((resolve, reject) => {
-//             window.postMessage({
-//                 type: "rpc/connector-request",
-//                 requestId: this.resolver.currentId,
-//                 function: func,
-//                 params
-//             });
-//             this.resolver.requests.set(this.resolver.currentId, {resolve: resolve, reject: reject});
-//             this.resolver.currentId++;
-//         });
-//     }
-//
-//     eventHandler = (event) => {
-//         if (event.data.type === "rpc/connector-response") {
-//             console.debug(JSON.stringify(event.data));
-//             const promise = this.resolver.requests.get(event.data.requestId);
-//             if (promise !== undefined) {
-//                 this.resolver.requests.delete(event.data.requestId);
-//                 const ret = event.data.return;
-//                 if (ret.isSuccess) {
-//                     promise.resolve(ret.data);
-//                 } else {
-//                     promise.reject(ret.data);
-//                 }
-//             }
-//         }
-//     };
-//
-// }
+const setupErgo = () => {
+  if (window.ergoConnector !== undefined) {
+    window.ergoConnector = {
+      ...window.ergoConnector,
+      minotaur: Object.freeze(MinotaurConnector.getInstance()),
+    };
+  } else {
+    window.ergoConnector = {
+      minotaur: Object.freeze(MinotaurConnector.getInstance()),
+    };
+  }
 
-if (window.ergoConnector !== undefined) {
-  window.ergoConnector = {
-    ...window.ergoConnector,
-    minotaur: Object.freeze(MinotaurConnector.getInstance()),
+  const warnDeprecated = function (func: string) {
+    console.warn(
+      "[Deprecated] In order to avoid conflicts with another wallets, this method will be disabled and replaced by '" +
+        func +
+        "' soon."
+    );
   };
-} else {
-  window.ergoConnector = {
-    minotaur: Object.freeze(MinotaurConnector.getInstance()),
-  };
-}
 
-const warnDeprecated = function (func: string) {
-  console.warn(
-    "[Deprecated] In order to avoid conflicts with another wallets, this method will be disabled and replaced by '" +
-      func +
-      "' soon."
-  );
+  if (!window.ergo_request_read_access && !window.ergo_check_read_access) {
+    window.ergo_request_read_access = function () {
+      warnDeprecated('ergoConnector.minotaur.connect()');
+      return MinotaurConnector.getInstance()
+        .connect()
+        .then((res) => null);
+    };
+    window.ergo_check_read_access = function () {
+      warnDeprecated('ergoConnector.minotaur.isConnected()');
+      return MinotaurConnector.getInstance()
+        .is_connected()
+        .then((res) => null);
+    };
+  }
 };
 
-if (!window.ergo_request_read_access && !window.ergo_check_read_access) {
-  window.ergo_request_read_access = function () {
-    warnDeprecated('ergoConnector.nautilus.connect()');
-    return MinotaurConnector.getInstance()
-      .connect()
-      .then((res) => null);
-  };
-  window.ergo_check_read_access = function () {
-    warnDeprecated('ergoConnector.nautilus.isConnected()');
-    return MinotaurConnector.getInstance()
-      .is_connected()
-      .then((res) => null);
-  };
-}
+setupErgo();
+// export default setupErgo;

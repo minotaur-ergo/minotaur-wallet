@@ -111,12 +111,15 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
 
   get_params = async () => {
     const addresses = await this.props.getAddresses();
-    return {
-      user_address: wasm.Address.from_base58(addresses[0]),
-      bank: this.state.bank!,
-      oracle: this.state.oracle!,
-      height: await this.props.network_type.getNode().getHeight(),
-    };
+    if (this.state.bank && this.state.oracle) {
+      return {
+        user_address: wasm.Address.from_base58(addresses[0]),
+        bank: this.state.bank,
+        oracle: this.state.oracle,
+        height: await this.props.network_type.getNode().getHeight(),
+      };
+    }
+    throw Error('Bank box or oracle box not found');
   };
 
   create_tx = async (
@@ -300,13 +303,13 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
       const height = await this.props.network_type.getNode().getHeight();
       if (height > this.state.last_update_height) {
         this.update_boxes()
-          .then((res) => {
+          .then(() => {
             this.setState({
               last_update_height: height,
             });
             this.schedule_to_refresh('long');
           })
-          .catch((err) => {
+          .catch(() => {
             this.schedule_to_refresh('short');
           });
       } else {
@@ -315,7 +318,7 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
     }
   };
 
-  loadBoxes = (force = false) => {
+  loadBoxes = () => {
     this.load_data().then(() => null);
     // if (!(this.state.bank && this.state.oracle && !force)) {
     //     this.update_test_boxes();
@@ -393,7 +396,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
             <div>
               1 ERG ≈{' '}
               {this.loaded()
-                ? utils.format_usd(this.state?.bank!.get_erg_usd())
+                ? utils.format_usd(
+                    this.state.bank ? this.state.bank.get_erg_usd() : BigInt(0)
+                  )
                 : this.loading()}{' '}
               SigmaUSD
             </div>
@@ -404,7 +409,9 @@ class SigmaUSD extends React.Component<DAppPropsType, SigmaUSDStateType> {
                 <Grid item xs={12}>
                   Circulating Supply:{' '}
                   {utils.format_usd(
-                    this.state?.bank!.num_circulating_stable_coins()
+                    this.state.bank
+                      ? this.state.bank.num_circulating_stable_coins()
+                      : BigInt(0)
                   )}
                 </Grid>
                 <Grid item xs={12}>
