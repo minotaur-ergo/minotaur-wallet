@@ -70,6 +70,7 @@ const TotalSign = (props: PublicKeysPropsType) => {
           <Grid item xs={12} key={index}>
             <AddressInput
               address={publicKey}
+              error={validPublicKey(publicKey)}
               contextType={CreateWalletQrCodeContext}
               label={`Enter public key #${index + 1}`}
               setAddress={(address: string) => setPublicKey(index, address)}
