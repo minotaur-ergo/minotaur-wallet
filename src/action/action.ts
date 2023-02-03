@@ -282,7 +282,7 @@ class AddressActionClass {
     if (walletKey) extended_keys.push(walletKey.extended_public_key);
     const pub_keys = extended_keys.map((key) => {
       const pub = bip32.fromBase58(key);
-      const derived1 = pub.derive(index ? index : 1);
+      const derived1 = pub.derive(index ? index : 0);
       return derived1.publicKey.toString('hex');
     });
     const address = this.generateMultiSigAddressFromAddresses(
@@ -290,11 +290,11 @@ class AddressActionClass {
       parseInt(wallet.seed),
       getNetworkType(wallet.network_type)
     );
-    const path = calcPathFromIndex(index ? index : 1);
+    const path = calcPathFromIndex(index ? index : 0);
     return {
       address: address,
       path: path,
-      index: index ? index : 1,
+      index: index ? index : 0,
     };
   };
 
