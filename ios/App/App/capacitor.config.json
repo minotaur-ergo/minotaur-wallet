@@ -2,5 +2,12 @@
 	"appId": "ml.minotaur.wallet",
 	"appName": "minotaur-wallet",
 	"webDir": "build",
-	"bundledWebRuntime": true
+	"bundledWebRuntime": true,
+	"plugins": {
+		"CapacitorSQLite": {
+			"electronLinuxLocation": "Databases",
+			"electronMacLocation": "Databases",
+			"electronWindowsLocation": "Databases"
+		}
+	}
 }

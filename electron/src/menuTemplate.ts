@@ -1,6 +1,8 @@
 import { app } from 'electron';
+import type { MenuItemConstructorOptions } from 'electron';
+import { MenuItem } from 'electron';
 
-const template = [
+const template: Array<MenuItemConstructorOptions> = [
   {
     label: 'Application',
     submenu: [
@@ -16,15 +18,18 @@ const template = [
   {
     label: 'Edit',
     submenu: [
-      { label: 'Cut', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+      { label: 'Cut', accelerator: 'CmdOrCtrl+X' },
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C' },
+      { label: 'Paste', accelerator: 'CmdOrCtrl+V' },
       {
         label: 'Select All',
         accelerator: 'CmdOrCtrl+A',
-        selector: 'selectAll:',
       },
     ],
+  },
+  {
+    label: 'View',
+    submenu: [{ role: 'toggleDevTools' }],
   },
 ];
 

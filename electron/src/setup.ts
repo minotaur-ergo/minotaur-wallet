@@ -206,7 +206,7 @@ export class ElectronCapacitorApp {
         windowWidth: 400,
         windowHeight: 400,
       });
-      this.SplashScreen.init(this.loadMainWindow, this);
+      await this.SplashScreen.init(this.loadMainWindow, this);
     } else {
       await this.loadMainWindow(this);
     }

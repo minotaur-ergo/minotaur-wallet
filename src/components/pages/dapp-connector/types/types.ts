@@ -9,7 +9,6 @@ import {
 import { UnsignedGeneratedTx } from '../../../../util/interface';
 import WalletWithErg from '../../../../db/entities/views/WalletWithErg';
 import { Box, SignedInput, SignedTx, Tx } from './eipTypes';
-import { T } from 'vitest/dist/global-e98f203b';
 
 export type ActionType =
   | 'registered'
