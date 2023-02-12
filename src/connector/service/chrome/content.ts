@@ -81,7 +81,6 @@ class ExtensionConnector {
       event.data.direction === 'response'
     ) {
       const promise = this.resolver.requests.get(event.data.requestId);
-      console.log(event, promise);
       if (promise !== undefined) {
         this.resolver.requests.delete(event.data.requestId);
         const ret = event.data;
@@ -178,7 +177,6 @@ class MinotaurApi extends ExtensionConnector {
     return new Promise<string>((resolve, reject) => {
       this.rpcCall('address', { type: 'change' })
         .then((res) => {
-          console.log('res is ', res);
           const data: EventData = res as EventData;
           const addresses = data.payload as Array<string>;
           if (addresses.length > 0) {
@@ -198,7 +196,6 @@ class MinotaurApi extends ExtensionConnector {
     return new Promise<bigint | { [id: string]: bigint }>((resolve, reject) => {
       this.rpcCall('balance', { tokens: [token_id, ...token_ids] })
         .then((res) => {
-          console.log(res);
           const data = (res as EventData).payload as { [id: string]: string };
           const output: { [id: string]: bigint } = {};
           if (token_ids.length) {

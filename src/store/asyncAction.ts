@@ -1,16 +1,17 @@
 import { REFRESH_INTERVAL } from '../util/const';
-import { NETWORK_TYPES } from '../util/network_type';
 import {
   AddressDbAction,
   AssetDbAction,
   BoxContentDbAction,
   BoxDbAction,
+  DbTransaction,
+  WalletDbAction,
 } from '../action/db';
 import { store } from './index';
 import * as actionType from './actionType';
 import { ErgoBox } from '../util/network/models';
 import { JsonBI } from '../util/json';
-import { syncAddress } from '../action/sync/index';
+import { syncAddress, VerifyAddressContent } from '../action/sync';
 import { BlockChainAction } from '../action/blockchain';
 
 const loadTokensAsync = async (network_type: string) => {
@@ -44,28 +45,28 @@ const validateBoxContentModel = async () => {
 
 const loadBlockChainDataAsync = async () => {
   try {
-    for (const NETWORK_TYPE of NETWORK_TYPES) {
-      const addresses = await AddressDbAction.getAllAddressOfNetworkType(
-        NETWORK_TYPE.label
-      );
-      if (addresses.length > 0) {
+    for (const wallet of await WalletDbAction.getWallets()) {
+      store.dispatch({
+        type: actionType.SET_LOADING_WALLET,
+        payload: wallet.id,
+      });
+      for (const address of await AddressDbAction.getWalletAddresses(
+        wallet.id
+      )) {
         try {
-          for (const address of addresses) {
-            store.dispatch({
-              type: actionType.SET_LOADING_WALLET,
-              payload: address.wallet?.id,
-            });
-            await syncAddress(address);
+          await syncAddress(address);
+          if (!(await VerifyAddressContent(address.id))) {
+            await DbTransaction.forkAddress(address);
           }
-          store.dispatch({
-            type: actionType.INVALIDATE_WALLETS,
-            payload: { removeLoadingWallet: true },
-          });
+          await loadTokensAsync(address.network_type);
         } catch (e) {
           console.error(e);
         }
       }
-      await loadTokensAsync(NETWORK_TYPE.label);
+      store.dispatch({
+        type: actionType.INVALIDATE_WALLETS,
+        payload: { removeLoadingWallet: true },
+      });
     }
   } catch (e) {
     console.error(e);

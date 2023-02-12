@@ -20,9 +20,9 @@ const MainNet = new NetworkType(
 // );
 
 const TestNet = new NetworkType(
-  'http://213.239.193.208:9052',
-  'https://api-testnet.ergoplatform.com',
-  'https://testnet.ergoplatform.com',
+  'http://168.138.185.215:9052',
+  'https://tn-ergo-explorer.anetabtc.io',
+  'https://tn-ergo-explorer.anetabtc.io',
   wasm.NetworkPrefix.Testnet,
   'orange',
   'Testnet'

@@ -24,7 +24,6 @@ interface StateType {
 
 class ReceiverRow extends React.Component<PropsType, StateType> {
   fillAddressFromQrCode = (newAddress: string) => {
-    console.log(newAddress);
     if (newAddress.indexOf('explorer.ergoplatform.com')) {
       const query_params = parse_url_to_json(newAddress) as {
         address?: string;

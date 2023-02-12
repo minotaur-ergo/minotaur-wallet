@@ -66,7 +66,6 @@ const createSocket = (server: string): Promise<void> => {
           const session = info.sessions.get(content.pageId);
           if (session && session.port) {
             const contentJson = JSON.parse(content.content) as MessageContent;
-            console.log(contentJson, session.requests);
             const request = session.requests.get(contentJson.requestId);
             if (request) {
               switch (contentJson.action) {
@@ -220,7 +219,6 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
   if (msg.type === 'call') {
     const session = info.sessions.get(msg.sessionId);
     if (session && session.port) {
-      console.log(session.port === port);
       if (!session.walletId) {
         session.port.postMessage({
           type: 'call',

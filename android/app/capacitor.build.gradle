@@ -14,6 +14,7 @@ dependencies {
     implementation project(':capacitor-app')
     implementation project(':capacitor-browser')
     implementation project(':capacitor-camera')
+    implementation project(':capacitor-clipboard')
     implementation project(':capacitor-status-bar')
     implementation project(':capacitor-toast')
     implementation project(':capacitor-plugin-safe-area')

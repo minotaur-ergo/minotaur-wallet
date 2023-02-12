@@ -105,7 +105,6 @@ class MultiSigActionClass {
     const seed = decrypt(signingWallet.seed, password);
     const res: { [ergoTree: string]: wasm.SecretKey } = {};
     for (const address of addresses) {
-      console.log(address, address.idx);
       const path = calcPathFromIndex(address.idx === -1 ? 0 : address.idx);
       const ergoTree = wasm.Address.from_base58(address.address)
         .to_ergo_tree()
