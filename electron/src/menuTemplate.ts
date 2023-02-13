@@ -1,30 +1,17 @@
-import { app } from 'electron';
 import type { MenuItemConstructorOptions } from 'electron';
-import { MenuItem } from 'electron';
 
 const template: Array<MenuItemConstructorOptions> = [
   {
     label: 'Application',
-    submenu: [
-      {
-        label: 'Quit',
-        accelerator: 'Command+Q',
-        click: () => {
-          app.quit();
-        },
-      },
-    ],
+    submenu: [{ role: 'quit' }],
   },
   {
     label: 'Edit',
     submenu: [
-      { label: 'Cut', accelerator: 'CmdOrCtrl+X' },
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V' },
-      {
-        label: 'Select All',
-        accelerator: 'CmdOrCtrl+A',
-      },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { role: 'selectAll' },
     ],
   },
   {
