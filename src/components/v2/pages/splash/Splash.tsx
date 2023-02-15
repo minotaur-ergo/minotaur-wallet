@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, styled, Typography, useTheme } from '@mui/material';
-import MinotaurLogo from '../../components/MinotaurLogo';
+import MinotaurLogo from '../../../splash/MinotaurLogo';
 import { useNavigate } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
 

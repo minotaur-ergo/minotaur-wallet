@@ -4,7 +4,7 @@ import { App } from '@capacitor/app';
 import { RouteMap } from './routerMap';
 import { connect } from 'react-redux';
 import { GlobalStateType } from '../../store/reducer';
-import Home from '../pages/home/Home';
+import Wallets from '../pages/wallets/Wallets';
 import WalletAdd from '../pages/wallet-add/WalletAdd';
 import WalletPage from '../pages/wallet/WalletPage';
 import { closeQrCodeScanner } from '../../store/actions';
@@ -52,7 +52,7 @@ class RouterSwitch extends React.Component<PropsType, never> {
             />
             <Route path={RouteMap.Wallet} element={<WalletPage />} />
             <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
-            <Route path={RouteMap.Home} element={<Home />} />
+            <Route path={RouteMap.Home} element={<Wallets />} />
             <Route path={'v2/*'} element={<V2Demo />} />
           </Routes>
         </div>
