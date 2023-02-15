@@ -5,7 +5,7 @@ import TokenName from '../../value/TokenName';
 
 interface PropsType {
   tokens: Array<TokenWithAddress>;
-  addToken: (tokenId: string) => any;
+  addToken: (tokenId: string) => unknown;
   network_type: string;
 }
 

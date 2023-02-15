@@ -4,5 +4,5 @@ export interface QrCodeContextType {
   qrCode: boolean;
   showQrCode: React.Dispatch<boolean>;
   value: string;
-  cleanValue: () => any;
+  cleanValue: () => unknown;
 }

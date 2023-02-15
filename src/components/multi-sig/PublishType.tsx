@@ -3,7 +3,7 @@ import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 interface PublishTypePropsType {
   publishType: PUBLISH_TYPES;
-  setPublishType: (newType: PUBLISH_TYPES) => any;
+  setPublishType: (newType: PUBLISH_TYPES) => unknown;
 }
 
 export enum PUBLISH_TYPES {
@@ -20,9 +20,9 @@ const PublishType = (props: PublishTypePropsType) => {
         style={{ width: '100%' }}
         value={props.publishType}
         exclusive
-        onChange={(event, newType) =>
-          props.setPublishType(newType as PUBLISH_TYPES)
-        }
+        onChange={(event, newType) => {
+          if (newType !== null) props.setPublishType(newType as PUBLISH_TYPES);
+        }}
       >
         <ToggleButton style={{ width: `${50}%` }} value={PUBLISH_TYPES.manual}>
           Manual transafer

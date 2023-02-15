@@ -13,7 +13,7 @@ import TxView from '../display-tx/TxView';
 interface PropsType {
   transaction?: UnsignedGeneratedTx;
   show: boolean;
-  close: () => any;
+  close: () => unknown;
   wallet: Wallet;
 }
 

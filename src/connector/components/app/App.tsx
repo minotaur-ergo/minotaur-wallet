@@ -19,9 +19,7 @@ function App() {
   const [display, setDisplay] = useState('');
   const [favIcon, setFavIcon] = useState('');
   useEffect(() => {
-    console.log('we are here to set port listener');
     port.onMessage.addListener((msg: UIResponse) => {
-      console.log('ui listener: ', msg);
       switch (msg.type) {
         case 'set_info': {
           const info = msg.info!;
@@ -45,7 +43,6 @@ function App() {
           break;
         }
         case 'set_display': {
-          console.log('on set display');
           setDisplay(msg.display!);
           break;
         }
@@ -55,7 +52,6 @@ function App() {
     port.postMessage({ id: pageId, type: 'register' });
   }, []);
   const confirm = () => {
-    console.log('confirmed');
     port.postMessage({ id: pageId, type: 'approve', requestId: requestId });
   };
   return (

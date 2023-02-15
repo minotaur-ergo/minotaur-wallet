@@ -35,7 +35,6 @@ class Transaction extends React.Component<
 
   loadTransactions = () => {
     if (this.state.limit !== this.state.loadedLimit) {
-      console.log('load new limit');
       const loadedLimit = this.state.limit;
       TxDbAction.getWalletTx(this.props.wallet.id, this.state.limit, 0).then(
         (dbTransaction) => {

@@ -21,7 +21,7 @@ export class createAssetsCount1656865711897 implements MigrationInterface {
     }
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
+  public async down(): Promise<void> {
     // This migration doesn't need to be reverted
   }
 }

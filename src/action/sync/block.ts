@@ -2,14 +2,14 @@ import { BlockDbAction } from '../db';
 import { getNetworkType } from '../../util/network_type';
 import { Node } from '../../util/network/node';
 import { Block } from '../Types';
+import { CONFIRMATION_HEIGHT } from '../../util/const';
 
 //constants
 const LIMIT = 100;
 const INITIAL_LIMIT = 10;
-const DB_HEIGHT_RANGE = 720;
 
-export class SyncBlocks {
-  private networkType: string;
+export class SyncBlock {
+  private readonly networkType: string;
   private node: Node;
 
   constructor(network_type: string) {
@@ -56,9 +56,9 @@ export class SyncBlocks {
     const last_height: number = await this.node.getHeight();
     let current_height: number = Math.max(
       currentBlock.height,
-      last_height - DB_HEIGHT_RANGE
+      last_height - CONFIRMATION_HEIGHT
     );
-    let checkOverlap = currentBlock.height >= last_height - DB_HEIGHT_RANGE;
+    let checkOverlap = currentBlock.height >= last_height - CONFIRMATION_HEIGHT;
     const overlapBlocks: Block[] = [currentBlock];
     while (last_height - current_height > 0) {
       const paging = {
@@ -122,11 +122,15 @@ export class SyncBlocks {
    * @returns in case of fork: forkHeight. otherwise undefined
    */
   update = async (): Promise<undefined | number> => {
-    let currentBlock = (await BlockDbAction.getLastHeaders(1))?.pop();
+    let currentBlock = (
+      await BlockDbAction.getLastHeaders(this.networkType, 1)
+    )?.pop();
     if (!currentBlock) {
+      const initialHeight: number =
+        (await this.node.getHeight()) - CONFIRMATION_HEIGHT;
       currentBlock = {
-        id: await this.node.getBlockIdAtHeight(1),
-        height: 1,
+        id: await this.node.getBlockIdAtHeight(initialHeight),
+        height: initialHeight,
       };
       await this.insertBlockToDB([currentBlock]);
     }

@@ -1,8 +1,7 @@
 import React from 'react';
 import TokenIssueDApp from './apps/TokenIssueDApp';
 import Wallet from '../../../db/entities/Wallet';
-import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { apps } from './dapps';
 import SigmaUSD from './apps/sigmausd/SigmaUSD';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,17 +31,18 @@ import { useParams } from 'react-router-dom';
 import GenerateTransactionBottomSheet from '../../generate-transaction-bottom-sheet/GenerateTransactionBottomSheet';
 import { WalletQrCodeContext } from '../wallet/types';
 import { QrCodeContextType } from '../../qrcode/qrcode-types/types';
+import { Action, Dispatch } from 'redux';
 
 interface DAppViewPropsType extends MessageEnqueueService {
   wallet: Wallet;
-  setTab: () => any;
+  setTab: () => unknown;
   dAppId?: string;
   context: QrCodeContextType;
 }
 
 interface DAppViewWrappedPropsType extends MessageEnqueueService {
   wallet: Wallet;
-  setTab: () => any;
+  setTab: () => unknown;
 }
 
 interface DAppViewStateType {
@@ -51,7 +51,7 @@ interface DAppViewStateType {
   title?: string;
   show_description: boolean;
   scan_qr_code: boolean;
-  scan_callback?: (scanned: string) => any;
+  scan_callback?: (scanned: string) => unknown;
 }
 
 class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
@@ -151,7 +151,7 @@ class DAppView extends React.Component<DAppViewPropsType, DAppViewStateType> {
     }
   };
 
-  startScanQrCode = (callback: (response: string) => any) => {
+  startScanQrCode = (callback: (response: string) => unknown) => {
     this.props.context.showQrCode(true);
     this.setState({ scan_qr_code: true, scan_callback: callback });
   };
@@ -233,22 +233,24 @@ const DAppViewWrapped = (props: DAppViewWrappedPropsType) => {
   const params = useParams<{ dAppId: string }>();
   return (
     <WalletQrCodeContext.Consumer>
-      {(value) => (
-        <DAppView
-          context={value!}
-          wallet={props.wallet}
-          setTab={props.setTab}
-          dAppId={params.dAppId}
-          showMessage={props.showMessage}
-        />
-      )}
+      {(value) =>
+        value ? (
+          <DAppView
+            context={value}
+            wallet={props.wallet}
+            setTab={props.setTab}
+            dAppId={params.dAppId}
+            showMessage={props.showMessage}
+          />
+        ) : null
+      }
     </WalletQrCodeContext.Consumer>
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

@@ -8,8 +8,8 @@ interface AddressConfirmPropsType {
   mnemonic: string;
   password: string;
   network_type: string;
-  goBack: () => any;
-  goForward: () => any;
+  goBack: () => unknown;
+  goForward: () => unknown;
 }
 
 const AddressConfirm = (props: AddressConfirmPropsType) => {

@@ -7,6 +7,7 @@ import type { MenuItemConstructorOptions } from 'electron';
 import { app, MenuItem } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import unhandled from 'electron-unhandled';
+import createMenuTemplate from './menuTemplate';
 // import { autoUpdater } from 'electron-updater';
 
 import {
@@ -22,10 +23,8 @@ unhandled();
 const trayMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [
   new MenuItem({ label: 'Quit App', role: 'quit' }),
 ];
-const appMenuBarMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] = [
-  { role: process.platform === 'darwin' ? 'appMenu' : 'fileMenu' },
-  { role: 'viewMenu' },
-];
+const appMenuBarMenuTemplate: (MenuItemConstructorOptions | MenuItem)[] =
+  createMenuTemplate;
 
 // Get Config options from capacitor.config
 const capacitorFileConfig: CapacitorElectronConfig =

@@ -46,7 +46,7 @@ class AddressWithErg {
   walletId = 0;
 
   @ViewColumn()
-  erg_str = BigInt(0);
+  erg_str = '';
 
   @ViewColumn()
   token_count = 0;

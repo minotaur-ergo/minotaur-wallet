@@ -5,6 +5,13 @@ const config: CapacitorConfig = {
   appName: 'minotaur-wallet',
   webDir: 'build',
   bundledWebRuntime: true,
+  plugins: {
+    CapacitorSQLite: {
+      electronLinuxLocation: 'Databases',
+      electronMacLocation: 'Databases',
+      electronWindowsLocation: 'Databases',
+    },
+  },
 };
 
 export default config;

@@ -1,11 +1,13 @@
 import React from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Inbox } from '@mui/icons-material';
+import { Inbox, LocalFireDepartment as Fire } from '@mui/icons-material';
 import TotalAmount from './TotalAmount';
 import TxBoxDisplay from './TxBoxDisplay';
 import { getNetworkType } from '../../util/network_type';
 import { JsonBI } from '../../util/json';
+import { TokenData } from '../../action/Types';
+import BurningTokenDisplay from './BurningTokenDisplay';
 
 interface TxViewPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;
@@ -19,22 +21,26 @@ interface TxViewStateType {
   loading: boolean;
   txId: string;
   assets: { [id: string]: bigint };
+  burningBalance: Array<TokenData>;
   inputs: Array<wasm.ErgoBox>;
   outputs: Array<wasm.ErgoBox | wasm.ErgoBoxCandidate>;
   isMined: boolean;
   showBoxes: boolean;
+  showBurning: boolean;
   showSendModal: boolean;
 }
 
 class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
   state: TxViewStateType = {
     assets: { erg: BigInt(0) },
+    burningBalance: [],
     inputs: [],
     outputs: [],
     loading: false,
     txId: '',
     isMined: false,
     showBoxes: false,
+    showBurning: false,
     showSendModal: false,
   };
 
@@ -60,6 +66,23 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
     }
   };
 
+  calcBurningBalance = (totalAssets: { [id: string]: bigint }) => {
+    return Object.keys(totalAssets)
+      .map((key) => {
+        return {
+          tokenId: key,
+          total: totalAssets[key],
+        };
+      })
+      .filter((x) => {
+        x.total > 0;
+      });
+  };
+
+  isBurning = () => {
+    return this.state.burningBalance.length != 0;
+  };
+
   extractAssets = async () => {
     if (
       !this.state.loading &&
@@ -75,6 +98,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
       this.setState({ loading: true });
       const txId = tx.id().to_str();
       const assets: { [id: string]: bigint } = { erg: BigInt(0) };
+      const totalAssets: { [id: string]: bigint } = { erg: BigInt(0) };
       const boxes: { [id: string]: wasm.ErgoBox } = {};
       if (this.props.boxes) {
         this.props.boxes.forEach((box) => (boxes[box.box_id().to_str()] = box));
@@ -95,6 +119,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         }
       }
       input_boxes.forEach((box) => {
+        this.processBox(box, 1, totalAssets);
         if (
           this.props.addresses.indexOf(
             wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
@@ -106,6 +131,7 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         }
       });
       outputs.forEach((box) => {
+        this.processBox(box, -1, totalAssets);
         if (
           this.props.addresses.indexOf(
             wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
@@ -116,8 +142,10 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
           this.processBox(box, 1, assets);
         }
       });
+      const burningBalance = this.calcBurningBalance(totalAssets);
       this.setState({
         assets: assets,
+        burningBalance: burningBalance,
         inputs: input_boxes,
         outputs: outputs,
         loading: false,
@@ -157,6 +185,20 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
             title="Total Income"
             description="These amount will be charged to your account when transaction proceed"
           />
+          {this.isBurning() ? (
+            <ListItem
+              button
+              onClick={() => this.setState({ showBurning: true })}
+            >
+              <ListItemIcon>
+                <Fire style={{ color: 'red' }} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Some token(s) burn during transaction. click to view"
+                style={{ color: 'red' }}
+              />
+            </ListItem>
+          ) : null}
           <ListItem button onClick={() => this.setState({ showBoxes: true })}>
             <ListItemIcon>
               <Inbox />
@@ -172,6 +214,12 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
           close={() => this.setState({ showBoxes: false })}
           outputs={this.state.outputs}
           allowedAssets={Object.keys(this.state.assets)}
+        />
+        <BurningTokenDisplay
+          network_type={this.props.network_type}
+          show={this.state.showBurning}
+          close={() => this.setState({ showBurning: false })}
+          burningBalance={this.state.burningBalance}
         />
       </React.Fragment>
     );

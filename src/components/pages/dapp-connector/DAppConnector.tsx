@@ -1,42 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActionType,
   AddressRequestPayload,
   BalanceRequestPayload,
+  BoxRequestPayload,
+  BoxResponsePayload,
   Connection,
   ConnectionData,
   ConnectionState,
   MessageContent,
   MessageData,
+  modalDataProp,
   Payload,
-} from './types';
+  SignDataRequestPayload,
+  SignDataResponsePayload,
+  SignTxInputResponsePayload,
+  SignTxRequestPayload,
+  SignTxResponsePayload,
+  SubmitTxRequestPayload,
+  SubmitTxResponsePayload,
+} from './types/types';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Container,
 } from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
+import {
+  TxSignErrorCode,
+  TxSignError,
+  DataSignErrorCode,
+  TxSendErrorCode,
+  TxSendError,
+  DataSignError,
+  APIError,
+  APIErrorCode,
+} from './types/errorTypes';
+
+import { ConstructionOutlined, ExpandMore } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import WalletSelect from './WalletSelect';
 import WalletWithErg from '../../../db/entities/views/WalletWithErg';
 import * as CryptoJS from 'crypto-js';
+
+import { BlockChainAction } from '../../../action/blockchain';
 import {
   AddressDbAction,
   BoxContentDbAction,
   BoxDbAction,
   WalletDbAction,
 } from '../../../action/db';
+import { CoveringResult, UnsignedGeneratedTx } from '../../../util/interface';
+import { getNetworkType } from '../../../util/network_type';
+import SendConfirm from '../../sign-transaction-display/SendConfirm';
+import {
+  toSignedTx,
+  toTransaction,
+  toUnsignedGeneratedTx,
+} from './types/typeConverter';
 
 interface DAppConnectorPropType {
   value: string;
-  clearValue: () => any;
+  clearValue: () => unknown;
 }
 
 interface DAppConnectorStateType {
   servers: { [url: string]: Connection };
   connections: Array<ConnectionState>;
   active: string;
+  modalData: modalDataProp;
 }
 
 class DAppConnector extends React.Component<
@@ -46,6 +78,7 @@ class DAppConnector extends React.Component<
   state: DAppConnectorStateType = {
     servers: {},
     connections: [],
+    modalData: {} as modalDataProp,
     active: '31b2a127-c028-4fa7-b167-68b60d21619f',
   };
 
@@ -58,7 +91,7 @@ class DAppConnector extends React.Component<
     return CryptoJS.AES.encrypt(text, secret).toString();
   };
 
-  handleError = (error: Event) => {
+  handleError = () => {
     /*empty*/
   };
 
@@ -84,7 +117,9 @@ class DAppConnector extends React.Component<
     content: MessageContent
   ) => {
     const payload = content.payload as AddressRequestPayload;
-    const wallet = await WalletDbAction.getWalletById(connection.walletId!);
+    const wallet = await WalletDbAction.getWalletById(
+      connection.walletId ? connection.walletId : 1
+    );
     if (wallet) {
       const addresses = await AddressDbAction.getWalletAddresses(wallet.id);
       let resultAddress: Array<string> = [];
@@ -121,7 +156,9 @@ class DAppConnector extends React.Component<
     content: MessageContent
   ) => {
     const payload = content.payload as BalanceRequestPayload;
-    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    const wallet = await WalletDbAction.getWalletWithErg(
+      connection.walletId ? connection.walletId : 1
+    );
     if (wallet) {
       const tokens = payload.tokens;
       const res: { [id: string]: string } = {};
@@ -146,6 +183,244 @@ class DAppConnector extends React.Component<
       );
     }
   };
+
+  processBoxes = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as BoxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    const resultUtxos: BoxResponsePayload = {
+      boxes: [],
+    };
+    if (wallet) {
+      const coveringAmount = payload.amount
+        ? payload.amount
+        : wallet.erg().toString();
+      const coveringToken: { [id: string]: bigint } = {};
+      if (payload.tokenId)
+        coveringToken[payload.tokenId] = BigInt(coveringAmount);
+      const result: CoveringResult = await BoxDbAction.getCoveringBoxFor(
+        BigInt(coveringAmount),
+        wallet.id,
+        coveringToken
+      );
+      const ergoBoxes = result.covered ? result.boxes : undefined;
+      if (ergoBoxes) {
+        for (let index = 0; index < ergoBoxes.len(); index++) {
+          resultUtxos.boxes!.push(ergoBoxes.get(index).to_js_eip12());
+        }
+      }
+      this.sendMessageToServer(
+        connection,
+        'boxes_response',
+        content.requestId,
+        resultUtxos
+      );
+    }
+  };
+
+  processSign = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as SignTxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    let unsignedGenerated = {} as UnsignedGeneratedTx;
+    if (wallet) {
+      const uTx = payload.utx;
+      const sendToServer = async (result: SignTxResponsePayload) => {
+        this.sendMessageToServer(
+          connection,
+          'sign_response',
+          content.requestId,
+          result
+        );
+        this.setState({
+          ...this.state,
+          modalData: {
+            type: '',
+            data: undefined,
+            wallet: null,
+            onAccept: handleSignOnAccept,
+            onDecline: handleSignOnDecline,
+          },
+        });
+      };
+
+      const handleSignOnAccept = async (password: string) => {
+        const result: SignTxResponsePayload = {
+          stx: undefined,
+          error: undefined,
+        };
+        try {
+          unsignedGenerated = await toUnsignedGeneratedTx(uTx);
+          const signed = await BlockChainAction.signTx(
+            wallet,
+            unsignedGenerated,
+            password
+          );
+          result.stx = await toSignedTx(signed);
+          result.error = undefined;
+        } catch {
+          result.error = {} as TxSignError;
+          result.error.code = TxSignErrorCode.ProofGeneration;
+        }
+        sendToServer(result);
+      };
+
+      const handleSignOnDecline = async () => {
+        const result: SignTxResponsePayload = {
+          stx: undefined,
+          error: undefined,
+        };
+        result.error = {} as TxSignError;
+        result.error.code = TxSignErrorCode.UserDeclined;
+        sendToServer(result);
+      };
+
+      this.setState({
+        ...this.state,
+        modalData: {
+          type: 'Sign',
+          data: unsignedGenerated,
+          wallet: wallet,
+          onAccept: handleSignOnAccept,
+          onDecline: handleSignOnDecline,
+        },
+      });
+    }
+  };
+  processSubmit = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as SubmitTxRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    if (wallet) {
+      const signedTx = payload.tx;
+      const result: SubmitTxResponsePayload = {
+        TxId: undefined,
+        error: undefined,
+      };
+      try {
+        const wasmSignedTx = await toTransaction(signedTx);
+        await getNetworkType(wallet.network_type)
+          .getNode()
+          .sendTx(wasmSignedTx)
+          .then((res) => {
+            result.TxId = res.txId;
+          });
+      } catch {
+        result.error = {} as TxSendError;
+        result.error.code = TxSendErrorCode.Failure;
+      }
+
+      this.sendMessageToServer(
+        connection,
+        'submit_response',
+        content.requestId,
+        result
+      );
+    }
+  };
+
+  processSignData = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const payload = content.payload as SignDataRequestPayload;
+    const wallet = await WalletDbAction.getWalletWithErg(connection.walletId!);
+    if (wallet) {
+      const msg = payload.message;
+      const addr = payload.address;
+      const sendToServer = async (result: SignDataResponsePayload) => {
+        this.sendMessageToServer(
+          connection,
+          'sign_response',
+          content.requestId,
+          result
+        );
+        this.setState({
+          ...this.state,
+          modalData: {
+            type: '',
+            data: undefined,
+            wallet: null,
+            onAccept: handleSignOnAccept,
+            onDecline: handleSignOnDecline,
+          },
+        });
+      };
+
+      const handleSignOnAccept = async (password: string) => {
+        const result: SignDataResponsePayload = {
+          sData: undefined,
+          error: undefined,
+        };
+        try {
+          result.sData = await BlockChainAction.signData(
+            wallet,
+            addr,
+            msg,
+            password
+          );
+          result.error = undefined;
+        } catch (e) {
+          result.error = {} as DataSignError;
+          if (e instanceof Error && e.message == '') {
+            result.error.code = DataSignErrorCode.AddressNotPK;
+          } else {
+            result.error.code = DataSignErrorCode.ProofGeneration;
+          }
+        }
+        sendToServer(result);
+      };
+
+      const handleSignOnDecline = async () => {
+        const result: SignDataResponsePayload = {
+          sData: undefined,
+          error: undefined,
+        };
+        result.error = {} as DataSignError;
+        result.error.code = DataSignErrorCode.UserDeclined;
+        sendToServer(result);
+      };
+
+      this.setState({
+        ...this.state,
+        modalData: {
+          type: 'Sign',
+          data: undefined,
+          wallet: wallet,
+          onAccept: handleSignOnAccept,
+          onDecline: handleSignOnDecline,
+        },
+      });
+    }
+  };
+
+  processSignTxInput = async (
+    connection: ConnectionState,
+    content: MessageContent
+  ) => {
+    const NotImplementedError: APIError = {
+      code: APIErrorCode.InvalidRequest,
+      info: 'Not implemented.',
+    };
+
+    const result: SignTxInputResponsePayload = {
+      sInput: undefined,
+      error: NotImplementedError,
+    };
+    this.sendMessageToServer(
+      connection,
+      'sign_tx_input_response',
+      content.requestId,
+      result
+    );
+  };
+
   handleMessage = (msg: MessageData) => {
     const filteredConnections = this.state.connections.filter(
       (item) => item.info.pageId === msg.pageId
@@ -164,6 +439,22 @@ class DAppConnector extends React.Component<
           break;
         case 'balance_request':
           this.processBalance(connection, content).then(() => null);
+          break;
+        case 'boxes_request':
+          this.processBoxes(connection, content).then(() => null);
+          break;
+        case 'sign_request':
+          this.processSign(connection, content).then(() => null);
+          break;
+        case 'submit_request':
+          this.processSubmit(connection, content).then(() => null);
+          break;
+        case 'sign_data_request':
+          this.processSignData(connection, content).then(() => null);
+          break;
+        case 'sign_tx_input_request':
+          this.processSignTxInput(connection, content).then(() => null);
+          break;
       }
     }
   };
@@ -310,7 +601,20 @@ class DAppConnector extends React.Component<
                     and verify it to connection be completed
                   </Typography>
                 ) : (
-                  <div>wallet selected</div>
+                  <div>
+                    <div>wallet selected</div>
+                    {this.state.modalData.type == 'Sign' && (
+                      <SendConfirm
+                        display={true}
+                        transaction={this.state.modalData.data}
+                        close={() => console.log('closed.')}
+                        wallet={this.state.modalData.wallet!}
+                        function={this.state.modalData.onAccept}
+                        declineFunction={this.state.modalData.onDecline}
+                        name={this.state.modalData.type}
+                      />
+                    )}
+                  </div>
                 )
               ) : (
                 <WalletSelect

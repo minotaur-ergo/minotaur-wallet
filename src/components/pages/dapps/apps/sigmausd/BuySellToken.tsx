@@ -7,7 +7,7 @@ import { Button, FormControl, FormHelperText, TextField } from '@mui/material';
 interface PropsType {
   bank: Bank;
   oracle: Oracle;
-  buy: (amount: bigint) => any;
+  buy: (amount: bigint) => unknown;
   token_type: 'USD' | 'RSV';
   operation: 'BUY' | 'SELL';
   max: bigint;

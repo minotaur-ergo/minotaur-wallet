@@ -1,13 +1,6 @@
 // src/mocks.js
-import { setupWorker, rest } from 'msw';
-import { HeightRange } from '../Types';
-import {
-  fakeBlockChain,
-  fakeTxs,
-  testAddress,
-  testNetworkType,
-  walletId,
-} from '../sync-test/testData';
+import { rest } from 'msw';
+import { fakeBlockChain, fakeTxs, testAddress } from '../sync-test/testData';
 import { NodeInfo } from '../../util/network/models';
 
 const BASE_NODE_URL = `http://213.239.193.208:9052`; // Testnet Node
@@ -28,8 +21,8 @@ export const handlers = [
   }),
 
   rest.get(`${BASE_NODE_URL}/blocks`, (req, res, ctx) => {
-    const offset = req.url.searchParams.get('offset');
-    const limit = req.url.searchParams.get('limit');
+    // const offset = req.url.searchParams.get('offset');
+    // const limit = req.url.searchParams.get('limit');
     const info: NodeInfo = {
       fullHeight: fakeBlockChain.getLastBlock().height,
       headersHeight: fakeBlockChain.getLastBlock().height,

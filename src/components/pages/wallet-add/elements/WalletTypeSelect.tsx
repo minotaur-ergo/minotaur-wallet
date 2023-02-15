@@ -11,7 +11,7 @@ import { WalletType } from '../../../../db/entities/Wallet';
 
 interface PropsType {
   value: string | React.ReactElement;
-  setValue: (type: WalletType) => any;
+  setValue: (type: WalletType) => unknown;
 }
 
 const WalletTypeSelect = (props: PropsType) => {
@@ -24,7 +24,9 @@ const WalletTypeSelect = (props: PropsType) => {
           style={{ width: '100%' }}
           value={props.value}
           exclusive
-          onChange={(event, newType) => props.setValue(newType)}
+          onChange={(event, newType) => {
+            if (newType !== null) props.setValue(newType);
+          }}
         >
           <ToggleButton style={{ width: '50%' }} value={WalletType.Cold}>
             <FontAwesomeIcon icon={faSnowflake} />

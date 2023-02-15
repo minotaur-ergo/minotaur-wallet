@@ -7,8 +7,8 @@ import { BlockChainAction } from '../../action/blockchain';
 import { Button, Container, Grid } from '@mui/material';
 import RequestQrcodeDisplay from '../request-qrcode-display/RequestQrcodeDisplay';
 import Loading from '../loading/Loading';
-import { GlobalStateType } from '../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch, Action } from 'redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../store/actions';
 import { MessageEnqueueService } from '../app/MessageHandler';
@@ -16,7 +16,7 @@ import { MessageEnqueueService } from '../app/MessageHandler';
 interface SendConfirmReadonlyPropsType extends MessageEnqueueService {
   transaction?: UnsignedGeneratedTx;
   wallet: Wallet;
-  close: (openScanner: boolean) => any;
+  close: (openScanner: boolean) => unknown;
   display: boolean;
 }
 
@@ -41,7 +41,9 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
         setTxRequest({ valid: false, req: '', closed: false });
         const transaction: wasm.UnsignedTransaction = props.transaction
           ?.tx as wasm.UnsignedTransaction;
-        const boxes: wasm.ErgoBoxes = props?.transaction!.boxes;
+        const boxes: wasm.ErgoBoxes = props.transaction
+          ? props.transaction.boxes
+          : wasm.ErgoBoxes.from_boxes_json([]);
         const data_input = props.transaction?.data_inputs
           ? props.transaction.data_inputs
           : wasm.ErgoBoxes.from_boxes_json([]);
@@ -125,9 +127,9 @@ const SendConfirmReadonly = (props: SendConfirmReadonlyPropsType) => {
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

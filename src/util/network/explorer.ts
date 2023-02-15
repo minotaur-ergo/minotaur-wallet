@@ -9,7 +9,7 @@ import {
 } from './models';
 import { HeightPage, Paging } from './paging';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { JsonBI } from '../json';
+import { JsonAllBI, JsonBI } from '../json';
 
 export class Explorer {
   readonly backend: AxiosInstance;
@@ -40,6 +40,7 @@ export class Explorer {
    * get transactions for given address between given height blocks.
    * @param address : string
    * @param heightRange : HeightRange
+   * @param paging
    * @param conciseEnabled : Boolean
    * @returns Promise<Items<ErgoTx>>
    */
@@ -153,10 +154,10 @@ export class Explorer {
       }
     });
     let lastBox: wasm.ErgoBox = box;
-    let memPoolBox = memPoolBoxesMap.get(lastBox.box_id().to_str());
-    while (memPoolBox) {
-      lastBox = memPoolBox;
-      memPoolBox = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    let tracked = memPoolBoxesMap.get(lastBox.box_id().to_str());
+    while (tracked) {
+      lastBox = tracked;
+      tracked = memPoolBoxesMap.get(lastBox.box_id().to_str());
     }
     return lastBox;
   };
@@ -165,7 +166,7 @@ export class Explorer {
     return this.backend
       .request<AddressInfo>({
         url: `/api/v1/addresses/${address}/balance/confirmed`,
-        transformResponse: (data) => JsonBI.parse(data),
+        transformResponse: (data) => JsonAllBI.parse(data),
       })
       .then((response) => response.data);
   };

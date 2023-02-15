@@ -1,7 +1,7 @@
 import { test, vi, expect } from 'vitest';
 
 // import { SyncTxs } from '../sync/SyncTxs';
-// import { SyncBlocks } from '../sync/SyncBlocks';
+// import { Block } from '../sync/Block';
 import { Block } from '../Types';
 import * as fs from 'fs';
 
@@ -17,7 +17,7 @@ const dbJson: Block[] = JSON.parse(db);
 const lastLoadedBlock: Block = dbJson[dbJson.length - 1];
 
 // export const TestSyncTxs = new SyncTxs(testAddress, testNetworkType);
-// export const TestSyncBlocks = new SyncBlocks(testNetworkType);
+// export const TestSyncBlocks = new Block(testNetworkType);
 
 /**
  * testing stepForward function to insert given blocks correctly in local db.

@@ -4,8 +4,7 @@ import { QrCodePropsType } from './propsType';
 import AppHeader from '../../app-header/AppHeader';
 import WithAppBar from '../../../layout/WithAppBar';
 import { Result } from '@zxing/library';
-import { GlobalStateType } from '../../../store/reducer';
-import { connect, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
@@ -16,6 +15,7 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
+import { Action, Dispatch } from 'redux';
 
 interface QrCodeWebStateType {
   videoInputDevices: Array<MediaDeviceInfo>;
@@ -24,7 +24,7 @@ interface QrCodeWebStateType {
 }
 
 interface QrCodeWebPropsType extends QrCodePropsType, MessageEnqueueService {
-  closeQrcode: () => any;
+  closeQrcode: () => unknown;
 }
 
 const codeReader = new BrowserQRCodeReader();
@@ -70,6 +70,8 @@ class QrCodeReaderWeb extends React.Component<
   ) => {
     if (result) {
       this.props.handleScan(result.getText());
+    } else {
+      console.log(error);
     }
   };
 
@@ -139,9 +141,9 @@ class QrCodeReaderWeb extends React.Component<
   };
 }
 
-const mapStateToProps = (state: GlobalStateType) => ({});
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   showMessage: (message: SnackbarMessage, variant: VariantType) =>
     dispatch(showMessage(message, variant)),
 });

@@ -1,20 +1,22 @@
-import { SyncTxs } from './SyncTxs';
-import { SyncBlocks } from './SyncBlocks';
+import { SyncTxs } from './txs';
+import { SyncBlock } from './block';
 import { AddressDbAction, BlockDbAction, DbTransaction } from '../db';
 import { Block } from '../Types';
 import Address from '../../db/entities/Address';
+import { getNetworkType } from '../../util/network_type';
+import { VerifyAddress } from './verify';
+import { CONFIRMATION_HEIGHT } from '../../util/const';
 
 /**
  * Sync Process: sync given address and its network_type.
  * @param address: Address
  */
 export const syncAddress = async (address: Address) => {
-  const syncBlocks = new SyncBlocks(address.network_type);
+  const syncBlocks = new SyncBlock(address.network_type);
 
   const currentHeight = address.process_height;
-  const networkType = address.network_type;
 
-  const syncTxs = new SyncTxs(address, networkType);
+  const syncTxs = new SyncTxs(address);
 
   try {
     const forkPoint = await syncBlocks.update();
@@ -23,30 +25,43 @@ export const syncAddress = async (address: Address) => {
       await AddressDbAction.setAddressHeight(address.id, forkPoint);
     } else {
       await syncTxs.syncTxsWithAddress(currentHeight + 1);
+      await BlockDbAction.removeOldHeaders(
+        currentHeight - CONFIRMATION_HEIGHT,
+        address.network_type
+      );
     }
   } catch (e) {
     console.error(e);
   }
-  const addressInDb = await AddressDbAction.getAddress(address.id);
-  if (addressInDb) {
-    const expected = await syncTxs.explorer.getConfirmedBalanceByAddress(
+};
+
+export const VerifyAddressContent = async (addressId: number) => {
+  const address = await AddressDbAction.getAddress(addressId);
+  if (address) {
+    const network_type = getNetworkType(address.network_type);
+    const explorer = network_type.getExplorer();
+    const node = network_type.getNode();
+    const expected = await explorer.getConfirmedBalanceByAddress(
       address.address
     );
-    const lastReceivedBlock: Block = await syncTxs.node.getLastBlockHeader();
-    if (lastReceivedBlock.height == addressInDb.process_height) {
-      const lastDbBlockHeader = (await BlockDbAction.getLastHeaders(1))?.pop();
-      const successfullySynced = await syncTxs.verifyContent(expected);
+    const lastReceivedBlock: Block = await node.getLastBlockHeader();
+    if (lastReceivedBlock.height === address.process_height) {
+      const lastDbBlockHeader = (
+        await BlockDbAction.getLastHeaders(address.network_type, 1)
+      )?.pop();
+      const verify = new VerifyAddress(address);
+      const successfullySynced = await verify.verifyContent(expected);
       if (!successfullySynced && lastDbBlockHeader) {
-        const entity = await AddressDbAction.getAddress(address.id);
         if (
           lastDbBlockHeader.id == lastReceivedBlock.id &&
           lastReceivedBlock.height == lastReceivedBlock.height &&
-          entity &&
-          entity.process_height == lastReceivedBlock.height
+          address &&
+          address.process_height == lastReceivedBlock.height
         ) {
-          await DbTransaction.forkAddress(address);
+          return false;
         }
       }
     }
   }
+  return true;
 };

@@ -187,15 +187,6 @@ class AddressActionClass {
     return await this.addressRepository.find();
   };
 
-  getAllAddressOfNetworkType = async (networkType: string) => {
-    const addresses = await this.addressRepository.find({
-      relations: ['wallet'],
-    });
-    return addresses
-      .filter((item) => item.wallet?.network_type == networkType)
-      .sort((a, b) => a?.wallet!.id - b?.wallet!.id);
-  };
-
   setAddressHeight = async (addressId: number, height: number) => {
     return await this.addressRepository
       .createQueryBuilder()
@@ -274,9 +265,10 @@ class BlockActionClass {
     this.repository = dataSource.getRepository(Block);
   }
 
-  getLastHeaders = async (count: number) => {
+  getLastHeaders = async (network_type: string, count: number) => {
     const entity = await this.repository
       .createQueryBuilder()
+      .where('network_type = :network_type', { network_type: network_type })
       .limit(count)
       .offset(0)
       .orderBy('height', 'DESC')
@@ -727,15 +719,17 @@ class BoxContentActionClass {
   };
 
   getAddressTokens = async (addressId: number) => {
-    return await this.repository
-      .createQueryBuilder()
-      .select('token_id', 'tokenId')
-      .addSelect('SUM(amount)', 'total')
-      .innerJoin('box', 'Box', 'Box.id=boxId')
-      .where('Box.addressId = :addressId', { addressId: addressId })
-      .andWhere('Box.spend_tx IS NULL')
-      .addGroupBy('token_id')
-      .getRawMany<{ tokenId: string; total: bigint }>();
+    return (
+      await this.repository
+        .createQueryBuilder()
+        .select('token_id', 'tokenId')
+        .addSelect('CAST(SUM(CAST(amount AS INT)) AS TEXT)', 'total')
+        .innerJoin('box', 'Box', 'Box.id=boxId')
+        .where('Box.addressId = :addressId', { addressId: addressId })
+        .andWhere('Box.spend_tx IS NULL')
+        .addGroupBy('token_id')
+        .getRawMany<{ tokenId: string; total: string }>()
+    ).map((item) => ({ tokenId: item.tokenId, total: BigInt(item.total) }));
   };
 
   getWalletTokens = async (walletId: number) => {

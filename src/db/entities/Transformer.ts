@@ -1,11 +1,11 @@
 import { ValueTransformer } from 'typeorm/decorator/options/ValueTransformer';
 
 class BigIntValueTransformer implements ValueTransformer {
-  from(value: any): any {
+  from(value: string): bigint {
     return BigInt(value);
   }
 
-  to(value: any): any {
+  to(value: bigint): string {
     return value.toString();
   }
 }

@@ -10,14 +10,7 @@ import { Node } from '../../util/network/node';
 import { HeightRange, TokenData, TxDictionary } from '../Types';
 import { Paging } from '../../util/network/paging';
 import Address from '../../db/entities/Address';
-import {
-  AddressInfo,
-  ErgoBox,
-  ErgoTx,
-  InputBox,
-  Items,
-  Token,
-} from '../../util/network/models';
+import { AddressInfo, ErgoTx, Items, Token } from '../../util/network/models';
 import Tx, { TxStatus } from '../../db/entities/Tx';
 import { Explorer } from '../../util/network/explorer';
 import { validateBoxContentModel } from '../../store/asyncAction';
@@ -33,11 +26,12 @@ export class SyncTxs {
   node: Node;
   explorer: Explorer;
 
-  constructor(address: Address, network_type: string) {
-    this.networkType = network_type;
+  constructor(address: Address) {
+    this.networkType = address.network_type;
     this.address = address;
-    this.node = getNetworkType(network_type).getNode();
-    this.explorer = getNetworkType(address.network_type).getExplorer();
+    const networkType = getNetworkType(address.network_type);
+    this.node = networkType.getNode();
+    this.explorer = networkType.getExplorer();
   }
 
   /**
@@ -177,45 +171,5 @@ export class SyncTxs {
       heightRange.toHeight = Math.min(lastHeight, heightRange.toHeight + LIMIT);
       paging.offset = 0;
     }
-  };
-
-  verifyContent = async (expected: AddressInfo): Promise<boolean> => {
-    return (
-      (await this.verifyTokens(expected.tokens)) &&
-      (await this.verifyTotalErg(expected.nanoErgs))
-    );
-  };
-
-  /**
-   * compare dbTokens of the address with expectedTokens given from explorer.
-   * @param expectedTokens : Token[]
-   * @returns
-   */
-  verifyTokens = async (expectedTokens: Token[]): Promise<boolean> => {
-    const dbTokens: TokenData[] = await BoxContentDbAction.getAddressTokens(
-      this.address.id
-    );
-    const isSameToken = (a: TokenData, b: Token) =>
-      a.tokenId === b.tokenId && a.total === b.amount;
-    const diff1 = dbTokens.filter(
-      (dbToken) =>
-        !expectedTokens.some((expectedToken) =>
-          isSameToken(dbToken, expectedToken)
-        )
-    );
-
-    const diff2 = expectedTokens.filter(
-      (expectedToken) =>
-        !dbTokens.some((dbToken) => isSameToken(dbToken, expectedToken))
-    );
-
-    return diff1.length == 0 && diff2.length == 0;
-  };
-
-  verifyTotalErg = async (expectedTotalErg: bigint) => {
-    const totalDbErg = await AddressDbAction.getAddressTotalErg(
-      this.address.id
-    );
-    return totalDbErg?.erg_str == expectedTotalErg;
   };
 }

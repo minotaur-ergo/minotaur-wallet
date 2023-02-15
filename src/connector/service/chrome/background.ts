@@ -1,15 +1,18 @@
+import { EventData, Session, UIMessage } from '../types';
+import * as uuid from 'uuid';
+import { generate } from 'generate-password';
 import {
   AddressResponsePayload,
   BalanceResponsePayload,
+  BoxResponsePayload,
   ConfirmPayload,
-  EventData,
   MessageContent,
   MessageData,
-  Session,
-  UIMessage,
-} from '../types';
-import * as uuid from 'uuid';
-import { generate } from 'generate-password';
+  SignDataResponsePayload,
+  SignTxInputResponsePayload,
+  SignTxResponsePayload,
+  SubmitTxResponsePayload,
+} from '../../../components/pages/dapp-connector/types/types';
 
 const DEFAULT_SERVER = 'ws://127.0.0.1:6486';
 const info: {
@@ -37,11 +40,13 @@ const createSocket = (server: string): Promise<void> => {
     if (!Object.prototype.hasOwnProperty.call(info.sockets, server)) {
       const socket = new WebSocket(server);
       socket.onclose = () => {
+        console.log('socket closed');
         if (Object.prototype.hasOwnProperty.call(info.sockets, server)) {
           delete info.sockets['server'];
         }
       };
       socket.onopen = () => {
+        console.log('socket opened');
         // send registration to server
         socket.send(
           JSON.stringify({
@@ -53,6 +58,7 @@ const createSocket = (server: string): Promise<void> => {
         );
       };
       socket.onmessage = (message: MessageEvent<string>) => {
+        console.log(`new message from server ${message.data}`);
         const content = JSON.parse(message.data) as MessageData;
         if (content.sender === '') {
           resolve();
@@ -60,7 +66,6 @@ const createSocket = (server: string): Promise<void> => {
           const session = info.sessions.get(content.pageId);
           if (session && session.port) {
             const contentJson = JSON.parse(content.content) as MessageContent;
-            console.log(contentJson, session.requests);
             const request = session.requests.get(contentJson.requestId);
             if (request) {
               switch (contentJson.action) {
@@ -87,6 +92,51 @@ const createSocket = (server: string): Promise<void> => {
                     isSuccess: true,
                     requestId: request.requestId,
                     payload: contentJson.payload as BalanceResponsePayload,
+                  });
+                  break;
+                case 'boxes_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as BoxResponsePayload,
+                  });
+                  break;
+                case 'sign_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SignTxResponsePayload,
+                  });
+                  break;
+                case 'submit_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SubmitTxResponsePayload,
+                  });
+                  break;
+                case 'sign_data_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SignDataResponsePayload,
+                  });
+                  break;
+                case 'sign_tx_input_response':
+                  session.port.postMessage({
+                    type: 'call',
+                    direction: 'response',
+                    isSuccess: true,
+                    requestId: request.requestId,
+                    payload: contentJson.payload as SignTxInputResponsePayload,
                   });
                   break;
               }
@@ -146,6 +196,7 @@ const handleAuthRequests = (msg: EventData, port: chrome.runtime.Port) => {
     }
     session.requests.set(`${msg.requestId}`, { ...msg });
     const fn = msg.function;
+    console.log(`function call information ${JSON.stringify(msg)}`);
     switch (fn) {
       case 'connect':
         session.requests.set(`${msg.requestId}`, msg);
@@ -168,7 +219,6 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
   if (msg.type === 'call') {
     const session = info.sessions.get(msg.sessionId);
     if (session && session.port) {
-      console.log(session.port === port);
       if (!session.walletId) {
         session.port.postMessage({
           type: 'call',
@@ -204,16 +254,67 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
                 payload: msg.payload,
               })
             );
-
-          //                     case 'get_balance':
-          //                         // session.wallet
-          //                         session.port.postMessage({
-          //                             type: 'call',
-          //                             direction: 'response',
-          //                             isSuccess: true,
-          //                             payload: "1000000000",
-          //                             requestId: msg.requestId,
-          //                         })
+            break;
+          case 'boxes':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'boxes_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'sign':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'sign_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'submit':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'submit_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'signData':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'sign_data_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
+          case 'signTxInput':
+            sendMessage(
+              session.server,
+              session.walletId,
+              session.id,
+              JSON.stringify({
+                action: 'sign_tx_input_request',
+                requestId: msg.requestId,
+                payload: msg.payload,
+              })
+            );
+            break;
         }
       }
     }
@@ -222,6 +323,7 @@ const handleCallRequests = (msg: EventData, port: chrome.runtime.Port) => {
 
 const uiHandleRequest = (msg: UIMessage, port: chrome.runtime.Port) => {
   const session = info.sessions.get(msg.id);
+  console.log(`UI message is ${JSON.stringify(msg)}`);
   if (session) {
     switch (msg.type) {
       case 'register': {

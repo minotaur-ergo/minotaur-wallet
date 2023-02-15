@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Typography } from '@mui/material';
 import QrCode from 'qrcode.react';
 import ReactLoading from 'react-loading';
+import DAppConnectorIcon from '../../../components/dapp-connector-icon/DAppConnectorIcon';
 
 interface ConnectPropsType {
   id: string;
@@ -58,12 +59,15 @@ const Connect = (props: ConnectPropsType) => {
           <Typography>
             Please Open your minotaur wallet.
             <br />
-            Goto{' '}
-            <b>
-              DApps <span style={{ fontSize: '200%' }}>→</span> DApp Connector
-            </b>
+            Goto &nbsp;
+            <b>Minotaur</b>
             <br />
-            Then Scan QRCode below to connect to your wallet
+            Click on &nbsp;
+            <DAppConnectorIcon />
+            &nbsp; icon in menu bar
+            <br />
+            <br />
+            Scan QRCode below to connect to your wallet
           </Typography>
           <br />
           <QrCode value={JSON.stringify(connection)} size={256} />

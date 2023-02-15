@@ -6,10 +6,11 @@ import { GlobalStateType } from '../../store/reducer';
 import { WalletAction } from '../../action/action';
 import { loadBlockChainData } from '../../store/asyncAction';
 import { loadConfig } from '../../store/actions';
+import { Action, Dispatch } from 'redux';
 
 interface PropsType {
   walletsValid: boolean;
-  loadConfig: () => any;
+  loadConfig: () => unknown;
 }
 interface StateType {
   loading: boolean;
@@ -53,8 +54,8 @@ const mapStateToProps = (state: GlobalStateType) => ({
   walletsValid: state.wallet.walletValid,
 });
 
-const mapDispatchToProps = (dispatch: MapDispatchToProps<any, any>) => ({
-  loadConfig: () => dispatch(loadConfig()),
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  loadConfig: () => loadConfig(dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletRouter);

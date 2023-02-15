@@ -12,7 +12,7 @@ let dataSource: DataSource;
 
 declare global {
   interface Window {
-    SQL: any;
+    SQL: unknown;
   }
 }
 
@@ -45,7 +45,7 @@ const connectCapacitor = async () => {
       type: 'capacitor',
       database: 'minotaur',
       driver: sqliteConnection,
-      logging: 'all',
+      logging: false,
       synchronize: false,
       entities: entities,
       migrations: migrations,

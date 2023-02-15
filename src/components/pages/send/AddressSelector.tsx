@@ -21,7 +21,7 @@ interface PropsType {
     amount: bigint,
     address: Array<Address> | null,
     tokens: Array<TokenWithAddress>
-  ) => any;
+  ) => unknown;
 }
 
 interface StateType {
@@ -189,11 +189,7 @@ class AddressSelector extends React.Component<PropsType, StateType> {
     this.processContent();
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<PropsType>,
-    prevState: Readonly<StateType>,
-    snapshot?: any
-  ) {
+  componentDidUpdate() {
     this.processContent();
   }
 
