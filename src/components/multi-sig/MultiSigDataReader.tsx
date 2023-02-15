@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Grid, Typography } from '@mui/material';
+import { Clipboard } from '@capacitor/clipboard';
 import clipboard from 'clipboardy';
+import { Capacitor } from '@capacitor/core';
 
 interface MultiSigDataReaderPropsType {
   newData: (data: string) => unknown;
@@ -8,9 +10,14 @@ interface MultiSigDataReaderPropsType {
 
 const MultiSigDataReader = (props: MultiSigDataReaderPropsType) => {
   const readClipBoard = () => {
-    clipboard.read().then((res) => {
-      props.newData(res);
-    });
+    if (
+      Capacitor.getPlatform() === 'android' ||
+      Capacitor.getPlatform() === 'ios'
+    ) {
+      Clipboard.read().then((res) => props.newData(res.value));
+    } else {
+      clipboard.read().then((res) => props.newData(res));
+    }
   };
   return (
     <Grid container aria-orientation="horizontal" spacing={2}>

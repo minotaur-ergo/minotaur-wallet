@@ -9,7 +9,7 @@ import {
 } from './models';
 import { HeightPage, Paging } from './paging';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { JsonBI } from '../json';
+import { JsonAllBI, JsonBI } from '../json';
 
 export class Explorer {
   readonly backend: AxiosInstance;
@@ -166,7 +166,7 @@ export class Explorer {
     return this.backend
       .request<AddressInfo>({
         url: `/api/v1/addresses/${address}/balance/confirmed`,
-        transformResponse: (data) => JsonBI.parse(data),
+        transformResponse: (data) => JsonAllBI.parse(data),
       })
       .then((response) => response.data);
   };

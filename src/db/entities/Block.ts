@@ -8,6 +8,7 @@ enum ProcessStatus {
 
 @Entity({ name: 'block' })
 @Unique('block_id_in_network', ['block_id', 'network_type'])
+@Unique('height_id_in_network', ['height', 'network_type'])
 class Block {
   @PrimaryGeneratedColumn()
   id = 0;
@@ -18,7 +19,7 @@ class Block {
   @Column('text')
   network_type = '';
 
-  @Column('int', { unique: true })
+  @Column('int')
   height = 0;
 
   @Column('text', { default: ProcessStatus.NotProceed })

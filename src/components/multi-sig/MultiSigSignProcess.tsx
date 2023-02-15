@@ -460,6 +460,7 @@ class MultiSigSignProcess extends React.Component<
     }
     return NETWORK_TYPES[0];
   };
+
   render = () => {
     return (
       <Container>
