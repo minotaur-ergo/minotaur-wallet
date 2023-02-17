@@ -9,10 +9,18 @@ import {
   showMessage,
 } from '../../store/actions';
 import { SnackbarMessage, VariantType } from 'notistack';
-import { Alert, Button, Container, Grid } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Divider,
+  Grid,
+} from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { MultiSigAction } from '../../action/action';
-import { MultiSigDbAction } from '../../action/db';
+import { AddressDbAction, MultiSigDbAction } from '../../action/db';
 import RenderPassword from './RenderPassword';
 import ShareCommitmentMultiSig from './ShareCommitmentMultiSig';
 import { getNetworkType, NETWORK_TYPES } from '../../util/network_type';
@@ -22,6 +30,8 @@ import MultiSigDataReader from './MultiSigDataReader';
 import ShareTransactionMultiSig from './ShareTransactionMultiSig';
 import PublishedTxView from '../PublishedTxView';
 import { Action, Dispatch } from 'redux';
+import TxView from '../display-tx/TxView';
+import Loading from '../loading/Loading';
 
 interface MultiSigSignProcessPropsType extends MessageEnqueueService {
   close: () => unknown;
@@ -54,6 +64,8 @@ interface MultiSigSignProcessStatesType {
   propsLoaded: boolean;
   qrCode: string;
   publishedId: string;
+  addresses: Array<string>;
+  loadedWallet: number;
 }
 
 interface InputData {
@@ -82,6 +94,8 @@ class MultiSigSignProcess extends React.Component<
     propsLoaded: false,
     qrCode: '',
     publishedId: '',
+    addresses: [],
+    loadedWallet: -1,
   };
 
   updateTransaction = async () => {
@@ -444,6 +458,23 @@ class MultiSigSignProcess extends React.Component<
     this.updateTransaction().then(() => null);
     this.updateCommitments().then(() => null);
     this.updateQrCode().then(() => null);
+    this.loadAddresses().then(() => null);
+  };
+
+  loadAddresses = async () => {
+    if (
+      this.state.addresses.length === 0 ||
+      this.state.loadedWallet !== this.props.wallet.id
+    ) {
+      const walletId = this.props.wallet.id;
+      const addresses = (
+        await AddressDbAction.getWalletAddresses(walletId)
+      ).map((item) => item.address);
+      this.setState({
+        addresses: addresses,
+        loadedWallet: walletId,
+      });
+    }
   };
 
   componentDidMount = () => {
@@ -461,6 +492,16 @@ class MultiSigSignProcess extends React.Component<
     return NETWORK_TYPES[0];
   };
 
+  getBoxes = () => {
+    const boxes: Array<wasm.ErgoBox> = [];
+    Array(this.props.boxes.len())
+      .fill('')
+      .forEach((item, index) => {
+        boxes.push(this.props.boxes.get(index));
+      });
+    return boxes;
+  };
+
   render = () => {
     return (
       <Container>
@@ -470,63 +511,84 @@ class MultiSigSignProcess extends React.Component<
           style={{ textAlign: 'center' }}
           marginTop={3}
         >
-          {this.state.error ? (
-            <Alert severity="error">
-              An error occurred: {this.state.error}
-            </Alert>
-          ) : this.state.publishedId ? (
-            <PublishedTxView
-              txId={this.state.publishedId}
-              networkType={this.getNetworkType()}
-            />
-          ) : this.state.mySign ? (
-            <ShareTransactionMultiSig
-              remainCount={this.commitmentCount()}
-              required={parseInt(this.props.wallet.seed)}
-              publishTx={() => this.publishTx()}
-              commitment={this.state.qrCode}
-            />
-          ) : this.state.partialTx ? (
-            <Grid xs={12} item>
-              <Button
-                variant="contained"
-                fullWidth
-                color="primary"
-                onClick={() => this.signTx(this.state.password)}
-              >
-                Process Sign transaction
-              </Button>
-            </Grid>
-          ) : this.state.myHints ? (
-            <ShareCommitmentMultiSig
-              count={this.commitmentCount()}
-              required={parseInt(this.props.wallet.seed)}
-              commitment={this.state.qrCode}
-            />
-          ) : this.state.relatedWallet ? (
-            <RenderPassword
-              accept={(password) => this.acceptPassword(password)}
-              wallet={this.state.relatedWallet}
-            />
-          ) : null}
-          {this.state.mySign ? (
-            <Grid xs={12} item>
-              <Button
-                variant="contained"
-                fullWidth
-                color="primary"
-                onClick={() => this.props.close()}
-              >
-                Completed
-              </Button>
-            </Grid>
-          ) : !!this.state.partial || !this.state.myHints ? null : (
-            <Grid xs={12} item>
-              <MultiSigDataReader
-                newData={(data: string) => this.loadJson(data)}
-              />
-            </Grid>
-          )}
+          <Grid item xs={12}>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid container spacing={2} style={{ textAlign: 'center' }}>
+                  <Grid item xs={12}>
+                    {this.state.addresses.length > 0 && this.props.tx ? (
+                      <TxView
+                        network_type={this.props.wallet.network_type}
+                        tx={this.props.tx.unsigned_tx()}
+                        boxes={this.getBoxes()}
+                        addresses={this.state.addresses}
+                      />
+                    ) : (
+                      <Loading />
+                    )}
+                    <Divider />
+                  </Grid>
+                  {this.state.error ? (
+                    <Alert severity="error">
+                      An error occurred: {this.state.error}
+                    </Alert>
+                  ) : this.state.publishedId ? (
+                    <PublishedTxView
+                      txId={this.state.publishedId}
+                      networkType={this.getNetworkType()}
+                    />
+                  ) : this.state.mySign ? (
+                    <ShareTransactionMultiSig
+                      remainCount={this.commitmentCount()}
+                      required={parseInt(this.props.wallet.seed)}
+                      publishTx={() => this.publishTx()}
+                      commitment={this.state.qrCode}
+                    />
+                  ) : this.state.partialTx ? (
+                    <Grid xs={12} item>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        color="primary"
+                        onClick={() => this.signTx(this.state.password)}
+                      >
+                        Process Sign transaction
+                      </Button>
+                    </Grid>
+                  ) : this.state.myHints ? (
+                    <ShareCommitmentMultiSig
+                      count={this.commitmentCount()}
+                      required={parseInt(this.props.wallet.seed)}
+                      commitment={this.state.qrCode}
+                    />
+                  ) : this.state.relatedWallet ? (
+                    <RenderPassword
+                      accept={(password) => this.acceptPassword(password)}
+                      wallet={this.state.relatedWallet}
+                    />
+                  ) : null}
+                  {this.state.mySign ? (
+                    <Grid xs={12} item>
+                      <Button
+                        variant="contained"
+                        fullWidth
+                        color="primary"
+                        onClick={() => this.props.close()}
+                      >
+                        Completed
+                      </Button>
+                    </Grid>
+                  ) : !!this.state.partial || !this.state.myHints ? null : (
+                    <Grid xs={12} item>
+                      <MultiSigDataReader
+                        newData={(data: string) => this.loadJson(data)}
+                      />
+                    </Grid>
+                  )}
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </Container>
     );
