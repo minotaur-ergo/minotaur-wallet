@@ -23,6 +23,7 @@ import { createAssetsCountBoxes1656865730031 } from './1656865730031-create-asse
 import { txBoxCount1667225460029 } from './1667225460029-tx-box-count';
 import { multiSigKeys1668085091261 } from './1668085091261-multi-sig-keys';
 import { blockUpdate1676080469354 } from './1676080469354-block-update';
+import { MultiSig1676570528123 } from './1676570528123-multi-sig';
 
 const Migrations = [
   block1645511116354,
@@ -50,6 +51,7 @@ const Migrations = [
   txBoxCount1667225460029,
   multiSigKeys1668085091261,
   blockUpdate1676080469354,
+  MultiSig1676570528123,
 ];
 
 export default Migrations;
