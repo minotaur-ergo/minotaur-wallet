@@ -8,6 +8,7 @@ import { getNetworkType } from '../../util/network_type';
 import { JsonBI } from '../../util/json';
 import { TokenData } from '../../action/Types';
 import BurningTokenDisplay from './BurningTokenDisplay';
+import Loading from '../loading/Loading';
 
 interface TxViewPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;
@@ -119,26 +120,18 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
         }
       }
       input_boxes.forEach((box) => {
-        this.processBox(box, 1, totalAssets);
-        if (
-          this.props.addresses.indexOf(
-            wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
-              network_type.prefix
-            )
-          ) >= 0
-        ) {
+        const boxAddress = wasm.Address.recreate_from_ergo_tree(
+          box.ergo_tree()
+        ).to_base58(network_type.prefix);
+        if (this.props.addresses.indexOf(boxAddress) >= 0) {
           this.processBox(box, -1, assets);
         }
       });
       outputs.forEach((box) => {
-        this.processBox(box, -1, totalAssets);
-        if (
-          this.props.addresses.indexOf(
-            wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
-              network_type.prefix
-            )
-          ) >= 0
-        ) {
+        const boxAddress = wasm.Address.recreate_from_ergo_tree(
+          box.ergo_tree()
+        ).to_base58(network_type.prefix);
+        if (this.props.addresses.indexOf(boxAddress) >= 0) {
           this.processBox(box, 1, assets);
         }
       });
@@ -164,6 +157,9 @@ class TxView extends React.Component<TxViewPropsType, TxViewStateType> {
   }
 
   render = () => {
+    if (this.state.loading) {
+      return <Loading />;
+    }
     return (
       <React.Fragment>
         <List>
