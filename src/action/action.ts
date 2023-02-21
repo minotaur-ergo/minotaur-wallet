@@ -138,19 +138,23 @@ class MultiSigActionClass {
 
   commitmentToByte = (
     commitment: wasm.TransactionHintsBag,
-    inputPublicKeys: Array<Array<string>>
+    inputPublicKeys: Array<Array<string>>,
+    returnSecret = false
   ): Array<Array<string>> => {
     const json = commitment.to_json()['publicHints'];
     return inputPublicKeys.map((rowPublicKeys, index) => {
       const hints = json[`${index}`];
       const rowCommitments = rowPublicKeys.map(() => '');
-      hints.forEach((item: { pubkey: { h: string }; a: string }) => {
-        const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
-        if (pubIndex >= 0)
-          rowCommitments[pubIndex] = Buffer.from(item.a, 'hex').toString(
-            'base64'
-          );
-      });
+      hints.forEach(
+        (item: { pubkey: { h: string }; a: string; secret: string }) => {
+          const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
+          if (pubIndex >= 0)
+            rowCommitments[pubIndex] = Buffer.from(
+              returnSecret ? item.secret : item.a,
+              'hex'
+            ).toString('base64');
+        }
+      );
       return rowCommitments;
     });
   };

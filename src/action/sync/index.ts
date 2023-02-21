@@ -1,6 +1,6 @@
 import { SyncTxs } from './txs';
 import { SyncBlock } from './block';
-import { AddressDbAction, BlockDbAction, DbTransaction } from '../db';
+import { AddressDbAction, BlockDbAction, TxDbAction } from '../db';
 import { Block } from '../Types';
 import Address from '../../db/entities/Address';
 import { getNetworkType } from '../../util/network_type';
@@ -21,7 +21,7 @@ export const syncAddress = async (address: Address) => {
   try {
     const forkPoint = await syncBlocks.update();
     if (forkPoint !== undefined) {
-      await DbTransaction.forkAll(forkPoint, address.network_type);
+      await TxDbAction.forkAll(forkPoint, address.network_type);
       await AddressDbAction.setAddressHeight(address.id, forkPoint);
     } else {
       await syncTxs.syncTxsWithAddress(currentHeight + 1);

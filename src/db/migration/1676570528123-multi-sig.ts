@@ -28,8 +28,9 @@ export class MultiSig1676570528123 implements MigrationInterface {
                 "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, 
                 "bytes" text NOT NULL, 
                 "index" integer NOT NULL,
-                 "secret" integer NOT NULL, 
-                 "txId" integer, CONSTRAINT "FK_9d5228b8828161d8eb2c8286196" FOREIGN KEY ("txId") 
+                "inputIndex" integer NOT NULL,
+                "secret" text, 
+                "txId" integer, CONSTRAINT "FK_9d5228b8828161d8eb2c8286196" FOREIGN KEY ("txId") 
                     REFERENCES "wallet" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
     ];
     for (const query of queries) {

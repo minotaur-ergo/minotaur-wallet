@@ -17,7 +17,10 @@ class MultiCommitment {
   index = 0;
 
   @Column('int')
-  secret = 0; // use 0 for public and 1 for secret
+  inputIndex = 0;
+
+  @Column('text', { nullable: true })
+  secret? = ''; // if secret commitment store secret here
 }
 
 export default MultiCommitment;

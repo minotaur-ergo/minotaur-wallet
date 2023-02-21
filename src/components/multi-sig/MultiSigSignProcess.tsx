@@ -20,7 +20,11 @@ import {
 } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { MultiSigAction } from '../../action/action';
-import { AddressDbAction, MultiSigDbAction } from '../../action/db';
+import {
+  AddressDbAction,
+  MultiSigDbAction,
+  MultiStoreDbAction,
+} from '../../action/db';
 import RenderPassword from './RenderPassword';
 import ShareCommitmentMultiSig from './ShareCommitmentMultiSig';
 import { getNetworkType, NETWORK_TYPES } from '../../util/network_type';
@@ -502,6 +506,36 @@ class MultiSigSignProcess extends React.Component<
     return boxes;
   };
 
+  storeAll = async () => {
+    const row = await MultiStoreDbAction.insertMultiSigRow(
+      this.props.wallet,
+      this.state.txId
+    );
+    if (row) {
+      // Generate secret list
+      const inputPKs = await this.getInputPks();
+      const secretStr: Array<Array<string>> = this.state.myHints
+        ? MultiSigAction.commitmentToByte(
+            this.state.myHints.own,
+            inputPKs,
+            true
+          )
+        : [];
+      const secret = secretStr.map((row) =>
+        row.map((item) => Buffer.from(item, 'base64'))
+      );
+      await MultiStoreDbAction.insertMultiSigInputs(row, this.state.boxes);
+      await MultiStoreDbAction.insertMultiSigTx(row, this.state.txBytes);
+      // await MultiStoreDbAction.insertMultiSigCommitments(row, this.state.commitments, [], 0, this.state.password)
+      await MultiStoreDbAction.insertMultiSigCommitments(
+        row,
+        this.state.commitments,
+        secret,
+        this.state.password
+      );
+    }
+  };
+
   render = () => {
     return (
       <Container>
@@ -526,6 +560,28 @@ class MultiSigSignProcess extends React.Component<
                     ) : (
                       <Loading />
                     )}
+                    <Divider />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      color="primary"
+                      disabled={!this.state.password}
+                      onClick={this.storeAll}
+                    >
+                      Save for later sign
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      color="primary"
+                      onClick={this.props.close}
+                    >
+                      Cancel & Delete
+                    </Button>
                     <Divider />
                   </Grid>
                   {this.state.error ? (

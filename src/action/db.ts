@@ -18,6 +18,13 @@ import Config from '../db/entities/Config';
 import AssetCountBox from '../db/entities/views/AssetCountBox';
 import TxBoxCount from '../db/entities/views/TxBoxCount';
 import MultiSigKey from '../db/entities/MultiSigKey';
+import MultiCommitment from '../db/entities/multi-sig/MultiCommitment';
+import MultiSignInput from '../db/entities/multi-sig/MultiSignInput';
+import MultiSignRow from '../db/entities/multi-sig/MultiSignRow';
+import MultiSignTx from '../db/entities/multi-sig/MultiSignTx';
+import { sliceToChunksString } from '../util/util';
+import { TX_CHUNK_SIZE } from '../util/const';
+import { encrypt } from './enc';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -669,6 +676,41 @@ class TxActionClass {
       .delete()
       .execute();
   };
+
+  forkAll = async (forkHeight: number, network_type: string) => {
+    // this.queryRunner.connect();
+    // this.queryRunner.startTransaction();
+    // try {
+    await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
+    await BoxDbAction.forkBoxes(forkHeight, network_type);
+    await TxDbAction.forkTxs(forkHeight, network_type);
+    await BlockDbAction.forkHeaders(forkHeight, network_type);
+    // await this.queryRunner.commitTransaction();
+    // } catch {
+    //   this.queryRunner.rollbackTransaction();
+    // } finally {
+    //   this.queryRunner.release();
+    // }
+  };
+
+  forkAddress = async (address: Address) => {
+    // this.queryRunner.connect();
+    // this.queryRunner.startTransaction();
+    // try {
+    const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
+    await BoxContentDbAction.removeAddressBoxContent(
+      addressBoxes,
+      this.repository.queryRunner
+    );
+    await BoxDbAction.removeAddressBoxes(address, this.repository.queryRunner);
+    await AddressDbAction.setAddressHeight(address.id, 0);
+    // await this.queryRunner.commitTransaction();
+    // } catch (exp){
+    //   this.queryRunner.rollbackTransaction();
+    // } finally {
+    //   this.queryRunner.release();
+    // }
+  };
 }
 
 class BoxContentActionClass {
@@ -816,50 +858,158 @@ class ConfigActionClass {
   };
 }
 
-class DbTransactionClass {
-  private queryRunner;
+class MultiStoreActionClass {
+  private commitmentRepository: Repository<MultiCommitment>;
+  private inputRepository: Repository<MultiSignInput>;
+  private rowRepository: Repository<MultiSignRow>;
+  private txRepository: Repository<MultiSignTx>;
 
   constructor(dataSource: DataSource) {
-    this.queryRunner = dataSource.createQueryRunner();
+    this.commitmentRepository = dataSource.getRepository(MultiCommitment);
+    this.inputRepository = dataSource.getRepository(MultiSignInput);
+    this.rowRepository = dataSource.getRepository(MultiSignRow);
+    this.txRepository = dataSource.getRepository(MultiSignTx);
   }
 
-  forkAll = async (forkHeight: number, network_type: string) => {
-    // this.queryRunner.connect();
-    // this.queryRunner.startTransaction();
-    // try {
-    await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
-    await BoxDbAction.forkBoxes(forkHeight, network_type);
-    await TxDbAction.forkTxs(forkHeight, network_type);
-    await BlockDbAction.forkHeaders(forkHeight, network_type);
-    // await this.queryRunner.commitTransaction();
-    // } catch {
-    //   this.queryRunner.rollbackTransaction();
-    // } finally {
-    //   this.queryRunner.release();
-    // }
+  public insertMultiSigRow = async (wallet: Wallet, txId: string) => {
+    const old = await this.rowRepository.findOneBy({ txId: txId });
+    if (old === null) {
+      await this.rowRepository.insert({
+        txId: txId,
+        wallet: wallet,
+      });
+    } else {
+      await this.rowRepository
+        .createQueryBuilder()
+        .update()
+        .set({ wallet: wallet })
+        .where('id=:id', { id: old.id })
+        .execute();
+    }
+    return await this.rowRepository.findOneBy({ txId: txId });
   };
 
-  forkAddress = async (address: Address) => {
-    // this.queryRunner.connect();
-    // this.queryRunner.startTransaction();
-    // try {
-    const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
-    await BoxContentDbAction.removeAddressBoxContent(
-      addressBoxes,
-      this.queryRunner
-    );
-    await BoxDbAction.removeAddressBoxes(address, this.queryRunner);
-    await AddressDbAction.setAddressHeight(address.id, 0);
-    // await this.queryRunner.commitTransaction();
-    // } catch (exp){
-    //   this.queryRunner.rollbackTransaction();
-    // } finally {
-    //   this.queryRunner.release();
-    // }
+  public insertMultiSigTx = async (row: MultiSignRow, txBytes: string) => {
+    await this.txRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    const txChunks = sliceToChunksString(txBytes, TX_CHUNK_SIZE);
+    for (const [index, chunk] of txChunks.entries()) {
+      await this.txRepository.insert({
+        tx: row,
+        bytes: chunk,
+        index: index,
+      });
+    }
   };
+
+  public insertMultiSigInputs = async (
+    row: MultiSignRow,
+    inputs: Array<string>
+  ) => {
+    await this.inputRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    for (const input of inputs) {
+      await this.inputRepository.insert({
+        tx: row,
+        bytes: input,
+      });
+    }
+  };
+
+  public insertMultiSigCommitments = async (
+    row: MultiSignRow,
+    commitments: Array<Array<string>>,
+    secrets: Array<Array<Buffer>>,
+    password: string
+  ) => {
+    await this.commitmentRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    for (const [inputIndex, inputCommitment] of commitments.entries()) {
+      for (const [index, commitment] of inputCommitment.entries()) {
+        if (commitment) {
+          await this.commitmentRepository.insert({
+            tx: row,
+            bytes: commitment,
+            index: index,
+            inputIndex: inputIndex,
+            secret:
+              secrets[inputIndex][index].length > 0
+                ? encrypt(secrets[inputIndex][index], password)
+                : '',
+          });
+        }
+      }
+    }
+  };
+
+  public removeMultiSigRow = async (row: MultiSignRow) => {
+    await this.commitmentRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    await this.txRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    await this.inputRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    await this.rowRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ id: row.id })
+      .execute();
+  };
+
+  public getWalletMultiSigRows = async (wallet: Wallet) => {
+    return await this.rowRepository.findBy({
+      wallet: wallet,
+    });
+  };
+
+  public getTx = async (row: MultiSignRow) => {
+    const elements = await this.txRepository
+      .createQueryBuilder()
+      .select()
+      .where({ tx: row })
+      .orderBy('MultiSigSignInput.index')
+      .getMany();
+    return elements.map((item) => item.bytes).join('');
+  };
+
+  public getInputs = async (row: MultiSignRow) => {
+    const elements = await this.inputRepository
+      .createQueryBuilder()
+      .select()
+      .where({ tx: row })
+      .getMany();
+    return elements.map((item) => item.bytes);
+  };
+
+  // public getCommitments = async (row: MultiSignRow, password: string) => {
+  //   const elements = await this.commitmentRepository.createQueryBuilder()
+  //       .select()
+  //       .where({tx: row})
+  //       .getMany()
+  //   return elements.map(item => wasm.ErgoBox.sigma_parse_bytes(Buffer.from(item.bytes, "base64")))
+  // }
 }
 
 let BoxContentDbAction: BoxContentActionClass;
+let MultiStoreDbAction: MultiStoreActionClass;
 let MultiSigDbAction: MultiSigActionClass;
 let AddressDbAction: AddressActionClass;
 let WalletDbAction: WalletActionClass;
@@ -869,10 +1019,9 @@ let BlockDbAction: BlockActionClass;
 let BoxDbAction: BoxActionClass;
 let TxDbAction: TxActionClass;
 
-let DbTransaction: DbTransactionClass;
-
 const initializeAction = (dataSource: DataSource) => {
   BoxContentDbAction = new BoxContentActionClass(dataSource);
+  MultiStoreDbAction = new MultiStoreActionClass(dataSource);
   MultiSigDbAction = new MultiSigActionClass(dataSource);
   AddressDbAction = new AddressActionClass(dataSource);
   WalletDbAction = new WalletActionClass(dataSource);
@@ -881,12 +1030,11 @@ const initializeAction = (dataSource: DataSource) => {
   BlockDbAction = new BlockActionClass(dataSource);
   BoxDbAction = new BoxActionClass(dataSource);
   TxDbAction = new TxActionClass(dataSource);
-
-  DbTransaction = new DbTransactionClass(dataSource);
 };
 
 export {
   BoxContentDbAction,
+  MultiStoreDbAction,
   MultiSigDbAction,
   AddressDbAction,
   WalletDbAction,
@@ -895,6 +1043,5 @@ export {
   BlockDbAction,
   BoxDbAction,
   TxDbAction,
-  DbTransaction,
   initializeAction,
 };

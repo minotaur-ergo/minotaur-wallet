@@ -4,7 +4,7 @@ import {
   AssetDbAction,
   BoxContentDbAction,
   BoxDbAction,
-  DbTransaction,
+  TxDbAction,
   WalletDbAction,
 } from '../action/db';
 import { store } from './index';
@@ -56,7 +56,7 @@ const loadBlockChainDataAsync = async () => {
         try {
           await syncAddress(address);
           if (!(await VerifyAddressContent(address.id))) {
-            await DbTransaction.forkAddress(address);
+            await TxDbAction.forkAddress(address);
           }
           await loadTokensAsync(address.network_type);
         } catch (e) {

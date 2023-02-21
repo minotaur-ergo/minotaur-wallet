@@ -143,6 +143,15 @@ const parse_url_to_json = (url: string) => {
   return res;
 };
 
+const sliceToChunksString = (arr: string, chunkSize: number) => {
+  const res: Array<string> = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = arr.slice(i, i + chunkSize);
+    res.push(chunk);
+  }
+  return res;
+};
+
 export {
   sum_erg_and_nano_erg,
   html_safe_gson,
@@ -154,4 +163,5 @@ export {
   uint8_vlq,
   bip32,
   parse_url_to_json,
+  sliceToChunksString,
 };
