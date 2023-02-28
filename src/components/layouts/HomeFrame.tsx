@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppFrame from './AppFrame';
 import { IconButton } from '@mui/material';
-import { RouterMap } from '../V2Demo';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AppToolbar from './AppToolbar';
+import { RouterMap } from '../v2/V2Demo';
 
 interface PropsType {
   children?: ReactNode;

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getRoute } from '../../../../route/routerMap';
-import { RouterMap } from '../../../V2Demo';
 import { ReactComponent as ErgoIcon } from '../../../icons/ergo.svg';
-import SvgIcon from '../../../icons/SvgIcon';
+import { getRoute } from '../../../route/routerMap';
+import { RouterMap } from '../../../v2/V2Demo';
+import SvgIcon from '../../../v2/icons/SvgIcon';
 
 interface PropsType {
   id: string;

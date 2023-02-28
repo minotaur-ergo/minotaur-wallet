@@ -1,13 +1,15 @@
 import React from 'react';
 import AppFrame from '../../layouts/AppFrame';
-import BackButton from '../../components/BackButton';
 import { IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 // import { RouterMap } from '../../V2Demo';
 import TotalBalanceCard from './components/TotalBalanceCard';
-import Heading from '../../components/Heading';
+// import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
+import BackButton from '../../v2/components/BackButton';
+import { RouterMap } from '../../v2/V2Demo';
+import Heading from '../../v2/components/Heading';
 
 const Wallets = () => {
   const navigate = useNavigate();

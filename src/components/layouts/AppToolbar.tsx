@@ -9,7 +9,7 @@ import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import OutboxOutlinedIcon from '@mui/icons-material/OutboxOutlined';
-import { RouterMap } from '../V2Demo';
+import { RouterMap } from '../v2/V2Demo';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const RootBox = styled(Box)(
