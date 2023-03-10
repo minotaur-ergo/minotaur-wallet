@@ -942,6 +942,8 @@ class MultiStoreActionClass {
             index: index,
             inputIndex: inputIndex,
             secret:
+              secrets.length > inputIndex &&
+              secrets[inputIndex].length > index &&
               secrets[inputIndex][index].length > 0
                 ? encrypt(secrets[inputIndex][index], password)
                 : '',
@@ -999,13 +1001,31 @@ class MultiStoreActionClass {
     return elements.map((item) => item.bytes);
   };
 
-  // public getCommitments = async (row: MultiSignRow, password: string) => {
-  //   const elements = await this.commitmentRepository.createQueryBuilder()
-  //       .select()
-  //       .where({tx: row})
-  //       .getMany()
-  //   return elements.map(item => wasm.ErgoBox.sigma_parse_bytes(Buffer.from(item.bytes, "base64")))
-  // }
+  public getCommitments = async (
+    row: MultiSignRow,
+    inputCount: number,
+    signerCount: number
+  ) => {
+    const elements = await this.commitmentRepository
+      .createQueryBuilder()
+      .select()
+      .where({ tx: row })
+      .getMany();
+    const commitments = Array(inputCount)
+      .fill('')
+      .map(() => Array(signerCount).fill(''));
+    const secrets = Array(inputCount)
+      .fill('')
+      .map(() => Array(signerCount).fill(''));
+    elements.forEach((dbElement) => {
+      commitments[dbElement.inputIndex][dbElement.index] = dbElement.bytes;
+      secrets[dbElement.inputIndex][dbElement.index] = dbElement.secret;
+    });
+    return {
+      commitments,
+      secrets,
+    };
+  };
 }
 
 let BoxContentDbAction: BoxContentActionClass;

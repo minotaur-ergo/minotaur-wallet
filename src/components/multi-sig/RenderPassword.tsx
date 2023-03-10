@@ -7,6 +7,8 @@ import Wallet from '../../db/entities/Wallet';
 interface RenderPasswordPropsType {
   accept: (password: string) => unknown;
   wallet: Wallet;
+  title?: string;
+  action: string;
 }
 
 const RenderPassword = (props: RenderPasswordPropsType) => {
@@ -18,7 +20,7 @@ const RenderPassword = (props: RenderPasswordPropsType) => {
     <React.Fragment>
       <Grid item xs={12}>
         <br />
-        Please enter your mnemonic passphrase to send transaction
+        {props.title ? props.title : 'Please enter your mnemonic passphrase'}
       </Grid>
       <Grid item xs={12}>
         <PasswordInput
@@ -37,7 +39,7 @@ const RenderPassword = (props: RenderPasswordPropsType) => {
           onClick={() => props.accept(password)}
           disabled={!passwordValid()}
         >
-          Create Commitment
+          {props.action}
         </Button>
       </Grid>
     </React.Fragment>

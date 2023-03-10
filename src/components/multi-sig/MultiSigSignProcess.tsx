@@ -9,15 +9,7 @@ import {
   showMessage,
 } from '../../store/actions';
 import { SnackbarMessage, VariantType } from 'notistack';
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-} from '@mui/material';
+import { Alert, Button, Divider, Grid } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { MultiSigAction } from '../../action/action';
 import {
@@ -36,6 +28,8 @@ import PublishedTxView from '../PublishedTxView';
 import { Action, Dispatch } from 'redux';
 import TxView from '../display-tx/TxView';
 import Loading from '../loading/Loading';
+import MultiSignRow from '../../db/entities/multi-sig/MultiSignRow';
+import ReactLoading from 'react-loading';
 
 interface MultiSigSignProcessPropsType extends MessageEnqueueService {
   close: () => unknown;
@@ -44,6 +38,10 @@ interface MultiSigSignProcessPropsType extends MessageEnqueueService {
   boxes: wasm.ErgoBoxes;
   wallets: Array<Wallet>;
   commitments?: Array<Array<string>>;
+  saved?: (instance: MultiSignRow) => unknown;
+  highlight?: boolean;
+  encryptedSecrets?: Array<Array<string>>;
+  hideTx?: boolean;
 }
 
 interface MultiSigSignProcessStatesType {
@@ -70,6 +68,8 @@ interface MultiSigSignProcessStatesType {
   publishedId: string;
   addresses: Array<string>;
   loadedWallet: number;
+  saving: boolean;
+  changed: boolean;
 }
 
 interface InputData {
@@ -86,6 +86,8 @@ class MultiSigSignProcess extends React.Component<
   MultiSigSignProcessStatesType
 > {
   state: MultiSigSignProcessStatesType = {
+    changed: false,
+    saving: false,
     password: '',
     error: '',
     txId: '',
@@ -122,6 +124,7 @@ class MultiSigSignProcess extends React.Component<
         boxes: boxes,
         txBytes: txBytes,
         loading: false,
+        changed: !this.state.saving,
       });
     }
   };
@@ -158,6 +161,7 @@ class MultiSigSignProcess extends React.Component<
       this.setState({
         commitments: commitments,
         propsLoaded: true,
+        changed: true,
       });
     }
   };
@@ -273,6 +277,7 @@ class MultiSigSignProcess extends React.Component<
         );
         const commitment = await MultiSigAction.generateCommitments(wallet, tx);
         const known = await this.getKnownCommitments(commitment.public);
+        console.log(JSON.stringify(commitment.private.to_json()));
         this.setState((state) => {
           const updateDict = {
             ...state,
@@ -281,6 +286,7 @@ class MultiSigSignProcess extends React.Component<
               own: commitment.private,
               known: commitment.public,
             },
+            changed: true,
           };
           const commitments = state.commitments;
           if (commitments.length !== known.length) {
@@ -329,6 +335,30 @@ class MultiSigSignProcess extends React.Component<
         return commitment;
       });
     });
+  };
+
+  decryptSecret = async (password: string) => {
+    if (this.props.encryptedSecrets) {
+      const publicKeys = await this.getInputPks();
+      const extractedCommitments = MultiSigAction.getSecretHintBag(
+        publicKeys,
+        this.state.commitments,
+        this.props.encryptedSecrets,
+        password
+      );
+      const commitment = MultiSigAction.extractCommitments(
+        extractedCommitments,
+        this.props.tx.unsigned_tx().inputs().len()
+      );
+      this.setState({
+        password: password,
+        myHints: {
+          own: commitment.private,
+          known: commitment.public,
+        },
+        changed: true,
+      });
+    }
   };
 
   signTx = async (password: string) => {
@@ -415,6 +445,7 @@ class MultiSigSignProcess extends React.Component<
             partialTx: partial,
             simulated: data.simulated ? data.simulated : [],
             mySign: false,
+            changed: true,
           });
         } else {
           this.props.showMessage('Invalid Data entered', 'error');
@@ -507,146 +538,164 @@ class MultiSigSignProcess extends React.Component<
   };
 
   storeAll = async () => {
-    const row = await MultiStoreDbAction.insertMultiSigRow(
-      this.props.wallet,
-      this.state.txId
-    );
-    if (row) {
-      // Generate secret list
-      const inputPKs = await this.getInputPks();
-      const secretStr: Array<Array<string>> = this.state.myHints
-        ? MultiSigAction.commitmentToByte(
-            this.state.myHints.own,
-            inputPKs,
-            true
-          )
-        : [];
-      const secret = secretStr.map((row) =>
-        row.map((item) => Buffer.from(item, 'base64'))
-      );
-      await MultiStoreDbAction.insertMultiSigInputs(row, this.state.boxes);
-      await MultiStoreDbAction.insertMultiSigTx(row, this.state.txBytes);
-      // await MultiStoreDbAction.insertMultiSigCommitments(row, this.state.commitments, [], 0, this.state.password)
-      await MultiStoreDbAction.insertMultiSigCommitments(
-        row,
-        this.state.commitments,
-        secret,
-        this.state.password
-      );
+    if (!this.state.saving) {
+      this.setState({ saving: true });
+      setTimeout(async () => {
+        const row = await MultiStoreDbAction.insertMultiSigRow(
+          this.props.wallet,
+          this.state.txId
+        );
+        if (row) {
+          // Generate secret list
+          const inputPKs = await this.getInputPks();
+          const secretStr: Array<Array<string>> = this.state.myHints
+            ? MultiSigAction.commitmentToByte(
+                this.state.myHints.own,
+                inputPKs,
+                true
+              )
+            : [];
+          const secret = secretStr.map((row) =>
+            row.map((item) => Buffer.from(item, 'base64'))
+          );
+          await MultiStoreDbAction.insertMultiSigInputs(row, this.state.boxes);
+          await MultiStoreDbAction.insertMultiSigTx(row, this.state.txBytes);
+          await MultiStoreDbAction.insertMultiSigCommitments(
+            row,
+            this.state.commitments,
+            secret,
+            this.state.password
+          );
+          if (this.props.saved) {
+            this.props.saved(row);
+          }
+          this.setState({ saving: false, changed: false });
+        }
+      }, 100);
     }
   };
 
   render = () => {
+    console.log(this.props.encryptedSecrets, this.state.myHints?.own.to_json());
     return (
-      <Container>
-        <Grid
-          container
-          spacing={2}
-          style={{ textAlign: 'center' }}
-          marginTop={3}
-        >
+      <Grid container spacing={2} style={{ textAlign: 'center' }}>
+        {this.props.hideTx ? null : (
           <Grid item xs={12}>
-            <Card variant="outlined">
-              <CardContent>
-                <Grid container spacing={2} style={{ textAlign: 'center' }}>
-                  <Grid item xs={12}>
-                    {this.state.addresses.length > 0 && this.props.tx ? (
-                      <TxView
-                        network_type={this.props.wallet.network_type}
-                        tx={this.props.tx.unsigned_tx()}
-                        boxes={this.getBoxes()}
-                        addresses={this.state.addresses}
-                      />
-                    ) : (
-                      <Loading />
-                    )}
-                    <Divider />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      color="primary"
-                      disabled={!this.state.password}
-                      onClick={this.storeAll}
-                    >
-                      Save for later sign
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      color="primary"
-                      onClick={this.props.close}
-                    >
-                      Cancel & Delete
-                    </Button>
-                    <Divider />
-                  </Grid>
-                  {this.state.error ? (
-                    <Alert severity="error">
-                      An error occurred: {this.state.error}
-                    </Alert>
-                  ) : this.state.publishedId ? (
-                    <PublishedTxView
-                      txId={this.state.publishedId}
-                      networkType={this.getNetworkType()}
-                    />
-                  ) : this.state.mySign ? (
-                    <ShareTransactionMultiSig
-                      remainCount={this.commitmentCount()}
-                      required={parseInt(this.props.wallet.seed)}
-                      publishTx={() => this.publishTx()}
-                      commitment={this.state.qrCode}
-                    />
-                  ) : this.state.partialTx ? (
-                    <Grid xs={12} item>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        color="primary"
-                        onClick={() => this.signTx(this.state.password)}
-                      >
-                        Process Sign transaction
-                      </Button>
-                    </Grid>
-                  ) : this.state.myHints ? (
-                    <ShareCommitmentMultiSig
-                      count={this.commitmentCount()}
-                      required={parseInt(this.props.wallet.seed)}
-                      commitment={this.state.qrCode}
-                    />
-                  ) : this.state.relatedWallet ? (
-                    <RenderPassword
-                      accept={(password) => this.acceptPassword(password)}
-                      wallet={this.state.relatedWallet}
-                    />
-                  ) : null}
-                  {this.state.mySign ? (
-                    <Grid xs={12} item>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        color="primary"
-                        onClick={() => this.props.close()}
-                      >
-                        Completed
-                      </Button>
-                    </Grid>
-                  ) : !!this.state.partial || !this.state.myHints ? null : (
-                    <Grid xs={12} item>
-                      <MultiSigDataReader
-                        newData={(data: string) => this.loadJson(data)}
-                      />
-                    </Grid>
-                  )}
-                </Grid>
-              </CardContent>
-            </Card>
+            {this.state.addresses.length > 0 && this.props.tx ? (
+              <TxView
+                network_type={this.props.wallet.network_type}
+                tx={this.props.tx.unsigned_tx()}
+                boxes={this.getBoxes()}
+                addresses={this.state.addresses}
+              />
+            ) : (
+              <Loading />
+            )}
+            <Divider />
           </Grid>
+        )}
+        {this.state.error ? (
+          <Alert severity="error">An error occurred: {this.state.error}</Alert>
+        ) : this.state.publishedId ? (
+          <PublishedTxView
+            txId={this.state.publishedId}
+            networkType={this.getNetworkType()}
+          />
+        ) : this.state.mySign ? (
+          <ShareTransactionMultiSig
+            remainCount={this.commitmentCount()}
+            required={parseInt(this.props.wallet.seed)}
+            publishTx={() => this.publishTx()}
+            commitment={this.state.qrCode}
+          />
+        ) : this.state.partialTx ? (
+          <Grid xs={12} item>
+            <Button
+              variant="contained"
+              fullWidth
+              color="primary"
+              onClick={() => this.signTx(this.state.password)}
+            >
+              Process Sign transaction
+            </Button>
+          </Grid>
+        ) : this.state.myHints ? (
+          <ShareCommitmentMultiSig
+            count={this.commitmentCount()}
+            required={parseInt(this.props.wallet.seed)}
+            commitment={this.state.qrCode}
+          />
+        ) : this.state.relatedWallet ? (
+          <React.Fragment>
+            {this.props.encryptedSecrets ? (
+              <RenderPassword
+                action="Load Saved Commitment"
+                accept={(password) => this.decryptSecret(password)}
+                wallet={this.state.relatedWallet}
+                title="Enter wallet password to decrypt secret content for transaction"
+              />
+            ) : (
+              <RenderPassword
+                action="Create Commitment"
+                accept={(password) => this.acceptPassword(password)}
+                wallet={this.state.relatedWallet}
+              />
+            )}
+          </React.Fragment>
+        ) : null}
+        {this.state.mySign ? (
+          <Grid xs={12} item>
+            <Button
+              variant="contained"
+              fullWidth
+              color="primary"
+              onClick={() => this.props.close()}
+            >
+              Completed
+            </Button>
+          </Grid>
+        ) : !!this.state.partial || !this.state.myHints ? null : (
+          <Grid xs={12} item>
+            <MultiSigDataReader
+              newData={(data: string) => this.loadJson(data)}
+            />
+          </Grid>
+        )}
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            fullWidth
+            color="primary"
+            disabled={!this.state.changed}
+            // disabled={(!this.state.password || this.props.saved === undefined)}
+            onClick={this.storeAll}
+          >
+            {this.state.saving ? (
+              <React.Fragment>
+                <ReactLoading
+                  type="spin"
+                  color="#000"
+                  width="20px"
+                  height="20px"
+                />{' '}
+                &nbsp;
+              </React.Fragment>
+            ) : null}
+            {this.props.saved ? 'Save' : 'Update'}
+          </Button>
         </Grid>
-      </Container>
+        <Grid item xs={6}>
+          <Button
+            variant="contained"
+            fullWidth
+            color="primary"
+            onClick={this.props.close}
+          >
+            Cancel & Delete
+          </Button>
+          <Divider />
+        </Grid>
+      </Grid>
     );
   };
 }

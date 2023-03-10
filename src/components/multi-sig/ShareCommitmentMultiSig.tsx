@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import RequestQrcodeDisplay from '../request-qrcode-display/RequestQrcodeDisplay';
-import { PUBLISH_MANUAL_TYPES } from './PublishManualType';
+import PublishManualType, { PUBLISH_MANUAL_TYPES } from './PublishManualType';
 import ClipBoardTransfer from './ClipboardTransfer';
 
 interface ShareCommitmentPropsType {

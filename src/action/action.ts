@@ -26,6 +26,7 @@ const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
 export type HintType = {
   hint: string;
+  secret?: string;
   pubkey: {
     op: string;
     h: string;
@@ -114,14 +115,13 @@ class MultiSigActionClass {
     return res;
   };
 
-  generateCommitments = async (
-    wallet: wasm.Wallet,
-    tx: wasm.ReducedTransaction
+  extractCommitments = (
+    commitment: wasm.TransactionHintsBag,
+    inputLength: number
   ) => {
-    const commitment = wallet.generate_commitments_for_reduced_transaction(tx);
     const tx_known = wasm.TransactionHintsBag.empty();
     const tx_own = wasm.TransactionHintsBag.empty();
-    for (let index = 0; index < tx.unsigned_tx().inputs().len(); index++) {
+    for (let index = 0; index < inputLength; index++) {
       const input_commitments = commitment.all_hints_for_input(index);
       const input_known = wasm.HintsBag.empty();
       input_known.add_commitment(input_commitments.get(0));
@@ -136,10 +136,18 @@ class MultiSigActionClass {
     };
   };
 
+  generateCommitments = async (
+    wallet: wasm.Wallet,
+    tx: wasm.ReducedTransaction
+  ) => {
+    const commitment = wallet.generate_commitments_for_reduced_transaction(tx);
+    return this.extractCommitments(commitment, tx.unsigned_tx().inputs().len());
+  };
+
   commitmentToByte = (
     commitment: wasm.TransactionHintsBag,
     inputPublicKeys: Array<Array<string>>,
-    returnSecret = false
+    returnSecret = false // TODO must change to password. if password pass encrypt commitment and return
   ): Array<Array<string>> => {
     const json = commitment.to_json()['publicHints'];
     return inputPublicKeys.map((rowPublicKeys, index) => {
@@ -184,10 +192,12 @@ class MultiSigActionClass {
   generateHintBagJson = (
     publicKey: string,
     commitment: string,
-    index: number
+    index: number,
+    secret: string,
+    password?: string
   ): HintType => {
-    return {
-      hint: 'cmtReal',
+    const res: HintType = {
+      hint: secret ? 'cmtWithSecret' : 'cmtReal',
       pubkey: {
         op: '205',
         h: publicKey,
@@ -196,7 +206,55 @@ class MultiSigActionClass {
       a: Buffer.from(commitment, 'base64').toString('hex').toLowerCase(),
       position: `0-${index}`,
     };
+    if (secret && password) {
+      res['secret'] = decrypt(secret, password).toString('hex');
+    }
+    return res;
   };
+
+  getSecretHintBag = (
+    publicKeys: Array<Array<string>>,
+    commitments: Array<Array<string>>,
+    secrets: Array<Array<string>>,
+    password: string
+  ): wasm.TransactionHintsBag => {
+    const publicJson: { [key: string]: Array<HintType> } = {};
+    const secretJson: { [key: string]: Array<HintType> } = {};
+    publicKeys.forEach((inputPublicKeys, index) => {
+      const inputCommitments = commitments[index];
+      const inputSecrets =
+        secrets && secrets.length > index ? secrets[index] : [];
+      inputPublicKeys.forEach((inputPublicKey, pkIndex) => {
+        if (inputCommitments[pkIndex]) {
+          const commitment = this.generateHintBagJson(
+            inputPublicKey,
+            inputCommitments[pkIndex],
+            pkIndex,
+            ''
+          );
+          if (publicJson[`${index}`]) {
+            publicJson[`${index}`].push(commitment);
+          } else {
+            publicJson[`${index}`] = [commitment];
+          }
+          if (inputSecrets[pkIndex]) {
+            const secretCommitment = this.generateHintBagJson(
+              inputPublicKey,
+              inputCommitments[pkIndex],
+              pkIndex,
+              inputSecrets[pkIndex],
+              password
+            );
+            publicJson[`${index}`].push(secretCommitment);
+          }
+        }
+      });
+      secretJson[`${index}`] = [];
+    });
+    const resJson = { secretHints: secretJson, publicHints: publicJson };
+    return wasm.TransactionHintsBag.from_json(JSON.stringify(resJson));
+  };
+
   getHintBags = (
     publicKeys: Array<Array<string>>,
     commitments: Array<Array<string>>
@@ -210,7 +268,8 @@ class MultiSigActionClass {
           const commitment = this.generateHintBagJson(
             inputPublicKey,
             inputCommitments[pkIndex],
-            pkIndex
+            pkIndex,
+            ''
           );
           if (publicJson[`${index}`]) {
             publicJson[`${index}`].push(commitment);
