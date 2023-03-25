@@ -53,6 +53,7 @@ const SendConfirmMultiSig = (props: SendConfirmMultiSigPropsType) => {
       <Grid container>
         <MultiSigSignProcess
           hideTx={true}
+          saved={undefined}
           wallet={props.wallet}
           tx={tx}
           boxes={props.transaction.boxes}

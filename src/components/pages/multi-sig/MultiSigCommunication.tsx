@@ -17,6 +17,7 @@ import {
   WalletDbAction,
 } from '../../../action/db';
 import MultiSignRow from '../../../db/entities/multi-sig/MultiSignRow';
+import { MultiSigTxType } from '../../../db/entities/multi-sig/MultiSignTx';
 
 interface MultiSigCommunicationPropsType
   extends WalletPagePropsType,
@@ -24,10 +25,13 @@ interface MultiSigCommunicationPropsType
 
 interface MultiSigSignTxRow {
   commitment: Array<Array<string>>;
+  partial?: wasm.Transaction;
   tx: wasm.ReducedTransaction;
   boxes: wasm.ErgoBoxes;
   saved?: MultiSignRow;
   secrets?: Array<Array<string>>;
+  signed: Array<string>;
+  simulated: Array<string>;
 }
 
 interface MultiSigCommunicationStateType {
@@ -55,7 +59,12 @@ class MultiSigCommunication extends React.Component<
       const keys = await MultiSigDbAction.getWalletExternalKeys(wallet.id);
       const rows = await MultiStoreDbAction.getWalletMultiSigRows(wallet);
       for (const row of rows) {
-        const tx = await MultiStoreDbAction.getTx(row);
+        const tx = await MultiStoreDbAction.getTx(row, MultiSigTxType.Reduced);
+        const partial = await MultiStoreDbAction.getTx(
+          row,
+          MultiSigTxType.Partial
+        );
+        const { signed, simulated } = await MultiStoreDbAction.getSigners(row);
         const boxesBase64 = await MultiStoreDbAction.getInputs(row);
         const { commitments, secrets } =
           await MultiStoreDbAction.getCommitments(
@@ -67,14 +76,20 @@ class MultiSigCommunication extends React.Component<
         boxesBase64.forEach((item) =>
           boxes.add(wasm.ErgoBox.sigma_parse_bytes(Buffer.from(item, 'base64')))
         );
+        console.log('tx is ', tx);
         saved.push({
           tx: wasm.ReducedTransaction.sigma_parse_bytes(
             Buffer.from(tx, 'base64')
           ),
+          partial: partial
+            ? wasm.Transaction.sigma_parse_bytes(Buffer.from(partial, 'base64'))
+            : undefined,
           boxes,
           secrets,
           commitment: commitments,
           saved: row,
+          signed,
+          simulated,
         });
       }
       this.setState({ rows: saved });
@@ -108,7 +123,13 @@ class MultiSigCommunication extends React.Component<
             )
           )
           .forEach((box) => boxes.add(box));
-        const newRow = { commitment: data.commitments, boxes, tx };
+        const newRow: MultiSigSignTxRow = {
+          commitment: data.commitments,
+          boxes,
+          tx,
+          signed: [],
+          simulated: [],
+        };
         this.setState((state) => ({ ...state, rows: [...state.rows, newRow] }));
       }
     } catch (e) {
@@ -153,8 +174,12 @@ class MultiSigCommunication extends React.Component<
                   <CardContent>
                     <MultiSigSignProcess
                       wallet={this.props.wallet}
+                      partial={item.partial}
+                      signed={item.signed}
+                      simulated={item.simulated}
                       commitments={item.commitment}
                       tx={item.tx}
+                      row={item.saved}
                       boxes={item.boxes}
                       encryptedSecrets={item.secrets}
                       saved={

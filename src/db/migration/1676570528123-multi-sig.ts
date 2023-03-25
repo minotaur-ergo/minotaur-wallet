@@ -15,8 +15,10 @@ export class MultiSig1676570528123 implements MigrationInterface {
       `CREATE TABLE "multi-sign-tx" (
                 "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, 
                 "bytes" text NOT NULL, 
-                "index" integer NOT NULL, 
-                "txId" integer, CONSTRAINT "FK_05595439c77fd3771bf77e84cf5" FOREIGN KEY ("txId") 
+                "idx" integer NOT NULL, 
+                "txId" integer,
+                "type" text NOT NULL, 
+                CONSTRAINT "FK_05595439c77fd3771bf77e84cf5" FOREIGN KEY ("txId") 
                     REFERENCES "wallet" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
       `CREATE TABLE "multi-sign-input" (
                 "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, 
@@ -32,6 +34,13 @@ export class MultiSig1676570528123 implements MigrationInterface {
                 "secret" text, 
                 "txId" integer, CONSTRAINT "FK_9d5228b8828161d8eb2c8286196" FOREIGN KEY ("txId") 
                     REFERENCES "wallet" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
+      `CREATE TABLE "multi-signer" (
+                "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                "signer" text NOT NULL, 
+                "type" text NOT NULL, 
+                "txId" integer, 
+                CONSTRAINT "FK_fa7710bd6c52dc52a08ab8181fe" FOREIGN KEY ("txId") 
+                    REFERENCES "wallet" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`,
     ];
     for (const query of queries) {
       await queryRunner.query(query);
@@ -40,6 +49,7 @@ export class MultiSig1676570528123 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     const queries = [
+      `DROP TABLE "multi-signer"`,
       `DROP TABLE "multi-sign-input"`,
       `DROP TABLE "multi-sign-tx"`,
       `DROP TABLE "multi-commitment"`,

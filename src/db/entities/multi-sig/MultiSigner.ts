@@ -2,13 +2,13 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import Wallet from '../Wallet';
 import MultiSignRow from './MultiSignRow';
 
-enum MultiSigTxType {
-  Reduced = 'REDUCED',
-  Partial = 'PARTIAL',
+enum MultiSigSignerType {
+  Signed = 'SIGNED',
+  Simulated = 'SIMULATED',
 }
 
-@Entity({ name: 'multi-sign-tx' })
-class MultiSigSignTx {
+@Entity({ name: 'multi-signer' })
+class MultiSigner {
   @PrimaryGeneratedColumn()
   id = 0;
 
@@ -16,14 +16,11 @@ class MultiSigSignTx {
   tx: MultiSignRow | null = null;
 
   @Column('text')
-  bytes = '';
-
-  @Column('int')
-  idx = 0;
+  signer = '';
 
   @Column('text')
-  type: MultiSigTxType = MultiSigTxType.Reduced;
+  type: MultiSigSignerType = MultiSigSignerType.Signed;
 }
 
-export default MultiSigSignTx;
-export { MultiSigTxType };
+export default MultiSigner;
+export { MultiSigSignerType };

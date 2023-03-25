@@ -21,10 +21,15 @@ import MultiSigKey from '../db/entities/MultiSigKey';
 import MultiCommitment from '../db/entities/multi-sig/MultiCommitment';
 import MultiSignInput from '../db/entities/multi-sig/MultiSignInput';
 import MultiSignRow from '../db/entities/multi-sig/MultiSignRow';
-import MultiSignTx from '../db/entities/multi-sig/MultiSignTx';
+import MultiSignTx, {
+  MultiSigTxType,
+} from '../db/entities/multi-sig/MultiSignTx';
 import { sliceToChunksString } from '../util/util';
 import { TX_CHUNK_SIZE } from '../util/const';
 import { encrypt } from './enc';
+import MultiSigner, {
+  MultiSigSignerType,
+} from '../db/entities/multi-sig/MultiSigner';
 
 class WalletActionClass {
   private walletRepository: Repository<Wallet>;
@@ -861,12 +866,14 @@ class ConfigActionClass {
 class MultiStoreActionClass {
   private commitmentRepository: Repository<MultiCommitment>;
   private inputRepository: Repository<MultiSignInput>;
+  private signerRepository: Repository<MultiSigner>;
   private rowRepository: Repository<MultiSignRow>;
   private txRepository: Repository<MultiSignTx>;
 
   constructor(dataSource: DataSource) {
     this.commitmentRepository = dataSource.getRepository(MultiCommitment);
     this.inputRepository = dataSource.getRepository(MultiSignInput);
+    this.signerRepository = dataSource.getRepository(MultiSigner);
     this.rowRepository = dataSource.getRepository(MultiSignRow);
     this.txRepository = dataSource.getRepository(MultiSignTx);
   }
@@ -889,18 +896,23 @@ class MultiStoreActionClass {
     return await this.rowRepository.findOneBy({ txId: txId });
   };
 
-  public insertMultiSigTx = async (row: MultiSignRow, txBytes: string) => {
+  public insertMultiSigTx = async (
+    row: MultiSignRow,
+    txBytes: string,
+    txType: MultiSigTxType
+  ) => {
     await this.txRepository
       .createQueryBuilder()
       .delete()
-      .where({ tx: row })
+      .where({ tx: row, type: txType })
       .execute();
     const txChunks = sliceToChunksString(txBytes, TX_CHUNK_SIZE);
     for (const [index, chunk] of txChunks.entries()) {
       await this.txRepository.insert({
         tx: row,
         bytes: chunk,
-        index: index,
+        idx: index,
+        type: txType,
       });
     }
   };
@@ -953,6 +965,32 @@ class MultiStoreActionClass {
     }
   };
 
+  public insertMultiSigSigner = async (
+    row: MultiSignRow,
+    signers: Array<string>,
+    simulated: Array<string>
+  ) => {
+    await this.signerRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+    for (const signer of signers) {
+      await this.signerRepository.insert({
+        tx: row,
+        signer: signer,
+        type: MultiSigSignerType.Signed,
+      });
+    }
+    for (const single of simulated) {
+      await this.signerRepository.insert({
+        tx: row,
+        signer: single,
+        type: MultiSigSignerType.Simulated,
+      });
+    }
+  };
+
   public removeMultiSigRow = async (row: MultiSignRow) => {
     await this.commitmentRepository
       .createQueryBuilder()
@@ -982,14 +1020,14 @@ class MultiStoreActionClass {
     });
   };
 
-  public getTx = async (row: MultiSignRow) => {
+  public getTx = async (row: MultiSignRow, txType: MultiSigTxType) => {
     const elements = await this.txRepository
       .createQueryBuilder()
       .select()
-      .where({ tx: row })
-      .orderBy('MultiSigSignInput.index')
+      .where({ tx: row, type: txType })
       .getMany();
-    return elements.map((item) => item.bytes).join('');
+    const sortedElements = elements.sort((a, b) => a.idx - b.idx);
+    return sortedElements.map((item) => item.bytes).join('');
   };
 
   public getInputs = async (row: MultiSignRow) => {
@@ -1025,6 +1063,24 @@ class MultiStoreActionClass {
       commitments,
       secrets,
     };
+  };
+
+  public getSigners = async (row: MultiSignRow) => {
+    const signed: Array<string> = [];
+    const simulated: Array<string> = [];
+    const elements = await this.signerRepository
+      .createQueryBuilder()
+      .select()
+      .where({ tx: row })
+      .getMany();
+    elements.forEach((element) => {
+      if (element.type === MultiSigSignerType.Signed) {
+        signed.push(element.signer);
+      } else {
+        simulated.push(element.signer);
+      }
+    });
+    return { signed, simulated };
   };
 }
 
