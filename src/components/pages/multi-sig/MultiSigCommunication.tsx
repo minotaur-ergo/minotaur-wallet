@@ -76,7 +76,6 @@ class MultiSigCommunication extends React.Component<
         boxesBase64.forEach((item) =>
           boxes.add(wasm.ErgoBox.sigma_parse_bytes(Buffer.from(item, 'base64')))
         );
-        console.log('tx is ', tx);
         saved.push({
           tx: wasm.ReducedTransaction.sigma_parse_bytes(
             Buffer.from(tx, 'base64')
