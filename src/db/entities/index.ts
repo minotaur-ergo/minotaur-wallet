@@ -13,6 +13,11 @@ import Config from './Config';
 import AssetCountBox from './views/AssetCountBox';
 import TxBoxCount from './views/TxBoxCount';
 import MultiSigKey from './MultiSigKey';
+import MultiSignRow from './multi-sig/MultiSignRow';
+import MultiSignTx from './multi-sig/MultiSignTx';
+import MultiSignInput from './multi-sig/MultiSignInput';
+import MultiCommitment from './multi-sig/MultiCommitment';
+import MultiSigner from './multi-sig/MultiSigner';
 
 const Entities = [
   Wallet,
@@ -31,6 +36,11 @@ const Entities = [
   Config,
   AssetCountBox,
   TxBoxCount,
+  MultiSignRow,
+  MultiSignTx,
+  MultiSignInput,
+  MultiCommitment,
+  MultiSigner,
 ];
 
 export default Entities;

@@ -9,3 +9,5 @@ export const REFRESH_INTERVAL = 45 * 1000;
 export const ADDRESS_URL_PLACE_HOLDER = '#P2PK_ADDRESS#';
 
 export const INC_LIMIT = 10;
+
+export const TX_CHUNK_SIZE = 1024;
