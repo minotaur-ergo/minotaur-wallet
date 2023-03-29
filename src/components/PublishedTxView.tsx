@@ -13,9 +13,11 @@ const PublishedTxView = (props: PublishedTxViewPropsType) => {
   return (
     <Grid item xs={12}>
       <br />
-      Your transaction is generated and submitted to network.
+      Your transaction published to network.
+      {/*Your transaction is generated and submitted to network.*/}
       <br />
-      <br />
+      {/*<br />*/}
+      {/* TODO must open link in browser when using electron*/}
       <div
         onClick={() =>
           Browser.open({
@@ -28,7 +30,6 @@ const PublishedTxView = (props: PublishedTxViewPropsType) => {
       <br />
       It can take about 2 minutes to mine your transaction. also syncing your
       wallet may be slow
-      <br />
       <br />
     </Grid>
   );

@@ -54,7 +54,7 @@ const ShareCommitmentMultiSig = (props: ShareCommitmentPropsType) => {
       ) : props.remainCount > 0 ? (
         <ClipBoardTransfer requestData={props.commitment} />
       ) : null}
-      <Grid item xs={12} marginBottom={2}></Grid>
+      <Grid item xs={12} marginBottom={2} />
     </React.Fragment>
   );
 };

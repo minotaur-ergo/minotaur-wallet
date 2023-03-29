@@ -5,6 +5,7 @@ import { BlockChainAction } from '../../action/blockchain';
 import Loading from '../loading/Loading';
 import * as wasm from 'ergo-lib-wasm-browser';
 import MultiSigSignProcess from '../multi-sig/MultiSigSignProcess';
+import { Container, Grid } from '@mui/material';
 
 interface SendConfirmMultiSigPropsType {
   close: () => unknown;
@@ -48,12 +49,18 @@ const SendConfirmMultiSig = (props: SendConfirmMultiSigPropsType) => {
     }
   });
   return tx && props.transaction ? (
-    <MultiSigSignProcess
-      wallet={props.wallet}
-      tx={tx}
-      boxes={props.transaction.boxes}
-      close={props.close}
-    />
+    <Container>
+      <Grid container>
+        <MultiSigSignProcess
+          hideTx={true}
+          saved={undefined}
+          wallet={props.wallet}
+          tx={tx}
+          boxes={props.transaction.boxes}
+          close={props.close}
+        />
+      </Grid>
+    </Container>
   ) : (
     <Loading />
   );

@@ -22,7 +22,7 @@ const MultiSigDataReader = (props: MultiSigDataReaderPropsType) => {
   return (
     <Grid container aria-orientation="horizontal" spacing={2}>
       <Grid item xs={12} marginTop={2}>
-        <Typography>Read data from other wallets:</Typography>
+        <Typography>Read transaction data from other wallets:</Typography>
       </Grid>
       <Grid item xs={12}>
         <Button
