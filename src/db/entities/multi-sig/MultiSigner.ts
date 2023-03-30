@@ -1,5 +1,4 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Wallet from '../Wallet';
 import MultiSignRow from './MultiSignRow';
 
 enum MultiSigSignerType {
@@ -12,7 +11,7 @@ class MultiSigner {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
+  @ManyToOne(() => MultiSignRow, { onDelete: 'CASCADE' })
   tx: MultiSignRow | null = null;
 
   @Column('text')

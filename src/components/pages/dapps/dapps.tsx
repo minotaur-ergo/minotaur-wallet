@@ -1,5 +1,6 @@
 import React from 'react';
 import { Browser } from '@capacitor/browser';
+import openInBrowser from '../../../util/browser';
 
 const SigmaUSDReadme = () => (
   <div style={{ textAlign: 'justify' }}>
@@ -40,9 +41,7 @@ const SigmaUSDReadme = () => (
     <br />
     <b
       onClick={() =>
-        Browser.open({
-          url: `https://github.com/Emurgo/age-usd/blob/main/README.md`,
-        })
+        openInBrowser(`https://github.com/Emurgo/age-usd/blob/main/README.md`)
       }
     >
       Read more about AgeUSD protocol here

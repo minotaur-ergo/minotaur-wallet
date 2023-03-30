@@ -19,6 +19,7 @@ import { Browser } from '@capacitor/browser';
 import { getNetworkType, NetworkType } from '../../../util/network_type';
 import { AddressDbAction } from '../../../action/db';
 import TxView from '../../display-tx/TxView';
+import openInBrowser from '../../../util/browser';
 
 interface PropsType {
   closeQrcode: () => unknown;
@@ -103,9 +104,9 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
 
   openTxInExplorer = () => {
     if (this.state.network_type) {
-      Browser.open({
-        url: `${this.state.network_type.explorer_front}/en/transactions/${this.state.txId}`,
-      }).then(() => null);
+      openInBrowser(
+        `${this.state.network_type.explorer_front}/en/transactions/${this.state.txId}`
+      );
     }
   };
 

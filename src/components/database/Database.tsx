@@ -13,6 +13,9 @@ let dataSource: DataSource;
 declare global {
   interface Window {
     SQL: unknown;
+    electronApi: {
+      openUrl: (url: string) => unknown;
+    };
   }
 }
 
