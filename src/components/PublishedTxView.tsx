@@ -3,6 +3,7 @@ import { Grid } from '@mui/material';
 import { Browser } from '@capacitor/browser';
 import DisplayId from './display-id/DisplayId';
 import { NetworkType } from '../util/interface';
+import openInBrowser from '../util/browser';
 
 interface PublishedTxViewPropsType {
   txId: string;
@@ -17,12 +18,11 @@ const PublishedTxView = (props: PublishedTxViewPropsType) => {
       {/*Your transaction is generated and submitted to network.*/}
       <br />
       {/*<br />*/}
-      {/* TODO must open link in browser when using electron*/}
       <div
         onClick={() =>
-          Browser.open({
-            url: `${props.networkType.explorer_front}/en/transactions/${props.txId}`,
-          })
+          openInBrowser(
+            `${props.networkType.explorer_front}/en/transactions/${props.txId}`
+          )
         }
       >
         <DisplayId id={props.txId} />

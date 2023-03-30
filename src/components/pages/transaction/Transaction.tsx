@@ -8,6 +8,8 @@ import { WalletPagePropsType } from '../../../util/interface';
 import { TxDbAction } from '../../../action/db';
 import { INC_LIMIT } from '../../../util/const';
 import { Button, Divider, List } from '@mui/material';
+import { getNetworkType } from '../../../util/network_type';
+import openInBrowser from '../../../util/browser';
 
 interface TransactionStateType {
   transactions: Array<WalletTx>;
@@ -53,6 +55,11 @@ class Transaction extends React.Component<
 
   selectTransaction = (index: number) => {
     if (index < this.state.transactions.length && index >= 0) {
+      // TODO must display transaction parts
+      const tx = this.state.transactions[index];
+      const networkType = getNetworkType(tx.network_type);
+      const url = `${networkType.explorer_front}/en/transactions/${tx.tx_id}`;
+      openInBrowser(url);
       // const txJson = JsonAllBI.parse(this.state.transactions[index].json);
       // const inputs = txJson.inputs as Array<InputBox>;
       // const outputs = txJson.outputs.map((item: any) => wasm.ErgoBox.from_json(JsonAllBI.stringify(item)));
