@@ -14,6 +14,7 @@ import IssueToken from './pages/dApps/issueToken/IssueToken';
 import Send from './pages/send/Send';
 import AddWallet from './pages/addWallet/AddWallet';
 import MultiSigWallet from './pages/addWallet/multiSigWallet/MultiSigWallet';
+import Settings from './pages/settings/Settings';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -32,6 +33,8 @@ export const RouterMap = {
   Assets: '/v2/wallet/assets',
   Addresses: '/v2/wallet/addresses',
   Send: '/v2/wallet/send',
+  Settings: '/v2/settings',
+  AddressBook: '/v2/addressBook',
 };
 
 const V2Demo = () => {
@@ -81,6 +84,10 @@ const V2Demo = () => {
           element={<Addresses />}
         />
         <Route path={RouterMap.Send.replace('/v2', '')} element={<Send />} />
+        <Route
+          path={RouterMap.Settings.replace('/v2', '')}
+          element={<Settings />}
+        />
       </Routes>
     </AppTheme>
   );
