@@ -24,6 +24,11 @@ const RootBox = styled(Box)(
     width: 100%;
     height: 100%;
     filter: drop-shadow(0px 4px 6px #00000088);
+    display: flex;
+    flex-direction: row;
+    & div {
+      background-color: #fff;
+    }
   }
 `
 );
@@ -68,22 +73,9 @@ const AppToolbar = () => {
   return (
     <RootBox>
       <Box className="toolbar-frame">
-        <svg viewBox="0 0 100 20">
-          <defs>
-            <mask id="cut">
-              <rect x="0" y="0" width="100" height="20" fill="#fff" />
-              <path d="M38,0 Q45,0 45,10 L55,10 Q55,0 62,0 Z" fill="#000" />
-            </mask>
-          </defs>
-          <rect
-            x="0"
-            y="0"
-            width="100"
-            height="20"
-            fill="#fff"
-            mask="url(#cut)"
-          />
-        </svg>
+        <Box flexGrow={1} sx={{ borderTopRightRadius: 24 }} />
+        <Box flexBasis={36} sx={{ marginTop: 3 }} />
+        <Box flexGrow={1} sx={{ borderTopLeftRadius: 24 }} />
       </Box>
 
       <Grid
