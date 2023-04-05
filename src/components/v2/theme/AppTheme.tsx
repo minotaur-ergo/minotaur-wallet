@@ -132,11 +132,14 @@ export default function AppTheme(props: PropsType) {
       },
       MuiSlider: {
         styleOverrides: {
+          markActive: {
+            backgroundColor: '#0561f0',
+          },
           mark: {
-            width: 3,
-            height: 6,
+            width: 8,
+            height: 8,
             borderRadius: 8,
-            borderWidth: 1,
+            backgroundColor: '#9cbff5',
           },
         },
       },
