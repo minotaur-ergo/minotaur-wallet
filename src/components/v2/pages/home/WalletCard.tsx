@@ -13,6 +13,7 @@ const WalletCard = () => {
         mb: 3,
         mx: -1,
         position: 'relative',
+        zIndex: 1,
         backgroundColor: 'transparent',
       }}
       elevation={3}
