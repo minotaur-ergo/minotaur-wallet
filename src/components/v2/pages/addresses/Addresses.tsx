@@ -1,8 +1,9 @@
 import React from 'react';
 import HomeFrame from '../../layouts/HomeFrame';
-import { Button, SpeedDial, SpeedDialIcon } from '@mui/material';
+import { Button } from '@mui/material';
 import ListController from '../../components/ListController';
 import AddressItem from './AddressItem';
+import NewAddressForm from './NewAddressForm';
 
 const Addresses = () => {
   const getAddresses = () =>
@@ -33,11 +34,7 @@ const Addresses = () => {
         Display extended public key
       </Button>
 
-      <SpeedDial
-        ariaLabel="Create new address"
-        sx={{ position: 'absolute', bottom: 16 + 75, right: 16 }}
-        icon={<SpeedDialIcon />}
-      ></SpeedDial>
+      <NewAddressForm />
     </HomeFrame>
   );
 };
