@@ -42,6 +42,12 @@ export default function AppTheme(props: PropsType) {
         dark: '#c62828',
         contrastText: '#fff',
       },
+      info: {
+        light: '#b2ceff',
+        main: '#0561f0',
+        dark: '#022964',
+        contrastText: '#fff',
+      },
     },
     shape: {
       borderRadius: BORDER_RADIUS,
