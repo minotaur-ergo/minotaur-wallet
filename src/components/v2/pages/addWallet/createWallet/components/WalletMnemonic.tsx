@@ -8,6 +8,9 @@ import {
   Typography,
   Alert,
   AlertTitle,
+  Stack,
+  FormHelperText,
+  FormControl,
 } from '@mui/material';
 import PasswordField from '../../../../components/PasswordField';
 
@@ -32,9 +35,7 @@ export default function WalletMnemonic() {
         recommended. The more mnemonic words, the more secure.{' '}
       </Typography>
       <Slider
-        // aria-label="Temperature"
         defaultValue={30}
-        // getAriaValueText={valuetext}
         valueLabelDisplay="auto"
         step={3}
         marks
@@ -44,15 +45,28 @@ export default function WalletMnemonic() {
       />
       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', my: 2 }}>
         {words.map((word, index) => (
-          <Chip label={word} key={index} />
+          <Chip
+            label={word}
+            icon={
+              <Typography
+                color="textSecondary"
+                sx={{ px: 0.5, fontSize: 'inherit' }}
+              >
+                {index + 1}
+              </Typography>
+            }
+            key={index}
+          />
         ))}
       </Box>
-      <FormControlLabel
-        control={<Switch />}
-        label="Extend mnemonic using extra password"
-      />
-      <PasswordField label="Mnemonic passphrase" />
-      <PasswordField label="Confirm mnemonic passphrase" />
+      <Stack spacing={2}>
+        <FormControl>
+          <FormControlLabel control={<Switch />} label="Extra password" />
+          <FormHelperText>Extend mnemonic using extra password</FormHelperText>
+        </FormControl>
+        <PasswordField label="Mnemonic passphrase" />
+        <PasswordField label="Confirm mnemonic passphrase" />
+      </Stack>
     </Box>
   );
 }
