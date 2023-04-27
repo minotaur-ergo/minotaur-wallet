@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
-import { Box, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Heading from '../../components/Heading';
-import { Edit } from '@mui/icons-material';
+import SolitaryTextField from '../../components/SolitaryTextField';
+import SolitarySwitchField from '../../components/SolitarySwitchField';
 
 const WalletSettings = () => {
-  const [data, setData] = useState({ name: 'My First Wallet' });
+  const [data, setData] = useState({
+    name: 'My First Wallet',
+    privacyMode: true,
+  });
   return (
     <Box mb={2}>
       <Heading title="Wallet Settings" />
-      <TextField
-        label="Wallet name"
-        value={data.name}
-        inputProps={{ readOnly: true }}
-        // onChange={(e) =>
-        //   setData((prevState: WalletDataType) => ({
-        //     ...prevState,
-        //     name: e.target.value,
-        //   }))
-        // }
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton edge="end">
-                <Edit />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+      <Stack spacing={2}>
+        <SolitaryTextField
+          label="Wallet name"
+          value={data.name}
+          onChange={(newValue) =>
+            setData((prevState) => ({ ...prevState, name: newValue }))
+          }
+        />
+        <SolitarySwitchField
+          label="Privacy mode"
+          value={data.privacyMode}
+          onChange={(checked) =>
+            setData((prevState) => ({ ...prevState, privacyMode: checked }))
+          }
+          helperText="Some description about this option goes here."
+        />
+      </Stack>
     </Box>
   );
 };

@@ -1,14 +1,14 @@
 import React from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import Heading from '../../components/Heading';
 import WalletSettings from './WalletSettings';
+import GlobalSettings from './GlobalSettings';
 
 const Settings = () => {
   return (
     <AppFrame title="Settings" navigation={<BackButton />}>
       <WalletSettings />
-      <Heading title="Global Settings" />
+      <GlobalSettings />
     </AppFrame>
   );
 };
