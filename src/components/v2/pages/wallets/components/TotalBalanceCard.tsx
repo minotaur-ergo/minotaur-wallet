@@ -11,6 +11,7 @@ const TotalBalanceCard = () => {
       sx={{
         mb: 3,
         position: 'relative',
+        zIndex: 1,
         backgroundColor: 'transparent',
       }}
       elevation={3}
