@@ -15,6 +15,7 @@ import Send from './pages/send/Send';
 import AddWallet from './pages/addWallet/AddWallet';
 import MultiSigWallet from './pages/addWallet/multiSigWallet/MultiSigWallet';
 import Settings from './pages/settings/Settings';
+import WalletChangePassword from './pages/settings/WalletChangePassword';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -34,6 +35,7 @@ export const RouterMap = {
   Addresses: '/v2/wallet/addresses',
   Send: '/v2/wallet/send',
   Settings: '/v2/settings',
+  ChangePassword: '/v2/settings/changePassword',
   AddressBook: '/v2/addressBook',
 };
 
@@ -87,6 +89,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.Settings.replace('/v2', '')}
           element={<Settings />}
+        />
+        <Route
+          path={RouterMap.ChangePassword.replace('/v2', '')}
+          element={<WalletChangePassword />}
         />
       </Routes>
     </AppTheme>
