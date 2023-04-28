@@ -21,9 +21,6 @@ jobs:
         with:
           node-version: 16.*
 
-      - name: Remove old package-lock file
-        run: rm package-lock.json
-
       - name: Install app dependencies
         run: npm install
 
@@ -67,9 +64,6 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Remove old package-lock file
-        run: rm package-lock.json
-
       - name: Install app dependencies
         run: npm install
 
@@ -104,9 +98,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
-
-      - name: Remove old package-lock file
-        run: rm package-lock.json
 
       - name: Install app dependencies
         run: npm install
