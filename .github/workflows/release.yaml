@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 16.19.1
 
       - name: Remove old package-lock file
         run: rm package-lock.json
