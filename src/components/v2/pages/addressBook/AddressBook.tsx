@@ -15,13 +15,13 @@ const AddressBook = () => {
       resolve([
         {
           name: 'Address 1',
-          amount: 60,
-          id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+          address:
+            '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
         },
         {
-          amount: 60,
           name: 'Address 2',
-          id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+          address:
+            'c25f71cb23683086b2ed086b0841b6506add2eae7ef2c25fae7ef2d1d6ad',
         },
       ]);
     });
