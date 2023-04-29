@@ -12,6 +12,9 @@ on:
 jobs:
   release-linux:
     runs-on: ubuntu-latest
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAP_LOGIN }}
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -46,9 +49,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
 
       - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
-        with:
-          snapcraft_token: ${{ secrets.SNAP_LOGIN }}
+        uses: samuelmeuli/action-snapcraft@v2
 
       - name: Upload to snapstore
         run: snapcraft upload --release candidate electron/dist/minotaur-wallet*.snap
