@@ -18,6 +18,7 @@ import Settings from './pages/settings/Settings';
 import WalletChangePassword from './pages/settings/WalletChangePassword';
 import AddressBook from './pages/addressBook/AddressBook';
 import AddAddress from './pages/addressBook/AddAddress';
+import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -40,6 +41,7 @@ export const RouterMap = {
   ChangePassword: '/v2/settings/changePassword',
   AddressBook: '/v2/addressBook',
   AddAddress: '/v2/addressBook/add',
+  MultiSigCom: '/v2/multisigCom',
 };
 
 const V2Demo = () => {
@@ -104,6 +106,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.AddAddress.replace('/v2', '')}
           element={<AddAddress />}
+        />
+        <Route
+          path={RouterMap.MultiSigCom.replace('/v2', '')}
+          element={<MultiSigCommunication />}
         />
       </Routes>
     </AppTheme>
