@@ -22,7 +22,7 @@ export default function WalletMnemonic() {
         Please save these words on paper (order is important). This mnemonic is
         the only way to recover your wallet.
       </Typography>
-      <Alert severity="warning" variant="outlined" sx={{ my: 2 }}>
+      <Alert severity="warning" sx={{ my: 2 }}>
         <AlertTitle>Warning</AlertTitle>
         Never disclose your mnemonic.
         <br />
