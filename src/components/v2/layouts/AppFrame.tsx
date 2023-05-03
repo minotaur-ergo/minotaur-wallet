@@ -8,7 +8,8 @@ const AppBox = styled(Box)(
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  
+  z-index: 1;
+ 
   & .appbar {
     display: grid;
     grid-template-columns: 1fr 1fr; 
