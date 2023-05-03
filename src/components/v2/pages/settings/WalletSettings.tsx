@@ -5,6 +5,7 @@ import SolitaryTextField from '../../components/SolitaryTextField';
 import SolitarySwitchField from '../../components/SolitarySwitchField';
 import ActionButton from './ActionButton';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useNavigate } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
 
@@ -37,6 +38,12 @@ const WalletSettings = () => {
           label="Change password"
           helperText="Some description about this option goes here."
           onClick={() => navigate(RouterMap.ChangePassword)}
+        />
+        <ActionButton
+          label="Extended public key"
+          helperText="Display extended public key for read-only wallet."
+          icon={<VisibilityOutlinedIcon />}
+          onClick={() => navigate(RouterMap.PublicKey)}
         />
         <ActionButton
           label="Export wallet"

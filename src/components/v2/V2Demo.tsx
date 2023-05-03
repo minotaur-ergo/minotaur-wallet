@@ -19,6 +19,7 @@ import WalletChangePassword from './pages/settings/WalletChangePassword';
 import AddressBook from './pages/addressBook/AddressBook';
 import AddAddress from './pages/addressBook/AddAddress';
 import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
+import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -39,6 +40,7 @@ export const RouterMap = {
   Send: '/v2/wallet/send',
   Settings: '/v2/settings',
   ChangePassword: '/v2/settings/changePassword',
+  PublicKey: '/v2/settings/extendedPublicKey',
   AddressBook: '/v2/addressBook',
   AddAddress: '/v2/addressBook/add',
   MultiSigCom: '/v2/multisigCom',
@@ -98,6 +100,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ChangePassword.replace('/v2', '')}
           element={<WalletChangePassword />}
+        />
+        <Route
+          path={RouterMap.PublicKey.replace('/v2', '')}
+          element={<WalletExtendedPublicKey />}
         />
         <Route
           path={RouterMap.AddressBook.replace('/v2', '')}

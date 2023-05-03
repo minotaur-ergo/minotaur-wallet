@@ -1,6 +1,5 @@
 import React from 'react';
 import HomeFrame from '../../layouts/HomeFrame';
-import { Button } from '@mui/material';
 import ListController from '../../components/ListController';
 import AddressItem from './AddressItem';
 import NewAddressForm from './NewAddressForm';
@@ -29,11 +28,6 @@ const Addresses = () => {
         divider={false}
         emptyTitle="You have no adr yet"
       />
-
-      <Button variant="text" sx={{ mt: 3 }}>
-        Display extended public key
-      </Button>
-
       <NewAddressForm />
     </HomeFrame>
   );
