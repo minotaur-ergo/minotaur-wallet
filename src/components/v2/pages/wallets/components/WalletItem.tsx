@@ -3,7 +3,6 @@ import { Box, Card, CardActionArea, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getRoute } from '../../../../route/routerMap';
 import { RouterMap } from '../../../V2Demo';
-import { ReactComponent as ErgoIcon } from '../../../icons/ergo.svg';
 import SvgIcon from '../../../icons/SvgIcon';
 
 interface PropsType {
@@ -14,6 +13,7 @@ interface PropsType {
   amount?: number;
   value?: number;
   index: number;
+  numberOfTokens?: number;
 }
 
 const COLORS = ['#fec844', '#f1592a', '#32b14a', '#4a9195', '#3c5152'];
@@ -26,6 +26,7 @@ export default function ({
   net = '',
   value = 0,
   index,
+  numberOfTokens = 0,
 }: PropsType) {
   const navigate = useNavigate();
 
@@ -33,13 +34,17 @@ export default function ({
     <Card>
       <CardActionArea
         onClick={() => navigate(getRoute(RouterMap.Home, { id }))}
-        sx={{ bgcolor: COLORS[index % COLORS.length] + '70', display: 'flex' }}
+        sx={{
+          bgcolor: COLORS[index % COLORS.length] + '70',
+          display: 'flex',
+          alignItems: 'start',
+        }}
       >
         <Box
           sx={{
             bgcolor: '#ffffff8f',
             p: 1,
-            my: 2,
+            my: 3,
             borderTopRightRadius: 12,
             borderBottomRightRadius: 12,
           }}
@@ -56,21 +61,29 @@ export default function ({
             >
               {name}
             </Typography>
-            <Typography>
+            <Typography sx={{ flexShrink: 0 }}>
               {amount.toFixed(2)} <small>ERG</small>
             </Typography>
           </Box>
           <Box display="flex">
             <Typography
               color="textSecondary"
-              sx={{ fontSize: '0.7rem', flexGrow: 1 }}
+              variant="body2"
+              sx={{ flexGrow: 1 }}
             >
               {type} on {net}
             </Typography>
-            <Typography sx={{ fontSize: '0.7rem' }} color="textSecondary">
+            <Typography variant="body2" color="textSecondary">
               ${value.toFixed(2)}
             </Typography>
           </Box>
+          <Typography variant="body2" color="textSecondary">
+            {numberOfTokens > 0
+              ? `Includes ${numberOfTokens} token${
+                  numberOfTokens > 1 ? 's' : ''
+                }`
+              : 'No token'}
+          </Typography>
         </Box>
       </CardActionArea>
     </Card>
