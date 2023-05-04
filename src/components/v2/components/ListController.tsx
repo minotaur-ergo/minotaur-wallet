@@ -10,7 +10,7 @@ interface PropsType {
   getData(): Promise<any>;
   emptyTitle: string;
   emptyDescription?: string;
-  emptyIcon?: string;
+  emptyIcon?: string | false;
   divider?: boolean;
 }
 
@@ -86,7 +86,7 @@ export default function ({
         <StateMessage
           title={emptyTitle}
           description={emptyDescription}
-          icon={<SvgIcon icon={emptyIcon || 'document'} />}
+          icon={emptyIcon ? <SvgIcon icon={emptyIcon ?? 'document'} /> : false}
         />
       </Box>
     );

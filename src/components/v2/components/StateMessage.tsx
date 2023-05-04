@@ -4,7 +4,7 @@ import { Box, Typography, TypographyProps } from '@mui/material';
 interface PropsType {
   title: string;
   description?: string;
-  icon?: ReactElement;
+  icon?: ReactElement | false;
   color?: TypographyProps['color'];
   disableIconShadow?: boolean;
 }

@@ -17,6 +17,7 @@ const Addresses = () => {
           name: 'Secondary Address',
           amount: 0,
           id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+          numberOfTokens: 3,
         },
       ]);
     });
