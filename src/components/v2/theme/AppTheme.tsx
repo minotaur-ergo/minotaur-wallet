@@ -43,7 +43,7 @@ export default function AppTheme(props: PropsType) {
         contrastText: '#fff',
       },
       info: {
-        light: '#b2ceff',
+        light: '#d0e1ff',
         main: '#0561f0',
         dark: '#022964',
         contrastText: '#fff',
