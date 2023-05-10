@@ -120,6 +120,15 @@ const ReceiverForm = ({
             </InputAdornment>
           ),
         }}
+        helperText={
+          <Button
+            variant="text"
+            fullWidth={false}
+            sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
+          >
+            38 available
+          </Button>
+        }
       />
       <FormControl>
         <InputLabel id="demo-multiple-checkbox-label">Tokens</InputLabel>
@@ -161,6 +170,15 @@ const ReceiverForm = ({
             });
             onEdit(index, Object.assign({}, receiver, { tokens: newTokens }));
           }}
+          helperText={
+            <Button
+              variant="text"
+              fullWidth={false}
+              sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
+            >
+              124 available
+            </Button>
+          }
         />
       ))}
     </Stack>
