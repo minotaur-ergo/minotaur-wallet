@@ -118,18 +118,20 @@ export default function ({
         <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
           _QR CODE_
         </Box>
-        <Card>
-          <CardActionArea
-            onClick={handle_copy}
-            sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}
-          >
-            <Typography sx={{ overflowWrap: 'anywhere' }}>{id}</Typography>
-            <IconButton>
-              <ContentCopyIcon />
-            </IconButton>
-          </CardActionArea>
-        </Card>
-        <SnackAlert ref={snackbar} message="Address copied!" />
+        <Box>
+          <Card>
+            <CardActionArea
+              onClick={handle_copy}
+              sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}
+            >
+              <Typography sx={{ overflowWrap: 'anywhere' }}>{id}</Typography>
+              <IconButton>
+                <ContentCopyIcon />
+              </IconButton>
+            </CardActionArea>
+          </Card>
+          <SnackAlert ref={snackbar} message="Address copied!" />
+        </Box>
         <Typography
           sx={{ my: 2, overflowWrap: 'anywhere', textAlign: 'center' }}
           variant="body2"
