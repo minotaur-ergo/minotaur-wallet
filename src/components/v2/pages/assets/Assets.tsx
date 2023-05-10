@@ -8,8 +8,40 @@ const Assets = () => {
     new Promise((resolve, reject) => {
       const x = Math.random();
       setTimeout(() => {
-        if (x >= 0.5)
+        if (x >= 0.4)
           resolve([
+            {
+              name: 'Ergold',
+              amount: 60,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+              logoSrc: '/Ergold.png',
+            },
+            {
+              name: 'Ergold',
+              amount: 15,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+              logoSrc: '/logo192.png',
+            },
+            {
+              name: 'Ergold',
+              amount: 23,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+            },
+            {
+              name: 'Token 1',
+              amount: 68.65,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+            },
+            {
+              name: 'Token 2',
+              amount: 1570,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+            },
+            {
+              name: 'Token 3',
+              amount: 0,
+              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+            },
             {
               name: 'Ergold',
               amount: 60,
@@ -44,6 +76,7 @@ const Assets = () => {
         getData={getAssets}
         emptyTitle="You have no assets yet"
         emptyDescription="You can issue new asset using Issue Token dApp."
+        divider={false}
       />
     </HomeFrame>
   );
