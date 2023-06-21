@@ -3,7 +3,7 @@ import { Button, IconButton } from '@mui/material';
 import AppFrame from '../../../layouts/AppFrame';
 import BackButton from '../../../components/BackButton';
 import { useNavigate } from 'react-router-dom';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
 import Stepper from '../../../components/Stepper';
 import TransactionBoxes from '../../send/TransactionBoxes';
 import Backdrop from '@mui/material/Backdrop';

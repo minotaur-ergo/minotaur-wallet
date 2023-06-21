@@ -31,27 +31,15 @@ export default function AppTheme(props: PropsType) {
         contrastText: '#fff',
       },
       success: {
-        light: '#ddffde',
-        main: '#2e7d32',
+        light: '#00ff0a',
+        main: '#2f7f57',
         dark: '#1b5e20',
-        contrastText: '#fff',
-      },
-      warning: {
-        light: '#fff2df',
-        main: '#ed6c02',
-        dark: '#984111',
         contrastText: '#fff',
       },
       error: {
         light: '#ff2828',
         main: '#d32f2f',
         dark: '#c62828',
-        contrastText: '#fff',
-      },
-      info: {
-        light: '#d0e1ff',
-        main: '#0561f0',
-        dark: '#022964',
         contrastText: '#fff',
       },
     },
@@ -148,6 +136,15 @@ export default function AppTheme(props: PropsType) {
         styleOverrides: {
           root: {
             backgroundColor: '#ffffffa8',
+          },
+        },
+      },
+      MuiAlertTitle: {
+        styleOverrides: {
+          root: {
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            marginBottom: 0,
           },
         },
       },

@@ -11,9 +11,11 @@ import {
   Menu,
   MenuItem,
   Typography,
-  Card,
   FormHelperText,
   Stack,
+  Alert,
+  AlertTitle,
+  AlertColor,
 } from '@mui/material';
 import TransactionBoxes from '../send/TransactionBoxes';
 import PasswordField from '../../components/PasswordField';
@@ -118,23 +120,17 @@ const StateAlert = ({
           description: `Signed by ${step} of ${totalSteps} required signers.`,
         };
       default:
-        return {};
+        return {
+          color: 'info',
+        };
     }
   }, [stateId, step]);
 
   return (
-    <Card sx={{ p: 2, mb: 2, bgcolor: `${state.color}.light` }} elevation={0}>
-      <Typography
-        fontWeight="bold"
-        textTransform="uppercase"
-        color={`${state.color}.dark`}
-      >
-        {state.title}
-      </Typography>
-      <Typography variant="body2" color="textSecondary">
-        {state.description}
-      </Typography>
-    </Card>
+    <Alert severity={state.color as AlertColor} icon={false}>
+      <AlertTitle>{state.title}</AlertTitle>
+      {state.description}
+    </Alert>
   );
 };
 

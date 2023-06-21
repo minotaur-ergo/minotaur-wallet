@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import BackIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton } from '@mui/material';
 
 interface PropsType {
@@ -16,7 +16,7 @@ export default function BackButton(props: PropsType) {
 
   return (
     <IconButton onClick={handleBack}>
-      <ChevronLeftIcon />
+      <BackIcon />
     </IconButton>
   );
 }

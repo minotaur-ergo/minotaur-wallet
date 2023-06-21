@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Box, Button, Card, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  FormHelperText,
+} from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -225,18 +232,12 @@ export default function () {
           <MenuItem value={20}>Main Address</MenuItem>
           <MenuItem value={30}>Secondary Address</MenuItem>
         </Select>
+        <FormHelperText sx={{ fontSize: '1rem' }}>
+          {(38).toFixed(2)} available
+        </FormHelperText>
       </FormControl>
 
-      <Card sx={{ p: 2, my: 2, bgcolor: 'info.light' }} elevation={0}>
-        <Typography fontWeight="bold" fontSize="large" color="info.dark">
-          {49.89 + ' '}
-          <Typography component="span" color="textSecondary">
-            ERG is available
-          </Typography>
-        </Typography>
-      </Card>
-
-      <Stack spacing={3} sx={{ mb: 3 }}>
+      <Stack spacing={3} sx={{ mb: 3, mt: 2 }}>
         {receivers.map((receiver, index) => (
           <ReceiverForm
             key={index}

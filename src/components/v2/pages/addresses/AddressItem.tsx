@@ -8,6 +8,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Alert,
 } from '@mui/material';
 import DisplayId from '../../components/DisplayId';
 import Drawer from '@mui/material/Drawer';
@@ -119,17 +120,16 @@ export default function ({
           _QR CODE_
         </Box>
         <Box>
-          <Card>
-            <CardActionArea
-              onClick={handle_copy}
-              sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}
-            >
-              <Typography sx={{ overflowWrap: 'anywhere' }}>{id}</Typography>
-              <IconButton>
-                <ContentCopyIcon />
-              </IconButton>
-            </CardActionArea>
-          </Card>
+          <CardActionArea onClick={handle_copy}>
+            <Alert severity="info" icon={false}>
+              <Box display="flex">
+                <Typography sx={{ overflowWrap: 'anywhere' }}>{id}</Typography>
+                <IconButton color="inherit">
+                  <ContentCopyIcon />
+                </IconButton>
+              </Box>
+            </Alert>
+          </CardActionArea>
           <SnackAlert ref={snackbar} message="Address copied!" />
         </Box>
         <Typography

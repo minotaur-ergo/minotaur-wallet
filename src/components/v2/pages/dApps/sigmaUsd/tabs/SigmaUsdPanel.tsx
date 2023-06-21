@@ -4,23 +4,17 @@ import {
   TextField,
   Button,
   Typography,
-  Card,
   Divider,
+  Alert,
 } from '@mui/material';
 
 const SigmaUsdPanel = () => {
   return (
     <Box>
-      <Card sx={{ p: 2, mb: 3, bgcolor: 'secondary.light' }} variant="outlined">
+      <Alert severity="info" icon={false} sx={{ mb: 2 }}>
         <Typography gutterBottom>1 ERG = 4.45 SigmaUSD</Typography>
-        <Typography variant="body2" color="textSecondary">
-          Circulatory Supply:
-          <Typography variant="body2" component="span" color="textPrimary">
-            {' '}
-            {1151844.72}
-          </Typography>
-        </Typography>
-      </Card>
+        Circulatory Supply: <strong>{1151844.72}</strong>
+      </Alert>
 
       <Typography variant="h2">Purchase SigmaUSD</Typography>
       <Typography color="textSecondary" sx={{ mb: 2, mt: 1 }}>

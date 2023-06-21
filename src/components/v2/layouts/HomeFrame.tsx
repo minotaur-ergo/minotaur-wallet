@@ -1,11 +1,13 @@
 import React, { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppFrame from './AppFrame';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { RouterMap } from '../V2Demo';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AppToolbar from './AppToolbar';
+import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 interface PropsType {
   children?: ReactNode;
@@ -40,9 +42,15 @@ const HomeFrame = ({ children }: PropsType) => {
           </IconButton>
           <Menu anchorEl={anchorEl} open={open} onClose={handle_close_menu}>
             <MenuItem onClick={() => navigate(RouterMap.Settings)}>
+              <ListItemIcon>
+                <SettingsOutlinedIcon />
+              </ListItemIcon>
               Settings
             </MenuItem>
             <MenuItem onClick={() => navigate(RouterMap.AddressBook)}>
+              <ListItemIcon>
+                <ContactsOutlinedIcon />
+              </ListItemIcon>
               Address book
             </MenuItem>
           </Menu>

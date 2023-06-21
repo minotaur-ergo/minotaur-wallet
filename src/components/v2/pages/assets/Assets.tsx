@@ -76,6 +76,7 @@ const Assets = () => {
         getData={getAssets}
         emptyTitle="You have no assets yet"
         emptyDescription="You can issue new asset using Issue Token dApp."
+        emptyIcon="document"
         divider={false}
       />
     </HomeFrame>

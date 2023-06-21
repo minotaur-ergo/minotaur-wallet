@@ -11,6 +11,7 @@ import EnterPassword from './steps/EnterPassword';
 import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
 import TransactionBoxes from './TransactionBoxes';
 import SuccessSend from './SuccessSend';
+import NextIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Send = () => {
   const navigate = useNavigate();
@@ -61,7 +62,10 @@ const Send = () => {
       toolbar={
         <>
           <Stack spacing={2}>
-            <Button onClick={handleNext}>
+            <Button
+              onClick={handleNext}
+              endIcon={step === STEPS_COUNTS ? undefined : <NextIcon />}
+            >
               {step === STEPS_COUNTS ? 'Send' : 'Next'}
             </Button>
             {step === STEPS_COUNTS && <Button variant="outlined">Save</Button>}

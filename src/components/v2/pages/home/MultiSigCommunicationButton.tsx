@@ -13,7 +13,6 @@ export default function () {
           justifyContent: 'left',
           p: 2,
           bgcolor: 'primary.dark',
-          color: 'info.light',
         }}
         onClick={() => navigate(RouterMap.MultiSigCom)}
       >

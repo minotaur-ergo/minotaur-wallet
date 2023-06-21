@@ -1,34 +1,22 @@
 import React from 'react';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, FormHelperText, Typography } from '@mui/material';
 import PasswordField from '../../../components/PasswordField';
 
 export default function () {
-  const [age, setAge] = React.useState('');
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
-
   return (
     <Box>
-      <Typography variant="body2" color="textSecondary" sx={{ mt: 1, p: 1 }}>
-        Total Spent:{' '}
-        <Typography component="span" color="textPrimary">
-          3.0011
-        </Typography>{' '}
-        ERG
+      <Typography variant="body2" color="textSecondary">
+        Total spent
       </Typography>
-      <Typography variant="body2" color="textSecondary" sx={{ mt: 1, p: 1 }}>
+      <Typography fontSize="large">
+        {(3.0011).toFixed(2)}{' '}
+        <Typography component="span" variant="body2" color="textSecondary">
+          ERG
+        </Typography>
+      </Typography>
+      <FormHelperText sx={{ mb: 2 }}>
         These amount will be spent when transaction proceed.
-      </Typography>
+      </FormHelperText>
 
       <PasswordField
         label="Wallet Password"
