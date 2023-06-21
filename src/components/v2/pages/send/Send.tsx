@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Stepper from '../../components/Stepper';
 import AmountToSend from './steps/AmountToSend';
 import EnterPassword from './steps/EnterPassword';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
 import TransactionBoxes from './TransactionBoxes';
 import SuccessSend from './SuccessSend';
 
