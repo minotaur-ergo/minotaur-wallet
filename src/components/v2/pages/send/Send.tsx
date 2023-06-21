@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Stack } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
@@ -59,9 +59,14 @@ const Send = () => {
         ) : undefined
       }
       toolbar={
-        <Button onClick={handleNext}>
-          {step === STEPS_COUNTS ? 'Send' : 'Next'}
-        </Button>
+        <>
+          <Stack spacing={2}>
+            <Button onClick={handleNext}>
+              {step === STEPS_COUNTS ? 'Send' : 'Next'}
+            </Button>
+            {step === STEPS_COUNTS && <Button variant="outlined">Save</Button>}
+          </Stack>
+        </>
       }
     >
       <Stepper activeStep={step}>

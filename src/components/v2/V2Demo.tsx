@@ -20,6 +20,7 @@ import AddressBook from './pages/addressBook/AddressBook';
 import AddAddress from './pages/addressBook/AddAddress';
 import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
 import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
+import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -44,6 +45,7 @@ export const RouterMap = {
   AddressBook: '/v2/addressBook',
   AddAddress: '/v2/addressBook/add',
   MultiSigCom: '/v2/multisigCom',
+  MultiSigTrans: '/v2/multisigCom/:id',
 };
 
 const V2Demo = () => {
@@ -116,6 +118,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.MultiSigCom.replace('/v2', '')}
           element={<MultiSigCommunication />}
+        />
+        <Route
+          path={RouterMap.MultiSigTrans.replace('/v2', '')}
+          element={<MultiSigTransaction />}
         />
       </Routes>
     </AppTheme>

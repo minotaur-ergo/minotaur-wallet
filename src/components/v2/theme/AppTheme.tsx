@@ -31,9 +31,15 @@ export default function AppTheme(props: PropsType) {
         contrastText: '#fff',
       },
       success: {
-        light: '#00ff0a',
+        light: '#ddffde',
         main: '#2e7d32',
         dark: '#1b5e20',
+        contrastText: '#fff',
+      },
+      warning: {
+        light: '#fff2df',
+        main: '#ed6c02',
+        dark: '#984111',
         contrastText: '#fff',
       },
       error: {
@@ -79,7 +85,16 @@ export default function AppTheme(props: PropsType) {
         styleOverrides: {
           root: {
             padding: '0.75rem',
+            fontSize: '1rem',
             textTransform: 'none',
+          },
+          outlined: {
+            backgroundColor: '#eaeaea',
+            border: 0,
+            '&:focus': {
+              backgroundColor: '#eaeaea',
+              border: 0,
+            },
           },
         },
       },
