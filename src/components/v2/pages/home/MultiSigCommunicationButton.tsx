@@ -9,7 +9,12 @@ export default function () {
   return (
     <Box mb={2}>
       <Button
-        sx={{ justifyContent: 'left', p: 2 }}
+        sx={{
+          justifyContent: 'left',
+          p: 2,
+          bgcolor: 'primary.dark',
+          color: 'info.light',
+        }}
         onClick={() => navigate(RouterMap.MultiSigCom)}
       >
         <Typography>Multi-sig Communication</Typography>
