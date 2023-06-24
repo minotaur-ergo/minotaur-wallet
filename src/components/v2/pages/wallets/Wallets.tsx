@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
 import { IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
 import TotalBalanceCard from './components/TotalBalanceCard';
 import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
+import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
 
 const Wallets = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const alert = useRef<SnackAlertHandle>(null);
+
   const wallets = [
     {
       id: '1',
@@ -65,6 +69,13 @@ const Wallets = () => {
     },
   ];
 
+  useEffect(() => {
+    if (location.state) {
+      alert.current?.setMessage(location.state.message);
+      alert.current?.open();
+    }
+  }, []);
+
   return (
     <AppFrame
       title="My Wallets"
@@ -82,6 +93,7 @@ const Wallets = () => {
           <WalletItem {...item} index={index} key={index} />
         ))}
       </Stack>
+      <SnackAlert ref={alert} />
     </AppFrame>
   );
 };
