@@ -43,9 +43,9 @@ export default function PasswordField({ label, helperText }: PropsType) {
         ),
       }}
       inputProps={{
-        autocomplete: 'new-password',
+        autoComplete: 'new-password',
         form: {
-          autocomplete: 'off',
+          autoComplete: 'off',
         },
       }}
     />
