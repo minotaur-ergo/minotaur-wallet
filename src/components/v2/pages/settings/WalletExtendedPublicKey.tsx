@@ -1,29 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   Card,
-  CardActionArea,
-  IconButton,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import BackButton from '../../components/BackButton';
 import AppFrame from '../../layouts/AppFrame';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
+import AddressCopy from '../../components/AddressCopy';
 
 const WalletExtendedPublicKey = () => {
   const [type, set_type] = useState<string>('BASE58');
-  const snackbar = useRef<SnackAlertHandle>(null);
+
   const handle_change_type = (
     event: React.MouseEvent<HTMLElement>,
     newType: string
   ) => {
     if (newType) set_type(newType);
-  };
-  const handle_copy = () => {
-    snackbar.current?.open();
   };
 
   return (
@@ -55,22 +49,10 @@ const WalletExtendedPublicKey = () => {
           _QR CODE_
         </Typography>
       </Card>
-      <Card>
-        <CardActionArea
-          onClick={handle_copy}
-          sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}
-        >
-          <Typography sx={{ overflowWrap: 'anywhere' }}>
-            {'6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f'}
-          </Typography>
-          <IconButton>
-            <ContentCopyIcon />
-          </IconButton>
-        </CardActionArea>
-      </Card>
-      <SnackAlert
-        ref={snackbar}
-        message="Extended public key copied successfully!"
+
+      <AddressCopy
+        title={'Extended public key'}
+        address={'6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f'}
       />
     </AppFrame>
   );

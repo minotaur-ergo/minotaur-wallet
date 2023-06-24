@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -8,17 +8,15 @@ import {
   Stack,
   TextField,
   Typography,
-  Alert,
 } from '@mui/material';
 import DisplayId from '../../components/DisplayId';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
 import ListController from '../../components/ListController';
 import Heading from '../../components/Heading';
+import AddressCopy from '../../components/AddressCopy';
 
 interface PropsType {
   name?: string;
@@ -50,7 +48,6 @@ export default function ({
   const [open, set_open] = useState(false);
   const [editing, set_editing] = useState(false);
   const [newValue, set_newValue] = useState(name);
-  const snackbar = useRef<SnackAlertHandle>(null);
   const handle_open = () => set_open(true);
   const handle_close = () => set_open(false);
   const handle_edit = () => set_editing(true);
@@ -61,9 +58,6 @@ export default function ({
   const handle_confirm = () => {
     // onChange()
     set_editing(false);
-  };
-  const handle_copy = () => {
-    snackbar.current?.open();
   };
   const get_tokens = () =>
     new Promise((resolve) => {
@@ -119,19 +113,7 @@ export default function ({
         <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
           _QR CODE_
         </Box>
-        <Box>
-          <CardActionArea onClick={handle_copy}>
-            <Alert severity="info" icon={false}>
-              <Box display="flex">
-                <Typography sx={{ overflowWrap: 'anywhere' }}>{id}</Typography>
-                <IconButton color="inherit">
-                  <ContentCopyIcon />
-                </IconButton>
-              </Box>
-            </Alert>
-          </CardActionArea>
-          <SnackAlert ref={snackbar} message="Address copied!" />
-        </Box>
+        <AddressCopy address={id} />
         <Typography
           sx={{ my: 2, overflowWrap: 'anywhere', textAlign: 'center' }}
           variant="body2"
