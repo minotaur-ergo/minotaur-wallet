@@ -8,6 +8,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AppToolbar from './AppToolbar';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
 interface PropsType {
   children?: ReactNode;
@@ -52,6 +53,12 @@ const HomeFrame = ({ children }: PropsType) => {
                 <ContactsOutlinedIcon />
               </ListItemIcon>
               Address book
+            </MenuItem>
+            <MenuItem onClick={() => navigate(RouterMap.Scan)}>
+              <ListItemIcon>
+                <QrCodeScannerIcon />
+              </ListItemIcon>
+              Scan QR
             </MenuItem>
           </Menu>
         </>

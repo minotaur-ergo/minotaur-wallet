@@ -21,6 +21,7 @@ import AddAddress from './pages/addressBook/AddAddress';
 import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
 import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
 import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
+import Scan from './pages/scan/Scan';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -39,6 +40,7 @@ export const RouterMap = {
   Assets: '/v2/wallet/assets',
   Addresses: '/v2/wallet/addresses',
   Send: '/v2/wallet/send',
+  Scan: '/v2/wallet/scan',
   Settings: '/v2/settings',
   ChangePassword: '/v2/settings/changePassword',
   PublicKey: '/v2/settings/extendedPublicKey',
@@ -95,6 +97,7 @@ const V2Demo = () => {
           element={<Addresses />}
         />
         <Route path={RouterMap.Send.replace('/v2', '')} element={<Send />} />
+        <Route path={RouterMap.Scan.replace('/v2', '')} element={<Scan />} />
         <Route
           path={RouterMap.Settings.replace('/v2', '')}
           element={<Settings />}
