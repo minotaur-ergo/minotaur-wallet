@@ -7,7 +7,7 @@ class MultiCommitment {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
+  @ManyToOne(() => MultiSignRow, { onDelete: 'CASCADE' })
   tx: MultiSignRow | null = null;
 
   @Column('text')
