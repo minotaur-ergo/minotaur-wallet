@@ -1,9 +1,13 @@
 import {
   Backdrop,
+  Box,
   Button,
   CircularProgress,
+  Dialog,
+  Divider,
   FormControl,
   FormHelperText,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -16,12 +20,21 @@ import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
 import BackButton from '../../components/BackButton';
 import { RouterMap } from '../../V2Demo';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+import StateMessage from '../../components/StateMessage';
+import SvgIcon from '../../icons/SvgIcon';
 
 const ErgoPay = () => {
   const [walletId, setWalletId] = useState<string | undefined>(undefined);
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [waiting, setWaiting] = useState(false);
-  const alert = useRef<SnackAlertHandle>(null);
+  const [dialog, setDialog] = useState({
+    open: true,
+    color: 'warning',
+    icon: 'warning',
+    title: 'Warning',
+    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  });
   const navigate = useNavigate();
 
   const handleChangeWallet = (event: SelectChangeEvent) => {
@@ -36,38 +49,52 @@ const ErgoPay = () => {
       const status = Math.floor(Math.random() * 5);
       switch (status) {
         case 0:
-          alert.current?.set(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            'success'
-          );
-          alert.current?.open();
+          setDialog({
+            open: true,
+            icon: 'info',
+            color: 'info',
+            title: 'Info title',
+            message:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          });
           break;
         case 1:
-          alert.current?.set(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            'warning'
-          );
-          alert.current?.open();
+          setDialog({
+            open: true,
+            icon: 'error',
+            color: 'error',
+            title: 'Error title',
+            message:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          });
           break;
         case 2:
-          alert.current?.set(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            'error'
-          );
-          alert.current?.open();
+          setDialog({
+            open: true,
+            icon: 'warning',
+            color: 'warning',
+            title: 'Warning title',
+            message:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+          });
           break;
         case 3:
-          alert.current?.set(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            'info'
-          );
-          alert.current?.open();
+          setDialog({
+            open: true,
+            icon: 'approved',
+            color: 'success',
+            title: 'Success title',
+            message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+          });
           break;
         default:
           navigate(RouterMap.Home);
       }
       setWaiting(false);
     }, 1000);
+  };
+  const handleCloseDialog = () => {
+    setDialog((prevState) => ({ ...prevState, open: false }));
   };
 
   useEffect(() => {
@@ -99,7 +126,7 @@ const ErgoPay = () => {
         </Select>
       </FormControl>
       <FormControl sx={{ mt: 2 }}>
-        <InputLabel id="select-address-label">From Address</InputLabel>
+        <InputLabel id="select-address-label">Address</InputLabel>
         <Select
           labelId="select-address-label"
           id="select-address"
@@ -122,7 +149,26 @@ const ErgoPay = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <SnackAlert ref={alert} />
+
+      <Dialog
+        open={dialog.open}
+        onClose={handleCloseDialog}
+        PaperProps={{
+          sx: { p: 3 },
+        }}
+      >
+        <Box display="flex" m={-2} justifyContent="end">
+          <IconButton onClick={handleCloseDialog}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <StateMessage
+          title={dialog.title}
+          description={dialog.message}
+          color={`${dialog.color}.dark`}
+          icon={<SvgIcon icon={dialog.icon} color={dialog.color} />}
+        />
+      </Dialog>
     </AppFrame>
   );
 };

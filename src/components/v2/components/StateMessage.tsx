@@ -35,7 +35,7 @@ export default function ({
           )}
         </Box>
       )}
-      <Typography variant="h2" color={color} textAlign="center">
+      <Typography variant="h2" color={color} textAlign="center" sx={{ mb: 1 }}>
         {title}
       </Typography>
       {description && (
