@@ -22,6 +22,7 @@ import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
 import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
 import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
 import Scan from './pages/scan/Scan';
+import ErgoPay from './pages/ergpPay/ErgoPay';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -48,6 +49,7 @@ export const RouterMap = {
   AddAddress: '/v2/addressBook/add',
   MultiSigCom: '/v2/multisigCom',
   MultiSigTrans: '/v2/multisigCom/:id',
+  ErgoPay: '/v2/ergoPay',
 };
 
 const V2Demo = () => {
@@ -125,6 +127,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.MultiSigTrans.replace('/v2', '')}
           element={<MultiSigTransaction />}
+        />
+        <Route
+          path={RouterMap.ErgoPay.replace('/v2', '')}
+          element={<ErgoPay />}
         />
       </Routes>
     </AppTheme>
