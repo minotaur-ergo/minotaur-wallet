@@ -23,12 +23,18 @@ import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
 import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
 import Scan from './pages/scan/Scan';
 import ErgoPay from './pages/ergpPay/ErgoPay';
+import DAppConnector from './pages/dApps/connector/DAppConnector';
+import WhiteList from './pages/dApps/whiteList/WhiteList';
+import ConnectedDApp from './pages/dApps/connectedDApp/ConnectedDApp';
 
 export const RouterMap = {
   Splash: '/v2/',
   Start: '/v2/start',
   Home: '/v2/wallet/:id',
-  DApps: '/v2/wallet/dapps',
+  DApps: '/v2/wallet/:id/dapps',
+  DAppConnector: '/v2/wallet/:id/dapps/connector',
+  WhiteList: '/v2/wallet/:id/dapps/whiteList',
+  ConnectedDApp: '/v2/wallet/:id/dapps/whiteList/:dappid',
   IssueToken: '/v2/wallet/dapps/issueToken',
   SigmaUSD: '/v2/wallet/dapps/sigmaUsd',
   Wallets: '/v2/wallets',
@@ -131,6 +137,18 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ErgoPay.replace('/v2', '')}
           element={<ErgoPay />}
+        />
+        <Route
+          path={RouterMap.DAppConnector.replace('/v2', '')}
+          element={<DAppConnector />}
+        />
+        <Route
+          path={RouterMap.WhiteList.replace('/v2', '')}
+          element={<WhiteList />}
+        />
+        <Route
+          path={RouterMap.ConnectedDApp.replace('/v2', '')}
+          element={<ConnectedDApp />}
         />
       </Routes>
     </AppTheme>

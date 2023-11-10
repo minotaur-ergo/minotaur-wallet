@@ -121,3 +121,24 @@ export const MSTransactions = [
     ],
   },
 ];
+
+export const WHITE_LIST = [
+  {
+    name: 'Lorem ipsum dolor 1',
+    id: '6506add086b2',
+    src: '/Ergold.png',
+  },
+  {
+    name: 'Lorem ipsum dolor 2',
+    id: 'eae7ef2c25f7',
+    src: '/logo192.png',
+  },
+  {
+    name: 'Lorem ipsum dolor 3',
+    id: '236830841bd1d',
+  },
+  {
+    name: 'Lorem ipsum dolor 4',
+    id: 'f2c25f71c841b',
+  },
+];

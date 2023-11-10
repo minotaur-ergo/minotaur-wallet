@@ -39,6 +39,11 @@ const DApps = () => {
           description="Buy or sell SigmaUSD or SigmaRSV"
           path={RouterMap.SigmaUSD}
         />
+        <ItemCard
+          title="White List"
+          description="Manage connected dApps"
+          path={RouterMap.WhiteList}
+        />
       </Stack>
     </HomeFrame>
   );
