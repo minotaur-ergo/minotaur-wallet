@@ -62,6 +62,10 @@ export default function AppTheme(props: PropsType) {
         fontWeight: 600,
         lineHeight: 1.5,
       },
+      h5: {
+        fontSize: '1rem',
+        fontWeight: 600,
+      },
     },
     shadows,
     components: {
@@ -83,6 +87,9 @@ export default function AppTheme(props: PropsType) {
               backgroundColor: '#eaeaea',
               border: 0,
             },
+          },
+          containedSizeSmall: {
+            padding: '0.5rem',
           },
         },
       },

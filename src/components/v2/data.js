@@ -1,3 +1,5 @@
+import { DAppActions } from './pages/dApps/connectedDApp/ConnectedDAppLog';
+
 export const MSTransactions = [
   {
     stateId: 'COMMITMENT',
@@ -127,6 +129,129 @@ export const WHITE_LIST = [
     name: 'Lorem ipsum dolor 1',
     id: '6506add086b2',
     src: '/Ergold.png',
+    logs: [
+      {
+        name: DAppActions.SIGN_TX_INPUT,
+        date: '2019-01-21T07:19:01',
+        args: {
+          id: 'bf276f0fb50ed54fbb88f18253962e907b15c9eb',
+          input_id: 'input_id',
+          input_index: 'input_index',
+        },
+      },
+      {
+        name: DAppActions.SUBMIT_TX,
+        date: '2019-01-20T07:19:01',
+        args: {
+          output: '62e907b15cbf27d5425399ebf6f0fb50ebb88f18',
+        },
+      },
+      {
+        name: DAppActions.SIGN_TX,
+        date: '2019-01-20T07:13:10',
+        args: {
+          id: 'bf276f0fb50ed54fbb88f18253962e907b15c9eb',
+        },
+      },
+      {
+        name: DAppActions.SIGN_DATA,
+        date: '2019-01-20T07:12:11',
+        args: {
+          output:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        },
+      },
+      {
+        name: DAppActions.USED_ADDRESS,
+        date: '2019-01-16T09:15:10',
+        args: {
+          output: ['62e907b15cbf27d5425399ebf6f0fb50ebb88f18'],
+        },
+      },
+      {
+        name: DAppActions.USED_ADDRESS,
+        date: '2019-01-16T09:15:04',
+        args: {
+          output: [],
+        },
+      },
+      {
+        name: DAppActions.UNUSED_ADDRESS,
+        date: '2019-01-16T09:14:10',
+        args: {
+          output: [
+            '62e907b15cbf27d5425399ebf6f0fb50ebb88f18',
+            '62e907b15cbf27d5425399ebf6f0fb50ebb88f18',
+            '62e907b15cbf27d5425399ebf6f0fb50ebb88f18',
+          ],
+        },
+      },
+      {
+        name: DAppActions.CHANGE_ADDRESS,
+        date: '2019-01-16T09:13:10',
+        args: {
+          output: '62e907b15cbf27d5425399ebf6f0fb50ebb88f18',
+        },
+      },
+      {
+        name: DAppActions.BALANCE,
+        date: '2019-01-16T09:09:08',
+        args: {
+          token_id: 'ERG',
+          output: 1246007,
+        },
+      },
+      {
+        name: DAppActions.UTXOS,
+        date: '2019-01-15T12:21:15',
+        args: {
+          amount: 24361,
+          token_id: 'ERG',
+          output: [
+            { boxId: '62e907b15cbf27d5425399ebf6f0fb50ebb88f18' },
+            { boxId: '62e907b15cbf27d5425399ebf6f0fb50ebb88f18' },
+          ],
+        },
+      },
+      {
+        name: DAppActions.UTXOS,
+        date: '2019-01-15T12:21:10',
+        args: {
+          amount: 24361,
+          token_id: 'ERG',
+          output: [],
+        },
+      },
+      {
+        name: DAppActions.UTXOS,
+        date: '2019-01-15T12:21:10',
+        args: {
+          amount: 0,
+          token_id: 'ERG',
+        },
+      },
+      {
+        name: DAppActions.CHECK_ACCESS,
+        date: '2019-01-15T07:37:07',
+        args: {
+          output: true,
+        },
+      },
+      {
+        name: DAppActions.REQUEST_ACCESS,
+        date: '2019-01-15T07:35:15',
+        args: {
+          output: true,
+        },
+      },
+      {
+        name: DAppActions.REQUEST_ACCESS,
+        date: '2019-01-15T07:32:00',
+        args: {
+          output: false,
+        },
+      },
+    ],
   },
   {
     name: 'Lorem ipsum dolor 2',
