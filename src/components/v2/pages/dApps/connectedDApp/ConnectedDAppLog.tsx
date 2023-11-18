@@ -179,37 +179,28 @@ export default function (props: ConnectedDAppLogPropsType) {
         );
       case DAppActions.SIGN_TX:
         return (
-          <Fragment>
-            <Alert color="info" icon={false}>
-              <DisplayId id={args.id} />
-            </Alert>
-            <Button size="small">Sign</Button>
-          </Fragment>
+          <Alert color="info" icon={false}>
+            <DisplayId id={args.id} />
+          </Alert>
         );
       case DAppActions.SIGN_TX_INPUT:
         return (
-          <Fragment>
-            <Card sx={{ p: 2 }} elevation={0}>
-              <Stack spacing={1}>
-                <DisplayId label="Transaction Id" id={args.id} />
-                <DisplayProperty label="Input Id" value={args.input_id} />
-                <DisplayProperty label="Input Index" value={args.input_index} />
-              </Stack>
-            </Card>
-            <Button size="small">Sign</Button>
-          </Fragment>
+          <Card sx={{ p: 2 }} elevation={0}>
+            <Stack spacing={1}>
+              <DisplayId label="Transaction Id" id={args.id} />
+              <DisplayProperty label="Input Id" value={args.input_id} />
+              <DisplayProperty label="Input Index" value={args.input_index} />
+            </Stack>
+          </Card>
         );
       case DAppActions.SIGN_DATA:
         return (
-          <Fragment>
-            <Card sx={{ p: 2 }} elevation={0}>
-              <Typography variant="body2" color="textSecondary">
-                Data
-              </Typography>
-              <Typography color="textPrimary">{args.output}</Typography>
-            </Card>
-            <Button size="small">Sign</Button>
-          </Fragment>
+          <Card sx={{ p: 2 }} elevation={0}>
+            <Typography variant="body2" color="textSecondary">
+              Data
+            </Typography>
+            <Typography color="textPrimary">{args.output}</Typography>
+          </Card>
         );
       default:
         return null;
