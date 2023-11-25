@@ -1,11 +1,25 @@
 import React from 'react';
-import { Box, FormHelperText, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Card,
+  FormHelperText,
+  Stack,
+  Typography,
+  TypographyProps,
+} from '@mui/material';
 import PasswordField from '../../../components/PasswordField';
+import DisplayId from '../../../components/DisplayId';
+import DisplayProperty from '../../../components/DisplayProperty';
 
 interface TokenItemPropsType {
   amount: number;
   name: string;
   color?: 'primary' | 'success' | 'error';
+}
+
+function TextBox(props: TypographyProps) {
+  return <Typography {...props} component="span" color="textPrimary" />;
 }
 
 function TokenItem({ amount, name, color }: TokenItemPropsType) {
@@ -63,6 +77,27 @@ export default function () {
         <TokenItem name="Token 1" amount={3} color="success" />
         <TokenItem name="Token 2" amount={24} color="success" />
       </Stack>
+
+      <Typography variant="body2" color="textSecondary" sx={{ mb: 1, mt: 2 }}>
+        Lorem ipsum
+      </Typography>
+      <Alert color="info" icon={false} sx={{ mb: 2 }}>
+        <Stack spacing={1} component={TextBox}>
+          <DisplayProperty label="Input Id" value={'input_id'} />
+          <DisplayProperty label="Input Index" value={'input_index'} />
+        </Stack>
+      </Alert>
+
+      <Alert color="info" icon={false} sx={{ mb: 2 }}>
+        <Typography variant="body2" color="textSecondary">
+          Data
+        </Typography>
+        <Typography color="textPrimary">
+          {
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+          }
+        </Typography>
+      </Alert>
 
       <PasswordField
         label="Wallet Password"
