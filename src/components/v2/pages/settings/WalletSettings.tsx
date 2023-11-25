@@ -14,6 +14,7 @@ const WalletSettings = () => {
   const [data, setData] = useState({
     name: 'My First Wallet',
     privacyMode: true,
+    allowDAppConnector: true,
   });
   return (
     <Box mb={2}>
@@ -49,6 +50,16 @@ const WalletSettings = () => {
           label="Export wallet"
           helperText="Some description about this option goes here."
           icon={<IosShareOutlinedIcon />}
+        />
+        <SolitarySwitchField
+          label="dApp connector"
+          value={data.allowDAppConnector}
+          onChange={(checked) =>
+            setData((prevState) => ({
+              ...prevState,
+              allowDAppConnector: checked,
+            }))
+          }
         />
       </Stack>
     </Box>
