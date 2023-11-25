@@ -26,6 +26,8 @@ import ErgoPay from './pages/ergpPay/ErgoPay';
 import DAppConnector from './pages/dApps/connector/DAppConnector';
 import WhiteList from './pages/dApps/whiteList/WhiteList';
 import ConnectedDApp from './pages/dApps/connectedDApp/ConnectedDApp';
+import Extension from './pages/extension/Extension';
+import ExtensionConnector from './pages/extension/ExtensionConnector';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -56,6 +58,8 @@ export const RouterMap = {
   MultiSigCom: '/v2/multisigCom',
   MultiSigTrans: '/v2/multisigCom/:id',
   ErgoPay: '/v2/ergoPay',
+  Extension: '/v2/extension',
+  ExtensionConnector: '/v2/extension/connector',
 };
 
 const V2Demo = () => {
@@ -149,6 +153,14 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ConnectedDApp.replace('/v2', '')}
           element={<ConnectedDApp />}
+        />
+        <Route
+          path={RouterMap.Extension.replace('/v2', '')}
+          element={<Extension />}
+        />
+        <Route
+          path={RouterMap.ExtensionConnector.replace('/v2', '')}
+          element={<ExtensionConnector />}
         />
       </Routes>
     </AppTheme>
