@@ -1,16 +1,73 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeFrame from '../../layouts/HomeFrame';
-import { Card, CardActionArea, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardActionArea,
+  Grid,
+  Typography,
+  TypographyProps,
+} from '@mui/material';
 import { RouterMap } from '../../V2Demo';
+import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
+import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
 
 interface ItemCardPropsType {
   title: string;
   description?: string;
   path: string;
+  icon?: ReactNode;
+  color?: TypographyProps['color'];
 }
 
-const ItemCard = ({ title, description, path }: ItemCardPropsType) => {
+const ItemCardA = ({
+  title,
+  description,
+  path,
+  icon,
+  color = 'primary.main',
+}: ItemCardPropsType) => {
+  const navigate = useNavigate();
+  const handleClick = () => navigate(path);
+  return (
+    <Card sx={{ px: 3, pb: 2, height: '100%', boxSizing: 'border-box' }}>
+      <CardActionArea onClick={handleClick} sx={{ textAlign: 'center' }}>
+        <Box
+          sx={{
+            bgcolor: color,
+            opacity: 0.5,
+            pt: 2,
+            pb: 1,
+            mb: 2,
+            borderRadius: '0 0 50% 50%/0 0 50% 50%',
+          }}
+        >
+          <Avatar
+            sx={{
+              color: color,
+              bgcolor: 'white',
+              width: 56,
+              height: 56,
+              mx: 'auto',
+            }}
+          >
+            {icon}
+          </Avatar>
+        </Box>
+        <Typography textAlign="center" sx={{ mb: 1 }}>
+          {title}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" textAlign="center">
+          {description}
+        </Typography>
+      </CardActionArea>
+    </Card>
+  );
+};
+
+const ItemCardB = ({ title, description, path }: ItemCardPropsType) => {
   const navigate = useNavigate();
   const handleClick = () => navigate(path);
   return (
@@ -28,23 +85,32 @@ const ItemCard = ({ title, description, path }: ItemCardPropsType) => {
 const DApps = () => {
   return (
     <HomeFrame>
-      <Stack spacing={3}>
-        <ItemCard
-          title="Issue Token"
-          description="Issue new token using EIP-004"
-          path={RouterMap.IssueToken}
-        />
-        <ItemCard
-          title="SigmaUSD"
-          description="Buy or sell SigmaUSD or SigmaRSV"
-          path={RouterMap.SigmaUSD}
-        />
-        <ItemCard
-          title="White List"
-          description="Manage connected dApps"
-          path={RouterMap.WhiteList}
-        />
-      </Stack>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <ItemCardA
+            title="Issue Token"
+            description="Issue new token using EIP-004"
+            path={RouterMap.IssueToken}
+            icon={<TokenTwoToneIcon fontSize="large" />}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ItemCardA
+            title="SigmaUSD"
+            description="Buy or sell SigmaUSD or SigmaRSV"
+            path={RouterMap.SigmaUSD}
+            icon={<BalanceTwoToneIcon fontSize="large" />}
+            color="secondary.main"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ItemCardB
+            title="White List"
+            description="Manage connected dApps"
+            path={RouterMap.WhiteList}
+          />
+        </Grid>
+      </Grid>
     </HomeFrame>
   );
 };
