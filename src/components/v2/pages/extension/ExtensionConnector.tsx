@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardActionArea,
   Stack,
@@ -34,7 +35,7 @@ function shuffleArray(array: string[]) {
 export default function ExtensionConnector() {
   const [options, setOptions] = useState<[] | string[]>([]);
   const [code, setCode] = useState<'' | string>('');
-  const isConfirmed = useMemo(() => code != null, [code]);
+  const isConfirmed = useMemo(() => code.length > 0, [code]);
   const navigate = useNavigate();
 
   const getCode = () => {
@@ -58,7 +59,9 @@ export default function ExtensionConnector() {
   };
 
   useEffect(() => {
-    getCode();
+    setTimeout(() => {
+      getCode();
+    }, 2000);
   }, []);
 
   return (
@@ -68,7 +71,7 @@ export default function ExtensionConnector() {
     >
       {isConfirmed ? (
         <>
-          <Typography sx={{ mb: 3 }}>
+          <Typography mb={3}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, Ut enim ad
             minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo consequat.
@@ -94,7 +97,7 @@ export default function ExtensionConnector() {
           <Avatar sx={{ mx: 'auto', width: 64, height: 64 }}>
             <WidgetsRoundedIcon />
           </Avatar>
-          <Typography textAlign="center" sx={{ mt: 2, mb: 4, px: 2 }}>
+          <Typography textAlign="center" mt={2} mb={4} px={2}>
             URL Lorem ipsum dolor sit amet consectetur adipiscing elit
           </Typography>
           <Typography variant="body2">
@@ -103,10 +106,14 @@ export default function ExtensionConnector() {
             exercitation ullamco laboris nisi ut aliquip ex ea commodo
             consequat.
           </Typography>
-
           <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
             _QR CODE_
           </Box>
+          <Typography textAlign="center" mb={2}>
+            Scan QR code
+          </Typography>
+          <Typography textAlign="center">or</Typography>
+          <Button variant="text">Connect local system</Button>
         </>
       )}
     </ExtensionFrame>
