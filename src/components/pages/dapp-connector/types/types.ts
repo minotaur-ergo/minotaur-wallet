@@ -170,7 +170,6 @@ export class Connection {
   }
 
   handleMessage = (message: MessageEvent<string>) => {
-    console.log(message.data);
     const data = JSON.parse(message.data) as MessageData;
     if (data.sender === '') {
       this.messageQueue.forEach((item) => this.connection?.send(item));
