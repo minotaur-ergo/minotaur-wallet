@@ -25,6 +25,7 @@ import { multiSigKeys1668085091261 } from './1668085091261-multi-sig-keys';
 import { blockUpdate1676080469354 } from './1676080469354-block-update';
 import { MultiSig1676570528123 } from './1676570528123-multi-sig';
 import { cleanupMultiSigData1697532775886 } from './1697532775886-cleanup-multi-sig-data';
+import { MultiSigFix1694934009126 } from './1694934009126-multi-sig-fix';
 
 const Migrations = [
   block1645511116354,
@@ -54,6 +55,7 @@ const Migrations = [
   blockUpdate1676080469354,
   MultiSig1676570528123,
   cleanupMultiSigData1697532775886,
+  MultiSigFix1694934009126,
 ];
 
 export default Migrations;
