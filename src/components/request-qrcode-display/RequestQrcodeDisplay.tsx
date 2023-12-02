@@ -9,14 +9,17 @@ interface RequestQrcodeDisplayPropsType {
 }
 
 const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
+  const requestData = props.requestData.replaceAll('"', '\\"');
   const [chunkSize, setChunkSize] = useState(QRCODE_SIZE_DEFAULT);
   const [chunk, setChunk] = useState(0);
-  const chunks = Math.ceil(props.requestData.length / chunkSize);
+  const chunks = Math.ceil(requestData.length / chunkSize);
+  // TODO must generate JSON object
   const req =
     chunks === 1
-      ? `${props.requestType}-${props.requestData}`
-      : `${props.requestType}/${chunk + 1}/${chunks}-` +
-        props.requestData.substr(chunk * chunkSize, chunkSize);
+      ? `{"${props.requestType}": "${requestData}"}`
+      : `{"${props.requestType}": "` +
+        requestData.substring(chunk * chunkSize, chunkSize) +
+        `", "n": ${chunks}, "p": ${chunk + 1}`;
   const gotoNext = () => {
     if (chunk < chunks - 1) {
       setChunk(chunk + 1);
@@ -75,7 +78,7 @@ const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
           step={100}
           marks
           min={200}
-          max={Math.min(MAX_CHUNK_SIZE, props.requestData.length)}
+          max={Math.min(MAX_CHUNK_SIZE, requestData.length)}
         />
       </Grid>
     </React.Fragment>

@@ -29,12 +29,13 @@ import { TxPublishR } from './QrCodeScanResult';
 import { AddressDbAction } from '../../../action/db';
 import { RouteMap } from '../../route/routerMap';
 import TxView from '../../display-tx/TxView';
+import withRouter, { WithRouterPropsType } from '../../../layout/WithRouter';
 
 const ip_regex = RegExp(
   '^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$'
 );
 
-interface PropsType {
+interface PropsType extends WithRouterPropsType {
   closeQrcode: () => unknown;
   wallets: Array<Wallet>;
   completed?: (result: string) => unknown;
@@ -116,8 +117,8 @@ class ErgoPayRequest extends React.Component<PropsType, stateType> {
     if (this.state.addresses.length === 0) {
       if (this.state.status !== 'Loading') {
         this.setState({ status: 'Loading' });
-        const match = useMatch(RouteMap.Wallet);
-        const walletId = match?.params.id;
+        console.log(this.props);
+        const walletId = this.props.params.id;
         const wallet = this.props.wallets.filter(
           (wallet) => wallet.id + '' === walletId
         );
@@ -337,4 +338,4 @@ const mapStateToProps = (state: GlobalStateType) => ({
   wallets: state.wallet.wallets,
 });
 
-export default connect(mapStateToProps)(ErgoPayRequest);
+export default connect(mapStateToProps)(withRouter(ErgoPayRequest));

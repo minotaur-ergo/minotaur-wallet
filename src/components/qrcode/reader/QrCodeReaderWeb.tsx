@@ -9,12 +9,14 @@ import { SnackbarMessage, VariantType } from 'notistack';
 import { showMessage } from '../../../store/actions';
 import { MessageEnqueueService } from '../../app/MessageHandler';
 import {
+  Button,
   Container,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
 } from '@mui/material';
+import clipboard from 'clipboardy';
 import { Action, Dispatch } from 'redux';
 
 interface QrCodeWebStateType {
@@ -62,6 +64,10 @@ class QrCodeReaderWeb extends React.Component<
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  handlePaste = () => {
+    clipboard.read().then((res) => this.props.handleScan(res));
   };
 
   handleScan = (
@@ -136,6 +142,14 @@ class QrCodeReaderWeb extends React.Component<
         <div>
           <video ref={this.videoRef} width="100%" height="100%" />
         </div>
+        <Button
+          variant="contained"
+          fullWidth
+          color="primary"
+          onClick={this.handlePaste}
+        >
+          Paste from clipboard
+        </Button>
       </WithAppBar>
     );
   };
