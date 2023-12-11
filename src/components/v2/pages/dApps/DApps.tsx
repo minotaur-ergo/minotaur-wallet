@@ -13,6 +13,7 @@ import {
 import { RouterMap } from '../../V2Demo';
 import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
 import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
+import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
 
 interface ItemCardPropsType {
   title: string;
@@ -32,8 +33,19 @@ const ItemCardA = ({
   const navigate = useNavigate();
   const handleClick = () => navigate(path);
   return (
-    <Card sx={{ px: 3, pb: 2, height: '100%', boxSizing: 'border-box' }}>
-      <CardActionArea onClick={handleClick} sx={{ textAlign: 'center' }}>
+    <Card sx={{ height: '100%', boxSizing: 'border-box' }}>
+      <CardActionArea
+        onClick={handleClick}
+        sx={{
+          px: 3,
+          pb: 2,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'start',
+          alignItems: 'stretch',
+        }}
+      >
         <Box
           sx={{
             bgcolor: color,
@@ -86,6 +98,13 @@ const DApps = () => {
   return (
     <HomeFrame>
       <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <ItemCardB
+            title="White List"
+            description="Manage connected dApps"
+            path={RouterMap.WhiteList}
+          />
+        </Grid>
         <Grid item xs={6}>
           <ItemCardA
             title="Issue Token"
@@ -103,11 +122,13 @@ const DApps = () => {
             color="secondary.main"
           />
         </Grid>
-        <Grid item xs={12}>
-          <ItemCardB
-            title="White List"
-            description="Manage connected dApps"
-            path={RouterMap.WhiteList}
+        <Grid item xs={6}>
+          <ItemCardA
+            title="Burn Token"
+            description="Buy or sell SigmaUSD or SigmaRSV"
+            path={RouterMap.SigmaUSD}
+            icon={<LocalFireDepartmentTwoToneIcon fontSize="large" />}
+            color="error.main"
           />
         </Grid>
       </Grid>
