@@ -9,6 +9,7 @@ import TotalBalanceCard from './components/TotalBalanceCard';
 import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
 import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
+import HomeMoreMenu from '../../layouts/HomeMoreMenu';
 
 const Wallets = () => {
   const navigate = useNavigate();
@@ -81,9 +82,12 @@ const Wallets = () => {
       title="My Wallets"
       navigation={<BackButton />}
       actions={
-        <IconButton onClick={() => navigate(RouterMap.AddWallet)}>
-          <AddIcon />
-        </IconButton>
+        <>
+          <IconButton onClick={() => navigate(RouterMap.AddWallet)}>
+            <AddIcon />
+          </IconButton>
+          <HomeMoreMenu />
+        </>
       }
     >
       <TotalBalanceCard />
