@@ -18,8 +18,8 @@ const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
     chunks === 1
       ? `{"${props.requestType}": "${requestData}"}`
       : `{"${props.requestType}": "` +
-        requestData.substring(chunk * chunkSize, chunkSize) +
-        `", "n": ${chunks}, "p": ${chunk + 1}`;
+        requestData.substring(chunk * chunkSize, (chunk + 1) * chunkSize) +
+        `", "n": ${chunks}, "p": ${chunk + 1}}`;
   const gotoNext = () => {
     if (chunk < chunks - 1) {
       setChunk(chunk + 1);
@@ -78,7 +78,10 @@ const RequestQrcodeDisplay = (props: RequestQrcodeDisplayPropsType) => {
           step={100}
           marks
           min={200}
-          max={Math.min(MAX_CHUNK_SIZE, requestData.length)}
+          max={Math.min(
+            MAX_CHUNK_SIZE,
+            Math.ceil(requestData.length / 100) * 100
+          )}
         />
       </Grid>
     </React.Fragment>
