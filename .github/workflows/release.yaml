@@ -63,7 +63,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 16.12
 
       - name: Install app dependencies
         run: npm install
@@ -76,6 +76,13 @@ jobs:
 
       - name: Build Minotaur JS app
         run: CI=false npm run sync
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '2.7'
+
+      - name: Check python version
+        run: which python2; node -v
 
       - name: Build Electron
         working-directory: ./electron
