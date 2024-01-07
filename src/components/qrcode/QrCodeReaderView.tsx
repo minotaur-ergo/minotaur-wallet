@@ -141,19 +141,29 @@ class QrCodeReaderView extends React.Component<
   };
 
   renderSubComponent = () => {
-    const selectedType = Types.filter((item) => item.type === this.state.type);
-    if (selectedType.length > 0) {
-      return selectedType[0].render(
-        this.state.chunks.join(''),
-        this.props.close,
-        this.props.completed,
-        this.props.wallet
+    try {
+      const selectedType = Types.filter(
+        (item) => item.type === this.state.type
       );
+      if (selectedType.length > 0) {
+        return selectedType[0].render(
+          this.state.chunks.join(''),
+          this.props.close,
+          this.props.completed,
+          this.props.wallet
+        );
+      }
+      Toast.show({
+        text: `No Renderer type detected for ${this.state.type}`,
+      }).then(() => null);
+      return null;
+    } catch (e) {
+      console.warn(e);
+      Toast.show({
+        text: `Invalid Data Scanned`,
+      }).then(() => null);
+      this.props.fail();
     }
-    Toast.show({
-      text: `No Renderer type detected for ${this.state.type}`,
-    }).then(() => null);
-    return null;
   };
 
   render = () => {

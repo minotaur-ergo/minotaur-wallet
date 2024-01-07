@@ -66,13 +66,15 @@ const Types = [
       close: () => unknown,
       completed?: (result: string) => unknown,
       wallet?: Wallet
-    ) => (
-      <TransactionSignRequest
-        completed={completed}
-        tx={JsonBI.parse(param)}
-        closeQrcode={close}
-      />
-    ),
+    ) => {
+      return (
+        <TransactionSignRequest
+          completed={completed}
+          tx={JsonBI.parse(param)}
+          closeQrcode={close}
+        />
+      );
+    },
     type: TxSignR,
     detect: (value: string) => detectPageFromJson(value, TxSignR),
   },
