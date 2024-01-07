@@ -74,7 +74,7 @@ const Types = [
       />
     ),
     type: TxSignR,
-    detect: (value: string) => detectPageFromJson(value, 'CSR'),
+    detect: (value: string) => detectPageFromJson(value, TxSignR),
   },
   {
     render: (
@@ -90,7 +90,7 @@ const Types = [
       />
     ),
     type: TxPublishR,
-    detect: (value: string) => detectPageFromJson(value, 'CSTX'),
+    detect: (value: string) => detectPageFromJson(value, TxPublishR),
   },
   {
     render: (

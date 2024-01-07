@@ -36,7 +36,7 @@ const QrCodeMoreChunk = (props: PropsType) => {
               <h3>
                 {completed} / {props.chunks.length}
               </h3>
-              <h2>Qrcode Type is: {props.type}</h2>
+              <h4>Qrcode Type is: {props.type}</h4>
               <Button
                 variant="contained"
                 fullWidth

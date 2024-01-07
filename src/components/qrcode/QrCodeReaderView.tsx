@@ -87,9 +87,6 @@ class QrCodeReaderView extends React.Component<
   };
 
   success = (scanned: string) => {
-    Toast.show({
-      text: scanned,
-    }).then(() => null);
     let selectedTypes = Types.filter((item) => item.detect(scanned) !== null);
     if (this.props.allowedTypes) {
       const allowedTypes: Array<string> = this.props.allowedTypes;
@@ -153,6 +150,9 @@ class QrCodeReaderView extends React.Component<
         this.props.wallet
       );
     }
+    Toast.show({
+      text: `No Renderer type detected for ${this.state.type}`,
+    }).then(() => null);
     return null;
   };
 
