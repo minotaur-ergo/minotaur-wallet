@@ -54,45 +54,6 @@ jobs:
       - name: Upload to snapstore
         run: snapcraft upload --release candidate electron/dist/minotaur-wallet*.snap
 
-  release-mac:
-    runs-on: macos-latest
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.12
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.5.4'
-
-      - name: Install app dependencies
-        run: npm install
-
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
-
-      - name: Update package.json files
-        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}'
-
-      - name: Build Minotaur JS app
-        run: CI=false npm run sync
-
-      - name: Build Electron
-        working-directory: ./electron
-        run: export PYTHON_PATH="$(which python)"; CI=false; npm i; npm run build; npm run electron:pack; npm run electron:make
-
-      - name: Upload Executable File to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: electron/dist/minotaur-wallet*.dmg
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        if: startsWith(github.ref, 'refs/tags/')
-
   release-windows:
     runs-on: windows-latest
     steps:
