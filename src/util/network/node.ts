@@ -16,10 +16,11 @@ export class Node {
   }
 
   sendTx = async (tx: wasm.Transaction) => {
-    const response = await this.backend.post(
-      '/transactions',
-      JSON.parse(tx.to_json())
-    );
+    const response = await this.backend.post('/transactions', tx.to_json(), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return { txId: response.data as string };
   };
 

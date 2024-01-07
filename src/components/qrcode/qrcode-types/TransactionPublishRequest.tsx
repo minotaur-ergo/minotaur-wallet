@@ -17,9 +17,10 @@ import BottomSheet from '../../../components/bottom-sheet/BottomSheet';
 import { Inbox } from '@mui/icons-material';
 import { Browser } from '@capacitor/browser';
 import { getNetworkType, NetworkType } from '../../../util/network_type';
-import { AddressDbAction } from '../../../action/db';
+import { AddressDbAction, BoxDbAction } from '../../../action/db';
 import TxView from '../../display-tx/TxView';
 import openInBrowser from '../../../util/browser';
+import Address from '../../../db/entities/Address';
 
 interface PropsType {
   closeQrcode: () => unknown;
@@ -52,6 +53,15 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
     return bytes;
   };
 
+  getTxAddress = async (addresses: Array<Address>, inputs: Array<string>) => {
+    for (const address of addresses) {
+      const boxes = await BoxDbAction.getAddressBoxes([address]);
+      if (boxes.filter((box) => inputs.indexOf(box.box_id) > -1).length > 0)
+        return address;
+    }
+    return undefined;
+  };
+
   loadTx = () => {
     if (!this.state.loading && this.state.loadedTx !== this.props.tx.signedTx) {
       this.setState({ loading: true });
@@ -60,15 +70,20 @@ class TransactionPublishRequest extends React.Component<PropsType, stateType> {
       AddressDbAction.getAllAddresses().then((addresses) => {
         const txBytes = this._base64ToArrayBuffer(signedTx);
         const tx = wasm.Transaction.sigma_parse_bytes(txBytes);
-        this.setState({
-          tx: tx,
-          loading: false,
-          loadedTx: signedTx,
-          addresses: addresses.map((item) => item.address),
-          network_type:
-            addresses.length > 0
-              ? getNetworkType(addresses[0].network_type)
+        const inputs = Array(tx.inputs().len())
+          .fill('')
+          .map((item, index) => tx.inputs().get(index))
+          .map((item) => item.box_id().to_str());
+        this.getTxAddress(addresses, inputs).then((address) => {
+          this.setState({
+            tx: tx,
+            loading: false,
+            loadedTx: signedTx,
+            addresses: addresses.map((item) => item.address),
+            network_type: address
+              ? getNetworkType(address.network_type)
               : undefined,
+          });
         });
       });
     }

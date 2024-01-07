@@ -165,6 +165,7 @@ class QrCodeReaderView extends React.Component<
         ) : invalidChunkCount > 0 ? (
           <QrCodeMoreChunk
             chunks={this.state.chunks}
+            type={this.state.type}
             close={this.props.close}
             scanNext={() => this.setState({ scanning: true })}
           />
