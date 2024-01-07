@@ -54,6 +54,7 @@ const detectPageFromJson = (
       return { payload, page, total };
     }
   } catch (e) {
+    console.log(e);
     /* empty */
   }
   return null;
@@ -102,9 +103,14 @@ const Types = [
     ),
     type: ErgoPayR,
     detect: (value: string): DetectParam | null => {
-      return value.startsWith('ergopay://')
-        ? { page: 1, total: 1, payload: value.replace('ergopay://', '') }
-        : null;
+      try {
+        return value.startsWith('ergopay://')
+          ? { page: 1, total: 1, payload: value.replace('ergopay://', '') }
+          : null;
+      } catch (e) {
+        console.log(e);
+      }
+      return null;
     },
   },
 ];

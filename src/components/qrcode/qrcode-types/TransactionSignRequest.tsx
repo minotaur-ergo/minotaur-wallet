@@ -52,15 +52,6 @@ class TransactionSignRequest extends React.Component<
     walletAddress: undefined,
     signed: '',
   };
-  _base64ToArrayBuffer = (base64: string): Uint8Array => {
-    const binary_string = window.atob(base64);
-    const len = binary_string.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
-    }
-    return bytes;
-  };
 
   loadTx = () => {
     if (
@@ -70,35 +61,61 @@ class TransactionSignRequest extends React.Component<
       this.setState({ loading: true });
       // debugger
       const { reducedTx, sender, inputs } = this.props.tx;
-      AddressDbAction.getAddressByAddressString(sender).then((address) => {
-        if (address && address.walletId) {
-          WalletDbAction.getWalletById(address.walletId).then((wallet) => {
-            AddressDbAction.getWalletAddresses(address.walletId).then(
-              (addresses) => {
-                const txBytes = this._base64ToArrayBuffer(reducedTx);
-                const reduced =
-                  wasm.ReducedTransaction.sigma_parse_bytes(txBytes);
-                const boxes = inputs.map((item) =>
-                  wasm.ErgoBox.sigma_parse_bytes(
-                    this._base64ToArrayBuffer(item)
-                  )
-                );
+      AddressDbAction.getAddressByAddressString(sender)
+        .then((address) => {
+          if (address && address.walletId) {
+            WalletDbAction.getWalletById(address.walletId)
+              .then((wallet) => {
+                AddressDbAction.getWalletAddresses(address.walletId)
+                  .then((addresses) => {
+                    const reduced = wasm.ReducedTransaction.sigma_parse_bytes(
+                      Buffer.from(reducedTx, 'base64')
+                    );
+                    const boxes = inputs.map((item) =>
+                      wasm.ErgoBox.sigma_parse_bytes(
+                        Buffer.from(item, 'base64')
+                      )
+                    );
+                    this.setState({
+                      wallet: wallet ? wallet : undefined,
+                      reducedTx: reduced,
+                      boxes: boxes,
+                      loading: false,
+                      loadedSender: sender,
+                      addresses: addresses.map((address) => address.address),
+                      walletAddress: addresses[0],
+                    });
+                  })
+                  .catch((e) => {
+                    this.setState({
+                      loading: false,
+                      error: true,
+                      loadedSender: `error fetching wallet addresses ${e}`,
+                    });
+                  });
+              })
+              .catch((e) => {
                 this.setState({
-                  wallet: wallet ? wallet : undefined,
-                  reducedTx: reduced,
-                  boxes: boxes,
                   loading: false,
-                  loadedSender: sender,
-                  addresses: addresses.map((address) => address.address),
-                  walletAddress: addresses[0],
+                  error: true,
+                  loadedSender: `error fetching wallet ${e}`,
                 });
-              }
-            );
+              });
+          } else {
+            this.setState({
+              loading: false,
+              error: true,
+              loadedSender: sender,
+            });
+          }
+        })
+        .catch((e) => {
+          this.setState({
+            loading: false,
+            error: true,
+            loadedSender: `error fetching addresses ${e}`,
           });
-        } else {
-          this.setState({ loading: false, error: true, loadedSender: sender });
-        }
-      });
+        });
     }
   };
 

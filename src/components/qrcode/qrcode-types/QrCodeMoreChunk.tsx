@@ -5,6 +5,7 @@ import { Button, Container, Grid, Typography } from '@mui/material';
 import qrcode from '../../../assets/qrcode.svg';
 interface PropsType {
   chunks: Array<string>;
+  type: string;
   close: () => unknown;
   scanNext: () => unknown;
 }
@@ -35,6 +36,7 @@ const QrCodeMoreChunk = (props: PropsType) => {
               <h3>
                 {completed} / {props.chunks.length}
               </h3>
+              <h2>Qrcode Type is: {props.type}</h2>
               <Button
                 variant="contained"
                 fullWidth
