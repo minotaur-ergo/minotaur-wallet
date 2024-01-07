@@ -14,6 +14,7 @@ import { SnackbarMessage, VariantType } from 'notistack';
 import { MessageEnqueueService } from '../app/MessageHandler';
 import Wallet from '../../db/entities/Wallet';
 import { Action, Dispatch } from 'redux';
+import { Toast } from '@capacitor/toast';
 
 interface QrCodeReaderViewPropsType extends MessageEnqueueService {
   success: (scanned: string) => unknown;
@@ -86,6 +87,9 @@ class QrCodeReaderView extends React.Component<
   };
 
   success = (scanned: string) => {
+    Toast.show({
+      text: scanned,
+    }).then(() => null);
     let selectedTypes = Types.filter((item) => item.detect(scanned) !== null);
     if (this.props.allowedTypes) {
       const allowedTypes: Array<string> = this.props.allowedTypes;
