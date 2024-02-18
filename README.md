@@ -2,41 +2,42 @@
 
 ---
 
-<img src="https://user-images.githubusercontent.com/90670824/156564933-fe5a5189-4d26-4705-ac5a-93537dde2ba7.png" align="right"  width="300">
+<img src="https://github.com/minotaur-ergo/minotaur-wallet/blob/dev/images/screen.png" align="right"  width="300" alt="screenShot" title="ScreenShot">
 
 This is the first multi-platform wallet for ergo.
 
-[![minotaur-wallet](https://snapcraft.io/minotaur-wallet/badge.svg)](https://snapcraft.io/minotaur-wallet)
-
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/minotaur-wallet)
 
 Features:
 
-- [x] generating wallets, restoring wallets in a way compatible to Yoroi and Ergo node and ergo android app
-- [x] mnemonic passphrase
-- [x] read only wallet support
+- [x] Generating wallets, restoring wallets in a way compatible to Yoroi and Ergo node and ergo android app
+- [x] Support 12, 15, 18, 21 and 24 mnemonic size.
+- [x] Mnemonic passphrase
+- [x] Read only wallet support
 - [x] [cold wallet devices](https://github.com/ergoplatform/ergo-wallet-app/wiki/Cold-wallet)
 - [x] Displays and sends tokens and NFT
   - [x] Display Token Names according to [EIP-04](https://github.com/ergoplatform/eips/blob/master/eip-0004.md)
   - [x] Send Tokens in transactions.
   - [x] Issue new tokens in dApp part
+  - [x] Burn tokens in dApp part
 - [x] Display Transaction in wallet.
 - [x] Display generated transaction before signing
-- [x] DApp support: Any dApp can embed directly in app. we currently create two dapp. one for issue token and one for sigma-usd.
+- [x] DApp support: Any dApp can embed directly in app. we currently create three dapp. one for issue token, one for burning tokens and one for sigma-usd.
 - [x] Support Android and IOS mobile.
-- [x] Support Desktop build for windows, max os X and linux
+- [x] Support Desktop build for windows, MacOS and linux
 - [x] Wallet password to encrypt secret.
 - [ ] Dynamic DApp setup: We're working to generate a dynamic protocol to add new dApp to wallet without an update.
 - [ ] Minotaur dApp connector extension for chrome and firefox support
 - [x] ErgoPay support
 - [ ] MultiLingual wallet support
-- [ ] Mem pool transaction support
+- [ ] Mempool transaction support
 
 [comment]: <> (You need at least Android 7 or iOS 13 to run Ergo Wallet.)
 
 [comment]: <> (Visit the [Ergo Discord]&#40;https://discord.gg/kj7s7nb&#41; to give feedback.)
 
 ### Build wallet from source
+
+- ** You must install Node 20.11 to build minotaur **
 
 - First you must clone repo using this command:
 
@@ -92,5 +93,5 @@ If you want to tip the developer for making this app, thanks in advance! Send yo
 
 ### Testing on Testnet
 
-You can test the testnet Android debug build on testnet or build the iOS version yourself for testnet. Generate a new wallet and send
+Minotaur support both Mainnet and Testnet. Generate a new wallet and send
 yourself some test Ergos by visiting https://testnet.ergofaucet.org/
