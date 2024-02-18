@@ -1,0 +1,69 @@
+name: Build for Windows, Linux And MacOs
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'desktop-v*.*.*'
+
+env:
+  CI: false
+
+jobs:
+  desktop:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            extension: AppImage
+          - os: windows-latest
+            platform: Windows
+            extension: exe
+          - os: macos-latest
+            platform: MacOS
+            extension: dmg
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.*
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Extract version from tag
+        uses: damienaicheh/extract-version-from-tag-action@v1.1.0
+
+      - name: Update package.json files
+        shell: bash
+        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
+
+      - name: Install app dependencies
+        shell: bash
+        run: npm install
+
+      - name: Build Minotaur JS app and update capacitor
+        shell: bash
+        run: npm run sync:electron
+
+      - name: Remove icns from assets
+        if: matrix.os != 'macos-latest'
+        run: rm electron/assets/appIcon.icns
+
+      - name: Build Electron
+        working-directory: ./electron
+        run: npm i; npm run electron:make
+
+      - name: Upload Executable File to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: electron/dist/minotaur*.${{ matrix.extension }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

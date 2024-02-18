@@ -35,7 +35,7 @@ const capacitorFileConfig: CapacitorElectronConfig =
 const myCapacitorApp = new ElectronCapacitorApp(
   capacitorFileConfig,
   trayMenuTemplate,
-  appMenuBarMenuTemplate
+  appMenuBarMenuTemplate,
 );
 
 // If deeplinking is enabled then we will set it up here.

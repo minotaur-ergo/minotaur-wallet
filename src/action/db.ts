@@ -1,51 +1,64 @@
+import { DataSource, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
-import AddressWithErg from '../db/entities/views/AddressWithErg';
-import Wallet, { WalletType } from '../db/entities/Wallet';
-import WalletWithErg from '../db/entities/views/WalletWithErg';
-import Asset from '../db/entities/Asset';
-import { BoxAsset, ErgoBox, ErgoTx, TokenInfo } from '../util/network/models';
-import Block from '../db/entities/Block';
-import Box from '../db/entities/Box';
-import Tx, { TxStatus } from '../db/entities/Tx';
-import { JsonBI } from '../util/json';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { CoveringResult } from '../util/interface';
-import WalletTx from '../db/entities/views/WalletTx';
-import BoxContent from '../db/entities/BoxContent';
-import TokenWithAddress from '../db/entities/views/AddressToken';
-import Config from '../db/entities/Config';
-import AssetCountBox from '../db/entities/views/AssetCountBox';
-import TxBoxCount from '../db/entities/views/TxBoxCount';
-import MultiSigKey from '../db/entities/MultiSigKey';
-import MultiCommitment from '../db/entities/multi-sig/MultiCommitment';
-import MultiSignInput from '../db/entities/multi-sig/MultiSignInput';
-import MultiSignRow from '../db/entities/multi-sig/MultiSignRow';
-import MultiSignTx, {
-  MultiSigTxType,
-} from '../db/entities/multi-sig/MultiSignTx';
-import { sliceToChunksString } from '../util/util';
-import { TX_CHUNK_SIZE } from '../util/const';
-import { encrypt } from './enc';
+import AddressValueInfo, {
+  AddressValueType,
+} from '@/db/entities/AddressValueInfo';
+import Asset from '@/db/entities/Asset';
+import Box from '@/db/entities/Box';
+import Config, { ConfigType } from '@/db/entities/Config';
+import MultiCommitment from '@/db/entities/multi-sig/MultiCommitment';
 import MultiSigner, {
   MultiSigSignerType,
-} from '../db/entities/multi-sig/MultiSigner';
+} from '@/db/entities/multi-sig/MultiSigner';
+import MultiSignInput from '@/db/entities/multi-sig/MultiSignInput';
+import MultiSignRow from '@/db/entities/multi-sig/MultiSignRow';
+import MultiSignTx, {
+  MultiSigTxType,
+} from '@/db/entities/multi-sig/MultiSignTx';
+import MultiSigKey from '@/db/entities/MultiSigKey';
+import SavedAddress from '@/db/entities/SavedAddress';
+import Wallet, { WalletType } from '@/db/entities/Wallet';
+import { BoxInfo, TokenInfo, TxInfo } from '@/types/db';
+import { SpendDetail } from '@/types/network';
+import store from '@/store';
+import { invalidateWallets } from '@/store/reducer/wallet';
+import { TX_CHUNK_SIZE } from '@/utils/const';
+import { sliceToChunksString } from '@/utils/functions';
 
-class WalletActionClass {
+class WalletDbAction {
   private walletRepository: Repository<Wallet>;
-  private walletWithErgRepository: Repository<WalletWithErg>;
+  private static instance: WalletDbAction;
 
-  constructor(dataSource: DataSource) {
+  private constructor(dataSource: DataSource) {
     this.walletRepository = dataSource.getRepository(Wallet);
-    this.walletWithErgRepository = dataSource.getRepository(WalletWithErg);
   }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    WalletDbAction.instance = new WalletDbAction(dataSource);
+  };
+
+  getWallets = async () => {
+    return await this.walletRepository.find();
+  };
+
+  getWalletById = async (walletId: number) => {
+    return this.walletRepository.findOneBy({ id: walletId });
+  };
 
   createWallet = async (
     name: string,
     type: WalletType,
     seed: string,
     extended_public_key: string,
-    network_type: string
+    network_type: string,
+    requiredSign: number,
   ) => {
     const wallet = {
       name: name,
@@ -53,45 +66,79 @@ class WalletActionClass {
       seed: seed,
       extended_public_key: extended_public_key,
       network_type: network_type,
+      required_sign: requiredSign,
     };
-    return await this.walletRepository.save(wallet);
+    await this.walletRepository.save(wallet);
+    const res = await this.walletRepository.findOneBy({
+      name: name,
+      type: type,
+      seed: seed,
+      extended_public_key: extended_public_key,
+      network_type: network_type,
+      required_sign: requiredSign,
+    });
+    if (!res) throw Error('Can not store wallet');
+    return res;
   };
 
-  getWalletsWithErg = async () => {
-    return await this.walletWithErgRepository.find();
+  setWalletName = async (walletId: number, newName: string) => {
+    await this.walletRepository
+      .createQueryBuilder()
+      .update()
+      .set({ name: newName })
+      .where('id=:id', { id: walletId })
+      .execute();
+    store.dispatch(invalidateWallets());
   };
 
-  getWalletWithErg = async (walletId: number) => {
-    return await this.walletWithErgRepository.findOneBy({ id: walletId });
-  };
-
-  getWalletById = async (walletId: number) => {
-    return this.walletRepository.findOneBy({ id: walletId });
-  };
-
-  getWallets = async () => {
-    return this.walletRepository.find();
+  deleteWallet = async (walletId: number) => {
+    await AddressDbAction.getInstance().deleteWalletAddresses(walletId);
+    const entity = await this.getWalletById(walletId);
+    if (entity) {
+      if (entity.type === WalletType.MultiSig) {
+        await MultiSigDbAction.getInstance().deleteWalletKeys(entity.id);
+      }
+      await this.walletRepository
+        .createQueryBuilder()
+        .delete()
+        .where('id=:id', { id: walletId })
+        .execute();
+      await ConfigDbAction.getInstance().deleteConfig(ConfigType.ActiveWallet);
+      store.dispatch(invalidateWallets());
+    }
   };
 }
 
-class MultiSigActionClass {
+class MultiSigDbAction {
+  private static instance: MultiSigDbAction;
   private repository: Repository<MultiSigKey>;
 
   constructor(dataSource: DataSource) {
     this.repository = dataSource.getRepository(MultiSigKey);
   }
 
+  static getInstance = () => {
+    if (MultiSigDbAction.instance) {
+      return MultiSigDbAction.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    MultiSigDbAction.instance = new MultiSigDbAction(dataSource);
+  };
+
   createKey = async (
     wallet: Wallet,
     key_or_address: string,
-    sign_wallet: Wallet | null
+    sign_wallet: Wallet | null,
   ) => {
     const entity = {
       wallet: wallet,
       extended_key: key_or_address,
       sign_wallet: sign_wallet,
     };
-    return this.repository.save(entity);
+    return this.repository.insert(entity);
   };
 
   getWalletInternalKey = async (walletId: number) => {
@@ -100,7 +147,9 @@ class MultiSigActionClass {
       .where('walletId = :walletId', { walletId: walletId })
       .andWhere('signWalletId is not null')
       .getRawOne();
-    return await WalletDbAction.getWalletById(data.MultiSigKey_signWalletId);
+    return await WalletDbAction.getInstance().getWalletById(
+      data.MultiSigKey_signWalletId,
+    );
   };
 
   getWalletExternalKeys = async (walletId: number) => {
@@ -110,71 +159,40 @@ class MultiSigActionClass {
       .andWhere('signWalletId is null')
       .getMany();
   };
+
+  getWalletKeys = async (walletId: number) => {
+    return await this.repository
+      .createQueryBuilder()
+      .where('walletId = :walletId', { walletId: walletId })
+      .getMany();
+  };
+
+  deleteWalletKeys = async (walletId: number) => {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('walletId = :walletId', { walletId })
+      .execute();
+  };
 }
 
-class AddressActionClass {
-  private addressRepository: Repository<Address>;
-  private addressWithErgRepository: Repository<AddressWithErg>;
+class AddressDbAction {
+  private repository: Repository<Address>;
+  private static instance: AddressDbAction;
 
-  constructor(dataSource: DataSource) {
-    this.addressRepository = dataSource.getRepository(Address);
-    this.addressWithErgRepository = dataSource.getRepository(AddressWithErg);
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Address);
   }
 
-  saveAddress = async (
-    wallet: Wallet,
-    name: string,
-    address: string,
-    path: string,
-    index: number
-  ) => {
-    const entity = {
-      name: name,
-      address: address,
-      path: path,
-      idx: index,
-      network_type: wallet.network_type,
-      wallet: wallet,
-    };
-    return await this.addressRepository.save(entity);
-  };
-
-  getAddress = async (addressId: number) => {
-    return await this.addressRepository.findOneBy({ id: addressId });
-  };
-
-  getAddressByAddressString = async (address: string) => {
-    return await this.addressWithErgRepository.findOneBy({ address: address });
-  };
-
-  getWalletAddressesWithErg = async (walletId: number) => {
-    const wallet = await WalletDbAction.getWalletById(walletId);
-    if (wallet) {
-      return await this.addressWithErgRepository
-        .createQueryBuilder()
-        .where('walletId = :walletId', { walletId: wallet.id })
-        .orderBy('idx')
-        .addOrderBy('address')
-        .getMany();
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
     }
-    return [];
+    throw Error('Not initialized');
   };
 
-  getWalletAddresses = async (walletId: number) => {
-    const wallet = await WalletDbAction.getWalletById(walletId);
-    if (wallet) {
-      return await this.addressRepository
-        .createQueryBuilder()
-        .where('walletId = :walletId', { walletId: wallet.id })
-        .orderBy('idx')
-        .addOrderBy('address')
-        .getMany();
-    }
-    return [];
-  };
-
-  getLastAddress = async (wallet_id: number) => {
-    const queryBuilder = this.addressRepository.createQueryBuilder('lastIndex');
+  getLastAddressIndex = async (wallet_id: number): Promise<number> => {
+    const queryBuilder = this.repository.createQueryBuilder('lastIndex');
     queryBuilder
       .select('MAX("idx")', 'lastIndex')
       .where(`walletId=${wallet_id}`);
@@ -186,8 +204,53 @@ class AddressActionClass {
       : res.lastIndex;
   };
 
+  static initialize = (dataSource: DataSource) => {
+    AddressDbAction.instance = new AddressDbAction(dataSource);
+  };
+
+  getAllAddresses = async (): Promise<Array<Address>> => {
+    return await this.repository.find({
+      relations: ['wallet'],
+    });
+  };
+
+  getWalletAddresses = async (walletId: number) => {
+    return this.repository
+      .createQueryBuilder()
+      .where('walletId=:walletId', { walletId })
+      .getMany();
+  };
+
+  getAddressById = async (addressId: number) => {
+    return await this.repository.findBy({ id: addressId });
+  };
+
+  getAddressByAddressString = async (address: string) => {
+    return await this.repository.findOneBy({ address: address });
+  };
+
+  saveAddress = async (
+    walletId: number,
+    name: string,
+    address: string,
+    path: string,
+    index: number,
+  ) => {
+    const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
+    if (!wallet) throw Error('invalid wallet id');
+    const entity = {
+      name: name,
+      address: address,
+      path: path,
+      idx: index,
+      network_type: wallet.network_type,
+      wallet: wallet,
+    };
+    return await this.repository.save(entity);
+  };
+
   updateAddressName = async (addressId: number, newName: string) => {
-    return await this.addressRepository
+    return await this.repository
       .createQueryBuilder()
       .update()
       .set({ name: newName })
@@ -195,60 +258,391 @@ class AddressActionClass {
       .execute();
   };
 
-  getAllAddresses = async () => {
-    return await this.addressRepository.find();
-  };
-
-  setAddressHeight = async (addressId: number, height: number) => {
-    return await this.addressRepository
+  updateAddressHeight = async (addressId: number, newHeight: number) => {
+    return await this.repository
       .createQueryBuilder()
       .update()
-      .set({ process_height: height })
+      .set({ process_height: newHeight })
       .where('id=:id', { id: addressId })
       .execute();
   };
 
-  setAllAddressHeight = async (height: number, network_type: string) => {
-    await this.addressRepository
+  deleteWalletAddresses = async (walletId: number) => {
+    const addresses = await this.repository
       .createQueryBuilder()
-      .update()
-      .set({ process_height: height })
-      .where(`process_height > :height AND network_type = :network_type`, {
-        height: height,
-        network_type: network_type,
-      })
-      .execute();
-  };
-
-  getAddressTotalErg = async (addressId: number) => {
-    return await this.addressWithErgRepository
-      .createQueryBuilder()
-      .where('id = :id', { id: addressId })
-      .getOne();
+      .select()
+      .where('walletId = :walletId', { walletId })
+      .getMany();
+    if (addresses.length > 0) {
+      for (const address of addresses) {
+        await BoxDbAction.getInstance().deleteBoxForAddress(address.id);
+      }
+      await this.repository
+        .createQueryBuilder()
+        .delete()
+        .where('walletId = :walletId', { walletId })
+        .execute();
+    }
   };
 }
 
-class AssetActionClass {
-  private assetRepository: Repository<Asset>;
+class AddressValueDbAction {
+  private repository: Repository<AddressValueInfo>;
+  private static instance: AddressValueDbAction;
 
-  constructor(dataSource: DataSource) {
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(AddressValueInfo);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    AddressValueDbAction.instance = new AddressValueDbAction(dataSource);
+  };
+
+  insertBalance = async (
+    tokenId: string,
+    amount: bigint,
+    type: AddressValueType,
+    address: Address,
+  ) => {
+    const dbEntity = await this.repository
+      .createQueryBuilder()
+      .select()
+      .where(
+        'addressId = :addressId AND type = :type AND token_id = :tokenId',
+        {
+          addressId: address.id,
+          tokenId,
+          type: AddressValueType.Confirmed,
+        },
+      )
+      .getOne();
+    if (dbEntity === null) {
+      await this.repository.insert({
+        token_id: tokenId,
+        address,
+        type,
+        amount,
+      });
+    } else {
+      await this.repository
+        .createQueryBuilder()
+        .update()
+        .set({ amount })
+        .where('id = :id', { id: dbEntity.id })
+        .execute();
+    }
+  };
+
+  deleteBalances = (untilHeight: number) => {
+    return this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('height < :height', { height: untilHeight })
+      .execute();
+  };
+
+  getAddressBalances = (addressId: number) => {
+    return this.repository
+      .createQueryBuilder()
+      .select()
+      .where('addressId = :addressId', { addressId })
+      .getMany();
+  };
+
+  getAllBalances = () => {
+    return this.repository.find({
+      relations: ['address'],
+    });
+  };
+}
+
+class BoxDbAction {
+  private repository: Repository<Box>;
+  private static instance: BoxDbAction;
+
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Box);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    BoxDbAction.instance = new BoxDbAction(dataSource);
+  };
+
+  spendBox = (boxId: string, spend: SpendDetail) => {
+    return this.repository
+      .createQueryBuilder()
+      .update()
+      .set({
+        spend_tx_id: spend.tx,
+        spend_timestamp: spend.timestamp,
+        spend_index: spend.index,
+        spend_height: spend.height,
+      })
+      .where('box_id = :boxId', { boxId })
+      .execute();
+  };
+  deleteBoxByBoxId = (id: number) => {
+    return this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('id = :id', { id })
+      .execute();
+  };
+
+  forkTx = async (txId: string) => {
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('tx_id=:txId', { txId })
+      .execute();
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({
+        spend_height: 0,
+        spend_index: 0,
+        spend_timestamp: 0,
+      })
+      .where('spend_tx_id=:txId', { txId })
+      .execute();
+  };
+  getTxBoxes = (
+    txId: string,
+    addressIds: Array<number>,
+  ): Promise<Array<Box>> => {
+    return this.repository
+      .createQueryBuilder()
+      .where(
+        'addressId IN (:...addressIds) AND (tx_id = :txId OR spend_tx_id = :txId)',
+        { txId, addressIds },
+      )
+      .getMany();
+  };
+
+  getWalletSortedTxIds = (
+    walletId: number,
+    offset?: number,
+    limit?: number,
+  ): Promise<Array<{ txId: string; height: number }>> => {
+    const createTxs = this.repository
+      .createQueryBuilder()
+      .select('tx_id', 'txId')
+      .addSelect('create_height', 'height')
+      .innerJoin('address', 'Address', 'Address.id == box.addressId')
+      .where(`address.walletId = ${walletId}`)
+      .distinct()
+      .getQuery();
+    const spendTxs = this.repository
+      .createQueryBuilder()
+      .select('spend_tx_id', 'txId')
+      .addSelect('spend_height', 'height')
+      .where('spend_tx_id <> NULL')
+      .innerJoin('address', 'Address', 'Address.id == box.addressId')
+      .where(`address.walletId = ${walletId}`)
+      .andWhere('spend_tx_id IS NOT NULL')
+      .distinct()
+      .getQuery();
+    let query = `SELECT distinct txId, height FROM (${createTxs} UNION ${spendTxs}) ORDER BY height DESC`;
+    if (limit !== undefined) {
+      query += ` LIMIT ${limit}`;
+    }
+    if (offset !== undefined) {
+      query += ` OFFSET ${offset}`;
+    }
+    return this.repository.query(query);
+  };
+
+  getAddressSortedTxIds = (
+    addressId: number,
+    fromHeight: number,
+  ): Promise<Array<{ txId: string; height: number }>> => {
+    const createTxs = this.repository
+      .createQueryBuilder()
+      .select('tx_id', 'txId')
+      .addSelect('create_height', 'height')
+      .where(`box.addressId = ${addressId}`)
+      .andWhere(`box.create_height >= ${fromHeight}`)
+      .distinct()
+      .getQuery();
+    const spendTxs = this.repository
+      .createQueryBuilder()
+      .select('spend_tx_id', 'txId')
+      .addSelect('spend_height', 'height')
+      .where('spend_tx_id <> NULL')
+      .where(`box.addressId = ${addressId}`)
+      .andWhere(`box.spend_height >= ${fromHeight}`)
+      .andWhere('spend_tx_id <> NULL')
+      .distinct()
+      .getQuery();
+    const query = `SELECT distinct txId, height FROM (${createTxs} UNION ${spendTxs}) ORDER BY height DESC`;
+    return this.repository.query(query);
+  };
+
+  getAddressBoxes = (
+    addresses: Array<number>,
+    order = 'create_height',
+    direction: 'ASC' | 'DESC' = 'ASC',
+    boxIds: Array<string> = [],
+  ) => {
+    const query = this.repository
+      .createQueryBuilder()
+      .select()
+      .where('addressId IN (:...addressIds)', { addressIds: addresses });
+    if (boxIds?.length > 0) {
+      query.andWhere('box_id IN (:...boxIds)', { boxIds });
+    }
+    return query.orderBy(order, direction).getMany();
+  };
+
+  getAllBoxById = async (boxId: string): Promise<Array<Box>> => {
+    return this.repository.find({
+      relations: ['address.wallet'],
+      where: {
+        box_id: boxId,
+      },
+    });
+  };
+
+  getBoxByBoxId = async (
+    boxId: string,
+    address: Address,
+  ): Promise<Box | null> => {
+    return this.repository.findOne({
+      where: {
+        box_id: boxId,
+        address: {
+          id: address.id,
+        },
+      },
+    });
+  };
+
+  insertOrUpdateBox = async (box: BoxInfo, address: Address) => {
+    const dbEntity = await this.getBoxByBoxId(box.boxId, address);
+    const entity = {
+      box_id: box.boxId,
+      tx_id: box.create.tx,
+      create_index: box.create.index,
+      create_height: box.create.height,
+      create_timestamp: box.create.timestamp,
+      address: address,
+      serialized: box.serialized,
+      spend_tx_id: box.spend ? box.spend.tx : null,
+      spend_height: box.spend ? box.spend.height : 0,
+      spend_timestamp: box.spend ? box.spend.timestamp : 0,
+      spend_index: box.spend ? box.spend.index : 0,
+    };
+    if (dbEntity) {
+      await this.repository
+        .createQueryBuilder()
+        .update()
+        .set(entity)
+        .where('id=:id', { id: dbEntity.id })
+        .execute();
+    } else {
+      await this.repository.insert(entity);
+    }
+    return await this.getBoxByBoxId(box.boxId, address);
+  };
+
+  getAddressUnspentBoxes = async (
+    addresses: Array<number>,
+    order = 'create_height',
+    direction: 'ASC' | 'DESC' = 'ASC',
+  ) => {
+    return this.repository
+      .createQueryBuilder()
+      .select()
+      .where('addressId IN (:...addressIds) AND spend_tx_id is NULL', {
+        addressIds: addresses,
+      })
+      .orderBy(order, direction)
+      .getMany();
+  };
+
+  updateBoxDetailForTx = async (txId: string, info: TxInfo) => {
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({
+        create_timestamp: info.timestamp,
+        create_height: info.height,
+      })
+      .where('tx_id=:txId', { txId })
+      .execute();
+    await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({
+        spend_height: info.height,
+        spend_timestamp: info.timestamp,
+      })
+      .where('spend_tx_id=:txId', { txId })
+      .execute();
+  };
+
+  deleteBoxForAddress = async (addressId: number) => {
+    return this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('addressId = :addressId', { addressId })
+      .execute();
+  };
+}
+
+class AssetDbAction {
+  private assetRepository: Repository<Asset>;
+  private static instance: AssetDbAction;
+
+  private constructor(dataSource: DataSource) {
     this.assetRepository = dataSource.getRepository(Asset);
   }
 
-  getAssetByAssetId = async (assetId: string, network_type: string) => {
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    this.instance = new AssetDbAction(dataSource);
+  };
+
+  getAssetByAssetId = async (
+    assetId: string,
+    network_type: string,
+  ): Promise<Asset | null> => {
     return await this.assetRepository.findOneBy({
       asset_id: assetId,
       network_type: network_type,
     });
   };
 
-  createOrUpdateAsset = async (info: TokenInfo, network_type: string) => {
-    const dbEntity = await this.getAssetByAssetId(info.id, network_type);
+  createOrUpdateAsset = async (info: TokenInfo, networkType: string) => {
+    const dbEntity = await this.getAssetByAssetId(info.id, networkType);
     const entity = {
       asset_id: info.id,
       box_id: info.boxId,
+      tx_id: info.txId ?? undefined,
+      emission_amount: info.emissionAmount?.toString() ?? undefined,
+      height: info.height,
       name: info.name,
-      network_type: network_type,
+      network_type: networkType,
       description: info.description,
       decimal: info.decimals,
     };
@@ -262,584 +656,56 @@ class AssetActionClass {
     } else {
       await this.assetRepository.insert(entity);
     }
-    return await this.getAssetByAssetId(info.id, network_type);
+    return await this.getAssetByAssetId(info.id, networkType);
   };
 
   getAllAsset = async (network_type: string) => {
     return await this.assetRepository.findBy({ network_type: network_type });
   };
-}
 
-class BlockActionClass {
-  private repository: Repository<Block>;
-
-  constructor(dataSource: DataSource) {
-    this.repository = dataSource.getRepository(Block);
-  }
-
-  getLastHeaders = async (network_type: string, count: number) => {
-    const entity = await this.repository
+  getUnFetchedAssets = async (networkType: string) => {
+    return this.assetRepository
       .createQueryBuilder()
-      .where('network_type = :network_type', { network_type: network_type })
-      .limit(count)
-      .offset(0)
-      .orderBy('height', 'DESC')
-      .getMany();
-    if (entity) {
-      return entity.map((block) => {
-        return {
-          height: block.height,
-          id: block.block_id,
-        };
-      });
-    }
-  };
-
-  /**
-   * get all block headers with given network type(if persent) in db
-   * @param network_type
-   * @returns block headers
-   */
-  getAllHeaders = async (network_type?: string) => {
-    // return await this.repository.find()
-    if (typeof network_type !== 'undefined') {
-      return await this.repository
-        .createQueryBuilder()
-        .orderBy('height', 'DESC')
-        .where('network_type = :network_type', { network_type: network_type })
-        .getMany();
-    }
-    return await this.repository
-      .createQueryBuilder()
-      .orderBy('height', 'DESC')
-      .getMany();
-  };
-
-  InsertHeader = async (id: string, height: number, network_type: string) => {
-    const entity = {
-      block_id: id,
-      height: height,
-      network_type: network_type,
-    };
-    await this.repository.insert(entity);
-  };
-
-  forkHeaders = async (height: number, network_type: string) => {
-    return await this.repository
-      .createQueryBuilder()
-      .where('height >= :height', { height: height })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .delete()
-      .execute();
-  };
-
-  removeOldHeaders = async (height: number, network_type: string) => {
-    return await this.repository
-      .createQueryBuilder()
-      .where('height < :height', { height: height })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .delete()
-      .execute();
-  };
-
-  getBlockByHeight = async (height: number, network_type: string) => {
-    const entity = await this.repository
-      .createQueryBuilder()
-      .where('height = :height', { height: height })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .getOne();
-
-    if (entity) {
-      return {
-        height: entity.height,
-        id: entity.block_id,
-      };
-    }
-  };
-
-  InsertHeaders = async (
-    headers: Array<{ id: string; height: number }>,
-    network_type: string
-  ) => {
-    const entities = headers.map((item) => ({
-      block_id: item.id,
-      height: item.height,
-      network_type: network_type,
-    }));
-    await this.repository.insert(entities);
-  };
-}
-
-class BoxActionClass {
-  private repository: Repository<Box>;
-  private assetCountBoxRepository: Repository<AssetCountBox>;
-
-  constructor(dataSource: DataSource) {
-    this.repository = dataSource.getRepository(Box);
-    this.assetCountBoxRepository = dataSource.getRepository(AssetCountBox);
-  }
-
-  createOrUpdateBox = async (
-    box: ErgoBox,
-    address: Address,
-    tx: Tx,
-    index: number
-  ) => {
-    const dbEntity = await this.getBoxByBoxId(box.boxId, address.network_type);
-    const erg_total = BigInt(box.value);
-    const entity = {
-      address: address,
-      tx: tx,
-      box_id: box.boxId,
-      erg: erg_total,
-      asset_count: box.assets.length,
-      create_index: index,
-      network_type: address.network_type,
-      json: JsonBI.stringify(box),
-      create_height: tx.height,
-    };
-    if (dbEntity) {
-      await this.repository
-        .createQueryBuilder()
-        .update()
-        .set(entity)
-        .where('id=:id', { id: dbEntity.id })
-        .execute();
-    } else {
-      await this.repository.insert(entity);
-    }
-    return await this.getBoxByBoxId(box.boxId, address.network_type);
-  };
-
-  spentBox = async (boxId: string, spendTx: Tx, index: number) => {
-    const dbEntity = await this.getBoxByBoxId(boxId, spendTx.network_type);
-    if (dbEntity) {
-      dbEntity.spend_tx = spendTx;
-      dbEntity.spend_index = index;
-      dbEntity.spend_height = spendTx.height;
-      return await this.repository
-        .createQueryBuilder()
-        .update()
-        .set({
-          spend_tx: spendTx,
-          spend_index: index,
-          spend_height: spendTx.height,
-        })
-        .where('id=:id', { id: dbEntity.id })
-        .execute();
-    }
-    return null;
-  };
-
-  getBoxByBoxId = async (boxId: string, network_type: string) => {
-    return await this.repository.findOneBy({
-      box_id: boxId,
-      network_type: network_type,
-    });
-  };
-
-  getBoxById = async (id: number) => {
-    return await this.repository.findOneBy({ id: id });
-  };
-
-  getWalletBoxes = async (walletId: number) => {
-    return await this.repository
-      .createQueryBuilder()
-      .innerJoin('address', 'Address', 'Address.id = addressId')
-      .where('walletId = :walletId AND spendTxId IS NULL', {
-        walletId: walletId,
+      .select()
+      .where('(tx_id is NULL OR tx_id = "") AND network_type=:networkType', {
+        networkType,
       })
       .getMany();
   };
 
-  getAddressBoxes = async (address: Array<Address>) => {
-    return this.repository
+  getUnConfirmedAssets = async (networkType: string, height: number) => {
+    return this.assetRepository
       .createQueryBuilder()
-      .where(address.map((item) => `addressId=${item.id}`).join(' OR '))
-      .andWhere('spendTxId IS NULL')
-      .getMany();
-  };
-
-  getCoveringBoxFor = async (
-    amount: bigint,
-    walletId: number,
-    tokens: { [id: string]: bigint },
-    address?: Array<Address> | null
-  ): Promise<CoveringResult> => {
-    const requiredTokens: { [id: string]: bigint } = { ...tokens };
-    let requiredAmount: bigint = amount;
-    const selectedBoxesJson: Array<string> = [];
-    const checkIsRequired = (box: wasm.ErgoBox) => {
-      if (requiredAmount > 0) return true;
-      for (let index = 0; index < box.tokens().len(); index++) {
-        const token = box.tokens().get(index);
-        const requiredAmount = requiredTokens[token.id().to_str()];
-        if (requiredAmount && requiredAmount > BigInt(0)) {
-          return true;
-        }
-      }
-      return false;
-    };
-    const addBox = (box: wasm.ErgoBox) => {
-      selectedBoxesJson.push(box.to_json());
-      requiredAmount -= BigInt(box.value().as_i64().to_str());
-      for (let index = 0; index < box.tokens().len(); index++) {
-        const token = box.tokens().get(index);
-        if (
-          Object.prototype.hasOwnProperty.call(
-            requiredTokens,
-            token.id().to_str()
-          )
-        ) {
-          requiredTokens[token.id().to_str()] -= BigInt(
-            token.amount().as_i64().to_str()
-          );
-        }
-      }
-    };
-    const remaining = () =>
-      requiredAmount > BigInt(0) ||
-      Object.keys(requiredTokens).filter((token) => requiredTokens[token] > 0)
-        .length > 0;
-    const boxes = await (address
-      ? this.getAddressBoxes(address as Array<Address>)
-      : this.getWalletBoxes(walletId));
-    for (const boxObject of boxes) {
-      const box = wasm.ErgoBox.from_json(boxObject.json);
-      if (checkIsRequired(box)) {
-        addBox(box);
-      }
-      if (!remaining()) {
-        return {
-          covered: true,
-          boxes: wasm.ErgoBoxes.from_boxes_json(selectedBoxesJson),
-        };
-      }
-    }
-    return {
-      covered: false,
-      boxes: wasm.ErgoBoxes.from_boxes_json(selectedBoxesJson),
-    };
-  };
-
-  getUsedAddressIds = async (walletId: string) => {
-    return await this.repository
-      .createQueryBuilder()
-      .select('addressId')
-      .innerJoin('address', 'Address', 'addressId = Address.id')
-      .where('walletId = :walletId', { walletId: walletId })
-      .distinct()
-      .getRawMany<{ addressId: number }>();
-  };
-
-  forkBoxes = async (height: number, network_type: string) => {
-    await this.repository
-      .createQueryBuilder()
-      .update()
-      .set({ spend_tx: null, spend_index: undefined, spend_height: undefined })
-      .where('create_height >= :height', { height: height })
-      .execute();
-    // await forkBoxContents(address.id, height);
-    await this.repository
-      .createQueryBuilder()
-      .where('create_height >= :height', { height: height })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .delete()
-      .execute();
-  };
-
-  removeAddressBoxes = async (address: Address, queryRunner?: QueryRunner) => {
-    await this.repository
-      .createQueryBuilder(undefined, queryRunner)
-      .where('addressId = :address', { address: address.id })
-      .delete()
-      .execute();
-  };
-
-  invalidAssetCountBox = async () => {
-    return await this.assetCountBoxRepository
-      .createQueryBuilder()
-      .where('inserted <> total')
+      .select()
+      .where(
+        'tx_id is not NULL AND tx_id <> "" AND network_type=:networkType AND height > :height',
+        {
+          networkType,
+          height,
+        },
+      )
       .getMany();
   };
 }
 
-class TxActionClass {
-  private repository: Repository<Tx>;
-  private walletRepository: Repository<WalletTx>;
-  private txBoxCountRepository: Repository<TxBoxCount>;
-
-  constructor(dataSource: DataSource) {
-    this.repository = dataSource.getRepository(Tx);
-    this.walletRepository = dataSource.getRepository(WalletTx);
-    this.txBoxCountRepository = dataSource.getRepository(TxBoxCount);
-  }
-
-  updateOrCreateTx = async (
-    tx: ErgoTx,
-    status: TxStatus,
-    network_type: string,
-    queryRunner?: QueryRunner
-  ) => {
-    const dbTx = await this.getTxByTxId(tx.id, network_type);
-    const entity = {
-      tx_id: tx.id,
-      height: tx.inclusionHeight,
-      date: tx.timestamp,
-      status: status,
-      network_type: network_type,
-    };
-    if (dbTx) {
-      await this.repository
-        .createQueryBuilder(undefined, queryRunner)
-        .update()
-        .set(entity)
-        .where('id=:id', { id: dbTx.id })
-        .execute();
-      return {
-        status: dbTx.status,
-        tx: await this.getTxByTxId(tx.id, network_type),
-      };
-    } else {
-      await this.repository
-        .createQueryBuilder(undefined, queryRunner)
-        .insert()
-        .values(entity)
-        .execute();
-      return {
-        status: TxStatus.New,
-        tx: await this.getTxByTxId(tx.id, network_type),
-      };
-    }
-  };
-
-  getTxByTxId = async (txId: string, network_type: string) => {
-    return await this.repository.findOneBy({
-      tx_id: txId,
-      network_type: network_type,
-    });
-  };
-
-  getTxById = async (id: number) => {
-    return await this.repository.findOneBy({ id: id });
-  };
-
-  getWalletTx = async (wallet_id: number, limit: number, offset: number) => {
-    return await this.walletRepository
-      .createQueryBuilder()
-      .where('create_wallet_id=:wallet_id', { wallet_id: wallet_id })
-      .limit(limit)
-      .offset(offset)
-      .getMany();
-  };
-
-  getNetworkTxs = async (
-    network_type: string,
-    from_height: number,
-    to_height: number
-  ) => {
-    return this.repository
-      .createQueryBuilder()
-      .where('network_type=:network_type', { network_type: network_type })
-      .andWhere('height >= :from_height', { from_height: from_height })
-      .andWhere('height <= :to_height', { to_height: to_height })
-      .getMany();
-  };
-
-  forkTxs = async (height: number, network_type: string) => {
-    await this.repository
-      .createQueryBuilder()
-      .where('height >= :height', { height: height })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .delete()
-      .execute();
-  };
-
-  /**
-   * remove txs which have not corresponding boxes in database.
-   * @param txs : (Tx | null)[]
-   * @param network_type : string
-   */
-  removeTxs = async (txs: (Tx | null)[], network_type: string) => {
-    const txIdList = txs.filter((tx) => tx !== null).map((tx) => tx?.tx_id);
-    await this.repository
-      .createQueryBuilder()
-      .where('tx_id  IN (:...txIds)', { txIds: txIdList })
-      .andWhere('network_type = :network_type', { network_type: network_type })
-      .delete()
-      .execute();
-  };
-
-  removeUnusedAddresses = async () => {
-    const txs = await this.txBoxCountRepository.findBy({
-      input_box_count: 0,
-      output_box_count: 0,
-    });
-    await this.repository
-      .createQueryBuilder()
-      .where('tx_id  IN (:...txIds)', { txIds: txs.map((item) => item.tx_id) })
-      .delete()
-      .execute();
-  };
-
-  forkAll = async (forkHeight: number, network_type: string) => {
-    // this.queryRunner.connect();
-    // this.queryRunner.startTransaction();
-    // try {
-    await BoxContentDbAction.forkBoxContents(forkHeight, network_type);
-    await BoxDbAction.forkBoxes(forkHeight, network_type);
-    await TxDbAction.forkTxs(forkHeight, network_type);
-    await BlockDbAction.forkHeaders(forkHeight, network_type);
-    // await this.queryRunner.commitTransaction();
-    // } catch {
-    //   this.queryRunner.rollbackTransaction();
-    // } finally {
-    //   this.queryRunner.release();
-    // }
-  };
-
-  forkAddress = async (address: Address) => {
-    // this.queryRunner.connect();
-    // this.queryRunner.startTransaction();
-    // try {
-    const addressBoxes = await BoxDbAction.getAddressBoxes([address]);
-    await BoxContentDbAction.removeAddressBoxContent(
-      addressBoxes,
-      this.repository.queryRunner
-    );
-    await BoxDbAction.removeAddressBoxes(address, this.repository.queryRunner);
-    await AddressDbAction.setAddressHeight(address.id, 0);
-    // await this.queryRunner.commitTransaction();
-    // } catch (exp){
-    //   this.queryRunner.rollbackTransaction();
-    // } finally {
-    //   this.queryRunner.release();
-    // }
-  };
-}
-
-class BoxContentActionClass {
-  private repository: Repository<BoxContent>;
-  private tokenWithAddressRepository: Repository<TokenWithAddress>;
-
-  constructor(dataSource: DataSource) {
-    this.repository = dataSource.getRepository(BoxContent);
-    this.tokenWithAddressRepository =
-      dataSource.getRepository(TokenWithAddress);
-  }
-
-  createOrUpdateBoxContent = async (box: Box, asset: BoxAsset) => {
-    const dbEntity = await this.repository
-      .createQueryBuilder()
-      .where('boxId=:boxId AND token_id=:token_id', {
-        boxId: box.id,
-        token_id: asset.tokenId,
-      })
-      .getOne();
-    const entity = {
-      token_id: asset.tokenId,
-      box: box,
-      amount: BigInt(asset.amount),
-    };
-    if (dbEntity) {
-      await this.repository
-        .createQueryBuilder()
-        .update()
-        .set(entity)
-        .where('id=:id', { id: dbEntity.id })
-        .execute();
-    } else {
-      await this.repository.insert(entity);
-    }
-  };
-
-  getTokens = async (network_type: string) => {
-    return (
-      await this.repository
-        .createQueryBuilder()
-        .select('token_id', 'tokenId')
-        .innerJoin('box', 'Box', 'Box.id=boxId')
-        .where('network_type = :network_type', { network_type: network_type })
-        .addGroupBy('token_id')
-        .getRawMany()
-    ).map((item: { tokenId: string }) => item.tokenId);
-  };
-
-  getAddressTokens = async (addressId: number) => {
-    return (
-      await this.repository
-        .createQueryBuilder()
-        .select('token_id', 'tokenId')
-        .addSelect('CAST(SUM(CAST(amount AS INT)) AS TEXT)', 'total')
-        .innerJoin('box', 'Box', 'Box.id=boxId')
-        .where('Box.addressId = :addressId', { addressId: addressId })
-        .andWhere('Box.spend_tx IS NULL')
-        .addGroupBy('token_id')
-        .getRawMany<{ tokenId: string; total: string }>()
-    ).map((item) => ({ tokenId: item.tokenId, total: BigInt(item.total) }));
-  };
-
-  getWalletTokens = async (walletId: number) => {
-    return await this.repository
-      .createQueryBuilder()
-      .select('token_id', 'tokenId')
-      .addSelect('CAST(SUM(CAST(amount AS INT)) AS TEXT)', 'total')
-      .innerJoin('box', 'Box', 'Box.id=boxId')
-      .innerJoin('address', 'Address', 'Box.addressId=Address.id')
-      .where('Address.walletId = :walletId and Box.spendTxId IS NULL', {
-        walletId: walletId,
-      })
-      .addGroupBy('token_id')
-      .getRawMany<{ tokenId: string; total: string }>();
-  };
-
-  forkBoxContents = async (height: number, network_type: string) => {
-    const instances = await this.repository
-      .createQueryBuilder()
-      .innerJoin('box', 'Box', 'Box.id = boxId')
-      .where('create_height >= :height', { height: height })
-      .andWhere('network_type=:network_type', { network_type: network_type })
-      .getMany();
-    await this.repository.remove(instances);
-  };
-
-  getTokenWithAddressForWallet = async (walletId: number) => {
-    return await this.tokenWithAddressRepository.findBy({
-      wallet_id: walletId,
-    });
-  };
-
-  getSingleTokenWithAddressForWallet = async (
-    walletId: number,
-    tokenId: string
-  ) => {
-    return await this.tokenWithAddressRepository.findBy({
-      wallet_id: walletId,
-      token_id: tokenId,
-    });
-  };
-
-  removeAddressBoxContent = async (
-    addressBoxes: Box[],
-    queryRunner?: QueryRunner
-  ) => {
-    const boxIds = addressBoxes.map((item) => item.id);
-    if (boxIds.length > 0) {
-      await this.repository
-        .createQueryBuilder(undefined, queryRunner)
-        .where('boxId IN (:...boxIds)', { boxIds: boxIds })
-        .delete()
-        .execute();
-    }
-  };
-}
-
-class ConfigActionClass {
+class ConfigDbAction {
   private repository: Repository<Config>;
+  private static instance: ConfigDbAction;
 
-  constructor(dataSource: DataSource) {
+  private constructor(dataSource: DataSource) {
     this.repository = dataSource.getRepository(Config);
   }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    ConfigDbAction.instance = new ConfigDbAction(dataSource);
+  };
 
   getAllConfig = async () => {
     return await this.repository.find();
@@ -861,25 +727,169 @@ class ConfigActionClass {
       });
     }
   };
+
+  deleteConfig = async (key: string) => {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('key=:key', { key: key })
+      .execute();
+  };
 }
 
-class MultiStoreActionClass {
+class SavedAddressDbAction {
+  private repository: Repository<SavedAddress>;
+  private static instance: SavedAddressDbAction;
+
+  constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(SavedAddress);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    SavedAddressDbAction.instance = new SavedAddressDbAction(dataSource);
+  };
+
+  saveNewEntity = async (name: string, address: string) => {
+    const saved = await this.repository.findBy({ address: address });
+    if (saved.length > 0) {
+      throw Error('address already exists');
+    } else {
+      await this.repository.insert({
+        address: address,
+        name: name,
+      });
+    }
+  };
+
+  updateEntity = async (id: number, name: string, address?: string) => {
+    const saved = await this.repository.findBy({ id: id });
+    if (saved) {
+      if (address && saved[0].address !== address) {
+        const addressExists =
+          (await this.repository.findBy({ address: address })).length > 0;
+        if (addressExists) {
+          throw Error('Address already exists');
+        }
+      }
+      await this.repository
+        .createQueryBuilder()
+        .update()
+        .set({ address: address, name: name })
+        .where('id=:id', { id: id })
+        .execute();
+    }
+  };
+
+  deleteEntity = async (id: number) => {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('id=:id', { id: id })
+      .execute();
+  };
+
+  getAllAddresses = async () => {
+    return this.repository.find();
+  };
+
+  getAddressName = async (address: string) => {
+    const elements = await this.repository.findBy({ address: address });
+    if (elements.length > 0) {
+      return elements[0].name;
+    }
+    return undefined;
+  };
+}
+
+class MultiStoreDbAction {
   private commitmentRepository: Repository<MultiCommitment>;
-  private inputRepository: Repository<MultiSignInput>;
   private signerRepository: Repository<MultiSigner>;
+  private inputRepository: Repository<MultiSignInput>;
   private rowRepository: Repository<MultiSignRow>;
   private txRepository: Repository<MultiSignTx>;
+  private dataSource: DataSource;
+
+  private static instance: MultiStoreDbAction;
 
   constructor(dataSource: DataSource) {
     this.commitmentRepository = dataSource.getRepository(MultiCommitment);
-    this.inputRepository = dataSource.getRepository(MultiSignInput);
     this.signerRepository = dataSource.getRepository(MultiSigner);
+    this.inputRepository = dataSource.getRepository(MultiSignInput);
     this.rowRepository = dataSource.getRepository(MultiSignRow);
     this.txRepository = dataSource.getRepository(MultiSignTx);
+    this.dataSource = dataSource;
   }
 
-  public insertMultiSigRow = async (wallet: Wallet, txId: string) => {
-    const old = await this.rowRepository.findOneBy({ txId: txId });
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    MultiStoreDbAction.instance = new MultiStoreDbAction(dataSource);
+  };
+
+  public deleteEntireRow = async (rowId: number) => {
+    const row = await this.getRowById(rowId);
+    if (row) {
+      const queryRunner = this.dataSource.createQueryRunner();
+      queryRunner.connect();
+      queryRunner.startTransaction();
+      try {
+        await queryRunner.manager
+          .getRepository(MultiSignInput)
+          .createQueryBuilder()
+          .delete()
+          .where({ tx: row })
+          .execute();
+        await queryRunner.manager
+          .getRepository(MultiSignTx)
+          .createQueryBuilder()
+          .delete()
+          .where({ tx: row })
+          .execute();
+        await queryRunner.manager
+          .getRepository(MultiCommitment)
+          .createQueryBuilder()
+          .delete()
+          .where({ tx: row })
+          .execute();
+        await queryRunner.manager
+          .getRepository(MultiSigner)
+          .createQueryBuilder()
+          .delete()
+          .where({ tx: row })
+          .execute();
+        await queryRunner.manager
+          .getRepository(MultiSignRow)
+          .createQueryBuilder()
+          .delete()
+          .where({ id: row.id })
+          .execute();
+        await queryRunner.commitTransaction();
+      } catch (e) {
+        queryRunner.rollbackTransaction();
+        throw e;
+      }
+    }
+  };
+
+  public insertMultiSigRow = async (walletId: number, txId: string) => {
+    const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
+    const old = await this.rowRepository
+      .createQueryBuilder()
+      .select()
+      .where('txId=:txId AND walletId=walletId', { txId, walletId: walletId })
+      .getOne();
     if (old === null) {
       await this.rowRepository.insert({
         txId: txId,
@@ -899,7 +909,7 @@ class MultiStoreActionClass {
   public insertMultiSigTx = async (
     row: MultiSignRow,
     txBytes: string,
-    txType: MultiSigTxType
+    txType: MultiSigTxType,
   ) => {
     await this.txRepository
       .createQueryBuilder()
@@ -919,7 +929,7 @@ class MultiStoreActionClass {
 
   public insertMultiSigInputs = async (
     row: MultiSignRow,
-    inputs: Array<string>
+    inputs: Array<string>,
   ) => {
     await this.inputRepository
       .createQueryBuilder()
@@ -937,8 +947,7 @@ class MultiStoreActionClass {
   public insertMultiSigCommitments = async (
     row: MultiSignRow,
     commitments: Array<Array<string>>,
-    secrets: Array<Array<Buffer>>,
-    password: string
+    secrets: Array<Array<string>>,
   ) => {
     await this.commitmentRepository
       .createQueryBuilder()
@@ -957,7 +966,7 @@ class MultiStoreActionClass {
               secrets.length > inputIndex &&
               secrets[inputIndex].length > index &&
               secrets[inputIndex][index].length > 0
-                ? encrypt(secrets[inputIndex][index], password)
+                ? secrets[inputIndex][index]
                 : '',
           });
         }
@@ -968,7 +977,7 @@ class MultiStoreActionClass {
   public insertMultiSigSigner = async (
     row: MultiSignRow,
     signers: Array<string>,
-    simulated: Array<string>
+    simulated: Array<string>,
   ) => {
     await this.signerRepository
       .createQueryBuilder()
@@ -991,33 +1000,19 @@ class MultiStoreActionClass {
     }
   };
 
-  public removeMultiSigRow = async (row: MultiSignRow) => {
-    await this.commitmentRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    await this.txRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    await this.inputRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    await this.rowRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ id: row.id })
-      .execute();
+  public getRowById = async (id: number) => {
+    return await this.rowRepository.findOneBy({ id });
   };
 
-  public getWalletMultiSigRows = async (wallet: Wallet) => {
-    return await this.rowRepository.findBy({
-      wallet: wallet,
-    });
+  public getWalletRows = (walletId: number, txIds?: Array<string>) => {
+    let query = this.rowRepository
+      .createQueryBuilder()
+      .select()
+      .where('walletId=:walletId', { walletId });
+    if (txIds) {
+      query = query.andWhere('txId IN (:...txIds)', { txIds });
+    }
+    return query.getMany();
   };
 
   public getTx = async (row: MultiSignRow, txType: MultiSigTxType) => {
@@ -1042,7 +1037,7 @@ class MultiStoreActionClass {
   public getCommitments = async (
     row: MultiSignRow,
     inputCount: number,
-    signerCount: number
+    signerCount: number,
   ) => {
     const elements = await this.commitmentRepository
       .createQueryBuilder()
@@ -1084,40 +1079,27 @@ class MultiStoreActionClass {
   };
 }
 
-let BoxContentDbAction: BoxContentActionClass;
-let MultiStoreDbAction: MultiStoreActionClass;
-let MultiSigDbAction: MultiSigActionClass;
-let AddressDbAction: AddressActionClass;
-let WalletDbAction: WalletActionClass;
-let ConfigDbAction: ConfigActionClass;
-let AssetDbAction: AssetActionClass;
-let BlockDbAction: BlockActionClass;
-let BoxDbAction: BoxActionClass;
-let TxDbAction: TxActionClass;
-
 const initializeAction = (dataSource: DataSource) => {
-  BoxContentDbAction = new BoxContentActionClass(dataSource);
-  MultiStoreDbAction = new MultiStoreActionClass(dataSource);
-  MultiSigDbAction = new MultiSigActionClass(dataSource);
-  AddressDbAction = new AddressActionClass(dataSource);
-  WalletDbAction = new WalletActionClass(dataSource);
-  ConfigDbAction = new ConfigActionClass(dataSource);
-  AssetDbAction = new AssetActionClass(dataSource);
-  BlockDbAction = new BlockActionClass(dataSource);
-  BoxDbAction = new BoxActionClass(dataSource);
-  TxDbAction = new TxActionClass(dataSource);
+  WalletDbAction.initialize(dataSource);
+  AddressDbAction.initialize(dataSource);
+  AddressValueDbAction.initialize(dataSource);
+  BoxDbAction.initialize(dataSource);
+  AssetDbAction.initialize(dataSource);
+  ConfigDbAction.initialize(dataSource);
+  SavedAddressDbAction.initialize(dataSource);
+  MultiSigDbAction.initialize(dataSource);
+  MultiStoreDbAction.initialize(dataSource);
 };
 
 export {
-  BoxContentDbAction,
-  MultiStoreDbAction,
-  MultiSigDbAction,
-  AddressDbAction,
   WalletDbAction,
+  AddressDbAction,
+  AddressValueDbAction,
   ConfigDbAction,
-  AssetDbAction,
-  BlockDbAction,
   BoxDbAction,
-  TxDbAction,
+  AssetDbAction,
+  SavedAddressDbAction,
+  MultiSigDbAction,
+  MultiStoreDbAction,
   initializeAction,
 };

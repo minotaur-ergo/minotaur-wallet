@@ -1,5 +1,4 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Wallet from '../Wallet';
 import MultiSignRow from './MultiSignRow';
 
 @Entity({ name: 'multi-commitment' })
@@ -20,7 +19,7 @@ class MultiCommitment {
   inputIndex = 0;
 
   @Column('text', { nullable: true })
-  secret? = ''; // if secret commitment store secret here
+  secret? = ''; // if secret commitment store-old secret here
 }
 
 export default MultiCommitment;

@@ -1,62 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import 'reflect-metadata';
-import './MinotaurApp.css';
-import Database from '../database/Database';
-import { Provider } from 'react-redux';
-import { store } from '../../store';
-import WalletRouter from '../route/WalletRouter';
-import { SnackbarProvider } from 'notistack';
-import MessageHandler from './MessageHandler';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CloseAction from './CloseAction';
-import { SafeArea } from 'capacitor-plugin-safe-area';
+import { useEffect, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
-
-const getTheme = (mode: 'dark' | 'light') => {
-  return createTheme({
-    palette: {
-      mode: mode,
-      // background: {
-      //     paper: "#121212"
-      // }
-    },
-  });
-};
+import { SafeArea } from 'capacitor-plugin-safe-area';
+import createStyle from './safe-area-style';
+import AppTheme from '../app-theme/AppTheme';
+import Database from '../database/Database';
+import MessageHandler from './MessageHandler';
+import { MemoryRouter } from 'react-router-dom';
+import AppRouter from '@/router/AppRouter';
+import store from '@/store';
+import { Provider } from 'react-redux';
+import BackButtonHandler from '@/router/BackButtonHandler';
+import QrCodeReaderView from '../qr-code-scanner/QrCodeReaderView';
 
 const MinotaurApp = () => {
-  const [marginTop, setMarginTop] = useState(0);
+  const [style, setStyle] = useState('');
   useEffect(() => {
     if (Capacitor.getPlatform() === 'ios') {
       SafeArea.getSafeAreaInsets().then((inset) => {
-        setMarginTop(inset.insets.top);
+        setStyle(createStyle(inset.insets.top, inset.insets.bottom));
       });
     }
   }, []);
-  const style = `.MuiAppBar-root{
-     padding-top: ${marginTop}px; 
-}
-.MuiToolbar-root{
-    padding-top: ${marginTop}px;
-}
-.MuiAppBar-root .MuiToolbar-root{
-    padding-top: 0;
-}`;
   return (
-    <ThemeProvider theme={getTheme('light')}>
-      <style type="text/css">{style}</style>
-      <Database>
-        <Provider store={store}>
-          <WalletRouter />
-          <SnackbarProvider
-            style={{ zIndex: 9999 }}
-            maxSnack={10}
-            action={(key) => <CloseAction msgKey={key} />}
-          >
-            <MessageHandler />
-          </SnackbarProvider>
-        </Provider>
-      </Database>
-    </ThemeProvider>
+    <AppTheme>
+      <MessageHandler>
+        <style type="text/css">{style}</style>
+        <Database>
+          <Provider store={store}>
+            <MemoryRouter>
+              <QrCodeReaderView>
+                <BackButtonHandler />
+                <AppRouter />
+              </QrCodeReaderView>
+            </MemoryRouter>
+          </Provider>
+        </Database>
+      </MessageHandler>
+    </AppTheme>
   );
 };
 

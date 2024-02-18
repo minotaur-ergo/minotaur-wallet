@@ -1,5 +1,5 @@
 {
-  "appId": "ml.minotaur.wallet",
+  "appId": "io.github.minotaur_ergo.minotaur",
   "directories": {
     "buildResources": "resources"
   },

@@ -1,13 +1,24 @@
+html,
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body.barcode-scanner-active {
+  visibility: hidden;
+  background: transparent;
+  background-color: transparent;
+}
+
+.barcode-scanner-modal {
+  visibility: visible;
+}
+.barcode-scanner-modal .background {
+  display: none;
+}
+.barcode-scanner-modal .appbar {
+  background-color: #f8f8f8;
+}
+.color-white {
+  color: white !important;
 }

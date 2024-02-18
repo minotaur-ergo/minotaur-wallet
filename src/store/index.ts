@@ -1,7 +1,16 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import reducer from './reducer';
+import config, { ConfigStateType } from './reducer/config';
+import wallet, { WalletStateType } from './reducer/wallet';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const reducer = combineReducers({ wallet, config });
 
-export { store };
+const store = configureStore({ reducer });
+
+export default store;
+
+interface GlobalStateType {
+  wallet: WalletStateType;
+  config: ConfigStateType;
+}
+
+export type { ConfigStateType, WalletStateType, GlobalStateType };

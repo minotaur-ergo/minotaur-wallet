@@ -1,45 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { GlobalStateType } from '../../store/reducer';
-import { connect } from 'react-redux';
-import { cleanMessage } from '../../store/actions';
-import { SnackbarMessage, useSnackbar, VariantType } from 'notistack';
-import { Action, Dispatch } from 'redux';
+import React from 'react';
+import { SnackbarProvider, enqueueSnackbar, VariantType } from 'notistack';
+import MessageContext from './messageContext';
+import CloseAction from './CloseAction';
 
 interface MessageHandlerPropsType {
-  message: SnackbarMessage;
-  variant: VariantType;
-  cleanMessage: () => unknown;
-}
-
-export interface MessageEnqueueService {
-  showMessage: (message: SnackbarMessage, variant: VariantType) => unknown;
+  children?: React.ReactNode;
 }
 
 const MessageHandler = (props: MessageHandlerPropsType) => {
-  const [lastMessage, setLastMessage] = useState<SnackbarMessage>();
-  const snackbar = useSnackbar();
-  useEffect(() => {
-    if (props.message !== lastMessage) {
-      setLastMessage(props.message);
-      if (props.message) {
-        snackbar.enqueueSnackbar(props.message, {
-          variant: props.variant,
-          anchorOrigin: { vertical: 'top', horizontal: 'center' },
-        });
-        props.cleanMessage();
-      }
-    }
-  }, [lastMessage, props, snackbar]);
-  return <React.Fragment />;
+  const insert = (message: string, variant: VariantType) => {
+    enqueueSnackbar(message, {
+      variant: variant,
+      autoHideDuration: 3000,
+      style: { whiteSpace: 'pre-line' },
+    });
+  };
+  return (
+    <SnackbarProvider
+      style={{ zIndex: 9999 }}
+      maxSnack={10}
+      action={(key) => <CloseAction msgKey={key} />}
+    >
+      <MessageContext.Provider value={{ insert }}>
+        {props.children}
+      </MessageContext.Provider>
+    </SnackbarProvider>
+  );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({
-  message: state.message.message,
-  variant: state.message.variant,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-  cleanMessage: () => dispatch(cleanMessage()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MessageHandler);
+export default MessageHandler;

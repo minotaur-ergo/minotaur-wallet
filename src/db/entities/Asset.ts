@@ -13,7 +13,16 @@ class Asset {
   network_type = '';
 
   @Column('text', { nullable: true })
+  emission_amount = '';
+
+  @Column('int')
+  height = 0;
+
+  @Column('text', { nullable: true })
   box_id?: string = '';
+
+  @Column('text', { nullable: true })
+  tx_id?: string = '';
 
   @Column('text', { nullable: true })
   name?: string = '';

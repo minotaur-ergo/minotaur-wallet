@@ -1,15 +1,13 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ml.minotaur.wallet',
-  appName: 'minotaur-wallet',
-  webDir: 'build',
-  bundledWebRuntime: true,
+  appId: 'io.github.minotaur_ergo.minotaur',
+  appName: 'minotaur',
+  webDir: 'dist',
   plugins: {
     CapacitorSQLite: {
-      electronLinuxLocation: 'Databases',
-      electronMacLocation: 'Databases',
-      electronWindowsLocation: 'Databases',
+      androidIsEncryption: false,
+      electronIsEncryption: false,
     },
   },
 };

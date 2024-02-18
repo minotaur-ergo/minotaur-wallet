@@ -1,23 +1,20 @@
 import React from 'react';
-import { GlobalStateType } from '../../store/reducer';
-import { connect } from 'react-redux';
-import { DisplayType } from '../../store/reducer/wallet';
+import { GlobalStateType } from '@/store';
+import { useSelector } from 'react-redux';
 
 interface InAdvancedModePropsType {
   children?: React.ReactNode;
-  display: DisplayType;
 }
 
 const InAdvancedMode = (props: InAdvancedModePropsType) => {
+  const display: string = useSelector(
+    (state: GlobalStateType) => state.config.display,
+  );
   return (
     <React.Fragment>
-      {props.display === 'advanced' ? props.children : null}
+      {display === 'advanced' ? props.children : null}
     </React.Fragment>
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({
-  display: state.wallet.display,
-});
-
-export default connect(mapStateToProps)(InAdvancedMode);
+export default InAdvancedMode;

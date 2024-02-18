@@ -2,6 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ConfigType {
   DisplayMode = 'DISPLAY_MODE',
+  Currency = 'CURRENCY',
+  ActiveWallet = 'ACTIVE_WALLET',
 }
 
 @Entity({ name: 'config' })

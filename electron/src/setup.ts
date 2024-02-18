@@ -27,7 +27,7 @@ const reloadWatcher = {
   watcher: null,
 };
 export function setupReloadWatcher(
-  electronCapacitorApp: ElectronCapacitorApp
+  electronCapacitorApp: ElectronCapacitorApp,
 ): void {
   reloadWatcher.watcher = chokidar
     .watch(join(app.getAppPath(), 'app'), {
@@ -72,7 +72,7 @@ export class ElectronCapacitorApp {
   constructor(
     capacitorFileConfig: CapacitorElectronConfig,
     trayMenuTemplate?: (MenuItemConstructorOptions | MenuItem)[],
-    appMenuBarMenuTemplate?: (MenuItemConstructorOptions | MenuItem)[]
+    appMenuBarMenuTemplate?: (MenuItemConstructorOptions | MenuItem)[],
   ) {
     this.CapacitorFileConfig = capacitorFileConfig;
 
@@ -114,8 +114,8 @@ export class ElectronCapacitorApp {
       join(
         app.getAppPath(),
         'assets',
-        process.platform === 'win32' ? 'appIcon.ico' : 'appIcon.png'
-      )
+        process.platform === 'win32' ? 'appIcon.ico' : 'appIcon.png',
+      ),
     );
     this.mainWindowState = windowStateKeeper({
       defaultWidth: 520,
@@ -146,7 +146,7 @@ export class ElectronCapacitorApp {
 
     if (this.CapacitorFileConfig.backgroundColor) {
       this.MainWindow.setBackgroundColor(
-        this.CapacitorFileConfig.electron.backgroundColor
+        this.CapacitorFileConfig.electron.backgroundColor,
       );
     }
 
@@ -185,23 +185,23 @@ export class ElectronCapacitorApp {
       });
       this.TrayIcon.setToolTip(app.getName());
       this.TrayIcon.setContextMenu(
-        Menu.buildFromTemplate(this.TrayMenuTemplate)
+        Menu.buildFromTemplate(this.TrayMenuTemplate),
       );
     }
 
     // Setup the main manu bar at the top of our window.
     Menu.setApplicationMenu(
-      Menu.buildFromTemplate(this.AppMenuBarMenuTemplate)
+      Menu.buildFromTemplate(this.AppMenuBarMenuTemplate),
     );
 
-    // If the splashscreen is enabled, show it first while the main window loads then dwitch it out for the main window, or just load the main window from the start.
+    // If the splashscreen is enabled, show it first while the main window loads then switch it out for the main window, or just load the main window from the start.
     if (this.CapacitorFileConfig.electron?.splashScreenEnabled) {
       this.SplashScreen = new CapacitorSplashScreen({
         imageFilePath: join(
           app.getAppPath(),
           'assets',
           this.CapacitorFileConfig.electron?.splashScreenImageName ??
-            'splash.png'
+            'splash.png',
         ),
         windowWidth: 400,
         windowHeight: 400,
@@ -242,7 +242,7 @@ export class ElectronCapacitorApp {
         }
         CapElectronEventEmitter.emit(
           'CAPELECTRON_DeeplinkListenerInitialized',
-          ''
+          '',
         );
       }, 400);
     });

@@ -1,7 +1,7 @@
 import React from 'react';
-import { GlobalStateType } from '../../store/reducer';
-import { connect } from 'react-redux';
-import { DisplayType } from '../../store/reducer/wallet';
+import { useSelector } from 'react-redux';
+import { DisplayType } from '@/store/reducer/config';
+import { GlobalStateType } from '@/store';
 
 interface InSimpleModePropsType {
   children?: React.ReactNode;
@@ -9,14 +9,14 @@ interface InSimpleModePropsType {
 }
 
 const InSimpleMode = (props: InSimpleModePropsType) => {
+  const display: string = useSelector(
+    (state: GlobalStateType) => state.config.display,
+  );
   return (
     <React.Fragment>
-      {props.display === 'simple' ? props.children : null}
+      {display === 'simple' ? props.children : null}
     </React.Fragment>
   );
 };
 
-const mapStateToProps = (state: GlobalStateType) => ({
-  display: state.wallet.display,
-});
-export default connect(mapStateToProps)(InSimpleMode);
+export default InSimpleMode;

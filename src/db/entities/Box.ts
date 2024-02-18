@@ -1,11 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import Address from './Address';
-import Tx from './Tx';
-import BigIntValueTransformer from './Transformer';
 import { Unique } from 'typeorm/browser';
 
 @Entity({ name: 'box' })
-@Unique('box_id_in_network', ['network_type', 'box_id'])
+@Unique('box_id_for_address', ['address', 'box_id'])
 class Box {
   @PrimaryGeneratedColumn()
   id = 0;
@@ -13,20 +11,14 @@ class Box {
   @ManyToOne(() => Address)
   address: Address | null = null;
 
-  @ManyToOne(() => Tx)
-  tx: Tx | null = null;
+  @Column('text')
+  tx_id = '';
 
-  @ManyToOne(() => Tx, { nullable: true })
-  spend_tx: Tx | null = null;
+  @Column('text', { nullable: true })
+  spend_tx_id: string | null = null;
 
   @Column('text')
   box_id = '';
-
-  @Column('text')
-  network_type = '';
-
-  @Column('text', { transformer: new BigIntValueTransformer() })
-  erg = BigInt(0);
 
   @Column('int')
   create_index = 0;
@@ -34,17 +26,20 @@ class Box {
   @Column('int')
   create_height = 0;
 
-  @Column('int', { nullable: true })
-  spend_index = 0;
+  @Column('int')
+  create_timestamp = 0;
 
   @Column('int', { nullable: true })
-  spend_height = 0;
+  spend_index?: number;
 
-  @Column('int', { default: 0 })
-  asset_count = 0;
+  @Column('int', { nullable: true })
+  spend_height?: number;
+
+  @Column('int', { nullable: true })
+  spend_timestamp?: number;
 
   @Column('text')
-  json = '';
+  serialized = '';
 }
 
 export default Box;

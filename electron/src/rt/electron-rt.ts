@@ -17,7 +17,7 @@ Object.keys(plugins).forEach((pluginKey) => {
     .filter((className) => className !== 'default')
     .forEach((classKey) => {
       const functionList = Object.getOwnPropertyNames(
-        plugins[pluginKey][classKey].prototype
+        plugins[pluginKey][classKey].prototype,
       ).filter((v) => v !== 'constructor');
 
       if (!contextApi[classKey]) {
@@ -41,7 +41,7 @@ Object.keys(plugins).forEach((pluginKey) => {
         } = {};
         const listenersOfTypeExist = (type) =>
           !!Object.values(listeners).find(
-            (listenerObj) => listenerObj.type === type
+            (listenerObj) => listenerObj.type === type,
           );
 
         Object.assign(contextApi[classKey], {
@@ -77,16 +77,17 @@ Object.keys(plugins).forEach((pluginKey) => {
           },
           removeAllListeners(type: string) {
             Object.entries(listeners).forEach(([id, listenerObj]) => {
-              if (listenerObj.type === type) {
+              if (!type || listenerObj.type === type) {
                 ipcRenderer.removeListener(
-                  `event-${classKey}-${type}`,
-                  listenerObj.listener
+                  `event-${classKey}-${listenerObj.type}`,
+                  listenerObj.listener,
+                );
+                ipcRenderer.send(
+                  `event-remove-${classKey}-${listenerObj.type}`,
                 );
                 delete listeners[id];
               }
             });
-
-            ipcRenderer.send(`event-remove-${classKey}-${type}`);
           },
         });
       }
