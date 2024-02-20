@@ -100,7 +100,7 @@ const WalletAddNew = () => {
                     &nbsp;Create
                   </React.Fragment>
                 ) : step === MNEMONIC_STEP_NUM ? (
-                  "I've write it down"
+                  "I've written it down"
                 ) : (
                   'Next'
                 )}
