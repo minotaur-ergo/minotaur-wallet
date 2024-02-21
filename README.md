@@ -6,7 +6,6 @@
 
 This is the first multi-platform wallet for ergo.
 
-
 Features:
 
 - [x] Generating wallets, restoring wallets in a way compatible to Yoroi and Ergo node and ergo android app

@@ -1,5 +1,4 @@
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import { ergPriceUsd } from '@/utils/functions';
 import { GlobalStateType } from '@/store';
@@ -74,7 +73,7 @@ const WalletCard = (props: WalletCardPropsType) => {
           </Box>
         </Box>
         <Box sx={{ height: 80 }} />
-        <Button
+        {/* <Button
           sx={{
             position: 'absolute',
             right: 0,
@@ -92,7 +91,7 @@ const WalletCard = (props: WalletCardPropsType) => {
           fullWidth={false}
         >
           Mon.
-        </Button>
+        </Button> */}
       </CardContent>
     </Card>
   );

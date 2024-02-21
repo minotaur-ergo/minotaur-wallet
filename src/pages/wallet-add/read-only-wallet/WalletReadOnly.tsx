@@ -34,7 +34,7 @@ const WalletReadOnly = () => {
       createReadOnlyWallet(
         values.name,
         xPub ? ' ' : values.public,
-        xPub ? xPub : ' ',
+        xPub ? xPub : '',
         values.network,
       )
         .then(() => {

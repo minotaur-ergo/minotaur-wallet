@@ -21,7 +21,7 @@ const WalletAddress = (props: WalletAddressPropsType) => {
         emptyTitle={'You have no address '}
         render={(item) => <AddressItem address={item} chain={chain} />}
       />
-      <NewAddress wallet={props.wallet} />
+      {props.wallet.xPub !== '' ? <NewAddress wallet={props.wallet} /> : null}
     </HomeFrame>
   );
 };
