@@ -44,7 +44,7 @@ const XPubSelect = (props: XPubSelectPropsType) => {
     <Stack spacing={2}>
       <WalletSelect
         networkType={props.networkType}
-        label="Select Signer Sallet"
+        label="Select Signer Wallet"
         walletId={props.walletId}
         select={props.setWalletId}
       />
