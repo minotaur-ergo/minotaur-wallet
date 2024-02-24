@@ -667,7 +667,7 @@ class AssetDbAction {
     return this.assetRepository
       .createQueryBuilder()
       .select()
-      .where('(tx_id is NULL OR tx_id = "") AND network_type=:networkType', {
+      .where("(tx_id is NULL OR tx_id ='') AND network_type=:networkType", {
         networkType,
       })
       .getMany();
@@ -678,7 +678,7 @@ class AssetDbAction {
       .createQueryBuilder()
       .select()
       .where(
-        'tx_id is not NULL AND tx_id <> "" AND network_type=:networkType AND height > :height',
+        "tx_id is not NULL AND tx_id <> '' AND network_type=:networkType AND height > :height",
         {
           networkType,
           height,
