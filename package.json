@@ -17,7 +17,9 @@
     "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron && npm run lint",
     "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron  && npm run lint",
     "test": "echo 'no test'",
-    "coverage": "npm run test -- --coverage"
+    "coverage": "npm run test -- --coverage",
+    "ext:clean": "rimraf ./extension",
+    "ext:build": "npm run ext:clean && vite --config ./vite.extension.config.ts build"
   },
   "dependencies": {
     "@capacitor-community/electron": "^5.0.1",
@@ -79,6 +81,7 @@
     "websocket-ts": "^2.1.5"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.261",
     "@types/crypto-js": "^4.2.2",
     "@types/json-bigint": "^1.0.4",
     "@types/react": "^18.2.48",
