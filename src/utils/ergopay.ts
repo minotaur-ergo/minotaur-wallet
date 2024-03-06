@@ -1,11 +1,11 @@
 import { ErgoPayResponse, InternalBoxLoadedData } from '@/types/ergopay';
 import { ADDRESS_PLACE_HOLDER } from './const';
-import axios from 'axios';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { BoxDbAction } from '@/action/db';
 import { StateWallet } from '@/store/reducer/wallet';
 import { createEmptyArray } from './functions';
 import getChain from './networks';
+import { CapacitorHttp } from '@capacitor/core';
 
 const getUrl = (url: string, address: string) => {
   if (url.startsWith('ergopay://localhost')) {
@@ -18,18 +18,26 @@ const getUrl = (url: string, address: string) => {
     .replace(ADDRESS_PLACE_HOLDER, address);
 };
 
-const getData = (url: string, address: string) => {
-  return axios
-    .get<ErgoPayResponse>(getUrl(url, address))
-    .then((res) => res.data);
+const getData = async (url: string, address: string) => {
+  const res = await CapacitorHttp.get({
+    url: getUrl(url, address),
+  });
+  if (res.status / 100 === 2) {
+    return res.data as ErgoPayResponse;
+  }
+  throw Error(`Api Call respond with status code ${res.status}: ${res.data}`);
 };
 
-const getDataMultiple = (url: string, addresses: Array<string>) => {
-  return axios
-    .post(getUrl(url, 'multiple'), addresses, {
-      headers: { 'ErgoPay-CanSelectMultipleAddresses': 'supported' },
-    })
-    .then((res) => res.data);
+const getDataMultiple = async (url: string, addresses: Array<string>) => {
+  const res = await CapacitorHttp.get({
+    url: getUrl(url, 'multiple'),
+    data: addresses,
+    headers: { 'ErgoPay-CanSelectMultipleAddresses': 'supported' },
+  });
+  if (res.status / 100 === 2) {
+    return res.data as ErgoPayResponse;
+  }
+  throw Error(`Api Call respond with status code ${res.status}: ${res.data}`);
 };
 
 const getInternalBoxes = async (

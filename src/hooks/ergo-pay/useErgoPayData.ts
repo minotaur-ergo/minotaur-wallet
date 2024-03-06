@@ -5,7 +5,6 @@ import {
   MultiAddressSupportedEnum,
 } from '@/types/ergopay';
 import { getData, getDataMultiple } from '@/utils/ergopay';
-import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 const useErgoPayData = (
@@ -28,7 +27,7 @@ const useErgoPayData = (
       setIsFailed(false);
       setLoading(false);
     };
-    const catchCallback = (res: AxiosError) => {
+    const catchCallback = (res: Error) => {
       setData({
         address: '',
         message: 'Failed to get data:\n' + res.message,

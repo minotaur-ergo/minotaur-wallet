@@ -9,14 +9,14 @@ PODS:
     - Capacitor
   - CapacitorClipboard (5.0.7):
     - Capacitor
-  - CapacitorCommunitySqlite (5.5.2):
+  - CapacitorCommunitySqlite (5.6.1):
     - Capacitor
     - SQLCipher
     - ZIPFoundation
   - CapacitorCordova (5.6.0)
   - CapacitorFilesystem (5.2.1):
     - Capacitor
-  - CapacitorMlkitBarcodeScanning (5.3.0):
+  - CapacitorMlkitBarcodeScanning (5.4.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 4.0.0)
   - CapacitorPluginSafeArea (2.0.6):
@@ -99,6 +99,7 @@ DEPENDENCIES:
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
+  - GoogleMLKit/BarcodeScanning
 
 SPEC REPOS:
   trunk:
@@ -149,10 +150,10 @@ SPEC CHECKSUMS:
   CapacitorBrowser: a6deae9e5bf87f62b62a753cff7992c5def9e771
   CapacitorCamera: 4892c5c392f60039d853dde78bc50ba19fbd113e
   CapacitorClipboard: 45e5e25f2271f98712985d422776cdc5a779cca1
-  CapacitorCommunitySqlite: f010c87252f297bd354745f48c1151ee919d81d2
+  CapacitorCommunitySqlite: 47474c9717db7d998eeba2c3147e1c055a726d5f
   CapacitorCordova: 931b48fcdbc9bc985fc2f16cec9f77c794a27729
   CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
-  CapacitorMlkitBarcodeScanning: ea08ef246e5d3511d5a231a59fae36b16ad9acb3
+  CapacitorMlkitBarcodeScanning: 8fb81cbef3c6ffe0c0e2dbd15ed6dca889a5a062
   CapacitorPluginSafeArea: d55e4d4e70c98f611240f11dd80561438d0d70cb
   CapacitorStatusBar: f390fbb49b82ffb754ea4b3cf71dc8b048baf3e7
   CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
@@ -171,6 +172,6 @@ SPEC CHECKSUMS:
   SQLCipher: 905b145f65f349f26da9e60a19901ad24adcd381
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 3f7144cc1d4dd7073a23230e3f8b6e6be2012f25
+PODFILE CHECKSUM: d5187453a2e7fe025e8be279069c58f44522b6bc
 
 COCOAPODS: 1.15.1

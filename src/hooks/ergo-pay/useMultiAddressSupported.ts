@@ -4,8 +4,8 @@ import {
 } from '@/types/ergopay';
 import { ADDRESS_PLACE_HOLDER } from '@/utils/const';
 import { getUrl } from '@/utils/ergopay';
-import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
+import { CapacitorHttp } from '@capacitor/core';
 
 const useMultiAddressSupported = (
   url: string,
@@ -39,26 +39,23 @@ const useMultiAddressSupported = (
             description: ['Checking if backend Supported Multiple Addresses'],
             severity: '',
           });
-          axios
-            .post(getUrl(loadingUrl, 'multiple_check'))
-            .then(() => {
-              setLoadedUrl(loadingUrl);
-              cleanDescription(MultiAddressSupportedEnum.SUPPORTED);
-              setLoading(false);
-            })
-            .catch((res: AxiosError) => {
+          CapacitorHttp.post({
+            url: getUrl(loadingUrl, 'multiple_check'),
+          })
+            .then((res) => {
               let newSupported = MultiAddressSupportedEnum.FAILED;
-              if (res.response && res.response.status) {
-                const status = Math.floor(res.response.status / 100);
-                if ([3, 4, 5].includes(status))
-                  newSupported = MultiAddressSupportedEnum.NOT_SUPPORTED;
+              const status = Math.floor(res.status / 100);
+              if ([3, 4, 5].includes(status)) {
+                newSupported = MultiAddressSupportedEnum.NOT_SUPPORTED;
+              } else if (status === 2) {
+                newSupported = MultiAddressSupportedEnum.SUPPORTED;
               }
               if (newSupported === MultiAddressSupportedEnum.FAILED) {
                 setResponse({
                   title: 'Failed',
                   description: [
                     `Error During Checking Multiple Address Supported`,
-                    res.message ? res.message : '',
+                    res.data ? res.data : '',
                   ],
                   severity: 'error',
                   supported: newSupported,
@@ -68,6 +65,17 @@ const useMultiAddressSupported = (
               }
               setLoadedUrl(loadingUrl);
               setLoading(false);
+            })
+            .catch((err) => {
+              setResponse({
+                title: 'Failed',
+                description: [
+                  `Error During Checking Multiple Address Supported`,
+                  err,
+                ],
+                severity: 'error',
+                supported: MultiAddressSupportedEnum.FAILED,
+              });
             });
         } else {
           cleanDescription(MultiAddressSupportedEnum.NOT_NEEDED);

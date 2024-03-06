@@ -1,7 +1,8 @@
 import { ChainTypeInterface } from './interfaces';
-import { NetworkPrefix } from 'ergo-lib-wasm-browser';
+import { ErgoStateContext, NetworkPrefix } from 'ergo-lib-wasm-browser';
 import ErgoExplorerNetwork from './explorer';
 import { MAIN_NET_LABEL } from '../const';
+import fakeContext from './fakeContext';
 
 class MainnetChain implements ChainTypeInterface {
   readonly label = MAIN_NET_LABEL;
@@ -14,6 +15,10 @@ class MainnetChain implements ChainTypeInterface {
   getExplorerFront(): string {
     return 'https://explorer.ergoplatform.com';
   }
+
+  fakeContext = (): ErgoStateContext => {
+    return fakeContext();
+  };
 }
 
 export { MainnetChain };

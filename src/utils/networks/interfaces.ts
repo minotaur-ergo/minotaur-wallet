@@ -1,5 +1,6 @@
 import { NetworkPrefix } from 'ergo-lib-wasm-browser';
-import { AbstractNetwork } from './abstract_network';
+import { AbstractNetwork } from './abstractNetwork';
+import * as wasm from 'ergo-lib-wasm-browser';
 
 interface ChainTypeInterface {
   readonly prefix: NetworkPrefix;
@@ -7,6 +8,7 @@ interface ChainTypeInterface {
 
   getNetwork: () => AbstractNetwork;
   getExplorerFront: () => string;
+  fakeContext: () => wasm.ErgoStateContext;
 }
 
 interface BalanceInfo {

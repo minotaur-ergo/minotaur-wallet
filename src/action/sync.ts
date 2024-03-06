@@ -5,7 +5,7 @@ import store from '@/store';
 import { setBalances } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
 import getChain from '@/utils/networks';
-import { AbstractNetwork } from '@/utils/networks/abstract_network';
+import { AbstractNetwork } from '@/utils/networks/abstractNetwork';
 import {
   AddressDbAction,
   AddressValueDbAction,
