@@ -14,6 +14,7 @@ import { StateWallet } from '@/store/reducer/wallet';
 import SendAmount from './send-amount/SendAmount';
 import SignTx from './sign-tx/SignTx';
 import { getSignButtonLabel } from '@/utils/functions';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 
 interface WalletSendPropsType {
   wallet: StateWallet;
@@ -79,7 +80,7 @@ const WalletSend = (props: WalletSendPropsType) => {
                 onClick={handleNext}
                 endIcon={step === STEPS_COUNTS ? undefined : <NextIcon />}
               >
-                {getNextLabel()}
+                <SignButtonLabel wallet={props.wallet}/>
               </Button>
             </Grid>
           </Grid>

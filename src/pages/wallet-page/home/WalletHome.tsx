@@ -12,6 +12,7 @@ interface WalletHomePropsType {
 
 const WalletHome = (props: WalletHomePropsType) => {
   const signer = useSignerWallet(props.wallet);
+  console.log(signer)
   return (
     <HomeFrame title={props.wallet.name} id={props.wallet.id}>
       <WalletCard wallet={props.wallet} />
