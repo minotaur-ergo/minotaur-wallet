@@ -78,7 +78,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
           </Button>
         ) : context.tx && wallet ? (
           <Button disabled={hasError} onClick={() => signContext.handle()}>
-            <SignButtonLabel wallet={wallet}/>
+            <SignButtonLabel wallet={wallet} />
           </Button>
         ) : undefined
       }

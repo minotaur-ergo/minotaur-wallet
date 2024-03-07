@@ -72,7 +72,7 @@ const WalletDAppView = (props: WalletDAppViewPropsType) => {
                     disabled={hasError}
                     onClick={() => txSignContext.handle()}
                   >
-                    <SignButtonLabel wallet={props.wallet}/>
+                    <SignButtonLabel wallet={props.wallet} />
                   </Button>
                 </Grid>
               </Grid>

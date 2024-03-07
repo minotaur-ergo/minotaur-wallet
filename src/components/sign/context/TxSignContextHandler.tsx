@@ -18,7 +18,7 @@ import TxSubmitContextHandler from './TxSubmitContextHandler';
 interface TxSignContextHandlerInternalPropsType {
   wallet: StateWallet;
   children: React.ReactNode;
-  close: () => unknown;
+  close: (force?: boolean) => unknown;
   denySubmit?: boolean;
   status: StatusEnum;
   setStatus: (newStatus: StatusEnum) => unknown;
@@ -117,7 +117,7 @@ const TxSignContextHandlerInternal = (
         case WalletType.MultiSig:
           if (reduced) {
             await multiSigStoreNewTx(reduced, boxes, props.wallet);
-            props.close ? props.close() : navigate(-1);
+            props.close(true);
             navigate(
               getRoute(RouteMap.WalletMultiSig, { id: props.wallet.id }),
             );
@@ -164,8 +164,8 @@ const TxSignContextHandler = (props: TxSignContextHandlerPropsType) => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<StatusEnum>(StatusEnum.WAITING);
 
-  const close = () => {
-    if (status === StatusEnum.SENT) {
+  const close = (force?: boolean) => {
+    if (status === StatusEnum.SENT || force) {
       if (props.close) {
         props.close();
       } else {

@@ -147,12 +147,12 @@ class MultiSigDbAction {
       .where('walletId = :walletId', { walletId: walletId })
       .andWhere('signWalletId is not null')
       .getRawOne();
-    if(data){
+    if (data) {
       return await WalletDbAction.getInstance().getWalletById(
         data.MultiSigKey_signWalletId,
       );
     }
-    return undefined
+    return undefined;
   };
 
   getWalletExternalKeys = async (walletId: number) => {

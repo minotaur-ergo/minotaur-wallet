@@ -5,7 +5,6 @@ import * as wasm from 'ergo-lib-wasm-browser';
 import { getBoxTokens } from '@/action/tx';
 import { BoxContent } from '@/types/sign-modal';
 import getChain from './networks';
-import { WalletType } from '@/db/entities/Wallet';
 
 const bip32 = BIP32Factory(ecc);
 
@@ -189,13 +188,6 @@ const dottedText = (text: string, paddingSize: number) => {
   return dotted;
 };
 
-const getSignButtonLabel = (walletType: WalletType) => {
-  if (walletType === WalletType.ReadOnly) return 'Scan Signed';
-  if (walletType === WalletType.Normal) return 'Sign';
-  if (walletType === WalletType.MultiSig) return 'Start Signing';
-  return '';
-};
-
 export {
   tokenStr,
   ergPriceUsd,
@@ -210,6 +202,5 @@ export {
   boxesToContent,
   sliceToChunksString,
   dottedText,
-  getSignButtonLabel,
   bip32,
 };

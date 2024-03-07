@@ -18,13 +18,13 @@ const WalletSignMultiSig = (props: WalletSignMultiSigPropsType) => {
     props.setHasError(isValid);
   });
   const signer = useSignerWallet(props.wallet);
-  if(signer?.type === WalletType.ReadOnly){
+  if (signer?.type === WalletType.ReadOnly) {
     return (
       <WalletSignReadonly
         wallet={props.wallet}
         setHasError={props.setHasError}
       />
-    )
+    );
   }
   return (
     <Box>

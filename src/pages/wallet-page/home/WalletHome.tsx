@@ -12,11 +12,12 @@ interface WalletHomePropsType {
 
 const WalletHome = (props: WalletHomePropsType) => {
   const signer = useSignerWallet(props.wallet);
-  console.log(signer)
   return (
     <HomeFrame title={props.wallet.name} id={props.wallet.id}>
       <WalletCard wallet={props.wallet} />
-      {props.wallet.type === WalletType.MultiSig && signer && signer.type === WalletType.Normal ? (
+      {props.wallet.type === WalletType.MultiSig &&
+      signer &&
+      signer.type === WalletType.Normal ? (
         <MultiSigCommunicationButton walletId={props.wallet.id} />
       ) : null}
       <RecentTransactions wallet={props.wallet} />
