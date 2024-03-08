@@ -14,6 +14,7 @@ import { RouteMap, getRoute } from '../../../router/routerMap';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from './TxSubmitContext';
 import TxSubmitContextHandler from './TxSubmitContextHandler';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface TxSignContextHandlerInternalPropsType {
   wallet: StateWallet;
@@ -45,6 +46,7 @@ const TxSignContextHandlerInternal = (
   const [signedStr, setSignedStr] = useState('');
   const qrCodeContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
+  const signer = useSignerWallet(props.wallet);
   const setTransactionDetail = (
     tx: wasm.UnsignedTransaction | undefined,
     boxes: Array<wasm.ErgoBox>,
@@ -115,7 +117,9 @@ const TxSignContextHandlerInternal = (
           qrCodeContext.start();
           break;
         case WalletType.MultiSig:
-          if (reduced) {
+          if(signer && signer.type === WalletType.ReadOnly){
+            qrCodeContext.start();
+          }else if (reduced) {
             await multiSigStoreNewTx(reduced, boxes, props.wallet);
             props.close(true);
             navigate(
