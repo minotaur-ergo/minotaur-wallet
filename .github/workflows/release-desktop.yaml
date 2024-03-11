@@ -12,7 +12,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest, macos14]
         include:
           - os: ubuntu-latest
             platform: linux
@@ -21,6 +21,9 @@ jobs:
             platform: Windows
             extension: exe
           - os: macos-latest
+            platform: MacOS
+            extension: dmg
+          - os: macos-14
             platform: MacOS
             extension: dmg
     runs-on: ${{ matrix.os }}
@@ -54,7 +57,7 @@ jobs:
         run: npm run sync:electron
 
       - name: Remove icns from assets
-        if: matrix.os != 'macos-latest'
+        if: matrix.platform != 'MacOS'
         run: rm electron/assets/appIcon.icns
 
       - name: Build Electron

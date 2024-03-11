@@ -19,7 +19,13 @@ export const DisplaySignedTx = (props: DisplaySignedTxPropsType) => {
       const id = tx.id().to_str();
       if (id !== txId) {
         setLoading(true);
-        setTx(JSON.stringify({signedTx: Buffer.from(tx.sigma_serialize_bytes()).toString('base64')}));
+        setTx(
+          JSON.stringify({
+            signedTx: Buffer.from(tx.sigma_serialize_bytes()).toString(
+              'base64',
+            ),
+          }),
+        );
         setTxId(id);
         setLoading(false);
       }

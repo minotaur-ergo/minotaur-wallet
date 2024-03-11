@@ -62,7 +62,7 @@ const ColdSignTransaction = (props: ColdSignTransactionPropsType) => {
           }
           setStored(props.scanned);
         } catch (e) {
-          console.log(e)
+          console.log(e);
           setError('Invalid Data Scanned');
         }
         setLoading(false);

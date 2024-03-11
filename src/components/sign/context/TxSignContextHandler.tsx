@@ -117,9 +117,9 @@ const TxSignContextHandlerInternal = (
           qrCodeContext.start();
           break;
         case WalletType.MultiSig:
-          if(signer && signer.type === WalletType.ReadOnly){
+          if (signer && signer.type === WalletType.ReadOnly) {
             qrCodeContext.start();
-          }else if (reduced) {
+          } else if (reduced) {
             await multiSigStoreNewTx(reduced, boxes, props.wallet);
             props.close(true);
             navigate(
