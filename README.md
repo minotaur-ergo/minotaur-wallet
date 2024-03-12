@@ -89,7 +89,7 @@ npm run electron:make
 
 For Apple Silicon chips (M series) you must use the `arm64` build. Using the intel-based build will result in camera malfunction.
 
-In case of ***damaged file*** error, use this command:
+In case of **_damaged file_** error, use this command:
 
 ```
 sudo xattr -r -s com.apple.quarantine /Application/minotaur.app

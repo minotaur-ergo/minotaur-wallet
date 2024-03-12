@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import AppFrame from '@/layouts/AppFrame';
-import { QRCodeSVG } from 'qrcode.react';
+import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
 import base58 from 'bs58';
 import { StateWallet } from '@/store/reducer/wallet';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
@@ -61,7 +61,7 @@ const WalletExtendedPublicKey = (props: WalletExtendedPublicKeyPropsType) => {
         sx={{ bgcolor: 'white', textAlign: 'center', mt: 1, mb: 2 }}
       >
         <Typography sx={{ p: 8, fontStyle: 'italic', color: 'textSecondary' }}>
-          <QRCodeSVG value={xPubEncoded} size={256} />
+          <QRCodeSVG value={xPubEncoded} />
         </Typography>
       </Card>
       <Card>

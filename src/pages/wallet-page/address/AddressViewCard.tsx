@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
 import { Close, EditOutlined } from '@mui/icons-material';
-import { QRCodeSVG } from 'qrcode.react';
+import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import Heading from '@/components/heading/Heading';
 import ListController from '@/components/list-controller/ListController';
@@ -54,8 +54,8 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
           <Divider sx={{ my: 2 }} />
         </React.Fragment>
       ) : null}
-      <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
-        <QRCodeSVG value={props.address.address} size={256} />
+      <Box sx={{ pt: 8, pb: 8, textAlign: 'center', fontStyle: 'italic' }}>
+        <QRCodeSVG value={props.address.address} />
       </Box>
       <Box>
         <Card sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}>
