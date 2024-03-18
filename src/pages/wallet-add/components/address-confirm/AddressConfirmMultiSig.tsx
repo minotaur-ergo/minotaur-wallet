@@ -95,7 +95,7 @@ const AddressConfirmMultiSig = (props: AddressConfirmMultiSigPropsType) => {
       </Box>
       <Typography variant="subtitle2" sx={{ mt: 1, p: 1 }}>
         This is a multi-signature wallet. In order to send funds from it you
-        need at least {props.signers}&nbsp; signatures out of {props.threshold}{' '}
+        need at least {props.threshold}&nbsp; signatures out of {props.signers}{' '}
         cosigning signatures.
       </Typography>
     </Box>

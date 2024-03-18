@@ -6,7 +6,7 @@ import Address from '@/db/entities/Address';
 import { TokenInfo } from '@/types/db';
 import { CONFIRMATION_HEIGHT } from '../const';
 import { JsonBI } from '../json';
-import { AbstractNetwork } from './abstract_network';
+import { AbstractNetwork } from './abstractNetwork';
 import { BalanceInfo } from './interfaces';
 
 class ErgoExplorerNetwork extends AbstractNetwork {

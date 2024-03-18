@@ -1,33 +1,33 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
+import { CapacitorHttp } from '@capacitor/core';
 
 const getCurrentPrice = async () => {
   const queryParams = {
-    localization: false,
-    tickers: false,
-    market_data: true,
-    community_data: false,
-    developer_data: false,
-    sparkline: false,
+    localization: 'false',
+    tickers: 'false',
+    market_data: 'true',
+    community_data: 'false',
+    developer_data: 'false',
+    sparkline: 'false',
   };
-  const res = await axios.get<{
-    market_data: { current_price: { [key: string]: number } };
-  }>('https://api.coingecko.com/api/v3/coins/ergo', { data: queryParams });
+  const res = await CapacitorHttp.get({
+    url: 'https://api.coingecko.com/api/v3/coins/ergo',
+    params: queryParams,
+  });
   const current_prices = res.data.market_data.current_price;
   return current_prices.usd;
 };
 
 const getPriceAtDate = async (date: Date) => {
   const queryParams = {
-    localization: false,
+    localization: 'false',
     date: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`,
   };
-  const res = await axios.get<{
-    market_data: { current_price: { [key: string]: number } };
-  }>('https://api.coingecko.com/api/v3/coins/ergo/history', {
+  const res = await CapacitorHttp.get({
+    url: 'https://api.coingecko.com/api/v3/coins/ergo/history',
     params: queryParams,
   });
   const current_prices = res.data.market_data.current_price;

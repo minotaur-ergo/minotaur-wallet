@@ -1,4 +1,5 @@
 import BackButton from '@/components/back-button/BackButton';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
@@ -9,7 +10,6 @@ import AppFrame from '@/layouts/AppFrame';
 import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
 import { StateWallet } from '@/store/reducer/wallet';
 import { QrCodeScannedComponentPropsType } from '@/types/qrcode';
-import { getSignButtonLabel } from '@/utils/functions';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {
   Button,
@@ -78,7 +78,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
           </Button>
         ) : context.tx && wallet ? (
           <Button disabled={hasError} onClick={() => signContext.handle()}>
-            {getSignButtonLabel(wallet.type)}
+            <SignButtonLabel wallet={wallet} />
           </Button>
         ) : undefined
       }

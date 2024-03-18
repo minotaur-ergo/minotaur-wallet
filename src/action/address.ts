@@ -150,25 +150,21 @@ const addAllWalletAddresses = async (wallet: StateWallet) => {
     let index = 1;
     for (;;) {
       const addressObject = await deriveWalletAddress(wallet, index);
-      try {
-        const txCount = await network.getAddressTransactionCount(
+      const txCount = await network.getAddressTransactionCount(
+        addressObject.address,
+      );
+      if (txCount > 0) {
+        await AddressDbAction.getInstance().saveAddress(
+          wallet.id,
+          `Derived Address ${index}`,
           addressObject.address,
+          addressObject.path,
+          index,
         );
-        if (txCount > 0) {
-          await AddressDbAction.getInstance().saveAddress(
-            wallet.id,
-            `Derived Address ${index}`,
-            addressObject.address,
-            addressObject.path,
-            index,
-          );
-        } else {
-          break;
-        }
-        index++;
-      } catch (e) {
-        console.log(e);
+      } else {
+        break;
       }
+      index++;
     }
   } catch (e) {
     console.error(e);

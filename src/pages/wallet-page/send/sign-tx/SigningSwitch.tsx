@@ -28,6 +28,7 @@ const SigningSwitch = (props: SigningSwitchPropsType) => {
     case WalletType.MultiSig:
       return (
         <WalletSignMultiSig
+          wallet={props.wallet}
           networkType={props.wallet.networkType}
           setHasError={props.setHasError}
         />

@@ -186,7 +186,7 @@ const extractAndAddSignedHints = async (
       Uint8Array.from(Buffer.from('cd' + item, 'hex')),
     );
   });
-  const context = await getChain(wallet.networkType).getNetwork().getContext();
+  const context = await getChain(wallet.networkType).fakeContext();
   if (partial) {
     const ergoBoxes = wasm.ErgoBoxes.empty();
     boxes.forEach((box) => ergoBoxes.add(box));

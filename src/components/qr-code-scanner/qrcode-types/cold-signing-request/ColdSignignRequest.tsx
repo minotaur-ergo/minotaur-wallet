@@ -13,11 +13,11 @@ import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBox
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { Button, IconButton } from '@mui/material';
 import { Inventory2Outlined } from '@mui/icons-material';
-import { getSignButtonLabel } from '@/utils/functions';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
 import getChain from '@/utils/networks';
 import CenterMessage from '@/components/state-message/CenterMessage';
 import SvgIcon from '@/icons/SvgIcon';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 
 interface ColdSigningRequestPropsType {
   scanned: string;
@@ -104,7 +104,7 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
         error === '' &&
         txSignContext.signed === '' ? (
           <Button disabled={hasError} onClick={() => txSignContext.handle()}>
-            {getSignButtonLabel(walletContext.wallet.type)}
+            <SignButtonLabel wallet={walletContext.wallet} />
           </Button>
         ) : undefined
       }

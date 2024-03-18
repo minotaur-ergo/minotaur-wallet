@@ -14,11 +14,12 @@ import { RouteMap, getRoute } from '../../../router/routerMap';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from './TxSubmitContext';
 import TxSubmitContextHandler from './TxSubmitContextHandler';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface TxSignContextHandlerInternalPropsType {
   wallet: StateWallet;
   children: React.ReactNode;
-  close: () => unknown;
+  close: (force?: boolean) => unknown;
   denySubmit?: boolean;
   status: StatusEnum;
   setStatus: (newStatus: StatusEnum) => unknown;
@@ -45,6 +46,7 @@ const TxSignContextHandlerInternal = (
   const [signedStr, setSignedStr] = useState('');
   const qrCodeContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
+  const signer = useSignerWallet(props.wallet);
   const setTransactionDetail = (
     tx: wasm.UnsignedTransaction | undefined,
     boxes: Array<wasm.ErgoBox>,
@@ -115,9 +117,11 @@ const TxSignContextHandlerInternal = (
           qrCodeContext.start();
           break;
         case WalletType.MultiSig:
-          if (reduced) {
+          if (signer && signer.type === WalletType.ReadOnly) {
+            qrCodeContext.start();
+          } else if (reduced) {
             await multiSigStoreNewTx(reduced, boxes, props.wallet);
-            props.close ? props.close() : navigate(-1);
+            props.close(true);
             navigate(
               getRoute(RouteMap.WalletMultiSig, { id: props.wallet.id }),
             );
@@ -164,8 +168,8 @@ const TxSignContextHandler = (props: TxSignContextHandlerPropsType) => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<StatusEnum>(StatusEnum.WAITING);
 
-  const close = () => {
-    if (status === StatusEnum.SENT) {
+  const close = (force?: boolean) => {
+    if (status === StatusEnum.SENT || force) {
       if (props.close) {
         props.close();
       } else {

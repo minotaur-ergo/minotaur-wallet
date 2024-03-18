@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert, Box, Button, MobileStepper, Slider } from '@mui/material';
-import { QRCodeSVG } from 'qrcode.react';
+import QRCodeSVG from './QrCodeSVG';
 import { MAX_CHUNK_SIZE, QRCODE_MINIMUM_CHUNK_SIZE } from '@/utils/const';
 import {
   ContentCopyOutlined,
@@ -53,7 +53,7 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
           border: '1px solid #ddd',
         }}
       >
-        <QRCodeSVG value={value} size={512} />
+        <QRCodeSVG value={value} />
       </Box>
       {pageCount > 1 ? (
         <MobileStepper

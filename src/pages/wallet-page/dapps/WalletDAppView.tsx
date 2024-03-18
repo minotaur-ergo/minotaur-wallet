@@ -14,6 +14,7 @@ import { StateWallet } from '@/store/reducer/wallet';
 import PrevIcon from '@mui/icons-material/ArrowBackIos';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import SignTx from '../send/sign-tx/SignTx';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 
 interface WalletDAppViewPropsType {
   wallet: StateWallet;
@@ -71,7 +72,7 @@ const WalletDAppView = (props: WalletDAppViewPropsType) => {
                     disabled={hasError}
                     onClick={() => txSignContext.handle()}
                   >
-                    Sign and Publish
+                    <SignButtonLabel wallet={props.wallet} />
                   </Button>
                 </Grid>
               </Grid>

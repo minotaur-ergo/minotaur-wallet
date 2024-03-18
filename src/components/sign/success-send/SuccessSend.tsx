@@ -52,6 +52,7 @@ const SuccessSend = (props: SuccessSendPropsType) => {
       <Divider sx={{ my: 3 }} />
       {props.id ? (
         <DisplayId
+          style={{ cursor: 'pointer' }}
           onClick={openTx}
           variant="body2"
           color="textSecondary"

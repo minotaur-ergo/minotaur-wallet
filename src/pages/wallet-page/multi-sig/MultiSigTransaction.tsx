@@ -16,6 +16,7 @@ import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;
@@ -71,7 +72,9 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
               helperText="Please enter your mnemonics passphrase to send transaction."
             />
           ) : null
-        ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? null : (
+        ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
+          <DisplaySignedTx tx={txContext.data.partial} />
+        ) : (
           <ShareTransaction />
         )}
         <TransactionBoxes
