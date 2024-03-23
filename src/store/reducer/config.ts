@@ -16,7 +16,7 @@ export const configInitialState: ConfigStateType = {
   currency: '',
   priceLastWeek: 0,
   price: 0,
-  display: 'simple',
+  display: 'advanced',
   loaded: false,
   multiSigLoadedTime: Date.now(),
 };
