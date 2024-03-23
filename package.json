@@ -5,21 +5,21 @@
   "type": "module",
   "scripts": {
     "postinstall": "patch-package",
-    "dev": "vite --host",
+    "dev": "vite --config ./vite/vite.config.ts --host",
     "clean": "rimraf ./dist",
-    "build": "tsc && vite build",
+    "build": "tsc && vite --config ./vite/vite.config.ts build",
     "type-check": "tsc",
     "lint": "npm run prettify && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "prepare": "husky install",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
     "prettify": "prettier --ignore-unknown --write .",
-    "preview": "vite preview",
+    "preview": "vite --config ./vite/vite.config.ts preview",
     "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron && npm run lint",
     "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron  && npm run lint",
     "test": "echo 'no test'",
     "coverage": "npm run test -- --coverage",
     "ext:clean": "rimraf ./extension",
-    "ext:build": "npm run ext:clean && vite --config ./vite.extension.config.ts build"
+    "ext:build": "npm run ext:clean && vite --config ./vite/vite.extension.config.ts build && node cli/finalize_extension.js"
   },
   "dependencies": {
     "@capacitor-community/electron": "^5.0.1",
@@ -76,10 +76,10 @@
     "reflect-metadata": "^0.2.1",
     "tiny-secp256k1": "^2.2.3",
     "typeorm": "^0.3.20",
-    "uuid": "^9.0.1",
     "websocket-ts": "^2.1.5"
   },
   "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.23",
     "@types/chrome": "^0.0.261",
     "@types/crypto-js": "^4.2.2",
     "@types/json-bigint": "^1.0.4",

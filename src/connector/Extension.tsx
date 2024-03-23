@@ -4,11 +4,13 @@ import { Typography } from '@mui/material';
 import './extension.css';
 const Extension = () => {
   return (
-    <div className='container'>
+    <div className="container">
       <ExtensionTheme
         title="dApp Extension"
         navigation={<MinotaurLogo style={{ width: '40px' }} />}
       >
+        <Typography>Salam</Typography>
+        <Typography>Salam</Typography>
         <Typography>Salam</Typography>
         {/* <ListController
         ListItem={<ConnectedItem id="" name="" />}
