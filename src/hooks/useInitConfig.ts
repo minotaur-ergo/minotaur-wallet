@@ -29,16 +29,16 @@ const useInitConfig = () => {
       .getAllConfig()
       .then((configs) => {
         const config: ConfigPayload = {
-          display: 'simple',
+          display: 'advanced',
           currency: 'USD',
           activeWallet: -1,
         };
         configs.forEach((item) => {
           if (
             item.key === ConfigType.DisplayMode &&
-            item.value === 'advanced'
+            item.value === 'simple'
           ) {
-            config.display = 'advanced';
+            config.display = 'simple';
           } else if (item.key === ConfigType.Currency) {
             config.currency = item.value;
           } else if (item.key === ConfigType.ActiveWallet) {

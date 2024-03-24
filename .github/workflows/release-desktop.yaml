@@ -12,7 +12,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, macos14]
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-14]
         include:
           - os: ubuntu-latest
             platform: linux
