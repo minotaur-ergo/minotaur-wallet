@@ -10,6 +10,9 @@ export default defineConfig({
     minify: false,
     outDir: 'extension',
   },
+  resolve: {
+    alias: [{ find: '@', replacement: '/src' }],
+  },
   root: '.',
   plugins: [react(), topLevelAwait(), crx({ manifest })],
   publicDir: 'ext-public',

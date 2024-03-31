@@ -34,10 +34,7 @@ const useInitConfig = () => {
           activeWallet: -1,
         };
         configs.forEach((item) => {
-          if (
-            item.key === ConfigType.DisplayMode &&
-            item.value === 'simple'
-          ) {
+          if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
             config.display = 'simple';
           } else if (item.key === ConfigType.Currency) {
             config.currency = item.value;

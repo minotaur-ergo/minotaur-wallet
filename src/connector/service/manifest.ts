@@ -1,5 +1,5 @@
 import { ManifestV3Export } from '@crxjs/vite-plugin';
-import packageJson from '../../../package.json'
+import packageJson from '../../../package.json';
 
 const manifest: ManifestV3Export = {
   short_name: 'Minotaur wallet connector',
@@ -14,8 +14,8 @@ const manifest: ManifestV3Export = {
     default_popup: 'src/connector/extension.html',
   },
   background: {
-      service_worker: "src/connector/service/chrome/background.ts",
-      type: "module"
+    service_worker: 'src/connector/service/chrome/background.ts',
+    type: 'module',
   },
   content_scripts: [
     {
@@ -25,10 +25,10 @@ const manifest: ManifestV3Export = {
       all_frames: true,
     },
     {
-        "js": ["src/connector/service/chrome/content.ts"],
-        "matches": ["file://*/*", "http://*/*", "https://*/*"]
-      }  
-  ]
+      js: ['src/connector/service/chrome/content.ts'],
+      matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+    },
+  ],
 };
 
 export { manifest };

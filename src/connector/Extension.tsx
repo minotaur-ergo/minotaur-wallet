@@ -1,25 +1,26 @@
 import ExtensionTheme from '../components/app-theme/ExtensionTheme';
 import MinotaurLogo from '../components/splash/MinotaurLogo';
-import { Typography } from '@mui/material';
 import './extension.css';
+import Connect from './Connect';
+import History from './History';
+
 const Extension = () => {
+  const pageId = new URLSearchParams(window.location.search).get('id');
+  const requestId = new URLSearchParams(window.location.search).get(
+    'requestId',
+  );
+
   return (
     <div className="container">
       <ExtensionTheme
         title="dApp Extension"
         navigation={<MinotaurLogo style={{ width: '40px' }} />}
       >
-        <Typography>Salam</Typography>
-        <Typography>Salam</Typography>
-        <Typography>Salam</Typography>
-        {/* <ListController
-        ListItem={<ConnectedItem id="" name="" />}
-        getData={getData}
-        emptyTitle="You have no connected dApp yet"
-        emptyDescription="You can connect a new dApp via scan the QR code."
-        emptyIcon="document"
-        divider={false}
-      /> */}
+        {pageId ? (
+          <Connect requestId={requestId} pageId={pageId} />
+        ) : (
+          <History />
+        )}
       </ExtensionTheme>
     </div>
   );
