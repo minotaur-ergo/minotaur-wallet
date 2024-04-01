@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   fetchMultiSigBriefRow,
+  fetchMultiSigRows,
   notAvailableAddresses,
   storeMultiSigRow,
 } from '@/action/multi-sig/store';
@@ -65,12 +66,16 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
       boxes,
     );
     if (invalidAddresses.length === 0) {
+      const oldRow = await fetchMultiSigRows(props.wallet, [
+        tx.unsigned_tx().id().to_str(),
+      ]);
+      const secrets = oldRow.length > 0 ? oldRow[0].secrets : [[]];
       const row = await storeMultiSigRow(
         props.wallet,
         tx,
         boxes,
         data.commitments,
-        [[]],
+        secrets,
         data.signed || [],
         data.simulated || [],
         Date.now(),
