@@ -174,18 +174,8 @@ const extractAndAddSignedHints = async (
   partial?: wasm.Transaction,
   boxes: Array<wasm.ErgoBox> = [],
 ) => {
-  const simulatedPropositions = new wasm.Propositions();
-  simulated.forEach((item) => {
-    simulatedPropositions.add_proposition_from_byte(
-      Uint8Array.from(Buffer.from('cd' + item, 'hex')),
-    );
-  });
-  const realPropositions = new wasm.Propositions();
-  signed.forEach((item) => {
-    realPropositions.add_proposition_from_byte(
-      Uint8Array.from(Buffer.from('cd' + item, 'hex')),
-    );
-  });
+  const simulatedPropositions = arrayToProposition(simulated);
+  const realPropositions = arrayToProposition(signed);
   const context = await getChain(wallet.networkType).fakeContext();
   if (partial) {
     const ergoBoxes = wasm.ErgoBoxes.empty();
@@ -337,3 +327,9 @@ export const sign = async (
     currentTime,
   };
 };
+
+export const arrayToProposition = (input: Array<string>): wasm.Propositions => {
+  const output = new wasm.Propositions()
+  input.forEach(pk => Uint8Array.from(Buffer.from('cd' + pk, 'hex')),)
+  return output
+}
