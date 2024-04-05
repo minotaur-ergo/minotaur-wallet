@@ -23,7 +23,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@mui/icons-material": "^5.11.0",
+    "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.11.5",
     "@zxing/browser": "^0.1.1",
     "axios": "^1.2.3",

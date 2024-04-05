@@ -1,33 +1,22 @@
-import React from 'react';
 import HomeFrame from '../../layouts/HomeFrame';
 import ListController from '../../components/ListController';
 import AddressItem from './AddressItem';
 import NewAddressForm from './NewAddressForm';
+import { ADDRESSES } from '../../data';
 
 const Addresses = () => {
   const getAddresses = () =>
     new Promise((resolve) => {
-      resolve([
-        {
-          name: 'Main Address',
-          amount: 60,
-          id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
-        },
-        {
-          name: 'Secondary Address',
-          amount: 0,
-          id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
-          numberOfTokens: 3,
-        },
-      ]);
+      resolve(ADDRESSES);
     });
+
   return (
     <HomeFrame>
       <ListController
-        ListItem={<AddressItem />}
+        ListItem={<AddressItem name="" id="" amount={0} />}
         getData={getAddresses}
         divider={false}
-        emptyTitle="You have no adr yet"
+        emptyTitle="You have no address yet!"
       />
       <NewAddressForm />
     </HomeFrame>

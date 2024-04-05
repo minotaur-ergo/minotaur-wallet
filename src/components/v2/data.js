@@ -267,3 +267,31 @@ export const WHITE_LIST = [
     id: 'f2c25f71c841b',
   },
 ];
+
+export const ADDRESSES = [
+  {
+    name: 'Main Address',
+    amount: 60,
+    id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+    isDefault: true,
+  },
+  {
+    name: 'Secondary Address',
+    amount: 0,
+    id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+    tokens: [
+      {
+        name: 'Token 1',
+        amount: 12.4,
+      },
+      {
+        name: 'Token 2',
+        amount: 337.1,
+      },
+      {
+        name: 'Token 3',
+        amount: 21.0,
+      },
+    ],
+  },
+];
