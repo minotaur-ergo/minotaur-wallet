@@ -4,6 +4,7 @@ import BackButton from '../../components/BackButton';
 import WalletSettings from './WalletSettings';
 import GlobalSettings from './GlobalSettings';
 import DangerousSettings from './DangerousSettings';
+import AppVersion from './AppVersion';
 
 const Settings = () => {
   return (
@@ -11,6 +12,7 @@ const Settings = () => {
       <WalletSettings />
       <GlobalSettings />
       <DangerousSettings />
+      <AppVersion />
     </AppFrame>
   );
 };
