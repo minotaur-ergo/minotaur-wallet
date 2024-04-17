@@ -17,6 +17,7 @@ interface PropsType {
   type: WalletType;
   net?: string;
   amount?: bigint;
+  tokensCount?: number;
   onClick?: () => unknown;
 }
 
@@ -90,6 +91,11 @@ const WalletItem = (props: PropsType) => {
               </Typography>
             ) : null}
           </Box>
+          {props.tokensCount && props.tokensCount > 0 ? (
+          <Typography variant="body2" color="textSecondary">
+              Includes {props.tokensCount} token{props.tokensCount > 1 ? 's' : ''}
+          </Typography>
+          ) : null}
         </Box>
       </CardActionArea>
     </Card>
