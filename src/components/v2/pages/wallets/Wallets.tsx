@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import { IconButton, Stack } from '@mui/material';
+import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
@@ -9,66 +9,36 @@ import TotalBalanceCard from './components/TotalBalanceCard';
 import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
 import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
-import HomeMoreMenu from '../../layouts/HomeMoreMenu';
+import { WALLETS } from '../../data';
+import SubHeading from '../../components/SubHeading';
 
 const Wallets = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const alert = useRef<SnackAlertHandle>(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const [wallets, setWallets] = useState(WALLETS);
 
-  const wallets = [
-    {
-      id: '1',
-      name: 'My First Wallet',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 34.2,
-      value: 71.04,
-      numberOfTokens: 5,
-    },
-    {
-      id: '2',
-      name: 'Secondary Wallet',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 34.2,
-      value: 71.04,
-      numberOfTokens: 2,
-    },
-    {
-      id: '3',
-      name: 'Wallet 3',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 42020.2,
-      value: 87100.0,
-    },
-    {
-      id: '4',
-      name: 'My Wallet with Very Long Name',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 34.2,
-      value: 71.04,
-    },
-    {
-      id: '5',
-      name: 'Last Wallet',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 34.2,
-      value: 71.04,
-      numberOfTokens: 1,
-    },
-    {
-      id: '6',
-      name: 'My First Wallet',
-      type: 'Normal Wallet',
-      net: 'MAIN-NET',
-      amount: 34.2,
-      value: 71.04,
-    },
-  ];
+  const [favoriteWallets, otherWallets] = useMemo(() => {
+    const filteredWalletsByArchive = wallets.filter(
+      (row) => showArchived || !row.archived
+    );
+    return [
+      filteredWalletsByArchive.filter((row) => row.favorite),
+      filteredWalletsByArchive.filter((row) => !row.favorite),
+    ];
+  }, [showArchived, wallets]);
+
+  const toggleFavorite = (id: string) => {
+    const index = wallets.findIndex((row) => row.id === id);
+    const newWallets = Object.assign([...wallets], {
+      [index]: {
+        ...wallets[index],
+        favorite: !wallets[index].favorite,
+      },
+    });
+    setWallets(newWallets);
+  };
 
   useEffect(() => {
     if (location.state) {
@@ -86,17 +56,48 @@ const Wallets = () => {
           <IconButton onClick={() => navigate(RouterMap.AddWallet)}>
             <AddIcon />
           </IconButton>
-          <HomeMoreMenu />
         </>
       }
     >
       <TotalBalanceCard />
-      <Heading title="Wallets List" />
+
+      <Heading
+        title="Wallets List"
+        customActions={
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={showArchived}
+                onChange={(e) => setShowArchived(e.target.checked)}
+              />
+            }
+            label={<small>Show archived</small>}
+          />
+        }
+      />
+
+      {favoriteWallets.length > 0 && (
+        <>
+          <SubHeading title="Favorites" disableTopGutter />
+          <Stack spacing={2}>
+            {favoriteWallets.map((item, index) => (
+              <WalletItem
+                {...item}
+                key={index}
+                toggleFavorite={toggleFavorite}
+              />
+            ))}
+          </Stack>
+          {otherWallets.length > 0 && <SubHeading title="Others" />}
+        </>
+      )}
       <Stack spacing={2}>
-        {wallets.map((item, index) => (
-          <WalletItem {...item} index={index} key={index} />
+        {otherWallets.map((item, index) => (
+          <WalletItem {...item} key={index} toggleFavorite={toggleFavorite} />
         ))}
       </Stack>
+
       <SnackAlert ref={alert} />
     </AppFrame>
   );

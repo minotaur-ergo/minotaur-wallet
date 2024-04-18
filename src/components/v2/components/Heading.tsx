@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ interface PropsType {
   actionLabel?: string;
   actionPath?: string;
   disabled?: boolean;
+  customActions?: ReactNode;
 }
 
 export default function ({
@@ -14,6 +15,7 @@ export default function ({
   actionLabel,
   actionPath,
   disabled = false,
+  customActions,
 }: PropsType) {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -32,11 +34,13 @@ export default function ({
           onClick={handleClick}
           fullWidth={false}
           disabled={disabled}
+          size="small"
           sx={{ px: 0, minWidth: 48 }}
         >
           {actionLabel}
         </Button>
       )}
+      {customActions}
     </Box>
   );
 }

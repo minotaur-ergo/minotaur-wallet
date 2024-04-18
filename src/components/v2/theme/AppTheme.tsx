@@ -57,6 +57,11 @@ export default function AppTheme(props: PropsType) {
         fontWeight: 600,
         flexGrow: 1,
       },
+      h3: {
+        fontSize: '0.875rem',
+        fontWeight: 400,
+        flexGrow: 1,
+      },
       h4: {
         fontSize: '1rem',
         fontWeight: 600,
@@ -77,8 +82,10 @@ export default function AppTheme(props: PropsType) {
         styleOverrides: {
           root: {
             padding: '0.75rem',
-            fontSize: '1rem',
             textTransform: 'none',
+          },
+          sizeMedium: {
+            fontSize: '1rem',
           },
           outlined: {
             backgroundColor: '#eaeaea',
