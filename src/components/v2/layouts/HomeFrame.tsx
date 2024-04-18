@@ -1,11 +1,12 @@
 import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AppFrame from './AppFrame';
 import { IconButton } from '@mui/material';
 import { RouterMap } from '../V2Demo';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AppToolbar from './AppToolbar';
 import HomeMoreMenu from './HomeMoreMenu';
+import { WALLETS } from '../data';
 
 interface PropsType {
   children?: ReactNode;
@@ -13,14 +14,12 @@ interface PropsType {
 
 const HomeFrame = ({ children }: PropsType) => {
   const navigate = useNavigate();
-
-  const wallet = {
-    name: 'My First Wallet',
-  };
+  const { id } = useParams();
+  const wallet = WALLETS.find((row) => row.id === id);
 
   return (
     <AppFrame
-      title={wallet.name}
+      title={wallet?.name || ''}
       navigation={
         <IconButton onClick={() => navigate(RouterMap.Wallets)}>
           <AccountBalanceWalletOutlinedIcon />

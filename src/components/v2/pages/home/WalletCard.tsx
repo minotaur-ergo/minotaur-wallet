@@ -1,8 +1,12 @@
 import React from 'react';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { WALLETS } from '../../data';
+import { useParams } from 'react-router-dom';
 
 const WalletCard = () => {
+  const { id } = useParams();
+  const wallet = WALLETS.find((row) => row.id === id);
   const color = {
     light: '#fffcb5',
     main: '#d7d02a',
@@ -37,26 +41,27 @@ const WalletCard = () => {
         </svg>
       </Box>
       <CardContent>
-        <Box display="flex">
+        <Box display="flex" alignItems="end">
           <Box flexGrow={1}>
             <Typography variant="body2" color="textSecondary">
               Current Balance
             </Typography>
-            <Typography sx={{ fontSize: '2rem' }}>
-              34.2 <small>ERG</small>
-            </Typography>
-            <Typography>$ 91.245</Typography>
           </Box>
           <Box>
             <Typography variant="body2" color="textSecondary" textAlign="right">
-              MAIN-NET
+              {wallet?.net}
             </Typography>
             <Typography variant="body2" color="textSecondary" textAlign="right">
-              Normal Wallet
+              {wallet?.type}
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ height: 80 }} />
+        <Typography sx={{ fontSize: '2rem' }}>
+          {wallet?.amount.toFixed(2)}{' '}
+          <span style={{ fontSize: '1.4rem' }}>ERG</span>
+        </Typography>
+        <Typography>$ {wallet?.value.toFixed(2)}</Typography>
+        <Box sx={{ height: 56 }} />
         <Button
           sx={{
             position: 'absolute',
