@@ -15,6 +15,7 @@ const WalletSettings = () => {
     name: 'My First Wallet',
     privacyMode: true,
     allowDAppConnector: true,
+    archived: false,
   });
   return (
     <Box mb={2}>
@@ -58,6 +59,18 @@ const WalletSettings = () => {
             setData((prevState) => ({
               ...prevState,
               allowDAppConnector: checked,
+            }))
+          }
+        />
+        <SolitarySwitchField
+          label="Archive wallet"
+          checkedDescription="Archived"
+          uncheckedDescription="No"
+          value={data.archived}
+          onChange={(checked) =>
+            setData((prevState) => ({
+              ...prevState,
+              archived: checked,
             }))
           }
         />
