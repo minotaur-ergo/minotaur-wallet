@@ -330,6 +330,9 @@ export const sign = async (
 
 export const arrayToProposition = (input: Array<string>): wasm.Propositions => {
   const output = new wasm.Propositions();
-  input.forEach((pk) => Uint8Array.from(Buffer.from('cd' + pk, 'hex')));
+  input.forEach((pk) => {
+    const proposition = Uint8Array.from(Buffer.from('cd' + pk, 'hex'));
+    output.add_proposition_from_byte(proposition);
+  });
   return output;
 };
