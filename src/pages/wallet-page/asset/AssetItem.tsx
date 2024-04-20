@@ -19,7 +19,6 @@ interface PropsType {
 }
 
 const AssetItem = (props: PropsType) => {
-  console.log(props)
   const [showDetail, setShowDetail] = useState(false);
   const details = useAssetDetail(props.id, props.network_type);
   return (
