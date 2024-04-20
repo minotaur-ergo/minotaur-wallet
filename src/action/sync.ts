@@ -101,6 +101,7 @@ const syncInfo = async (network: AbstractNetwork, address: Address) => {
   }
 };
 
+
 const syncAssets = async (
   network: AbstractNetwork,
   networkType: string,

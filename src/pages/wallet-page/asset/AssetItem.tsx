@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Avatar,
   Box,
@@ -7,10 +7,10 @@ import {
   Drawer,
   Typography,
 } from '@mui/material';
-import { AssetDbAction } from '@/action/db';
 import DisplayId from '@/components/display-id/DisplayId';
 import AssetItemDetail from './AssetItemDetail';
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
+import useAssetDetail from '@/hooks/useAssetDetail';
 
 interface PropsType {
   amount: bigint;
@@ -19,60 +19,21 @@ interface PropsType {
 }
 
 const AssetItem = (props: PropsType) => {
+  console.log(props)
   const [showDetail, setShowDetail] = useState(false);
-  const [loadedToken, setLoadedToken] = useState('');
-  const [details, setDetails] = useState<{
-    name: string;
-    logoSrc: string;
-    description: string;
-    decimal: number;
-    emissionAmount: bigint;
-    txId: string;
-  }>({
-    name: '',
-    decimal: 0,
-    description: '',
-    logoSrc: '/',
-    txId: '',
-    emissionAmount: -1n,
-  });
-  useEffect(() => {
-    if (props.id !== loadedToken) {
-      const loadId = props.id;
-      AssetDbAction.getInstance()
-        .getAssetByAssetId(loadId, props.network_type)
-        .then((asset) => {
-          if (asset) {
-            const decimal = asset.decimal ? asset.decimal : 0;
-            setDetails({
-              name: asset.name ? asset.name : props.id.substring(0, 6),
-              description: asset.description ? asset.description : '',
-              decimal,
-              logoSrc: '/',
-              emissionAmount: asset.emission_amount
-                ? BigInt(asset.emission_amount)
-                : 0n,
-              txId: asset.tx_id ? asset.tx_id : '',
-            });
-          } else {
-            setDetails({
-              name: props.id.substring(0, 6),
-              description: '',
-              decimal: 0,
-              logoSrc: '/',
-              emissionAmount: -1n,
-              txId: '',
-            });
-          }
-          setLoadedToken(loadId);
-        });
-    }
-  });
+  const details = useAssetDetail(props.id, props.network_type);
   return (
     <Card>
       <CardActionArea onClick={() => setShowDetail(true)} sx={{ p: 2 }}>
         <Box sx={{ float: 'left', mr: 2 }}>
-          <Avatar alt={details.name} src={details.logoSrc || '/'} />
+          {details.logo ? (
+            <Avatar alt={details.name}>
+              <details.logo/>
+            </Avatar>
+          ) : (
+            <Avatar alt={details.name} src='/' />
+          )}
+          
         </Box>
         <Box display="flex">
           <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>

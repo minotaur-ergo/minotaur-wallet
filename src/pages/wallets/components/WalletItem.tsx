@@ -92,9 +92,10 @@ const WalletItem = (props: PropsType) => {
             ) : null}
           </Box>
           {props.tokensCount && props.tokensCount > 0 ? (
-          <Typography variant="body2" color="textSecondary">
-              Includes {props.tokensCount} token{props.tokensCount > 1 ? 's' : ''}
-          </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Includes {props.tokensCount} token
+              {props.tokensCount > 1 ? 's' : ''}
+            </Typography>
           ) : null}
         </Box>
       </CardActionArea>
