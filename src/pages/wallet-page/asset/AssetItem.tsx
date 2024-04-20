@@ -27,12 +27,11 @@ const AssetItem = (props: PropsType) => {
         <Box sx={{ float: 'left', mr: 2 }}>
           {details.logo ? (
             <Avatar alt={details.name}>
-              <details.logo/>
+              <details.logo />
             </Avatar>
           ) : (
-            <Avatar alt={details.name} src='/' />
+            <Avatar alt={details.name} src="/" />
           )}
-          
         </Box>
         <Box display="flex">
           <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>
@@ -53,8 +52,8 @@ const AssetItem = (props: PropsType) => {
       >
         <AssetItemDetail
           id={props.id}
+          logo={details.logo}
           name={details.name}
-          logoSrc={details.logoSrc}
           balance={
             <TokenAmountDisplay
               amount={props.amount}

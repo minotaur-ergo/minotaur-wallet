@@ -8,7 +8,7 @@ interface AssetItemDetailPropsType {
   name?: string;
   id: string;
   description?: string;
-  logoSrc?: string;
+  logo?: React.ElementType;
   balance: React.ReactNode | string;
   emissionAmount: React.ReactNode | string;
   txId: string;
@@ -20,13 +20,11 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
     <React.Fragment>
       <Box display="flex" alignItems="start">
         <Box>
-          {props.logoSrc && (
-            <Avatar
-              alt={props.name}
-              src={props.logoSrc}
-              sx={{ mt: 2, width: 64, height: 64 }}
-            />
-          )}
+          {props.logo ? (
+            <Avatar sx={{ mt: 2, width: 64, height: 64 }} alt={props.name}>
+              <props.logo />
+            </Avatar>
+          ) : undefined}
           <Typography variant="h2" sx={{ mt: 2 }}>
             {props.name}
           </Typography>
