@@ -32,7 +32,15 @@ const useAssetDetail = (assetId: string, networkType: string) => {
           emissionAmount: saved.emissionAmount,
           tokenId: saved.id,
           txId: saved.txId,
-          logo: saved.icon,
+          logo: () =>
+            saved.iconB64 ? (
+              <img
+                src={`data:image/svg+xml;base64,${saved.iconB64}`}
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              <saved.icon />
+            ),
         });
         setLoading(false);
       } else {
