@@ -58,7 +58,7 @@ const getMultiSigWalletMyPublicKeys = async (
 const getInputPks = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
-  tx: wasm.UnsignedTransaction,
+  tx: wasm.UnsignedTransaction | wasm.Transaction,
   boxes: Array<wasm.ErgoBox>,
 ): Promise<Array<Array<string>>> => {
   const pks = await getMultiSigWalletPublicKeys(wallet, signerWallet);

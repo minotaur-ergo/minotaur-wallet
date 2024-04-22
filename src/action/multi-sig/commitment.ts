@@ -86,7 +86,7 @@ const generateCommitments = async (
 const hintBagToArray = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
-  tx: wasm.UnsignedTransaction,
+  tx: wasm.UnsignedTransaction | wasm.Transaction,
   boxes: Array<wasm.ErgoBox>,
   commitment: wasm.TransactionHintsBag,
   password?: string,

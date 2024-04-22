@@ -44,6 +44,7 @@ const Wallets = () => {
             name={item.name}
             type={item.type}
             net={item.networkType}
+            tokensCount={item.tokens.length}
             amount={BigInt(item.balance)}
             key={index}
           />
