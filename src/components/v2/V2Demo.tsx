@@ -28,6 +28,7 @@ import WhiteList from './pages/dApps/whiteList/WhiteList';
 import ConnectedDApp from './pages/dApps/connectedDApp/ConnectedDApp';
 import Extension from './pages/extension/Extension';
 import ExtensionConnector from './pages/extension/ExtensionConnector';
+import TransactionDetails from './pages/transaction/TransactionDetails';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -46,6 +47,7 @@ export const RouterMap = {
   AddROWallet: '/v2/wallet/add/readOnlyWallet',
   AddMSWallet: '/v2/wallet/add/multiSigWallet',
   Transactions: '/v2/wallet/transactions',
+  TransactionDetails: '/v2/wallet/transactions/:id',
   Assets: '/v2/wallet/assets',
   Addresses: '/v2/wallet/addresses',
   Send: '/v2/wallet/send',
@@ -99,6 +101,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.Transactions.replace('/v2', '')}
           element={<Transactions />}
+        />
+        <Route
+          path={RouterMap.TransactionDetails.replace('/v2', '')}
+          element={<TransactionDetails />}
         />
         <Route
           path={RouterMap.Assets.replace('/v2', '')}

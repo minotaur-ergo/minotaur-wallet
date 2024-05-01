@@ -22,7 +22,7 @@ function TextBox(props: TypographyProps) {
   return <Typography {...props} component="span" color="textPrimary" />;
 }
 
-function TokenItem({ amount, name, color }: TokenItemPropsType) {
+export function TokenItem({ amount, name, color }: TokenItemPropsType) {
   return (
     <Box display="flex" sx={{ gap: 1 }}>
       <Box

@@ -153,6 +153,15 @@ export default function AppTheme(props: PropsType) {
           },
         },
       },
+      MuiCardContent: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '&:last-child': {
+              padding: theme.spacing(2),
+            },
+          }),
+        },
+      },
       MuiAlertTitle: {
         styleOverrides: {
           root: {

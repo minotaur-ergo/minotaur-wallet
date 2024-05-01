@@ -3,6 +3,7 @@ import { Button, Divider, Stack } from '@mui/material';
 import TransactionItem from './TransactionItem';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
+import TransactionItemCard from './TransactionItemCard';
 
 const Transactions = () => {
   const transactions = [
@@ -69,9 +70,9 @@ const Transactions = () => {
   ];
   return (
     <AppFrame title="Transactions" navigation={<BackButton />}>
-      <Stack divider={<Divider />} spacing={1}>
+      <Stack spacing={2}>
         {transactions.map((item, index) => (
-          <TransactionItem {...item} key={index} />
+          <TransactionItemCard {...item} key={index} />
         ))}
       </Stack>
       <Button variant="outlined" sx={{ my: 2 }}>
