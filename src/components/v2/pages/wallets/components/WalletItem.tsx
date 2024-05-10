@@ -59,6 +59,15 @@ export default function ({
         }}
       >
         <Box px={2}>
+          <Box sx={{ float: 'right' }}>
+            <IconButton onClick={handleFavorite}>
+              {favorite ? (
+                <Star style={{ color: 'goldenrod' }} />
+              ) : (
+                <StarBorder />
+              )}
+            </IconButton>
+          </Box>
           <Typography
             fontSize="1.2rem"
             fontWeight={500}
@@ -69,9 +78,6 @@ export default function ({
             {archived && <Chip label="Archived" sx={{ ml: 1 }} />}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {type} on {net}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
             {numberOfTokens > 0
               ? `Includes ${numberOfTokens} token${
                   numberOfTokens > 1 ? 's' : ''
@@ -80,7 +86,7 @@ export default function ({
           </Typography>
         </Box>
 
-        <Box display="flex" alignItems="center" gap={2} mt={2}>
+        <Box display="flex" alignItems="end" gap={2} mt={1}>
           <Box
             sx={{
               bgcolor: '#ffffff8f',
@@ -97,25 +103,25 @@ export default function ({
             <SvgIcon icon="ergo" style={{ width: '1.6rem', fill: 'inherit' }} />
           </Box>
           <Box flexGrow={1}>
-            <Box display="flex" alignItems="baseline">
-              <Typography sx={{ flexShrink: 0 }}>
-                {amount.toFixed(2)} <small>ERG</small>
-              </Typography>
-            </Box>
-            <Box display="flex">
-              <Typography variant="body2" color="textSecondary">
-                ${value.toFixed(2)}
-              </Typography>
-            </Box>
+            <Typography>
+              {amount.toFixed(2)} <small>ERG</small>
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              ${value.toFixed(2)}
+            </Typography>
           </Box>
-          <Box pr={1}>
-            <IconButton onClick={handleFavorite}>
-              {favorite ? (
-                <Star style={{ color: 'goldenrod' }} />
-              ) : (
-                <StarBorder />
-              )}
-            </IconButton>
+          <Box mr={2}>
+            <Typography
+              variant="body2"
+              fontSize="small"
+              color="textSecondary"
+              textAlign="right"
+            >
+              {net}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" textAlign="right">
+              {type}
+            </Typography>
           </Box>
         </Box>
       </CardActionArea>
