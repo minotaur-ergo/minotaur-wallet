@@ -29,6 +29,7 @@ import ConnectedDApp from './pages/dApps/connectedDApp/ConnectedDApp';
 import Extension from './pages/extension/Extension';
 import ExtensionConnector from './pages/extension/ExtensionConnector';
 import TransactionDetails from './pages/transaction/TransactionDetails';
+import BoxConsolidation from './pages/dApps/boxConsolidation/BoxConsolidation';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -40,6 +41,7 @@ export const RouterMap = {
   ConnectedDApp: '/v2/wallet/:id/dapps/whiteList/:dappid',
   IssueToken: '/v2/wallet/dapps/issueToken',
   SigmaUSD: '/v2/wallet/dapps/sigmaUsd',
+  BoxConsolidation: '/v2/wallet/dapps/boxConsolidation',
   Wallets: '/v2/wallets',
   AddWallet: '/v2/wallet/add',
   CreateWallet: '/v2/wallet/add/newWallet',
@@ -159,6 +161,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ConnectedDApp.replace('/v2', '')}
           element={<ConnectedDApp />}
+        />
+        <Route
+          path={RouterMap.BoxConsolidation.replace('/v2', '')}
+          element={<BoxConsolidation />}
         />
         <Route
           path={RouterMap.Extension.replace('/v2', '')}
