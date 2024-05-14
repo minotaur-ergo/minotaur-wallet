@@ -55,11 +55,21 @@ export default function ({
         onClick={() => navigate(getRoute(RouterMap.Home, { id }))}
         sx={{
           bgcolor: color + '70',
-          py: 2,
+          pb: 2,
+          pt: 1,
         }}
       >
         <Box px={2}>
-          <Box sx={{ float: 'right' }}>
+          <Box display="flex" alignItems="start">
+            <Typography
+              fontSize="1.25rem"
+              fontWeight={500}
+              lineHeight="1.5rem"
+              sx={{ flexGrow: 1, py: 1 }}
+            >
+              {name}
+              {archived && <Chip label="Archived" sx={{ ml: 1 }} />}
+            </Typography>
             <IconButton onClick={handleFavorite}>
               {favorite ? (
                 <Star style={{ color: 'goldenrod' }} />
@@ -68,15 +78,6 @@ export default function ({
               )}
             </IconButton>
           </Box>
-          <Typography
-            fontSize="1.2rem"
-            fontWeight={500}
-            lineHeight={1.2}
-            mb={1}
-          >
-            {name}
-            {archived && <Chip label="Archived" sx={{ ml: 1 }} />}
-          </Typography>
           <Typography variant="body2" color="textSecondary">
             {numberOfTokens > 0
               ? `Includes ${numberOfTokens} token${
