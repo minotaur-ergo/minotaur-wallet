@@ -14,6 +14,9 @@ import { updateMultiSigRow } from '@/action/multi-sig/store';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
+import { verifyMyCommitments, verifyTxInputs } from '@/action/multi-sig/verify';
+import MessageContext from '@/components/app/messageContext';
+import { deserialize } from '@/action/box';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
@@ -21,6 +24,7 @@ const MultiSigToolbar = () => {
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
+  const message = useContext(MessageContext);
 
   const getLabel = () => {
     switch (multiSigData.state) {
@@ -101,7 +105,16 @@ const MultiSigToolbar = () => {
       Buffer.from(clipBoardData.tx, 'base64'),
     );
     if (tx.unsigned_tx().id().to_str() !== data.tx?.id().to_str()) {
-      throw Error('Invalid transaction');
+      message.insert('Invalid transaction', "error");
+      return
+    }
+    if(verifyMyCommitments(clipBoardData.commitments, context.data.commitments, [[]], [])){
+      message.insert('Your commitment changed.\nThis transaction can not sign anymore.\nPlease try sign it again from beginning', 'error');
+      return
+    }
+    if(!verifyTxInputs(tx, clipBoardData.boxes.map(deserialize))){
+      message.insert('Transaction inputs are invalid', 'error');
+      return
     }
     await updateMultiSigRow(
       context.rowId,

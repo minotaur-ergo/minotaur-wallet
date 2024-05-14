@@ -65,34 +65,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
       tx.unsigned_tx(),
       boxes,
     );
-    if (invalidAddresses.length === 0) {
-      const oldRow = await fetchMultiSigRows(props.wallet, [
-        tx.unsigned_tx().id().to_str(),
-      ]);
-      const secrets = oldRow.length > 0 ? oldRow[0].secrets : [[]];
-      const row = await storeMultiSigRow(
-        props.wallet,
-        tx,
-        boxes,
-        data.commitments,
-        secrets,
-        data.signed || [],
-        data.simulated || [],
-        Date.now(),
-        data.partial
-          ? wasm.Transaction.sigma_parse_bytes(
-              Buffer.from(data.partial, 'base64'),
-            )
-          : undefined,
-      );
-      if (row) {
-        const route = getRoute(RouteMap.WalletMultiSigTxView, {
-          id: props.wallet.id,
-          txId: row.txId,
-        });
-        navigate(route);
-      }
-    } else {
+    if (invalidAddresses.length > 0) {
       const messageLines = [
         'Some addresses used in transaction are not derived.',
         'Please derive them and try again',
@@ -100,6 +73,33 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
         ...invalidAddresses.map((item) => dottedText(item, 10)),
       ];
       message.insert(messageLines.join('\n'), 'error');
+      return
+    }
+    const oldRow = await fetchMultiSigRows(props.wallet, [
+      tx.unsigned_tx().id().to_str(),
+    ]);
+    const secrets = oldRow.length > 0 ? oldRow[0].secrets : [[]];
+    const row = await storeMultiSigRow(
+      props.wallet,
+      tx,
+      boxes,
+      data.commitments,
+      secrets,
+      data.signed || [],
+      data.simulated || [],
+      Date.now(),
+      data.partial
+        ? wasm.Transaction.sigma_parse_bytes(
+            Buffer.from(data.partial, 'base64'),
+          )
+        : undefined,
+    );
+    if (row) {
+      const route = getRoute(RouteMap.WalletMultiSigTxView, {
+        id: props.wallet.id,
+        txId: row.txId,
+      });
+      navigate(route);
     }
   };
 
