@@ -1,4 +1,13 @@
-import { Button, Divider, Typography } from '@mui/material';
+import {
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import AppFrame from '../../../layouts/AppFrame';
 import BackButton from '../../../components/BackButton';
 import { CheckCircleOutline } from '@mui/icons-material';
@@ -13,6 +22,14 @@ export default function BoxConsolidation() {
       navigation={<BackButton />}
       toolbar={<Button>Renew {boxesCount} boxe</Button>}
     >
+      <FormControl sx={{ mb: 2 }}>
+        <InputLabel>Address</InputLabel>
+        <Select value={1}>
+          <MenuItem value={1}>Main Address</MenuItem>
+          <MenuItem value={2}>Secondary Address</MenuItem>
+        </Select>
+      </FormControl>
+
       <Typography variant="body2" color="textSecondary">
         Number of unspent boxes
       </Typography>
