@@ -90,13 +90,23 @@ export interface MultiSigDataContextType {
   setNeedPassword: (needPassword: boolean) => unknown;
 }
 
+interface HintPublicKey {
+  op: string;
+  h: string;
+}
+
+export interface SecretHintType {
+  hint: string;
+  challenge: string;
+  position: string;
+  proof: string
+  pubkey: HintPublicKey;
+}
+
 export interface HintType {
   hint: string;
   secret?: string;
-  pubkey: {
-    op: string;
-    h: string;
-  };
+  pubkey: HintPublicKey;
   type: string;
   a: string;
   position: string;
@@ -106,7 +116,11 @@ export interface TxHintType {
   [key: string]: Array<HintType>;
 }
 
+export interface TxSecretHintType {
+  [key: string]: Array<SecretHintType>;
+}
+
 export interface TransactionHintBagType {
   publicHints: TxHintType;
-  secretHints: TxHintType;
+  secretHints: TxSecretHintType;
 }
