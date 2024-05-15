@@ -9,6 +9,7 @@ const useAddressBoxes = (
 ) => {
   const [boxesCount, setBoxesCount] = useState(0);
   const [oldestAge, setOldestAge] = useState(0);
+  const [height, setHeight] = useState(0);
   const [loading, setLoading] = useState<{ loading: boolean; address: number }>(
     { loading: false, address: -1 },
   );
@@ -34,6 +35,7 @@ const useAddressBoxes = (
           );
           const network = props.chain.getNetwork();
           network.getHeight().then((height) => {
+            setHeight(height);
             const diff = height - lowestHeight;
             const years = diff / 365 / 720;
             setOldestAge(years);
@@ -46,6 +48,7 @@ const useAddressBoxes = (
     boxesCount,
     oldestAge,
     loading: loading.loading,
+    height,
   };
 };
 
