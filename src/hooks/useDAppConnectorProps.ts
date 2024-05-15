@@ -32,6 +32,7 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
   const message = useContext(MessageContext);
   const txSign = useContext(TxSignContext);
   return {
+    walletId: wallet.id,
     getAddresses: async () => wallet.addresses.map((item) => item.address),
     getCoveringForErgAndToken: selectBoxesDApps(wallet),
     chain: getChain(wallet.networkType),
