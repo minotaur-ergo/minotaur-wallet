@@ -8,8 +8,6 @@ export const PROTOCOL_FEE = (amount: bigint) =>
 export const MIN_RESERVE_RATIO = BigInt(400);
 export const MAX_RESERVE_RATIO = BigInt(800);
 
-export const TRANSACTION_FEE = BigInt(1100000);
-
 export const MINT_TX_FEE = BigInt(2000000);
 
 export const COOLING_OFF_HEIGHT = 460000;

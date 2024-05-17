@@ -10,16 +10,17 @@ const useAddressBoxes = (
   const [boxesCount, setBoxesCount] = useState(0);
   const [oldestAge, setOldestAge] = useState(0);
   const [height, setHeight] = useState(0);
-  const [loading, setLoading] = useState<{ loading: boolean; address: number }>(
-    { loading: false, address: -1 },
-  );
+  const [loadState, setLoadState] = useState<{
+    loading: boolean;
+    address: number;
+  }>({ loading: false, address: -1 });
   useEffect(() => {
     if (
-      !loading.loading &&
-      selectedAddress !== loading.address &&
+      !loadState.loading &&
+      selectedAddress !== loadState.address &&
       addresses.length > 0
     ) {
-      setLoading({ loading: true, address: loading.address });
+      setLoadState({ loading: true, address: loadState.address });
       const addressIndex = selectedAddress;
       props
         .getCoveringForErgAndToken(
@@ -39,15 +40,15 @@ const useAddressBoxes = (
             const diff = height - lowestHeight;
             const years = diff / 365 / 720;
             setOldestAge(years);
-            setLoading({ address: addressIndex, loading: false });
+            setLoadState({ address: addressIndex, loading: false });
           });
         });
     }
-  }, [props, addresses, loading, selectedAddress]);
+  }, [props, addresses, loadState, selectedAddress]);
   return {
     boxesCount,
     oldestAge,
-    loading: loading.loading,
+    loading: loadState.loading,
     height,
   };
 };

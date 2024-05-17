@@ -19,15 +19,16 @@ import getColor from './getColor';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { CONSOLIDATE_FEE, IMPLEMENTOR, TRANSACTION_FEE } from './parameters';
 import { boxesToArrayBox } from '@/utils/convert';
+import LoadingPage from '@/components/loading-page/LoadingPage';
 
 const BoxConsolidation = (props: DAppPropsType) => {
   const addresses = useAddresses(props);
   const [selectedAddress, setSelectedAddress] = useState(0);
-  const state = useAddressBoxes(addresses, selectedAddress, props);
+  const state = useAddressBoxes(addresses.addresses, selectedAddress, props);
   const [generating, setGenerating] = useState(false);
   const handleChangeAddress = (event: SelectChangeEvent) => {
     const index = parseInt(event.target.value);
-    if (!isNaN(index) && index >= 0 && index < addresses.length) {
+    if (!isNaN(index) && index >= 0 && index < addresses.addresses.length) {
       setSelectedAddress(index);
     }
   };
@@ -41,7 +42,7 @@ const BoxConsolidation = (props: DAppPropsType) => {
         .getCoveringForErgAndToken(
           999999999000000000n,
           [],
-          addresses[selectedAddress],
+          addresses.addresses[selectedAddress],
         )
         .then((covering) => {
           const height = state.height;
@@ -57,7 +58,7 @@ const BoxConsolidation = (props: DAppPropsType) => {
               ),
             ),
             wasm.Contract.pay_to_address(
-              wasm.Address.from_base58(addresses[selectedAddress]),
+              wasm.Address.from_base58(addresses.addresses[selectedAddress]),
             ),
             height,
           );
@@ -103,7 +104,7 @@ const BoxConsolidation = (props: DAppPropsType) => {
             wasm.BoxValue.from_i64(
               wasm.I64.from_str(TRANSACTION_FEE.toString()),
             ),
-            wasm.Address.from_base58(addresses[selectedAddress]),
+            wasm.Address.from_base58(addresses.addresses[selectedAddress]),
           ).build();
           const reduced = wasm.ReducedTransaction.from_unsigned_tx(
             tx,
@@ -128,14 +129,16 @@ const BoxConsolidation = (props: DAppPropsType) => {
           value={selectedAddress.toString()}
           onChange={handleChangeAddress}
         >
-          {addresses.map((item, index) => (
+          {addresses.addresses.map((item, index) => (
             <MenuItem key={item} value={index.toString()}>
               <DisplayId id={item} />
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      {state.boxesCount === 0 ? (
+      {addresses.loading || state.loading ? (
+        <LoadingPage title="Loading address boxes" description="Please wait" />
+      ) : state.boxesCount === 0 ? (
         <Typography>There is no boxes in this address</Typography>
       ) : (
         <React.Fragment>
