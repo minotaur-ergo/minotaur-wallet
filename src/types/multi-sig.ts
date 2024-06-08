@@ -99,7 +99,7 @@ export interface SecretHintType {
   hint: string;
   challenge: string;
   position: string;
-  proof: string
+  proof: string;
   pubkey: HintPublicKey;
 }
 

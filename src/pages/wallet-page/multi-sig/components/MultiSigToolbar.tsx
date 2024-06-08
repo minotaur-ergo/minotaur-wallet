@@ -9,14 +9,12 @@ import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
 import { commit, sign } from '@/action/multi-sig/signing';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { updateMultiSigRow } from '@/action/multi-sig/store';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
-import { verifyMyCommitments, verifyTxInputs } from '@/action/multi-sig/verify';
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
 import MessageContext from '@/components/app/messageContext';
-import { deserialize } from '@/action/box';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
@@ -25,7 +23,7 @@ const MultiSigToolbar = () => {
   const scanContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
-
+  const signer = useSignerWallet(data.wallet);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
@@ -100,35 +98,19 @@ const MultiSigToolbar = () => {
   };
 
   const processNewData = async (newContent: string) => {
-    const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
-    const tx = wasm.ReducedTransaction.sigma_parse_bytes(
-      Buffer.from(clipBoardData.tx, 'base64'),
-    );
-    if (tx.unsigned_tx().id().to_str() !== data.tx?.id().to_str()) {
-      message.insert('Invalid transaction', "error");
-      return
+    if (signer) {
+      const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
+      const verification = await verifyAndSaveData(
+        clipBoardData,
+        data.wallet,
+        signer,
+        data.tx?.id().to_str(),
+      );
+      message.insert(
+        verification.message,
+        verification.valid ? 'success' : 'error',
+      );
     }
-    if(verifyMyCommitments(clipBoardData.commitments, context.data.commitments, [[]], [])){
-      message.insert('Your commitment changed.\nThis transaction can not sign anymore.\nPlease try sign it again from beginning', 'error');
-      return
-    }
-    if(!verifyTxInputs(tx, clipBoardData.boxes.map(deserialize))){
-      message.insert('Transaction inputs are invalid', 'error');
-      return
-    }
-    await updateMultiSigRow(
-      context.rowId,
-      clipBoardData.commitments,
-      context.data.secrets,
-      clipBoardData.signed || [],
-      clipBoardData.simulated || [],
-      Date.now(),
-      clipBoardData.partial
-        ? wasm.Transaction.sigma_parse_bytes(
-            Buffer.from(clipBoardData.partial, 'base64'),
-          )
-        : undefined,
-    );
   };
 
   const publishAction = async () => {
