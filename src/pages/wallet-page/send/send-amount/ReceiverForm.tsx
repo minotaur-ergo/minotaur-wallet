@@ -49,7 +49,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
   };
 
   useEffect(() => {
-    props.setHasError(addressError || content.amount <= MIN_BOX_VALUE);
+    props.setHasError(addressError || content.amount < MIN_BOX_VALUE);
   });
   const totalUsed = generatorContext.receivers
     .map((item) => item.amount)
