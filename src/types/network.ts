@@ -19,7 +19,6 @@ interface SpendDetail {
   tx: string;
   height: number;
   timestamp: number;
-  blockId: string;
   index: number;
 }
 

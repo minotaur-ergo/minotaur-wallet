@@ -1,4 +1,4 @@
-import BoxSpendInfo from '@/db/entities/BoxSpendInfo';
+import BoxSpend from '@/db/entities/BoxSpend';
 import Wallet from './Wallet';
 import Address from './Address';
 import Asset from './Asset';
@@ -18,7 +18,7 @@ const Entities = [
   MultiSigKey,
   Address,
   Box,
-  BoxSpendInfo,
+  BoxSpend,
   Asset,
   Config,
   MultiSignRow,

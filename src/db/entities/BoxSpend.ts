@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Unique } from 'typeorm/browser';
 
-@Entity({ name: 'box_spend_info' })
+@Entity({ name: 'box_spend' })
 @Unique('box_id_for_network', ['network_type', 'box_id'])
-class BoxSpendInfo {
+class BoxSpend {
   @PrimaryGeneratedColumn()
   id = 0;
 
@@ -26,4 +26,4 @@ class BoxSpendInfo {
   spend_timestamp: number;
 }
 
-export default BoxSpendInfo;
+export default BoxSpend;

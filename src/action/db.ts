@@ -1,3 +1,4 @@
+import BoxSpend from '@/db/entities/BoxSpend';
 import { DataSource, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
 import AddressValueInfo, {
@@ -18,7 +19,7 @@ import MultiSignTx, {
 import MultiSigKey from '@/db/entities/MultiSigKey';
 import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet, { WalletType } from '@/db/entities/Wallet';
-import { BoxInfo, TokenInfo, TxInfo } from '@/types/db';
+import { BoxInfo, BoxSpendInfo, TokenInfo, TxInfo } from '@/types/db';
 import { SpendDetail } from '@/types/network';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
@@ -607,6 +608,65 @@ class BoxDbAction {
   };
 }
 
+class BoxSpendAction {
+  private repository: Repository<BoxSpend>;
+  private static instance: BoxSpendAction;
+
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(BoxSpend);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    BoxSpendAction.instance = new BoxSpendAction(dataSource);
+  };
+
+  insertOrUpdateSpendInfo = async (info: BoxSpendInfo, networkType: string) => {
+    const element = await this.repository.findOneBy({
+      network_type: networkType,
+      box_id: info.box_id,
+    });
+    const updatedElement: Partial<BoxSpend> = {
+      box_id: info.box_id,
+      spend_height: info.spend_height,
+      spend_index: info.spend_index,
+      spend_timestamp: info.spend_timestamp,
+      spend_tx_id: info.spend_tx_id,
+    };
+    if (element) {
+      return await this.repository.update(
+        {
+          network_type: networkType,
+          box_id: info.box_id,
+        },
+        updatedElement,
+      );
+    } else {
+      return await this.repository.insert({
+        ...updatedElement,
+        network_type: networkType,
+      });
+    }
+  };
+
+  getSpendInfoForBox = async (id: string, networkType: string) => {
+    return this.repository.findOneBy({
+      box_id: id,
+      network_type: networkType,
+    });
+  };
+
+  deleteSpendInfo = async (id: string, networkType: string) => {
+    return this.repository.delete({ box_id: id, network_type: networkType });
+  };
+}
+
 class AssetDbAction {
   private assetRepository: Repository<Asset>;
   private static instance: AssetDbAction;
@@ -1087,6 +1147,7 @@ const initializeAction = (dataSource: DataSource) => {
   AddressDbAction.initialize(dataSource);
   AddressValueDbAction.initialize(dataSource);
   BoxDbAction.initialize(dataSource);
+  BoxSpendAction.initialize(dataSource);
   AssetDbAction.initialize(dataSource);
   ConfigDbAction.initialize(dataSource);
   SavedAddressDbAction.initialize(dataSource);
@@ -1100,6 +1161,7 @@ export {
   AddressValueDbAction,
   ConfigDbAction,
   BoxDbAction,
+  BoxSpendAction,
   AssetDbAction,
   SavedAddressDbAction,
   MultiSigDbAction,
