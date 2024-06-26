@@ -37,6 +37,12 @@ class Wallet {
 
   @Column('int', { nullable: false, default: 1 })
   version = 1;
+
+  @Column('text', { default: '' })
+  flags = '';
+
+  @Column('text', { default: '' })
+  encrypted_mnemonic = '';
 }
 
 export default Wallet;
