@@ -8,6 +8,12 @@ import { JsonBI } from '../json';
 import { AbstractNetwork } from './abstractNetwork';
 import { BalanceInfo } from './interfaces';
 
+const getBoxId = (box: { boxId: string } | { id: string }) => {
+  if (Object.prototype.hasOwnProperty.call(box, 'boxId'))
+    return (box as { boxId: string }).boxId;
+  return (box as { id: string }).id;
+};
+
 class ErgoExplorerNetwork extends AbstractNetwork {
   private readonly client;
   private static MAX_ALLOWED_TX_PER_PAGE = 100;
@@ -86,15 +92,30 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     }
   };
 
-  protected processTransaction = async (
+  protected processTransactionInput = async (
     tx: V1.TransactionInfo | V1.TransactionInfo1,
     address: Address,
   ) => {
-    const getBoxId = (box: { boxId: string } | { id: string }) => {
-      if (Object.prototype.hasOwnProperty.call(box, 'boxId'))
-        return (box as { boxId: string }).boxId;
-      return (box as { id: string }).id;
-    };
+    for (const input of tx.inputs ?? []) {
+      if (input.address === address.address) {
+        await BoxSpendAction.getInstance().insertOrUpdateSpendInfo(
+          {
+            box_id: getBoxId(input),
+            spend_height: tx.inclusionHeight,
+            spend_timestamp: parseInt(tx.timestamp.toString()),
+            spend_index: input.index,
+            spend_tx_id: tx.id,
+          },
+          address.network_type,
+        );
+      }
+    }
+  };
+
+  protected processTransactionOutput = async (
+    tx: V1.TransactionInfo | V1.TransactionInfo1,
+    address: Address,
+  ) => {
     for (const output of tx.outputs ?? []) {
       if (output.address === address.address) {
         await BoxDbAction.getInstance().insertOrUpdateBox(
@@ -115,20 +136,6 @@ class ErgoExplorerNetwork extends AbstractNetwork {
         );
       }
     }
-    for (const input of tx.inputs ?? []) {
-      if (input.address === address.address) {
-        await BoxSpendAction.getInstance().insertOrUpdateSpendInfo(
-          {
-            box_id: getBoxId(input),
-            spend_height: tx.inclusionHeight,
-            spend_timestamp: parseInt(tx.timestamp.toString()),
-            spend_index: input.index,
-            spend_tx_id: tx.id,
-          },
-          address.network_type,
-        );
-      }
-    }
   };
 
   syncBoxes = async (address: Address): Promise<boolean> => {
@@ -145,7 +152,7 @@ class ErgoExplorerNetwork extends AbstractNetwork {
         toHeight = height;
       };
       while (addressHeight < height) {
-        const chunk = await this.client.v1.getApiV1AddressesP1Transactions(
+        let chunk = await this.client.v1.getApiV1AddressesP1Transactions(
           address.address,
           {
             limit: 1,
@@ -169,22 +176,30 @@ class ErgoExplorerNetwork extends AbstractNetwork {
               header.items[0].id,
             );
             for (const tx of block.block.blockTransactions ?? []) {
-              await this.processTransaction(tx, address);
+              await this.processTransactionOutput(tx, address);
+            }
+            for (const tx of block.block.blockTransactions ?? []) {
+              await this.processTransactionInput(tx, address);
             }
             await proceedToHeight(toHeight);
           }
         } else {
-          const chunk = await this.client.v1.getApiV1AddressesP1Transactions(
-            address.address,
-            {
-              limit: ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
-              offset: 0,
-              fromHeight: addressHeight,
-              toHeight: toHeight,
-            },
-          );
+          if (chunk.total > 1) {
+            chunk = await this.client.v1.getApiV1AddressesP1Transactions(
+              address.address,
+              {
+                limit: ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
+                offset: 0,
+                fromHeight: addressHeight,
+                toHeight: toHeight,
+              },
+            );
+          }
           for (const tx of chunk.items ?? []) {
-            await this.processTransaction(tx, address);
+            await this.processTransactionOutput(tx, address);
+          }
+          for (const tx of chunk.items ?? []) {
+            await this.processTransactionInput(tx, address);
           }
           await proceedToHeight(toHeight);
         }

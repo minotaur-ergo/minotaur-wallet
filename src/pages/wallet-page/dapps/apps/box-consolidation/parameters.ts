@@ -1,4 +1,4 @@
-export const CONSOLIDATE_FEE = 1000000n;
+export const CONSOLIDATE_FEE = 0n;
 
 export const TRANSACTION_FEE = 1100000n;
 
