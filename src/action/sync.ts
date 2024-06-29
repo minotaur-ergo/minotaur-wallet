@@ -151,8 +151,8 @@ const verifyAddress = async (addressId: number) => {
     console.warn(
       `address balance incompatible with address boxes. reset address. addressId: [${addressId}]`,
     );
-    BoxDbAction.getInstance().deleteBoxForAddress(addressId);
-    AddressDbAction.getInstance().updateAddressHeight(addressId, 0);
+    await BoxDbAction.getInstance().deleteBoxForAddress(addressId);
+    await AddressDbAction.getInstance().updateAddressHeight(addressId, 0);
   }
 };
 
