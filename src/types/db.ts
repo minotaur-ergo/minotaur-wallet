@@ -24,14 +24,6 @@ interface BoxInfo {
   serialized: string;
 }
 
-interface BoxSpendInfo {
-  box_id: string;
-  spend_tx_id: string;
-  spend_index: number;
-  spend_height: number;
-  spend_timestamp: number;
-}
-
 interface TxInfo {
   height: number;
   timestamp: number;
@@ -42,4 +34,4 @@ interface ItemBoxInfos {
   total: number;
 }
 
-export type { ItemBoxInfos, TokenInfo, BoxInfo, TxInfo, BoxSpendInfo };
+export type { ItemBoxInfos, TokenInfo, BoxInfo, TxInfo };

@@ -1,5 +1,5 @@
 import { serialize } from '@/action/box';
-import { AddressDbAction, BoxDbAction, BoxSpendAction } from '@/action/db';
+import { AddressDbAction, BoxDbAction } from '@/action/db';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
 import * as wasm from 'ergo-lib-wasm-browser';
 import Address from '@/db/entities/Address';
@@ -98,16 +98,12 @@ class ErgoExplorerNetwork extends AbstractNetwork {
   ) => {
     for (const input of tx.inputs ?? []) {
       if (input.address === address.address) {
-        await BoxSpendAction.getInstance().insertOrUpdateSpendInfo(
-          {
-            box_id: getBoxId(input),
-            spend_height: tx.inclusionHeight,
-            spend_timestamp: parseInt(tx.timestamp.toString()),
-            spend_index: input.index,
-            spend_tx_id: tx.id,
-          },
-          address.network_type,
-        );
+        await BoxDbAction.getInstance().spendBox(getBoxId(input), {
+          height: tx.inclusionHeight,
+          timestamp: parseInt(tx.timestamp.toString()),
+          tx: tx.id,
+          index: input.index,
+        });
       }
     }
   };
@@ -203,27 +199,6 @@ class ErgoExplorerNetwork extends AbstractNetwork {
           }
           await proceedToHeight(toHeight);
         }
-      }
-      const boxes = await BoxDbAction.getInstance().getAddressUnspentBoxes([
-        address.id,
-      ]);
-      for (const box of boxes) {
-        const spend = await BoxSpendAction.getInstance().getSpendInfoForBox(
-          box.box_id,
-          address.network_type,
-        );
-        if (spend) {
-          await BoxDbAction.getInstance().spendBox(box.box_id, {
-            height: spend.spend_height,
-            timestamp: spend.spend_timestamp,
-            index: spend.spend_index,
-            tx: spend.spend_tx_id,
-          });
-        }
-        await BoxSpendAction.getInstance().deleteSpendInfo(
-          box.box_id,
-          address.network_type,
-        );
       }
     } catch (e) {
       console.error(e);
