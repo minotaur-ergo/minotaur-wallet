@@ -1,8 +1,7 @@
 import Address from '@/db/entities/Address';
 import { AddressValueType } from '@/db/entities/AddressValueInfo';
-import Wallet from '@/db/entities/Wallet';
 import store from '@/store';
-import { setBalances } from '@/store/reducer/wallet';
+import { setBalances, StateWallet } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
 import getChain from '@/utils/networks';
 import { AbstractNetwork } from '@/utils/networks/abstractNetwork';
@@ -156,39 +155,42 @@ const verifyAddress = async (addressId: number) => {
   }
 };
 
-const syncWallet = async (wallet: Wallet) => {
-  const chain = getChain(wallet.network_type);
+const syncWallet = async (wallet: StateWallet) => {
+  const chain = getChain(wallet.networkType);
   const network = chain.getNetwork();
   const height = await chain.getNetwork().getHeight();
   const addresses = await AddressDbAction.getInstance().getWalletAddresses(
     wallet.id,
   );
-  for (const address of addresses) {
-    try {
-      await syncInfo(network, address);
-    } catch (e) {
-      console.log(e);
-    }
+  try {
+    await Promise.all(
+      addresses.map(async address => {
+        await syncInfo(network, address)
+      })
+    )
+  } catch (e) {
+    console.log(e);
   }
-  for (const address of addresses) {
-    try {
-      if (await network.syncBoxes(address)) {
-        const verifyHeight = await network.getHeight();
-        const dbAddresses = await AddressDbAction.getInstance().getAddressById(
-          address.id,
-        );
-        if (
-          dbAddresses.length > 0 &&
-          dbAddresses[0].process_height === verifyHeight
-        ) {
-          await verifyAddress(address.id);
+  await Promise.all(
+    addresses.map(async (address) => {
+      try {
+        if (await network.syncBoxes(address)) {
+          const verifyHeight = await network.getHeight();
+          const dbAddresses =
+            await AddressDbAction.getInstance().getAddressById(address.id);
+          if (
+            dbAddresses.length > 0 &&
+            dbAddresses[0].process_height === verifyHeight
+          ) {
+            await verifyAddress(address.id);
+          }
         }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  await syncAssets(network, wallet.network_type, height);
+    }),
+  );
+  await syncAssets(network, wallet.networkType, height);
 };
 
 export { syncWallet };

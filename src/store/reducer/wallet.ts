@@ -57,6 +57,8 @@ export interface WalletStateType {
   walletsValid: boolean;
   addressesValid: boolean;
   initialized: boolean;
+  refresh: boolean;
+  updatedWallets: Array<number>;
 }
 
 export const walletInitialState: WalletStateType = {
@@ -66,6 +68,8 @@ export const walletInitialState: WalletStateType = {
   walletsValid: false,
   addressesValid: false,
   initialized: false,
+  refresh: false,
+  updatedWallets: [],
 };
 
 const updateWalletBalance = (
@@ -160,6 +164,21 @@ const walletSlice = createSlice({
     invalidateAddresses(state) {
       state.addressesValid = false;
     },
+    forceRefresh(state, action: PayloadAction<boolean>) {
+      state.refresh = action.payload;
+    },
+    clearUpdatedWallets(state) {
+      state.updatedWallets = [];
+      state.refresh = false;
+    },
+    addUpdatedWallets(state, action: PayloadAction<number>) {
+      state.updatedWallets.push(action.payload);
+    },
+    addedWallets(state) {
+      state.walletsValid = false;
+      state.addressesValid = false;
+      state.refresh = false;
+    },
   },
 });
 
@@ -171,4 +190,8 @@ export const {
   setWallets,
   setAddresses,
   setBalances,
+  addUpdatedWallets,
+  clearUpdatedWallets,
+  forceRefresh,
+  addedWallets,
 } = walletSlice.actions;
