@@ -337,7 +337,8 @@ export const arrayToProposition = (input: Array<string>): wasm.Propositions => {
   return output;
 };
 
-
 export const addressesToPk = (input: Array<string>): Array<string> => {
-  return input.map(item => Buffer.from(wasm.Address.from_base58(item).content_bytes()).toString("hex"))
-}
+  return input.map((item) =>
+    Buffer.from(wasm.Address.from_base58(item).content_bytes()).toString('hex'),
+  );
+};

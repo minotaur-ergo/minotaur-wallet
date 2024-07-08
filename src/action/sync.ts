@@ -164,10 +164,10 @@ const syncWallet = async (wallet: StateWallet) => {
   );
   try {
     await Promise.all(
-      addresses.map(async address => {
-        await syncInfo(network, address)
-      })
-    )
+      addresses.map(async (address) => {
+        await syncInfo(network, address);
+      }),
+    );
   } catch (e) {
     console.log(e);
   }

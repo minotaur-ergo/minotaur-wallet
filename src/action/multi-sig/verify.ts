@@ -107,14 +107,11 @@ const verifyTxPartial = async (
   dataBoxes: wasm.ErgoBoxes = wasm.ErgoBoxes.empty(),
   commitments: Array<Array<string>>,
 ): Promise<VerificationResponse> => {
-    debugger
   const simulatedPropositions = arrayToProposition(addressesToPk(simulated));
   const realPropositions = arrayToProposition(addressesToPk(signed));
-  const context = await getChain(networkType).fakeContext();
+  const context = getChain(networkType).fakeContext();
   const hints = wasm.extract_hints(
-    wasm.Transaction.sigma_parse_bytes(
-        Buffer.from(partialBase64, 'base64'),
-      ),
+    wasm.Transaction.sigma_parse_bytes(Buffer.from(partialBase64, 'base64')),
     context,
     boxes,
     dataBoxes,
@@ -124,9 +121,7 @@ const verifyTxPartial = async (
   const converted = await hintBagToArray(
     wallet,
     signer,
-    wasm.Transaction.sigma_parse_bytes(
-        Buffer.from(partialBase64, 'base64'),
-      ),
+    wasm.Transaction.sigma_parse_bytes(Buffer.from(partialBase64, 'base64')),
     boxesToArrayBox(boxes),
     hints,
   );
@@ -215,12 +210,12 @@ const verifyExistingTx = async (
       wallet.networkType,
       boxArrayToBoxes(boxes),
       wasm.ErgoBoxes.empty(),
-      row.commitments
+      row.commitments,
     );
     if (!verifyPartial.valid) return verifyPartial;
   }
-  return {valid: true, message: ''}
-//   return { valid: false, message: 'Must not update this' };
+  return { valid: true, message: '' };
+  //   return { valid: false, message: 'Must not update this' };
 };
 
 const verifyAndSaveData = async (
