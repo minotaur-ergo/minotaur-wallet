@@ -1,9 +1,10 @@
+import { setActiveWallet } from '@/store/reducer/config';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { WalletType } from '@/db/entities/Wallet';
 import store from '@/store';
 import {
-  invalidateWallets,
+  addedWallets,
   StateAddress,
   StateWallet,
 } from '@/store/reducer/wallet';
@@ -13,7 +14,7 @@ import {
   bip32,
   getBase58ExtendedPublicKey,
   isValidAddress,
-} from '../utils/functions';
+} from '@/utils/functions';
 import {
   RootPathWithoutIndex,
   getWalletAddressSecret,
@@ -46,6 +47,9 @@ const createWallet = async (
   const storedSeed = encryptionPassword
     ? encrypt(seed, encryptionPassword)
     : seed.toString('hex');
+  const encryptedMnemonic = encryptionPassword
+    ? encrypt(Buffer.from(mnemonic, 'utf-8'), encryptionPassword)
+    : '';
   const wallet = await WalletDbAction.getInstance().createWallet(
     name,
     type,
@@ -53,9 +57,11 @@ const createWallet = async (
     extended_public_key.toBase58(),
     network_type,
     1,
+    encryptedMnemonic,
   );
   await addAllWalletAddresses(walletEntityToWalletState(wallet));
-  store.dispatch(invalidateWallets());
+  store.dispatch(addedWallets());
+  store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
 };
 
 const createReadOnlyWallet = async (
@@ -71,6 +77,7 @@ const createReadOnlyWallet = async (
     extended_public_key,
     network_type,
     1,
+    '',
   );
   if (extended_public_key) {
     await addAllWalletAddresses(walletEntityToWalletState(walletEntity));
@@ -83,7 +90,8 @@ const createReadOnlyWallet = async (
       0,
     );
   }
-  store.dispatch(invalidateWallets());
+  store.dispatch(addedWallets());
+  store.dispatch(setActiveWallet({ activeWallet: walletEntity.id }));
 };
 
 const createMultiSigWallet = async (
@@ -103,6 +111,7 @@ const createMultiSigWallet = async (
       is_derivable ? wallet.extended_public_key : '',
       wallet.network_type,
       minSig,
+      '',
     );
     await MultiSigDbAction.getInstance().createKey(
       createdWallet,
@@ -122,7 +131,8 @@ const createMultiSigWallet = async (
       }
     }
     await addAllWalletAddresses(walletEntityToWalletState(createdWallet));
-    store.dispatch(invalidateWallets());
+    store.dispatch(addedWallets());
+    store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
   }
 };
 

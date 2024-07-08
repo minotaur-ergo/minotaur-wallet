@@ -7,6 +7,8 @@ import SigmaUSD from './sigma-usd/SigmaUSD';
 import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
 import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
 import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
+import BoxConsolidation from './box-consolidation/BoxConsolidation';
+import { BuildCircleTwoTone } from '@mui/icons-material';
 
 export const apps: Array<DAppType> = [
   {
@@ -36,5 +38,14 @@ export const apps: Array<DAppType> = [
     component: SigmaUSD,
     color: 'secondary.main',
     icon: <BalanceTwoToneIcon fontSize="large" />,
+  },
+  {
+    name: 'Box Consolidation',
+    description: 'Renew unspent boxes',
+    id: 'boxconsolidation',
+    networks: [wasm.NetworkPrefix.Mainnet, wasm.NetworkPrefix.Testnet],
+    component: BoxConsolidation,
+    color: 'success.main',
+    icon: <BuildCircleTwoTone fontSize="large" />,
   },
 ];

@@ -59,6 +59,7 @@ class WalletDbAction {
     extended_public_key: string,
     network_type: string,
     requiredSign: number,
+    encryptedMnemonic: string,
   ) => {
     const wallet = {
       name: name,
@@ -67,6 +68,7 @@ class WalletDbAction {
       extended_public_key: extended_public_key,
       network_type: network_type,
       required_sign: requiredSign,
+      encrypted_mnemonic: encryptedMnemonic,
     };
     await this.walletRepository.save(wallet);
     const res = await this.walletRepository.findOneBy({
@@ -76,6 +78,7 @@ class WalletDbAction {
       extended_public_key: extended_public_key,
       network_type: network_type,
       required_sign: requiredSign,
+      encrypted_mnemonic: encryptedMnemonic,
     });
     if (!res) throw Error('Can not store wallet');
     return res;
