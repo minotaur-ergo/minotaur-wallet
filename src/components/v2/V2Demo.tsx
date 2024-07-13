@@ -30,6 +30,7 @@ import Extension from './pages/extension/Extension';
 import ExtensionConnector from './pages/extension/ExtensionConnector';
 import TransactionDetails from './pages/transaction/TransactionDetails';
 import BoxConsolidation from './pages/dApps/boxConsolidation/BoxConsolidation';
+import WalletSetPin from './pages/settings/WalletSetPin';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -57,6 +58,7 @@ export const RouterMap = {
   Settings: '/v2/settings',
   ChangePassword: '/v2/settings/changePassword',
   PublicKey: '/v2/settings/extendedPublicKey',
+  SetPin: '/v2/settings/setPin',
   AddressBook: '/v2/addressBook',
   AddAddress: '/v2/addressBook/add',
   MultiSigCom: '/v2/multisigCom',
@@ -129,6 +131,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.PublicKey.replace('/v2', '')}
           element={<WalletExtendedPublicKey />}
+        />
+        <Route
+          path={RouterMap.SetPin.replace('/v2', '')}
+          element={<WalletSetPin />}
         />
         <Route
           path={RouterMap.AddressBook.replace('/v2', '')}

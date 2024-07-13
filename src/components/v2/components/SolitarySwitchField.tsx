@@ -10,6 +10,7 @@ interface PropsType {
   helperText?: string;
   checkedDescription?: string;
   uncheckedDescription?: string;
+  disabled?: boolean;
 }
 
 export default function ({
@@ -17,8 +18,9 @@ export default function ({
   onChange,
   label,
   helperText,
-  checkedDescription = 'ON',
-  uncheckedDescription = 'OFF',
+  checkedDescription = 'On',
+  uncheckedDescription = 'Off',
+  disabled,
 }: PropsType) {
   const handle_change = (event: ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
@@ -34,7 +36,12 @@ export default function ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Switch checked={value} onChange={handle_change} edge="end" />
+              <Switch
+                checked={value}
+                onChange={handle_change}
+                edge="end"
+                disabled={disabled}
+              />
             </InputAdornment>
           ),
         }}

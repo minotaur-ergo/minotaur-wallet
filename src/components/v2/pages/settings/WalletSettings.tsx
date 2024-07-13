@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import Heading from '../../components/Heading';
 import SolitaryTextField from '../../components/SolitaryTextField';
@@ -16,6 +16,8 @@ const WalletSettings = () => {
     privacyMode: true,
     allowDAppConnector: true,
     archived: false,
+    hasPin: true,
+    honeypot: false,
   });
   return (
     <Box mb={2}>
@@ -73,6 +75,23 @@ const WalletSettings = () => {
               archived: checked,
             }))
           }
+        />
+        <ActionButton
+          label={data.hasPin ? 'Change pin' : 'Set pin'}
+          helperText="Some description about this option goes here."
+          onClick={() => navigate(RouterMap.SetPin)}
+        />
+        <SolitarySwitchField
+          label="Honeypot"
+          helperText="To enable honeypot, set pin first!"
+          value={data.honeypot}
+          onChange={(checked) =>
+            setData((prevState) => ({
+              ...prevState,
+              honeypot: checked,
+            }))
+          }
+          disabled={!data.hasPin}
         />
       </Stack>
     </Box>
