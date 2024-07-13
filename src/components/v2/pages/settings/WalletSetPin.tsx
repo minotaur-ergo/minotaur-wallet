@@ -4,13 +4,14 @@ import BackButton from '../../components/BackButton';
 import { Button, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import PasswordField from '../../components/PasswordField';
 import { useNavigate } from 'react-router-dom';
+import { GLOBAL_SETTINGS } from '../../data';
 
 type PinActionType = 'UPDATE' | 'DELETE';
 
 const WalletSetPin = () => {
   const navigate = useNavigate();
   const [action, set_action] = useState<PinActionType>('UPDATE');
-  const hasPin = true;
+  const hasPin = GLOBAL_SETTINGS.hasPin;
 
   const handle_submit = () => {
     navigate(-1);

@@ -352,3 +352,7 @@ export const WALLETS = [
     archived: true,
   },
 ];
+
+export const GLOBAL_SETTINGS = {
+  hasPin: true,
+};

@@ -31,10 +31,12 @@ import ExtensionConnector from './pages/extension/ExtensionConnector';
 import TransactionDetails from './pages/transaction/TransactionDetails';
 import BoxConsolidation from './pages/dApps/boxConsolidation/BoxConsolidation';
 import WalletSetPin from './pages/settings/WalletSetPin';
+import EnterPin from './pages/enterPin/EnterPin';
 
 export const RouterMap = {
   Splash: '/v2/',
   Start: '/v2/start',
+  EnterPin: '/v2/enterPin',
   Home: '/v2/wallet/:id',
   DApps: '/v2/wallet/:id/dapps',
   DAppConnector: '/v2/wallet/:id/dapps/connector',
@@ -179,6 +181,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ExtensionConnector.replace('/v2', '')}
           element={<ExtensionConnector />}
+        />
+        <Route
+          path={RouterMap.EnterPin.replace('/v2', '')}
+          element={<EnterPin />}
         />
       </Routes>
     </AppTheme>

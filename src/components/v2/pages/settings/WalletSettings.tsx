@@ -8,6 +8,7 @@ import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useNavigate } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
+import { GLOBAL_SETTINGS } from '../../data';
 
 const WalletSettings = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const WalletSettings = () => {
     privacyMode: true,
     allowDAppConnector: true,
     archived: false,
-    hasPin: true,
+    hasPin: GLOBAL_SETTINGS.hasPin,
     honeypot: false,
   });
   return (

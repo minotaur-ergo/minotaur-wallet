@@ -3,6 +3,7 @@ import { Box, styled, Typography, useTheme } from '@mui/material';
 import MinotaurLogo from '../../../splash/MinotaurLogo';
 import { useNavigate } from 'react-router-dom';
 import { RouterMap } from '../../V2Demo';
+import { GLOBAL_SETTINGS } from '../../data';
 
 const SplashBox = styled(Box)(
   ({ theme }) => `
@@ -37,7 +38,10 @@ const Splash = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setTimeout(() => navigate(RouterMap.Home), 1500);
+    setTimeout(() => {
+      if (GLOBAL_SETTINGS.hasPin) navigate(RouterMap.EnterPin);
+      else navigate(RouterMap.Home);
+    }, 1500);
   }, []);
 
   return (
