@@ -18,7 +18,7 @@ const WalletSettings = () => {
     allowDAppConnector: true,
     archived: false,
     hasPin: GLOBAL_SETTINGS.hasPin,
-    honeypot: false,
+    hasHoneypot: false,
   });
   return (
     <Box mb={2}>
@@ -82,16 +82,10 @@ const WalletSettings = () => {
           helperText="Some description about this option goes here."
           onClick={() => navigate(RouterMap.SetPin)}
         />
-        <SolitarySwitchField
-          label="Honeypot"
-          helperText="To enable honeypot, set pin first!"
-          value={data.honeypot}
-          onChange={(checked) =>
-            setData((prevState) => ({
-              ...prevState,
-              honeypot: checked,
-            }))
-          }
+        <ActionButton
+          label={data.hasHoneypot ? 'Change honeypot' : 'Set honeypot'}
+          helperText="Honeypot is description about this option goes here. To enable honeypot, set pin first!"
+          onClick={() => navigate(RouterMap.SetPin)}
           disabled={!data.hasPin}
         />
       </Stack>

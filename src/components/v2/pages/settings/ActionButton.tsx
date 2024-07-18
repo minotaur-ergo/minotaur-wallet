@@ -8,6 +8,7 @@ export interface ActionButtonPropsType {
   onClick?: () => Promise<string | undefined> | void;
   helperText?: string;
   icon?: ReactElement;
+  disabled?: boolean;
 }
 
 export default function ({
@@ -15,6 +16,7 @@ export default function ({
   onClick,
   helperText,
   icon,
+  disabled,
 }: ActionButtonPropsType) {
   const [loading, set_loading] = useState(false);
   const alert = useRef<SnackAlertHandle>(null);
@@ -48,7 +50,7 @@ export default function ({
         <IconButton
           edge="end"
           onClick={handle_click}
-          disabled={loading || !onClick}
+          disabled={disabled || loading || !onClick}
         >
           {loading ? (
             <CircularProgress size={24} />
