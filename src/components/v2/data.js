@@ -353,6 +353,21 @@ export const WALLETS = [
   },
 ];
 
+export const ADDRESS_BOOK = [
+  {
+    name: 'Address 1',
+    address: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+  },
+  {
+    name: 'Address 2',
+    address: 'c25f71cb23683086b2ed086b0841b6506add2eae7ef2c25fae7ef2d1d6ad',
+  },
+  {
+    name: 'Address 3',
+    address: 'b23683c25f71c0b082d1d6ad486b2ed0861b6506adf2c25fae7efd2eae7e',
+  },
+];
+
 export const GLOBAL_SETTINGS = {
   hasPin: true,
 };

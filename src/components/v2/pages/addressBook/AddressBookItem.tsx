@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import {
   Box,
   Card,
@@ -11,13 +11,13 @@ import {
 import DisplayId from '../../components/DisplayId';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
+import AddressCopy from '../../components/AddressCopy';
 
 interface PropsType {
   name?: string;
@@ -80,12 +80,7 @@ export default function ({ name = '', address = '' }: PropsType) {
             <CloseIcon />
           </IconButton>
         </Box>
-        <Card sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}>
-          <Typography sx={{ overflowWrap: 'anywhere' }}>{address}</Typography>
-          <IconButton>
-            <ContentCopyIcon />
-          </IconButton>
-        </Card>
+        <AddressCopy address={address} />
       </Drawer>
 
       <Drawer anchor="bottom" open={editing}>

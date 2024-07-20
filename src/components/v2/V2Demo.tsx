@@ -17,7 +17,7 @@ import MultiSigWallet from './pages/addWallet/multiSigWallet/MultiSigWallet';
 import Settings from './pages/settings/Settings';
 import WalletChangePassword from './pages/settings/WalletChangePassword';
 import AddressBook from './pages/addressBook/AddressBook';
-import AddAddress from './pages/addressBook/AddAddress';
+import AddAddress from './pages/addressBook/add/AddAddress';
 import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
 import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
 import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
@@ -32,6 +32,8 @@ import TransactionDetails from './pages/transaction/TransactionDetails';
 import BoxConsolidation from './pages/dApps/boxConsolidation/BoxConsolidation';
 import WalletSetPin from './pages/settings/WalletSetPin';
 import EnterPin from './pages/enterPin/EnterPin';
+import ExportAddresses from './pages/addressBook/export/ExportAddresses';
+import ImportAddresses from './pages/addressBook/import/ImportAddresses';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -63,6 +65,8 @@ export const RouterMap = {
   SetPin: '/v2/settings/setPin',
   AddressBook: '/v2/addressBook',
   AddAddress: '/v2/addressBook/add',
+  ExportAddress: '/v2/addressBook/export',
+  ImportAddress: '/v2/addressBook/import',
   MultiSigCom: '/v2/multisigCom',
   MultiSigTrans: '/v2/multisigCom/:id',
   ErgoPay: '/v2/ergoPay',
@@ -145,6 +149,14 @@ const V2Demo = () => {
         <Route
           path={RouterMap.AddAddress.replace('/v2', '')}
           element={<AddAddress />}
+        />
+        <Route
+          path={RouterMap.ExportAddress.replace('/v2', '')}
+          element={<ExportAddresses />}
+        />
+        <Route
+          path={RouterMap.ImportAddress.replace('/v2', '')}
+          element={<ImportAddresses />}
         />
         <Route
           path={RouterMap.MultiSigCom.replace('/v2', '')}
