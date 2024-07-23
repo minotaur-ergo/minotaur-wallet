@@ -18,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
+import { BookOutlined } from '@mui/icons-material';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -101,6 +102,9 @@ const ReceiverForm = ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
+              <IconButton>
+                <BookOutlined />
+              </IconButton>
               <IconButton>
                 <QrCodeScannerIcon />
               </IconButton>

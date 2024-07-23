@@ -34,6 +34,7 @@ import WalletSetPin from './pages/settings/WalletSetPin';
 import EnterPin from './pages/enterPin/EnterPin';
 import ExportAddresses from './pages/addressBook/export/ExportAddresses';
 import ImportAddresses from './pages/addressBook/import/ImportAddresses';
+import ExportAsset from './pages/assets/export/ExportAsset';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -56,6 +57,8 @@ export const RouterMap = {
   Transactions: '/v2/wallet/transactions',
   TransactionDetails: '/v2/wallet/transactions/:id',
   Assets: '/v2/wallet/assets',
+  ExportAsset: '/v2/wallet/assets/export',
+  ImportAsset: '/v2/wallet/assets/import',
   Addresses: '/v2/wallet/addresses',
   Send: '/v2/wallet/send',
   Scan: '/v2/wallet/scan',
@@ -119,6 +122,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.Assets.replace('/v2', '')}
           element={<Assets />}
+        />
+        <Route
+          path={RouterMap.ExportAsset.replace('/v2', '')}
+          element={<ExportAsset />}
         />
         <Route
           path={RouterMap.Addresses.replace('/v2', '')}

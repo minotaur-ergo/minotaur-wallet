@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, ReactElement, ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { RouterMap } from '../V2Demo';
@@ -7,7 +7,11 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 
-const HomeMoreMenu = () => {
+interface PropsType {
+  extraItems?: ReactElement[];
+}
+
+const HomeMoreMenu = ({ extraItems }: PropsType) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -42,6 +46,7 @@ const HomeMoreMenu = () => {
           </ListItemIcon>
           Scan QR
         </MenuItem>
+        {extraItems}
       </Menu>
     </Fragment>
   );

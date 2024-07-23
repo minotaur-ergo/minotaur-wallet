@@ -368,6 +368,56 @@ export const ADDRESS_BOOK = [
   },
 ];
 
+export const ASSETS = [
+  {
+    name: 'Ergold',
+    amount: 60,
+    id: 'c25f71cb2368306506add086b2eae7ef2841bd1d6add086b2eae7eeae7ef',
+    logoSrc: '/Ergold.png',
+  },
+  {
+    name: 'Ergold',
+    amount: 15,
+    id: '6eae741bd1d6add086b2eae7eef2c25f71cb2368506add086b2308eae7ef',
+    logoSrc: '/logo192.png',
+  },
+  {
+    name: 'Ergold',
+    amount: 23,
+    id: '6506ae7ef2c2add086cb2368308b2eadd7ef086b2eae7eea5f7141bd1d6e',
+  },
+  {
+    name: 'Token 1',
+    amount: 68.65,
+    id: '2eae7eeae6506add086b30841bd1d6ad2eae7ef2c25f71cb2368d086b7ef',
+  },
+  {
+    name: 'Token 2',
+    amount: 1570,
+    id: '6b2e6506add08ae7ef2c25f71cb236830841bd1dae7ef6add086b2eae7ee',
+  },
+  {
+    name: 'Token 3',
+    amount: 0,
+    id: 'ae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef6506add086b2e',
+  },
+  {
+    name: 'Ergold',
+    amount: 60,
+    id: 'f2c25f71cb236830841bd1d6ae7ef6506add086b2eae7eadd086b2eae7ee',
+  },
+  {
+    name: 'Ergold',
+    amount: 15,
+    id: 'b2eaeb2eae7eeae7ef7ef2c25f71cb23683086506add08641bd1d6add086',
+  },
+  {
+    name: 'Ergold',
+    amount: 23,
+    id: 'c2586b2eae7eeae7ef6506addf71cb236830841bd1d6add0086b2eae7ef2',
+  },
+];
+
 export const GLOBAL_SETTINGS = {
   hasPin: true,
 };

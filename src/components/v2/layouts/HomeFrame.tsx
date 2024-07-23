@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppFrame from './AppFrame';
 import { IconButton } from '@mui/material';
@@ -10,9 +10,10 @@ import { WALLETS } from '../data';
 
 interface PropsType {
   children?: ReactNode;
+  extraItems?: ReactElement[];
 }
 
-const HomeFrame = ({ children }: PropsType) => {
+const HomeFrame = ({ children, extraItems }: PropsType) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const wallet = WALLETS.find((row) => row.id === id);
@@ -25,7 +26,7 @@ const HomeFrame = ({ children }: PropsType) => {
           <AccountBalanceWalletOutlinedIcon />
         </IconButton>
       }
-      actions={<HomeMoreMenu />}
+      actions={<HomeMoreMenu extraItems={extraItems} />}
       toolbar={<AppToolbar />}
       disableToolbarPadding
     >

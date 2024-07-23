@@ -1,64 +1,21 @@
-import React from 'react';
 import HomeFrame from '../../layouts/HomeFrame';
 import ListController from '../../components/ListController';
 import AssetItem from './AssetItem';
+import { ListItemIcon, MenuItem } from '@mui/material';
+import { FileDownloadOutlined, FileUploadOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { RouterMap } from '../../V2Demo';
+import { ASSETS } from '../../data';
 
 const Assets = () => {
+  const navigate = useNavigate();
   const getAssets = () =>
     new Promise((resolve, reject) => {
       const x = Math.random();
+      console.log({ x });
       setTimeout(() => {
-        if (x >= 0.4)
-          resolve([
-            {
-              name: 'Ergold',
-              amount: 60,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-              logoSrc: '/Ergold.png',
-            },
-            {
-              name: 'Ergold',
-              amount: 15,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-              logoSrc: '/logo192.png',
-            },
-            {
-              name: 'Ergold',
-              amount: 23,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Token 1',
-              amount: 68.65,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Token 2',
-              amount: 1570,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Token 3',
-              amount: 0,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Ergold',
-              amount: 60,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Ergold',
-              amount: 15,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-            {
-              name: 'Ergold',
-              amount: 23,
-              id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
-            },
-          ]);
-        else if (x >= 0.2) resolve([]);
+        if (x >= 0.3) resolve(ASSETS);
+        else if (x >= 0.1) resolve([]);
         else
           reject([
             {
@@ -70,7 +27,25 @@ const Assets = () => {
     });
 
   return (
-    <HomeFrame>
+    <HomeFrame
+      extraItems={[
+        <MenuItem
+          onClick={() => navigate(RouterMap.ExportAsset)}
+          key="export-asset"
+        >
+          <ListItemIcon>
+            <FileUploadOutlined />
+          </ListItemIcon>
+          Export Asset
+        </MenuItem>,
+        <MenuItem key="import-asset">
+          <ListItemIcon>
+            <FileDownloadOutlined />
+          </ListItemIcon>
+          Import Asset
+        </MenuItem>,
+      ]}
+    >
       <ListController
         ListItem={<AssetItem />}
         getData={getAssets}
