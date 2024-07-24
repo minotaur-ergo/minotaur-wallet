@@ -31,12 +31,7 @@ const ExportAsset = () => {
     >
       <Stack gap={2}>
         {list.map((item, index) => (
-          <ExportAssetItem
-            key={index}
-            asset={item}
-            selected={item.selected}
-            onChange={handleToggle}
-          />
+          <ExportAssetItem key={index} {...item} onChange={handleToggle} />
         ))}
       </Stack>
       <ExportDrawer

@@ -3,15 +3,14 @@ import { ChangeEvent } from 'react';
 import { AssetType, SelectableType } from '../../../models';
 import AssetCard from '../AssetCard';
 
-interface PropsType extends SelectableType {
-  asset: AssetType;
+interface PropsType extends AssetType, SelectableType {
   onChange: (id: AssetType['id'], checked: boolean) => any;
 }
 
 export default function ExportAssetItem({
-  asset,
   selected = false,
   onChange,
+  ...asset
 }: PropsType) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     onChange(asset.id, event.target.checked);

@@ -12,7 +12,6 @@ const Assets = () => {
   const getAssets = () =>
     new Promise((resolve, reject) => {
       const x = Math.random();
-      console.log({ x });
       setTimeout(() => {
         if (x >= 0.3) resolve(ASSETS);
         else if (x >= 0.1) resolve([]);
