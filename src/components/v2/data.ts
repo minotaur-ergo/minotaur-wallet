@@ -1,3 +1,4 @@
+import { AddressBookType, AssetType } from './models';
 import { DAppActions } from './pages/dApps/connectedDApp/ConnectedDAppLog';
 
 export const MSTransactions = [
@@ -353,7 +354,7 @@ export const WALLETS = [
   },
 ];
 
-export const ADDRESS_BOOK = [
+export const ADDRESS_BOOK: AddressBookType[] = [
   {
     name: 'Address 1',
     address: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
@@ -368,7 +369,7 @@ export const ADDRESS_BOOK = [
   },
 ];
 
-export const ASSETS = [
+export const ASSETS: AssetType[] = [
   {
     name: 'Ergold',
     amount: 60,

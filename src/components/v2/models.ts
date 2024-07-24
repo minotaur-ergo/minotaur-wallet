@@ -8,3 +8,8 @@ export type AssetType = {
   id: string;
   logoSrc?: string;
 };
+
+export type AddressBookType = {
+  name: string;
+  address: string;
+};
