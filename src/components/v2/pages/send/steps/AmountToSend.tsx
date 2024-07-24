@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import {
   Box,
@@ -19,6 +19,8 @@ import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import { BookOutlined } from '@mui/icons-material';
+import useDrawer from '../../../reducers/useDrawer';
+import AddressBookModal from '../../../components/AddressBookModal';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -60,6 +62,7 @@ const ReceiverForm = ({
   receiver,
   tokens,
 }: ReceiverFormPropsType) => {
+  const [handleOpenAddressBook, addressBookProps] = useDrawer();
   const receiverTokensId = receiver.tokens.map(({ id }) => id);
   const handle_select_token = (
     event: SelectChangeEvent<typeof receiverTokensId>
@@ -102,7 +105,7 @@ const ReceiverForm = ({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton>
+              <IconButton onClick={handleOpenAddressBook}>
                 <BookOutlined />
               </IconButton>
               <IconButton>
@@ -114,6 +117,13 @@ const ReceiverForm = ({
             </InputAdornment>
           ),
         }}
+      />
+      <AddressBookModal
+        {...addressBookProps}
+        address={receiver.address}
+        onChange={(item) =>
+          onEdit(index, Object.assign({}, receiver, { address: item.address }))
+        }
       />
       <TextField
         label="Amount"
