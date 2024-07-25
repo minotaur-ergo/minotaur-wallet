@@ -1,3 +1,4 @@
+import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { addressesToPk, arrayToProposition } from './signing';
 import getChain from '@/utils/networks';
@@ -19,8 +20,9 @@ interface VerificationResponse {
   message: string;
   txId?: string;
 }
+
 // verify commitments
-// my commitment must not changed
+// my commitment must not change
 const verifyMyCommitments = (
   commitments: Array<Array<string>>,
   oldCommitments: Array<Array<string>>,
@@ -47,6 +49,24 @@ const verifyMyCommitments = (
       ? ''
       : 'Your commitment changed.\nThis transaction can not sign anymore.\nPlease try sign it again from beginning',
   };
+};
+
+// verify commitments
+// my wallet must not commit new transaction
+const verifyNotCommittedNewTx = (
+  commitments: Array<Array<string>>,
+  pks: Array<Array<string>>,
+  myPks: Array<string>,
+): VerificationResponse => {
+  const filteredRows = commitments.filter((commitmentRow, index) => {
+    const myIndexes = myPks
+      .map((item) => pks[index].indexOf(item))
+      .filter((item) => item >= 0);
+    return myIndexes.filter((index) => commitmentRow[index] !== '').length > 0;
+  });
+  return filteredRows.length > 0
+    ? { valid: false, message: 'Already have my commitment' }
+    : { valid: true, message: '' };
 };
 
 const verifyTxAddresses = (
@@ -76,7 +96,6 @@ const verifyTxAddresses = (
 
 // verify inputs
 // verify all inputs of transaction exists in list of boxes
-// verify input changed
 const verifyTxInputs = (
   tx: wasm.ReducedTransaction,
   boxes: Array<wasm.ErgoBox>,
@@ -149,6 +168,7 @@ const verifyNotSigningNewTx = (
 const verifyNewTx = async (
   sharedData: MultiSigShareData,
   wallet: StateWallet,
+  signer: StateWallet,
 ): Promise<VerificationResponse> => {
   const tx = wasm.ReducedTransaction.sigma_parse_bytes(
     Buffer.from(sharedData.tx, 'base64'),
@@ -158,6 +178,15 @@ const verifyNewTx = async (
   if (!notSigning.valid) return notSigning;
   const txInputsValid = verifyTxInputs(tx, boxes);
   if (!txInputsValid.valid) return txInputsValid;
+  const unsigned = tx.unsigned_tx();
+  const pks = await getInputPks(wallet, signer, unsigned, boxes);
+  const myPks = await getMyInputPks(wallet, signer, unsigned, boxes);
+  const notCommittedValid = verifyNotCommittedNewTx(
+    sharedData.commitments,
+    pks,
+    myPks,
+  );
+  if (!notCommittedValid.valid) return notCommittedValid;
   return verifyTxAddresses(tx, sharedData.commitments, boxes, wallet);
 };
 
@@ -193,11 +222,14 @@ const verifyExistingTx = async (
     wallet,
   );
   if (!verifyAddress.valid) return verifyAddress;
+  const unsigned = tx.unsigned_tx();
+  const pks = await getInputPks(wallet, signer, unsigned, boxes);
+  const myPks = await getMyInputPks(wallet, signer, unsigned, boxes);
   const verifyCommitments = verifyMyCommitments(
     sharedData.commitments,
     row.commitments,
-    [[]],
-    [],
+    pks,
+    myPks,
   );
   if (!verifyCommitments.valid) return verifyCommitments;
   if (sharedData.partial && sharedData.signed && sharedData.simulated) {
@@ -233,7 +265,7 @@ const verifyAndSaveData = async (
       item.tx.unsigned_tx().id().to_str() == tx.unsigned_tx().id().to_str(),
   );
   const verification = await (txId === undefined && filteredRow.length === 0
-    ? verifyNewTx(data, wallet)
+    ? verifyNewTx(data, wallet, signer)
     : verifyExistingTx(
         data,
         wallet,
