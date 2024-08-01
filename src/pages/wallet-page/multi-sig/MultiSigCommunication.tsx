@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  fetchMultiSigBriefRow,
-  fetchMultiSigRows,
-  notAvailableAddresses,
-  storeMultiSigRow,
-} from '@/action/multi-sig/store';
+import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import ListController from '@/components/list-controller/ListController';
 import { MultiSigBriefRow, MultiSigShareData } from '@/types/multi-sig';
 import AppFrame from '@/layouts/AppFrame';
@@ -15,16 +10,15 @@ import { StateWallet } from '@/store/reducer/wallet';
 import MultiSigTransactionItem from './MultiSigTransactionItem';
 import { readClipBoard } from '@/utils/clipboard';
 import MessageContext from '@/components/app/messageContext';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { deserialize } from '@/action/box';
 import { useNavigate } from 'react-router-dom';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { dottedText } from '@/utils/functions';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import { Fab } from '@mui/material';
 import FabStack from '@/components/fab-stack/FabStack';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface MultiSigCommunicationPropsType {
   wallet: StateWallet;
@@ -38,6 +32,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
   const message = useContext(MessageContext);
   const navigate = useNavigate();
   const scanContext = useContext(QrCodeContext);
+  const signer = useSignerWallet(props.wallet);
   const lastChanged = useSelector(
     (state: GlobalStateType) => state.config.multiSigLoadedTime,
   );
@@ -54,52 +49,21 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
   }, [loading, loadedTime, lastChanged, props.wallet]);
 
   const processNewData = async (content: string) => {
-    const data = JSON.parse(content) as MultiSigShareData;
-    const tx = wasm.ReducedTransaction.sigma_parse_bytes(
-      Buffer.from(data.tx, 'base64'),
-    );
-    const boxes = data.boxes.map(deserialize);
-    const invalidAddresses = notAvailableAddresses(
-      props.wallet,
-      data.commitments,
-      tx.unsigned_tx(),
-      boxes,
-    );
-    if (invalidAddresses.length === 0) {
-      const oldRow = await fetchMultiSigRows(props.wallet, [
-        tx.unsigned_tx().id().to_str(),
-      ]);
-      const secrets = oldRow.length > 0 ? oldRow[0].secrets : [[]];
-      const row = await storeMultiSigRow(
-        props.wallet,
-        tx,
-        boxes,
-        data.commitments,
-        secrets,
-        data.signed || [],
-        data.simulated || [],
-        Date.now(),
-        data.partial
-          ? wasm.Transaction.sigma_parse_bytes(
-              Buffer.from(data.partial, 'base64'),
-            )
-          : undefined,
-      );
-      if (row) {
-        const route = getRoute(RouteMap.WalletMultiSigTxView, {
-          id: props.wallet.id,
-          txId: row.txId,
-        });
-        navigate(route);
+    if (signer) {
+      const data = JSON.parse(content) as MultiSigShareData;
+      const response = await verifyAndSaveData(data, props.wallet, signer);
+      if (!response.valid) {
+        message.insert(response.message, 'error');
+      } else {
+        if (response.txId) {
+          const route = getRoute(RouteMap.WalletMultiSigTxView, {
+            id: props.wallet.id,
+            txId: response.txId,
+          });
+          navigate(route);
+        }
+        message.insert(response.message, 'success');
       }
-    } else {
-      const messageLines = [
-        'Some addresses used in transaction are not derived.',
-        'Please derive them and try again',
-        'Not derived addresses are:',
-        ...invalidAddresses.map((item) => dottedText(item, 10)),
-      ];
-      message.insert(messageLines.join('\n'), 'error');
     }
   };
 

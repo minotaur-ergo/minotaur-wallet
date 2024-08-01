@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "type-check": "tsc",
     "lint": "npm run prettify && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "prepare": "husky install",
+    "prepare": "husky",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx ./",
     "prettify": "prettier --ignore-unknown --write .",
     "preview": "vite preview",

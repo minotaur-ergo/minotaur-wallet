@@ -176,7 +176,7 @@ const extractAndAddSignedHints = async (
 ) => {
   const simulatedPropositions = arrayToProposition(simulated);
   const realPropositions = arrayToProposition(signed);
-  const context = await getChain(wallet.networkType).fakeContext();
+  const context = getChain(wallet.networkType).fakeContext();
   if (partial) {
     const ergoBoxes = wasm.ErgoBoxes.empty();
     boxes.forEach((box) => ergoBoxes.add(box));
@@ -266,7 +266,7 @@ export const sign = async (
 
   // generate signed
   const signedAddresses = signed
-    .filter((item) => item.completed == true)
+    .filter((item) => item.completed)
     .map((item) => item.address);
   const signedPKs = addresses
     .filter((item) => signedAddresses.includes(item.address))
@@ -335,4 +335,10 @@ export const arrayToProposition = (input: Array<string>): wasm.Propositions => {
     output.add_proposition_from_byte(proposition);
   });
   return output;
+};
+
+export const addressesToPk = (input: Array<string>): Array<string> => {
+  return input.map((item) =>
+    Buffer.from(wasm.Address.from_base58(item).content_bytes()).toString('hex'),
+  );
 };

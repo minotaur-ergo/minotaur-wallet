@@ -9,11 +9,12 @@ import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
 import { commit, sign } from '@/action/multi-sig/signing';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { updateMultiSigRow } from '@/action/multi-sig/store';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import MessageContext from '@/components/app/messageContext';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
@@ -21,7 +22,8 @@ const MultiSigToolbar = () => {
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
-
+  const message = useContext(MessageContext);
+  const signer = useSignerWallet(data.wallet);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
@@ -96,26 +98,19 @@ const MultiSigToolbar = () => {
   };
 
   const processNewData = async (newContent: string) => {
-    const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
-    const tx = wasm.ReducedTransaction.sigma_parse_bytes(
-      Buffer.from(clipBoardData.tx, 'base64'),
-    );
-    if (tx.unsigned_tx().id().to_str() !== data.tx?.id().to_str()) {
-      throw Error('Invalid transaction');
+    if (signer) {
+      const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
+      const verification = await verifyAndSaveData(
+        clipBoardData,
+        data.wallet,
+        signer,
+        data.tx?.id().to_str(),
+      );
+      message.insert(
+        verification.message,
+        verification.valid ? 'success' : 'error',
+      );
     }
-    await updateMultiSigRow(
-      context.rowId,
-      clipBoardData.commitments,
-      context.data.secrets,
-      clipBoardData.signed || [],
-      clipBoardData.simulated || [],
-      Date.now(),
-      clipBoardData.partial
-        ? wasm.Transaction.sigma_parse_bytes(
-            Buffer.from(clipBoardData.partial, 'base64'),
-          )
-        : undefined,
-    );
   };
 
   const publishAction = async () => {
