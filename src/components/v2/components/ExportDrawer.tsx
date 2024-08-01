@@ -1,6 +1,7 @@
-import { Close, ContentCopy, Download, QrCode } from '@mui/icons-material';
+import { Close, ContentCopy, Download } from '@mui/icons-material';
 import { Box, Drawer, Grid, IconButton, Typography } from '@mui/material';
 import SquareButton from './SquareButton';
+import QrCode from './QrCode';
 
 interface PropsType {
   title?: string;
@@ -26,6 +27,7 @@ export default function ExportDrawer({
           <Close />
         </IconButton>
       </Box>
+      <QrCode />
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <SquareButton label="Download" icon={<Download />} />
@@ -40,7 +42,7 @@ export default function ExportDrawer({
         <Grid item xs={4}>
           <SquareButton
             label="QR Code"
-            icon={<QrCode />}
+            icon={<ContentCopy />}
             color="success.main"
           />
         </Grid>
