@@ -34,14 +34,16 @@ const verifyMyCommitments = (
   );
   const valid =
     commitments.filter((row, rowIndex) => {
-      row.filter((item, itemIndex) => {
-        if (
-          oldCommitments[rowIndex][itemIndex] !== item &&
-          filteredMyPks[rowIndex][itemIndex] !== ''
-        ) {
-          return true;
-        }
-      });
+      return (
+        row.filter((item, itemIndex) => {
+          if (
+            oldCommitments[rowIndex][itemIndex] !== item &&
+            filteredMyPks[rowIndex][itemIndex] !== ''
+          ) {
+            return true;
+          }
+        }).length > 0
+      );
     }).length === 0;
   return {
     valid,
@@ -174,6 +176,13 @@ const verifyNewTx = async (
     Buffer.from(sharedData.tx, 'base64'),
   );
   const boxes = sharedData.boxes.map(deserialize);
+  const verifyAddress = verifyTxAddresses(
+    tx,
+    sharedData.commitments,
+    boxes,
+    wallet,
+  );
+  if (!verifyAddress.valid) return verifyAddress;
   const notSigning = verifyNotSigningNewTx(sharedData);
   if (!notSigning.valid) return notSigning;
   const txInputsValid = verifyTxInputs(tx, boxes);
@@ -247,7 +256,6 @@ const verifyExistingTx = async (
     if (!verifyPartial.valid) return verifyPartial;
   }
   return { valid: true, message: '' };
-  //   return { valid: false, message: 'Must not update this' };
 };
 
 const verifyAndSaveData = async (
