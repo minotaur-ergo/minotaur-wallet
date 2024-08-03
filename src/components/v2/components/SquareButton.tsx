@@ -1,4 +1,11 @@
-import { Box, BoxProps, ButtonBase, styled, Typography } from '@mui/material';
+import {
+  Box,
+  BoxProps,
+  ButtonBase,
+  ButtonBaseProps,
+  styled,
+  Typography,
+} from '@mui/material';
 import { ReactElement } from 'react';
 
 const StyledSquareButton = styled(ButtonBase)(({ theme }) => ({
@@ -21,15 +28,17 @@ interface PropsType {
   icon: ReactElement;
   label: string;
   color?: BoxProps['bgcolor'];
+  onClick?: ButtonBaseProps['onClick'];
 }
 
 export default function SquareButton({
   icon,
   label,
   color = 'primary.main',
+  onClick,
 }: PropsType) {
   return (
-    <StyledSquareButton>
+    <StyledSquareButton onClick={onClick}>
       <Box className="icon-container" bgcolor={color}>
         {icon}
       </Box>
