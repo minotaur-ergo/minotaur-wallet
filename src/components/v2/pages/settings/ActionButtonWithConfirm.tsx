@@ -2,13 +2,14 @@ import React, { Fragment, useState, useRef } from 'react';
 import { Stack, Typography } from '@mui/material';
 import ActionButton, { ActionButtonPropsType } from './ActionButton';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
+import Button, { ButtonProps } from '@mui/material/Button';
 
 interface PropsType extends ActionButtonPropsType {
   confirmTitle: string;
   confirmDescription?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
+  color?: ButtonProps['color'];
 }
 
 type OnConfirmType = {
@@ -25,6 +26,8 @@ export default function ({
   confirmDescription,
   confirmButtonText = 'Confirm',
   cancelButtonText = 'Cancel',
+  disableGutters,
+  color,
 }: PropsType) {
   const [open, set_open] = useState(false);
   const onConfirm = useRef<OnConfirmType>({
@@ -66,6 +69,7 @@ export default function ({
         helperText={helperText}
         icon={icon}
         onClick={onClick ? handle_open : undefined}
+        disableGutters={disableGutters}
       />
       <Drawer anchor="bottom" open={open} onClose={handle_cancel}>
         <Typography fontWeight="bold" sx={{ mt: 2 }}>
@@ -74,10 +78,11 @@ export default function ({
         {confirmDescription && (
           <Typography sx={{ mb: 1 }}>{confirmDescription}</Typography>
         )}
-        <Stack direction="row-reverse" spacing={2}>
+        <Stack direction="row-reverse" spacing={2} color="text.secondary">
           <Button
             onClick={handle_confirm}
             variant="text"
+            color={color}
             fullWidth={false}
             sx={{ px: 0, minWidth: 0 }}
           >
@@ -86,6 +91,7 @@ export default function ({
           <Button
             onClick={handle_cancel}
             variant="text"
+            color="inherit"
             fullWidth={false}
             sx={{ px: 0, minWidth: 0 }}
           >

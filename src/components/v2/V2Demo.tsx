@@ -18,9 +18,9 @@ import Settings from './pages/settings/Settings';
 import WalletChangePassword from './pages/settings/WalletChangePassword';
 import AddressBook from './pages/addressBook/AddressBook';
 import AddAddress from './pages/addressBook/add/AddAddress';
-import MultiSigCommunication from './pages/multiSigCom/MultiSigCommunication';
+import MultiSigCommunication from './pages/multiSig/communication/MultiSigCommunication';
 import WalletExtendedPublicKey from './pages/settings/WalletExtendedPublicKey';
-import MultiSigTransaction from './pages/multiSigCom/MultiSigTransaction';
+import MultiSigTransaction from './pages/multiSig/transaction/MultiSigTransaction';
 import Scan from './pages/scan/Scan';
 import ErgoPay from './pages/ergpPay/ErgoPay';
 import DAppConnector from './pages/dApps/connector/DAppConnector';
@@ -35,6 +35,7 @@ import EnterPin from './pages/enterPin/EnterPin';
 import ExportAddresses from './pages/addressBook/export/ExportAddresses';
 import ImportAddresses from './pages/addressBook/import/ImportAddresses';
 import ExportAsset from './pages/assets/export/ExportAsset';
+import MultiSigRegistration from './pages/multiSig/registration/MultiSigRegistration';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -70,8 +71,9 @@ export const RouterMap = {
   AddAddress: '/v2/addressBook/add',
   ExportAddress: '/v2/addressBook/export',
   ImportAddress: '/v2/addressBook/import',
-  MultiSigCom: '/v2/multisigCom',
-  MultiSigTrans: '/v2/multisigCom/:id',
+  MultiSigReg: '/v2/multisig/registration',
+  MultiSigCom: '/v2/multisig/communication',
+  MultiSigTrans: '/v2/multisig/communication/:id',
   ErgoPay: '/v2/ergoPay',
   Extension: '/v2/extension',
   ExtensionConnector: '/v2/extension/connector',
@@ -164,6 +166,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.ImportAddress.replace('/v2', '')}
           element={<ImportAddresses />}
+        />
+        <Route
+          path={RouterMap.MultiSigReg.replace('/v2', '')}
+          element={<MultiSigRegistration />}
         />
         <Route
           path={RouterMap.MultiSigCom.replace('/v2', '')}

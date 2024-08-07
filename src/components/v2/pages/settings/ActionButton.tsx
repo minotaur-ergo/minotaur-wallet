@@ -9,6 +9,7 @@ export interface ActionButtonPropsType {
   helperText?: string;
   icon?: ReactElement;
   disabled?: boolean;
+  disableGutters?: boolean;
 }
 
 export default function ({
@@ -17,6 +18,7 @@ export default function ({
   helperText,
   icon,
   disabled,
+  disableGutters = false,
 }: ActionButtonPropsType) {
   const [loading, set_loading] = useState(false);
   const alert = useRef<SnackAlertHandle>(null);
@@ -44,7 +46,7 @@ export default function ({
   };
 
   return (
-    <Box px={1.5}>
+    <Box px={disableGutters ? 0 : 1.5}>
       <Box display="flex" sx={{ alignItems: 'center' }}>
         <Typography sx={{ flexGrow: 1 }}>{label}</Typography>
         <IconButton

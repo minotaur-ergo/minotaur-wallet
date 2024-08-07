@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
-import DisplayId from '../../components/DisplayId';
+import DisplayId from '../../../components/DisplayId';
 import { useNavigate } from 'react-router-dom';
-import { RouterMap } from '../../V2Demo';
+import { RouterMap } from '../../../V2Demo';
 
 export default function ({ amount, id, stateId, step = 0, totalSteps }: any) {
   const navigate = useNavigate();

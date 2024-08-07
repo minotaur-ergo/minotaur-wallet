@@ -1,4 +1,4 @@
-import { AddressBookType, AssetType } from './models';
+import { AddressBookType, AssetType, RegistrationType } from './models';
 import { DAppActions } from './pages/dApps/connectedDApp/ConnectedDAppLog';
 
 export const MSTransactions = [
@@ -421,4 +421,35 @@ export const ASSETS: AssetType[] = [
 
 export const GLOBAL_SETTINGS = {
   hasPin: true,
+};
+
+export const REGISTRATION: RegistrationType = {
+  status: 'WAITING',
+  requiredSignatures: 5,
+  signers: [
+    {
+      signed: true,
+      id: '162cb23650e2ed1d6dd0825fa6f3c2b2eae7538ebd0d086af91c2efa64b8',
+    },
+    {
+      signed: true,
+      id: '50e2e162cb236d1d6dd7538eb0825fa6f3c2ed0d0b2ea86ab8f91c2efa64',
+    },
+    {
+      signed: false,
+      id: 'e2ef3c25f91c64162cb23650bd1d6add086add0825fa68308b2eae7eb2ef',
+    },
+    {
+      signed: false,
+      id: '4162cbe2ef3c25f9add086add01c623650bd1d6825f2eae7eb2efa68308b',
+    },
+    {
+      signed: false,
+      id: '62cb236e2ef31d6add086add0825c25f91c668308b2eae4150beb2efdfa7',
+    },
+    {
+      signed: false,
+      id: 'd6add086ad62cb232eae4150beb2efdfa76e2ef31d0825c25f91c668308b',
+    },
+  ],
 };

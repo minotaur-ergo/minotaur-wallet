@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import AppFrame from '../../layouts/AppFrame';
-import BackButton from '../../components/BackButton';
+import AppFrame from '../../../layouts/AppFrame';
+import BackButton from '../../../components/BackButton';
 import BoxIcon from '@mui/icons-material/Inventory2Outlined';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import {
@@ -12,34 +12,26 @@ import {
   MenuItem,
   Typography,
   FormHelperText,
-  Stack,
   Alert,
   AlertTitle,
   AlertColor,
 } from '@mui/material';
-import TransactionBoxes from '../send/TransactionBoxes';
-import PasswordField from '../../components/PasswordField';
+import TransactionBoxes from '../../send/TransactionBoxes';
+import PasswordField from '../../../components/PasswordField';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useParams } from 'react-router-dom';
-import { MSTransactions } from '../../data';
+import { MSTransactions } from '../../../data';
 import {
   ContentPasteOutlined,
   ShareOutlined,
   ContentCopyOutlined,
-  CircleOutlined,
-  TaskAltOutlined,
 } from '@mui/icons-material';
-import DisplayId from '../../components/DisplayId';
+import SignaturesList from './SignaturesList';
 
 interface MultiSigTransactionType {
   stateId: 'COMMITMENT' | 'SIGNING' | 'COMPLETED';
   step?: number;
   totalSteps?: number;
-}
-
-interface MultiSigTransSignatureType {
-  id: string;
-  signed?: boolean;
 }
 
 const SubmitButton = ({ transaction, set_transaction }: any) => {
@@ -131,35 +123,6 @@ const StateAlert = ({
       <AlertTitle>{state.title}</AlertTitle>
       {state.description}
     </Alert>
-  );
-};
-
-const SignaturesList = ({
-  signatures,
-}: {
-  signatures: MultiSigTransSignatureType[];
-}) => {
-  return (
-    <Stack spacing={0.5}>
-      {signatures.map((item, index) => (
-        <DisplayId
-          key={index}
-          id={item.id}
-          color={item.signed ? 'success.main' : 'textPrimary'}
-          prefix={
-            item.signed ? (
-              <TaskAltOutlined
-                fontSize="small"
-                color="success"
-                sx={{ mr: 1 }}
-              />
-            ) : (
-              <CircleOutlined fontSize="small" sx={{ mr: 1 }} />
-            )
-          }
-        />
-      ))}
-    </Stack>
   );
 };
 

@@ -13,3 +13,16 @@ export type AddressBookType = {
   name: string;
   address: string;
 };
+
+export type RegistrationStatusType = 'REGISTERED' | 'WAITING' | 'NONE';
+
+export type MultiSigSignatureType = {
+  id: string;
+  signed?: boolean;
+};
+
+export type RegistrationType = {
+  status: RegistrationStatusType;
+  requiredSignatures: number;
+  signers: MultiSigSignatureType[];
+};
