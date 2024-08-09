@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import AppFrame from '../../layouts/AppFrame';
-import BackButton from '../../components/BackButton';
-import {
-  styled,
-  Box,
-  Button,
-  Stack,
-  Typography,
-  TypographyProps,
-} from '@mui/material';
+import { useState } from 'react';
+import { styled, Box, Typography, TypographyProps } from '@mui/material';
+import SingleScan from './SingleScan';
+import AnimScan from './AnimScan';
 
-const CameraBox = styled(Box)(() => ({
+export const CameraBox = styled(Box)(({ theme }) => ({
   width: '100vw',
   height: 'calc(100vh - 72px)',
   position: 'fixed',
@@ -18,9 +11,13 @@ const CameraBox = styled(Box)(() => ({
   left: 0,
   zIndex: '-1',
   backgroundColor: 'black', // Just for demo
+  color: 'white',
+  padding: theme.spacing(9, 3),
+  boxSizing: 'border-box',
+  textAlign: 'center',
 }));
 
-const OverheadTypography = (props: TypographyProps) => {
+export const OverheadTypography = (props: TypographyProps) => {
   return (
     <Typography
       color="common.white"
@@ -32,19 +29,19 @@ const OverheadTypography = (props: TypographyProps) => {
   );
 };
 
-const DemoScanQR = styled(Box)(() => ({
+export const DemoScanQR = styled(Box)(() => ({
   position: 'relative',
-  width: '60%',
+  width: '70%',
   aspectRatio: '1/1',
   border: '1px solid #fff',
   backgroundColor: '#ffffff11',
-  margin: '150px auto 0',
+  margin: '0 auto',
   '& .line': {
     borderTop: '2px solid #fff',
     width: '100%',
     top: 0,
     position: 'absolute',
-    animation: 'example 2s infinite linear',
+    animation: 'example 3s infinite linear',
   },
   '@keyframes example': {
     from: {
@@ -57,73 +54,10 @@ const DemoScanQR = styled(Box)(() => ({
 }));
 
 const Scan = () => {
-  const [step, setStep] = useState(0);
-  const [disableNext, setDisableNext] = useState(true);
-  const [pagesCount, setPagesCount] = React.useState<null | number>(null);
+  const [animScan, setAnimScan] = useState<boolean>(false);
 
-  // Go to scan the next page
-  const handleNext = () => {
-    if (pagesCount && step === pagesCount) {
-      // Scan finished. Do anything to do...
-    }
-    setDisableNext(true);
-    setTimeout(() => {
-      if (step === 0) {
-        setPagesCount(4);
-      }
-      setStep((prevState) => prevState + 1);
-      setDisableNext(false);
-    }, 2000);
-  };
-  // Enable the next button when the code is scanned.
-  useEffect(handleNext, []);
-
-  return (
-    <AppFrame
-      title="Scan QR Code"
-      navigation={<BackButton />}
-      toolbar={
-        <Stack spacing={2}>
-          {step === pagesCount && (
-            <OverheadTypography>Scan finished.</OverheadTypography>
-          )}
-          {step === 3 && (
-            <OverheadTypography color="warning.main">
-              Error occurred; try again!
-            </OverheadTypography>
-          )}
-          {pagesCount && step < pagesCount && (
-            <Box>
-              <OverheadTypography>
-                <Typography component="span" fontSize="large">
-                  {step}/{pagesCount}
-                </Typography>
-                <br />
-                More pages are required for this QR code to complete.
-              </OverheadTypography>
-            </Box>
-          )}
-          {(step === 0 || (pagesCount && step < pagesCount)) && (
-            <Button onClick={handleNext} disabled={disableNext}>
-              Next
-            </Button>
-          )}
-        </Stack>
-      }
-    >
-      <CameraBox>
-        {/* Replace camera component with the following demo component */}
-        <DemoScanQR sx={{ visibility: disableNext ? 'visible' : 'hidden' }}>
-          <div className="line" />
-        </DemoScanQR>
-      </CameraBox>
-      {disableNext && (
-        <OverheadTypography>
-          Align the QR code within the frame to scan
-        </OverheadTypography>
-      )}
-    </AppFrame>
-  );
+  if (animScan) return <AnimScan changeMode={() => setAnimScan(false)} />;
+  return <SingleScan changeMode={() => setAnimScan(true)} />;
 };
 
 export default Scan;
