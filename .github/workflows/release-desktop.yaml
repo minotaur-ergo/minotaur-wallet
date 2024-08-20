@@ -12,7 +12,7 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
         include:
           - os: ubuntu-latest
             platform: linux
@@ -20,10 +20,10 @@ jobs:
           - os: windows-latest
             platform: Windows
             extension: exe
-          - os: macos-latest
+          - os: macos-13
             platform: MacOS
             extension: dmg
-          - os: macos-14
+          - os: macos-latest
             platform: MacOS
             extension: dmg
     runs-on: ${{ matrix.os }}
@@ -61,12 +61,12 @@ jobs:
         run: rm apps/wallet/electron/assets/appIcon.icns
 
       - name: Build Electron
-        working-directory: .apps/wallet/electron
+        working-directory: ./apps/wallet/electron
         run: npm i; npm run electron:make
 
       - name: Upload Executable File to release
         uses: softprops/action-gh-release@v1
         with:
-          files: electron/dist/minotaur*.${{ matrix.extension }}
+          files: ./apps/wallet/electron/dist/minotaur*.${{ matrix.extension }}
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
