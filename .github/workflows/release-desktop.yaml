@@ -54,14 +54,14 @@ jobs:
 
       - name: Build Minotaur JS app and update capacitor
         shell: bash
-        run: npm run sync:electron
+        run: npm run sync:electron --prefix apps/wallet/
 
       - name: Remove icns from assets
         if: matrix.platform != 'MacOS'
-        run: rm electron/assets/appIcon.icns
+        run: rm apps/wallet/electron/assets/appIcon.icns
 
       - name: Build Electron
-        working-directory: ./electron
+        working-directory: .apps/wallet/electron
         run: npm i; npm run electron:make
 
       - name: Upload Executable File to release

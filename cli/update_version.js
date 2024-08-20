@@ -7,7 +7,10 @@ async function main() {
   if (process.argv.length < 3) {
     throw Error('No version specified');
   }
-  for (let file_path of ['package.json', 'electron/package.json']) {
+  for (let file_path of [
+    'apps/wallet/package.json',
+    'apps/wallet/electron/package.json',
+  ]) {
     let data = fs.readFileSync(file_path, 'utf8');
     let root = JSON.parse(data);
     root.version = process.argv[2];

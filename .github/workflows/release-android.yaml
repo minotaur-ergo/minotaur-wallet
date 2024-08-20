@@ -39,18 +39,18 @@ jobs:
 
       - name: Build Minotaur JS app and update capacitor
         shell: bash
-        run: npm run sync
+        run: npm run sync --prefix apps/wallet/
 
       - name: Setup Android build environment
         uses: android-actions/setup-android@v3
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./android/gradlew
+        run: chmod +x .apps/wallet/android/gradlew
 
       - name: Update AndroidManifest.xml
         uses: damienaicheh/update-android-version-manifest-action@v1.0.0
         with:
-          android-manifest-path: './android/app/src/main/AndroidManifest.xml'
+          android-manifest-path: '.apps/wallet/android/app/src/main/AndroidManifest.xml'
           version-code: ${{ env.NUMBER_OF_COMMITS }}
           version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
           print-file: true
@@ -58,13 +58,13 @@ jobs:
       - name: Update gradle version for Android
         uses: damienaicheh/update-android-version-gradle-action@v1.0.0
         with:
-          build-gradle-path: './android/app/build.gradle'
+          build-gradle-path: '.apps/wallet/android/app/build.gradle'
           version-code: ${{ env.NUMBER_OF_COMMITS }}
           version-name: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
           print-file: true
 
       - name: Build app bundle
-        working-directory: android
+        working-directory: apps/wallet/android
         run: ./gradlew clean app:assembleRelease
 
       - uses: r0adkll/sign-android-release@v1
@@ -74,7 +74,7 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: 34.0.0
         with:
-          releaseDirectory: android/app/build/outputs/apk/release
+          releaseDirectory: apps/wallet/android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE }}
           alias: ${{ secrets.SIGNING_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
