@@ -1,8 +1,8 @@
-android/*
-ios/*
-electron/app/*
-electron/build/*
-electron/dist/*
+apps/wallet/android/*
+apps/wallet/ios/*
+apps/wallet/electron/app/*
+apps/wallet/electron/build/*
+apps/wallet/electron/dist/*
 
 # Copied from `.gitignore`. Please try to keep them in sync.
 
@@ -15,8 +15,8 @@ electron/dist/*
 /coverage
 
 # production
-/build
-/extension
+/apps/wallet/build
+/apps/wallet/extension
 
 # misc
 .DS_Store
