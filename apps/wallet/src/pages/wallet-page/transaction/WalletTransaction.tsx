@@ -1,6 +1,6 @@
 import useWalletTransaction from '@/hooks/useWalletTransaction';
 import { useState } from 'react';
-import { Button, Divider, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import TransactionItem from './TransactionItem';
 import AppFrame from '@/layouts/AppFrame';
 import { StateWallet } from '@/store/reducer/wallet';
@@ -18,13 +18,9 @@ const WalletTransaction = (props: TransactionPropsType) => {
   };
   return (
     <AppFrame title="WalletTransaction" navigation={<BackButtonRouter />}>
-      <Stack divider={<Divider />} spacing={1}>
+      <Stack spacing={1}>
         {transactions.map((item, index) => (
-          <TransactionItem
-            tx={item}
-            key={index}
-            network_type={props.wallet.networkType}
-          />
+          <TransactionItem tx={item} key={index} wallet={props.wallet} />
         ))}
       </Stack>
       {total > transactions.length ? (

@@ -1,14 +1,23 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import { getRoute, RouteMap } from '@/router/routerMap';
+import { StateWallet } from '@/store/reducer/wallet';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { WalletTransactionType } from '@/action/transaction';
-import { openTxInBrowser } from '@/action/tx';
 import DisplayId from '@/components/display-id/DisplayId';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import { useNavigate } from 'react-router-dom';
 // import getChain from '@/utils/networks';
 // import openInBrowser from '@/utils/browser';
 
 interface TransactionItemPropsType {
   tx: WalletTransactionType;
-  network_type: string;
+  wallet: StateWallet;
 }
 
 const TransactionItem = (props: TransactionItemPropsType) => {
@@ -29,28 +38,38 @@ const TransactionItem = (props: TransactionItemPropsType) => {
           sign: '-',
           color: theme.palette.error.main,
         };
+  const navigate = useNavigate();
   const openTx = () => {
-    openTxInBrowser(props.network_type, props.tx.txId);
+    navigate(
+      getRoute(RouteMap.WalletTransactionDetail, {
+        txId: props.tx.txId,
+        id: `${props.wallet.id}`,
+      }),
+    );
   };
   return (
-    <Box>
-      <Box display="flex">
-        <Typography sx={{ flexGrow: 1 }}>{values.title}</Typography>
-        <Typography color={values.color}>
-          {values.sign}
-          <ErgAmountDisplay amount={amount} /> <small>ERG</small>
-        </Typography>
-      </Box>
-      <Typography variant="body2" color="textSecondary">
-        {props.tx.date.toLocaleString()}
-      </Typography>
-      <DisplayId
-        variant="body2"
-        color="textSecondary"
-        id={props.tx.txId}
-        onClick={openTx}
-      />
-    </Box>
+    <Card>
+      <CardActionArea onClick={openTx}>
+        <CardContent>
+          <Box display="flex">
+            <Typography sx={{ flexGrow: 1 }}>{values.title}</Typography>
+            <Typography color={values.color}>
+              {values.sign}
+              <ErgAmountDisplay amount={amount} /> <small>ERG</small>
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="textSecondary">
+            {props.tx.date.toLocaleString()}
+          </Typography>
+          {props.tx.tokens.size > 0 ? (
+            <Typography variant="body2" color="textSecondary">
+              Includes {props.tx.tokens.size} tokens
+            </Typography>
+          ) : null}
+          <DisplayId variant="body2" color="textSecondary" id={props.tx.txId} />
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 

@@ -23,6 +23,9 @@ const TransactionBoxes = (props: TransactionBoxesPropsType) => {
     props.boxes ?? context.boxes,
     props.signed ?? context.tx,
   );
+  const networkType = context.networkType
+    ? context.networkType
+    : (props.wallet?.networkType ?? '');
   return (
     <Drawer
       anchor="bottom"
@@ -50,7 +53,7 @@ const TransactionBoxes = (props: TransactionBoxesPropsType) => {
         {inputBoxes.map((item, index) => (
           <BoxItem
             tokens={item.tokens}
-            networkType={context.networkType}
+            networkType={networkType}
             address={item.address}
             amount={item.amount}
             key={index}
@@ -69,7 +72,7 @@ const TransactionBoxes = (props: TransactionBoxesPropsType) => {
         {outputBoxes.map((item, index) => (
           <BoxItem
             tokens={item.tokens}
-            networkType={context.networkType}
+            networkType={networkType}
             address={item.address}
             amount={item.amount}
             key={index}

@@ -1,5 +1,5 @@
 import useWalletTransaction from '@/hooks/useWalletTransaction';
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import StateMessage from '@/components/state-message/StateMessage';
 import SvgIcon from '@/icons/SvgIcon';
 import TransactionItem from '../transaction/TransactionItem';
@@ -25,13 +25,9 @@ const RecentTransactions = (props: RecentTransactionsPropsType) => {
         disabled={transactions.length === 0}
       />
       {transactions.length > 0 ? (
-        <Stack divider={<Divider />} spacing={1}>
+        <Stack spacing={1}>
           {transactions.map((item, index) => (
-            <TransactionItem
-              tx={item}
-              key={index}
-              network_type={props.wallet.networkType}
-            />
+            <TransactionItem tx={item} key={index} wallet={props.wallet} />
           ))}
         </Stack>
       ) : loading ? (

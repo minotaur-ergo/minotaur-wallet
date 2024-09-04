@@ -1,8 +1,10 @@
-import { Box, FormHelperText, Typography } from '@mui/material';
+import { openTxInBrowser } from '@/action/tx';
+import useTxValues from '@/hooks/useTxValues';
+import { Box, FormHelperText, IconButton, Typography } from '@mui/material';
+import { OpenInNew } from '@mui/icons-material';
 import { ErgoBox } from 'ergo-lib-wasm-browser';
 import * as wasm from 'ergo-lib-wasm-browser';
-import React, { useEffect, useState } from 'react';
-import { extractErgAndTokenSpent } from '@/action/tx';
+import React from 'react';
 import TokenAmount from '@/components/token-amount/TokenAmount';
 import { StateWallet } from '@/store/reducer/wallet';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
@@ -12,47 +14,18 @@ interface WalletSignNormalPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;
   boxes: Array<ErgoBox>;
   wallet: StateWallet;
-}
-
-interface Values {
-  total: bigint;
-  txId: string;
-  tokens: { [tokenId: string]: bigint };
+  date?: string;
 }
 
 const TxSignValues = (props: WalletSignNormalPropsType) => {
-  const [txValues, setTxValues] = useState<Values>({
-    total: 0n,
-    txId: '',
-    tokens: {},
-  });
   const issuedAndBurnt = useIssuedAndBurntTokens(props.tx, props.boxes);
-  const [valuesDirection, setValuesDirection] = useState({
-    incoming: false,
-    outgoing: false,
-  });
-  useEffect(() => {
-    const unsigned = props.tx;
-    if (txValues.txId !== unsigned.id().to_str()) {
-      const values = extractErgAndTokenSpent(
-        props.wallet,
-        props.boxes,
-        unsigned,
-      );
-      const incoming =
-        values.value < 0n ||
-        Object.values(values.tokens).filter((amount) => amount < 0n).length > 0;
-      const outgoing =
-        values.value > 0n ||
-        Object.values(values.tokens).filter((amount) => amount > 0n).length > 0;
-      setValuesDirection({ incoming, outgoing });
-      setTxValues({
-        total: values.value,
-        tokens: values.tokens,
-        txId: unsigned.id().to_str(),
-      });
-    }
-  }, [txValues.txId, props.tx, props.wallet, props.boxes]);
+  const { txValues, valuesDirection } = useTxValues(
+    props.tx,
+    props.boxes,
+    props.wallet,
+  );
+  const openTx = () =>
+    openTxInBrowser(props.wallet.networkType, props.tx.id().to_str());
   return (
     <Box>
       {valuesDirection.outgoing ? (
@@ -103,9 +76,27 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
           )}
         </React.Fragment>
       ) : null}
-      <FormHelperText sx={{ mb: 2 }}>
-        These amount will be spent when transaction proceed.
-      </FormHelperText>
+      {props.date ? (
+        <React.Fragment>
+          <Typography variant="body2" color="textSecondary" mt={2}>
+            Received on
+          </Typography>
+          <Typography mb={2}>{props.date}</Typography>
+          <Typography variant="body2" color="textSecondary">
+            Transaction Id
+          </Typography>
+          <Typography mb={2} sx={{ overflowWrap: 'anywhere' }} onClick={openTx}>
+            {props.tx.id().to_str()}
+            <IconButton>
+              <OpenInNew />
+            </IconButton>
+          </Typography>
+        </React.Fragment>
+      ) : (
+        <FormHelperText sx={{ mb: 2 }}>
+          These amount will be spent when transaction proceed.
+        </FormHelperText>
+      )}
       <UnBalancedTokensAmount
         amounts={issuedAndBurnt.burnt}
         color="error"
