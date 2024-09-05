@@ -188,6 +188,9 @@ const dottedText = (text: string, paddingSize: number) => {
   return dotted;
 };
 
+const getValueColor = (value: bigint) =>
+  value > 0 ? 'success.main' : 'error.main';
+
 export {
   tokenStr,
   ergPriceUsd,
@@ -203,4 +206,5 @@ export {
   sliceToChunksString,
   dottedText,
   bip32,
+  getValueColor,
 };

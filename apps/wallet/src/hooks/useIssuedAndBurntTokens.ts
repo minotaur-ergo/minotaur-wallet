@@ -16,7 +16,7 @@ const extractTokens = (
 };
 
 const useIssuedAndBurntTokens = (
-  tx: wasm.UnsignedTransaction | wasm.Transaction,
+  tx: wasm.UnsignedTransaction | wasm.Transaction | undefined,
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const [issued, setIssued] = useState<Array<TokenType>>([]);
@@ -24,7 +24,7 @@ const useIssuedAndBurntTokens = (
   const [storedTxId, setStoredTxId] = useState('');
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (!loading && storedTxId !== tx.id().to_str()) {
+    if (tx && !loading && storedTxId !== tx.id().to_str()) {
       setLoading(true);
       const inputs = tx.inputs();
       const tokens = new Map<string, bigint>();
