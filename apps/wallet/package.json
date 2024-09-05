@@ -56,7 +56,7 @@
     "capacitor-plugin-safe-area": "^2.0.6",
     "clipboardy": "^4.0.0",
     "crypto-js": "^4.2.0",
-    "ergo-lib-wasm-browser": "^0.26.0",
+    "ergo-lib-wasm-browser": "^0.28.0",
     "generate-password": "^1.7.1",
     "is-electron": "^2.2.2",
     "json-bigint": "^1.0.0",

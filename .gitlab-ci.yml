@@ -1,4 +1,4 @@
-image: node:16.17
+image: node:20.12
 
 stages:
   - installation
@@ -13,6 +13,7 @@ installation:
     policy: push
     paths:
       - node_modules
+      - apps/wallet/node_modules
   script:
     - npm ci
 
@@ -23,6 +24,7 @@ type_check:
     policy: pull
     paths:
       - node_modules
+      - apps/wallet/node_modules
   script:
     - npm run type-check
 
@@ -33,6 +35,7 @@ lint:
     policy: pull
     paths:
       - node_modules
+      - apps/wallet/node_modules
   script:
     - npm run lint
 
@@ -43,6 +46,7 @@ test:
     policy: pull
     paths:
       - node_modules
+      - apps/wallet/node_modules
   script:
     - npm run coverage
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
