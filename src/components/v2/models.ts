@@ -26,3 +26,9 @@ export type RegistrationType = {
   requiredSignatures: number;
   signers: MultiSigSignatureType[];
 };
+
+export type TransactionTokenType = {
+  name: string;
+  amount: number;
+  type: 'Received' | 'Issued' | 'Burned';
+};

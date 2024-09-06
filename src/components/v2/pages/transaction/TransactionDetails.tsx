@@ -1,8 +1,8 @@
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, List, Typography } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
-import { TokenItem } from '../send/steps/EnterPassword';
+import TransactionTokenItem from './TransactionTokenItem';
 
 const TransactionDetails = () => {
   const transaction = {
@@ -38,29 +38,25 @@ const TransactionDetails = () => {
       </Typography>
       <Typography mb={2}>{date}</Typography>
 
-      <div>
-        <Typography variant="body2" color="textSecondary">
-          Transaction Id
-        </Typography>
-        <Typography mb={2} sx={{ overflowWrap: 'anywhere' }}>
-          {transaction.id}
-        </Typography>
-      </div>
+      <Typography variant="body2" color="textSecondary">
+        Transaction Id
+      </Typography>
+      <Typography mb={2} sx={{ overflowWrap: 'anywhere' }}>
+        {transaction.id}
+      </Typography>
 
       <Typography variant="body2" color="textSecondary">
-        Burning tokens
+        Tokens
       </Typography>
-      <Stack sx={{ mb: 2, mt: 1 }} gap={0.5}>
-        <TokenItem name="Token 1" amount={10} color="error" />
-        <TokenItem name="Token 2" amount={5} color="error" />
-      </Stack>
-      <Typography variant="body2" color="textSecondary">
-        Issuing tokens
-      </Typography>
-      <Stack sx={{ mb: 2, mt: 1 }} gap={0.5}>
-        <TokenItem name="Token 1" amount={3} color="success" />
-        <TokenItem name="Token 2" amount={24} color="success" />
-      </Stack>
+      <List disablePadding>
+        <TransactionTokenItem name="First Token" amount={40} type="Received" />
+        <TransactionTokenItem
+          name="Second Token"
+          amount={60.02}
+          type="Issued"
+        />
+        <TransactionTokenItem name="Last Token" amount={-0.1} type="Burned" />
+      </List>
     </AppFrame>
   );
 };
