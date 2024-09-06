@@ -10,7 +10,7 @@ interface Values {
 }
 
 const useTxValues = (
-  tx: wasm.Transaction | wasm.UnsignedTransaction,
+  tx: wasm.Transaction | wasm.UnsignedTransaction | undefined,
   boxes: Array<wasm.ErgoBox>,
   wallet: StateWallet,
 ) => {
@@ -25,7 +25,7 @@ const useTxValues = (
   });
   useEffect(() => {
     const unsigned = tx;
-    if (txValues.txId !== unsigned.id().to_str()) {
+    if (unsigned && txValues.txId !== unsigned.id().to_str()) {
       const values = extractErgAndTokenSpent(wallet, boxes, unsigned);
       const incoming =
         values.value < 0n ||

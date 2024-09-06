@@ -1,7 +1,5 @@
-import { openTxInBrowser } from '@/action/tx';
 import useTxValues from '@/hooks/useTxValues';
-import { Box, FormHelperText, IconButton, Typography } from '@mui/material';
-import { OpenInNew } from '@mui/icons-material';
+import { Box, FormHelperText, Typography } from '@mui/material';
 import { ErgoBox } from 'ergo-lib-wasm-browser';
 import * as wasm from 'ergo-lib-wasm-browser';
 import React from 'react';
@@ -14,7 +12,6 @@ interface WalletSignNormalPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;
   boxes: Array<ErgoBox>;
   wallet: StateWallet;
-  date?: string;
 }
 
 const TxSignValues = (props: WalletSignNormalPropsType) => {
@@ -24,8 +21,6 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
     props.boxes,
     props.wallet,
   );
-  const openTx = () =>
-    openTxInBrowser(props.wallet.networkType, props.tx.id().to_str());
   return (
     <Box>
       {valuesDirection.outgoing ? (
@@ -76,27 +71,9 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
           )}
         </React.Fragment>
       ) : null}
-      {props.date ? (
-        <React.Fragment>
-          <Typography variant="body2" color="textSecondary" mt={2}>
-            Received on
-          </Typography>
-          <Typography mb={2}>{props.date}</Typography>
-          <Typography variant="body2" color="textSecondary">
-            Transaction Id
-          </Typography>
-          <Typography mb={2} sx={{ overflowWrap: 'anywhere' }} onClick={openTx}>
-            {props.tx.id().to_str()}
-            <IconButton>
-              <OpenInNew />
-            </IconButton>
-          </Typography>
-        </React.Fragment>
-      ) : (
-        <FormHelperText sx={{ mb: 2 }}>
-          These amount will be spent when transaction proceed.
-        </FormHelperText>
-      )}
+      <FormHelperText sx={{ mb: 2 }}>
+        These amount will be spent when transaction proceed.
+      </FormHelperText>
       <UnBalancedTokensAmount
         amounts={issuedAndBurnt.burnt}
         color="error"

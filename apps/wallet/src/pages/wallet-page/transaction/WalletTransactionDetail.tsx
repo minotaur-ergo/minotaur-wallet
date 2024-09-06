@@ -1,56 +1,68 @@
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import StateMessage from '@/components/state-message/StateMessage';
+import TxDisplay from '@/components/tx/TxDisplay';
 import useTransactionData from '@/hooks/useTransactionData';
+import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
-import TxSignValues from '@/pages/wallet-page/send/sign-tx/TxSignValues';
 import { StateWallet } from '@/store/reducer/wallet';
-import { IconButton } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 interface TransactionDetailsPropsType {
-  // txId: string;
   wallet: StateWallet;
 }
 
 const WalletTransactionDetails = (props: TransactionDetailsPropsType) => {
   const { txId } = useParams<{ txId: string }>();
-  const txData = useTransactionData(txId ?? '', props.wallet);
+  const { tx, boxes, date, loading } = useTransactionData(
+    txId ?? '',
+    props.wallet,
+  );
   const [displayBoxes, setDisplayBoxes] = useState(false);
   return (
     <AppFrame
       title="Transaction"
       navigation={<BackButtonRouter />}
       actions={
-        <IconButton>
-          <InventoryIcon onClick={() => setDisplayBoxes(!displayBoxes)} />
-        </IconButton>
+        tx ? (
+          <IconButton onClick={() => setDisplayBoxes(!displayBoxes)}>
+            <InventoryIcon />
+          </IconButton>
+        ) : undefined
       }
     >
-      {txData.tx ? (
+      {loading ? (
+        <StateMessage
+          title="Loading Transaction"
+          description="Please wait"
+          icon={<CircularProgress />}
+          color={`primary.dark`}
+          disableIconShadow={true}
+        />
+      ) : tx ? (
         <React.Fragment>
-          <TxSignValues
-            tx={txData.tx}
-            boxes={txData.boxes}
-            wallet={props.wallet}
-            date={txData.date}
-          />
+          <TxDisplay wallet={props.wallet} boxes={boxes} tx={tx} date={date} />
           <TransactionBoxes
             open={displayBoxes}
             handleClose={() => setDisplayBoxes(false)}
-            boxes={txData.boxes}
+            boxes={boxes}
             wallet={props.wallet}
-            signed={txData.tx}
+            signed={tx}
           />
         </React.Fragment>
-      ) : undefined}
-      {/*<Typography fontSize="2rem" textAlign="center" color={color} mb={2}>*/}
-      {/*  {transaction.amount}*/}
-      {/*  <Typography component="span" ml={1}>*/}
-      {/*    ERG*/}
-      {/*  </Typography>*/}
-      {/*</Typography>*/}
+      ) : (
+        <StateMessage
+          title="Transaction Not Found"
+          description="Transaction Not Found!!"
+          icon={
+            <SvgIcon icon="error" color="error" style={{ marginBottom: -8 }} />
+          }
+          color={`error.dark`}
+        />
+      )}
     </AppFrame>
   );
 };
