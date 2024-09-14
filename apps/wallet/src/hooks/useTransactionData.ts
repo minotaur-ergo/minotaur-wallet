@@ -15,7 +15,6 @@ const useTransactionData = (txId: string, wallet: StateWallet) => {
     if (!loading) {
       const processingTxId = txId;
       if (loadedWalletId !== `${wallet.id}` || txId !== loadedTx) {
-        console.log(loadedWalletId, loadedTx, txId);
         setLoading(true);
         const chain = getChain(wallet.networkType);
         chain

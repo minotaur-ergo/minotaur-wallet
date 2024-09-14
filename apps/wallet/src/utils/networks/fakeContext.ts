@@ -248,11 +248,7 @@ const fakeContext = () => {
   const preHeader = wasm.PreHeader.from_block_header(
     wasm.BlockHeader.from_json(headers[0]),
   );
-  return new wasm.ErgoStateContext(
-    preHeader,
-    blockHeaders,
-    wasm.Parameters.default_parameters(),
-  );
+  return new wasm.ErgoStateContext(preHeader, blockHeaders);
 };
 
 export default fakeContext;

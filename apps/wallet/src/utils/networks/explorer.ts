@@ -48,11 +48,7 @@ class ErgoExplorerNetwork extends AbstractNetwork {
         headers.map((item) => JsonBI.stringify(item)),
       );
       const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
-      return new wasm.ErgoStateContext(
-        pre_header,
-        blockHeaders,
-        wasm.Parameters.default_parameters(),
-      );
+      return new wasm.ErgoStateContext(pre_header, blockHeaders);
     }
     throw Error('Unknown error occurred');
   };

@@ -1,29 +1,29 @@
 PODS:
-  - Capacitor (5.6.0):
+  - Capacitor (5.7.8):
     - CapacitorCordova
-  - CapacitorApp (5.0.7):
+  - CapacitorApp (5.0.8):
     - Capacitor
-  - CapacitorBrowser (5.2.0):
+  - CapacitorBrowser (5.2.1):
     - Capacitor
-  - CapacitorCamera (5.0.9):
+  - CapacitorCamera (5.0.10):
     - Capacitor
-  - CapacitorClipboard (5.0.7):
+  - CapacitorClipboard (5.0.8):
     - Capacitor
   - CapacitorCommunitySqlite (5.6.1):
     - Capacitor
     - SQLCipher
     - ZIPFoundation
-  - CapacitorCordova (5.6.0)
-  - CapacitorFilesystem (5.2.1):
+  - CapacitorCordova (5.7.8)
+  - CapacitorFilesystem (5.2.2):
     - Capacitor
   - CapacitorMlkitBarcodeScanning (5.4.0):
     - Capacitor
     - GoogleMLKit/BarcodeScanning (= 4.0.0)
   - CapacitorPluginSafeArea (2.0.6):
     - Capacitor
-  - CapacitorStatusBar (5.0.7):
+  - CapacitorStatusBar (5.0.8):
     - Capacitor
-  - CapacitorToast (5.0.7):
+  - CapacitorToast (5.0.8):
     - Capacitor
   - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
@@ -87,18 +87,18 @@ PODS:
   - ZIPFoundation (0.9.16)
 
 DEPENDENCIES:
-  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
-  - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
-  - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
-  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
-  - "CapacitorClipboard (from `../../node_modules/@capacitor/clipboard`)"
-  - "CapacitorCommunitySqlite (from `../../node_modules/@capacitor-community/sqlite`)"
-  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
-  - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
-  - "CapacitorMlkitBarcodeScanning (from `../../node_modules/@capacitor-mlkit/barcode-scanning`)"
-  - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
-  - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
-  - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
+  - "Capacitor (from `../../../../node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../../../node_modules/@capacitor/app`)"
+  - "CapacitorBrowser (from `../../../../node_modules/@capacitor/browser`)"
+  - "CapacitorCamera (from `../../../../node_modules/@capacitor/camera`)"
+  - "CapacitorClipboard (from `../../../../node_modules/@capacitor/clipboard`)"
+  - "CapacitorCommunitySqlite (from `../../../../node_modules/@capacitor-community/sqlite`)"
+  - "CapacitorCordova (from `../../../../node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../../../node_modules/@capacitor/filesystem`)"
+  - "CapacitorMlkitBarcodeScanning (from `../../../../node_modules/@capacitor-mlkit/barcode-scanning`)"
+  - CapacitorPluginSafeArea (from `../../../../node_modules/capacitor-plugin-safe-area`)
+  - "CapacitorStatusBar (from `../../../../node_modules/@capacitor/status-bar`)"
+  - "CapacitorToast (from `../../../../node_modules/@capacitor/toast`)"
   - GoogleMLKit/BarcodeScanning
 
 SPEC REPOS:
@@ -120,43 +120,43 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Capacitor:
-    :path: "../../node_modules/@capacitor/ios"
+    :path: "../../../../node_modules/@capacitor/ios"
   CapacitorApp:
-    :path: "../../node_modules/@capacitor/app"
+    :path: "../../../../node_modules/@capacitor/app"
   CapacitorBrowser:
-    :path: "../../node_modules/@capacitor/browser"
+    :path: "../../../../node_modules/@capacitor/browser"
   CapacitorCamera:
-    :path: "../../node_modules/@capacitor/camera"
+    :path: "../../../../node_modules/@capacitor/camera"
   CapacitorClipboard:
-    :path: "../../node_modules/@capacitor/clipboard"
+    :path: "../../../../node_modules/@capacitor/clipboard"
   CapacitorCommunitySqlite:
-    :path: "../../node_modules/@capacitor-community/sqlite"
+    :path: "../../../../node_modules/@capacitor-community/sqlite"
   CapacitorCordova:
-    :path: "../../node_modules/@capacitor/ios"
+    :path: "../../../../node_modules/@capacitor/ios"
   CapacitorFilesystem:
-    :path: "../../node_modules/@capacitor/filesystem"
+    :path: "../../../../node_modules/@capacitor/filesystem"
   CapacitorMlkitBarcodeScanning:
-    :path: "../../node_modules/@capacitor-mlkit/barcode-scanning"
+    :path: "../../../../node_modules/@capacitor-mlkit/barcode-scanning"
   CapacitorPluginSafeArea:
-    :path: "../../node_modules/capacitor-plugin-safe-area"
+    :path: "../../../../node_modules/capacitor-plugin-safe-area"
   CapacitorStatusBar:
-    :path: "../../node_modules/@capacitor/status-bar"
+    :path: "../../../../node_modules/@capacitor/status-bar"
   CapacitorToast:
-    :path: "../../node_modules/@capacitor/toast"
+    :path: "../../../../node_modules/@capacitor/toast"
 
 SPEC CHECKSUMS:
-  Capacitor: ebfc16cdb8116d04c101686b080342872da42d43
-  CapacitorApp: 17fecd0e6cb23feafac7eb0939417389038b0979
-  CapacitorBrowser: a6deae9e5bf87f62b62a753cff7992c5def9e771
-  CapacitorCamera: 4892c5c392f60039d853dde78bc50ba19fbd113e
-  CapacitorClipboard: 45e5e25f2271f98712985d422776cdc5a779cca1
+  Capacitor: 747aadb4fa786f460d8cd9d0557cb81440a13747
+  CapacitorApp: 102e553c3b1fdc255969c39aa19b529675690ef4
+  CapacitorBrowser: bac3132be6506411704149f9f2099843ffe470a0
+  CapacitorCamera: d333715364b5d85422c627aae6db87ef6161352c
+  CapacitorClipboard: 03628c89fe70d06d36288ee4eff7e205a6e81e53
   CapacitorCommunitySqlite: 47474c9717db7d998eeba2c3147e1c055a726d5f
-  CapacitorCordova: 931b48fcdbc9bc985fc2f16cec9f77c794a27729
-  CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
+  CapacitorCordova: 31ab98dca2ddcee051027a1afe7e8c85c82f7297
+  CapacitorFilesystem: 202b158a878462ab4f401d0eb4d9644c67927333
   CapacitorMlkitBarcodeScanning: 8fb81cbef3c6ffe0c0e2dbd15ed6dca889a5a062
   CapacitorPluginSafeArea: d55e4d4e70c98f611240f11dd80561438d0d70cb
-  CapacitorStatusBar: f390fbb49b82ffb754ea4b3cf71dc8b048baf3e7
-  CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
+  CapacitorStatusBar: 51af549cfcf35aac3ab072b062967ae5971ee485
+  CapacitorToast: 5967ced673b9fb9b7d7b8520c648dbd8f5064b15
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
@@ -172,6 +172,6 @@ SPEC CHECKSUMS:
   SQLCipher: 905b145f65f349f26da9e60a19901ad24adcd381
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: d5187453a2e7fe025e8be279069c58f44522b6bc
+PODFILE CHECKSUM: b0f792207ce8b0ecb3967796322be793954734f3
 
 COCOAPODS: 1.15.1

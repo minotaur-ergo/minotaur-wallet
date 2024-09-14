@@ -56,13 +56,13 @@ const TokenSelect = (props: TokenSelectPropsType) => {
   const handleSelectToken = (event: SelectChangeEvent<Array<string>>) => {
     const value = event.target.value;
     const selected = typeof value === 'string' ? value.split(',') : value;
-    const newTokens: Array<ReceiverTokenType> = [];
-    for (const tokenId of selected) {
-      const filtered = content.tokens.filter((token) => token.id === tokenId);
-      newTokens.push(
-        filtered.length > 0 ? filtered[0] : { id: tokenId, amount: 0n },
-      );
-    }
+    const newTokens: Array<ReceiverTokenType> = content.tokens.filter((item) =>
+      selected.includes(item.id),
+    );
+    const oldSelectedIds = newTokens.map((item) => item.id);
+    selected
+      .filter((item) => !oldSelectedIds.includes(item))
+      .forEach((item) => newTokens.push({ id: item, amount: 0n }));
     generatorContext.edit(props.index, { tokens: newTokens });
   };
 
