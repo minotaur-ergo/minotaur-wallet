@@ -15,10 +15,17 @@ interface TxAssetDetailPropsType {
 }
 const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   const details = useAssetDetail(props.id, props.networkType);
+  const [showDetail, setShowDetail] = useState(false);
   if (props.amount === 0n) return null;
   const color = getValueColor(props.amount);
-  const [showDetail, setShowDetail] = useState(false);
-  const getLabel = () => props.amount > 0 ? (props.issueAndBurn ? 'Issued' : 'Received') : (props.issueAndBurn ? 'Burnt': 'Sent');
+  const getLabel = () =>
+    props.amount > 0
+      ? props.issueAndBurn
+        ? 'Issued'
+        : 'Received'
+      : props.issueAndBurn
+        ? 'Burnt'
+        : 'Sent';
   return (
     <React.Fragment>
       <Box sx={{ float: 'left', mr: 2 }}>
@@ -37,11 +44,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
           <TokenAmountDisplay amount={props.amount} decimal={details.decimal} />
         </Typography>
       </Box>
-      <DisplayId
-        variant="body2"
-        color={color}
-        id={getLabel()}
-      />
+      <DisplayId variant="body2" color={color} id={getLabel()} />
       <Drawer
         anchor="bottom"
         open={showDetail}
@@ -64,9 +67,8 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
           }
           txId={details.txId}
           handleClose={() => setShowDetail(false)}
-          />
+        />
       </Drawer>
-
     </React.Fragment>
   );
 };

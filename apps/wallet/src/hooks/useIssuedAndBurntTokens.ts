@@ -19,7 +19,9 @@ const useIssuedAndBurntTokens = (
   tx: wasm.UnsignedTransaction | wasm.Transaction | undefined,
   boxes: Array<wasm.ErgoBox>,
 ) => {
-  const [mapped, setMapped] = useState<Map<string, bigint>>(new Map<string, bigint>());
+  const [mapped, setMapped] = useState<Map<string, bigint>>(
+    new Map<string, bigint>(),
+  );
   const [issued, setIssued] = useState<Array<TokenType>>([]);
   const [burnt, setBurnt] = useState<Array<TokenType>>([]);
   const [storedTxId, setStoredTxId] = useState('');
@@ -49,7 +51,7 @@ const useIssuedAndBurntTokens = (
         } else if (amount < 0n) {
           burntTokens.push({ tokenId, amount: -amount });
         }
-        if(amount !== 0n){
+        if (amount !== 0n) {
           mappedTokens.set(tokenId, amount);
         }
       }

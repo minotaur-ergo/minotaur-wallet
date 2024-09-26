@@ -37,7 +37,9 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
 
       <Stack spacing={2} sx={{ mt: 3 }}>
         <DisplayProperty label="Emission amount" value={props.emissionAmount} />
-        {props.balance ? <DisplayProperty label="Balance" value={props.balance} /> : null}
+        {props.balance ? (
+          <DisplayProperty label="Balance" value={props.balance} />
+        ) : null}
         <DisplayProperty
           label="Token Id"
           value={props.id}
