@@ -9,7 +9,7 @@ interface AssetItemDetailPropsType {
   id: string;
   description?: string;
   logo?: React.ElementType;
-  balance: React.ReactNode | string;
+  balance?: React.ReactNode | string;
   emissionAmount: React.ReactNode | string;
   txId: string;
   handleClose: () => unknown;

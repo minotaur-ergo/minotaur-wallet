@@ -1,20 +1,24 @@
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
 import DisplayId from '@/components/display-id/DisplayId';
 import useAssetDetail from '@/hooks/useAssetDetail';
+import AssetItemDetail from '@/pages/wallet-page/asset/AssetItemDetail';
 import { getValueColor } from '@/utils/functions';
 import { Avatar, Box, Typography } from '@mui/material';
-import React from 'react';
+import Drawer from '@mui/material/Drawer';
+import React, { useState } from 'react';
 
 interface TxAssetDetailPropsType {
   id: string;
   amount: bigint;
   networkType: string;
-  label?: string;
+  issueAndBurn?: boolean;
 }
 const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   const details = useAssetDetail(props.id, props.networkType);
   if (props.amount === 0n) return null;
   const color = getValueColor(props.amount);
+  const [showDetail, setShowDetail] = useState(false);
+  const getLabel = () => props.amount > 0 ? (props.issueAndBurn ? 'Issued' : 'Received') : (props.issueAndBurn ? 'Burnt': 'Sent');
   return (
     <React.Fragment>
       <Box sx={{ float: 'left', mr: 2 }}>
@@ -26,7 +30,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
           <Avatar alt={details.name} src="/" />
         )}
       </Box>
-      <Box display="flex">
+      <Box display="flex" onClick={() => setShowDetail(true)}>
         <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>
         <Typography color={color}>
           {props.amount > 0 ? '+' : ''}
@@ -36,8 +40,33 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
       <DisplayId
         variant="body2"
         color={color}
-        id={props.label ? props.label : props.amount > 0 ? 'Received' : 'Sent'}
+        id={getLabel()}
       />
+      <Drawer
+        anchor="bottom"
+        open={showDetail}
+        onClose={() => setShowDetail(false)}
+      >
+        <AssetItemDetail
+          id={props.id}
+          logo={details.logo}
+          name={details.name}
+          description={details.description}
+          emissionAmount={
+            details.emissionAmount > 0n ? (
+              <TokenAmountDisplay
+                amount={details.emissionAmount}
+                decimal={details.decimal}
+              />
+            ) : (
+              '?'
+            )
+          }
+          txId={details.txId}
+          handleClose={() => setShowDetail(false)}
+          />
+      </Drawer>
+
     </React.Fragment>
   );
 };
