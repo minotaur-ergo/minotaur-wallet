@@ -9,6 +9,7 @@ interface TxAssetDetailPropsType {
   id: string;
   amount: bigint;
   networkType: string;
+  label?: string;
 }
 const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   const details = useAssetDetail(props.id, props.networkType);
@@ -35,7 +36,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
       <DisplayId
         variant="body2"
         color={color}
-        id={props.amount > 0 ? 'Received' : 'Sent'}
+        id={props.label ? props.label : props.amount > 0 ? 'Received' : 'Sent'}
       />
     </React.Fragment>
   );
