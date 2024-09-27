@@ -15,7 +15,7 @@ interface WalletSignNormalPropsType {
 }
 
 const TxSignValues = (props: WalletSignNormalPropsType) => {
-  const issuedAndBurnt = useIssuedAndBurntTokens(props.tx, props.boxes);
+  const { issued, burnt } = useIssuedAndBurntTokens(props.tx, props.boxes);
   const { txValues, valuesDirection } = useTxValues(
     props.tx,
     props.boxes,
@@ -75,13 +75,13 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
         These amount will be spent when transaction proceed.
       </FormHelperText>
       <UnBalancedTokensAmount
-        amounts={issuedAndBurnt.burnt}
+        amounts={burnt}
         color="error"
         label="Burning"
         networkType={props.wallet.networkType}
       />
       <UnBalancedTokensAmount
-        amounts={issuedAndBurnt.issued}
+        amounts={issued}
         color="success"
         label="Issuing"
         networkType={props.wallet.networkType}

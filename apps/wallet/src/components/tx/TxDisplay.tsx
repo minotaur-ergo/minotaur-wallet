@@ -1,13 +1,12 @@
 import { openTxInBrowser } from '@/action/tx';
 import ErgAmount from '@/components/amounts-display/ErgAmount';
-import IssuedBurntTokenAmount from '@/components/token-amount/IssuedBurntTokenAmount';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import useTxValues from '@/hooks/useTxValues';
 import TxAssetDetail from '@/pages/wallet-page/transaction/TxAssetDetail';
 import { StateWallet } from '@/store/reducer/wallet';
 import { getValueColor } from '@/utils/functions';
 import { OpenInNew } from '@mui/icons-material';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import React from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -20,7 +19,7 @@ interface TxDisplayPropsType {
 
 const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
   const txId = tx.id().to_str();
-  const issuedAndBurnt = useIssuedAndBurntTokens(tx, boxes);
+  const { mapped } = useIssuedAndBurntTokens(tx, boxes);
   const { txValues } = useTxValues(tx, boxes, wallet);
   const openTx = () => openTxInBrowser(wallet.networkType, txId ?? '');
   return (
@@ -58,49 +57,22 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
         </Typography>
       </div>
       {Object.entries(txValues.tokens).map((item) => (
-        <TxAssetDetail
-          amount={-item[1]}
-          id={item[0]}
-          networkType={wallet.networkType}
-          key={item[0]}
-        />
+        <React.Fragment>
+          <TxAssetDetail
+            amount={mapped.get(item[0]) ?? 0n}
+            id={item[0]}
+            networkType={wallet.networkType}
+            key={'ib-' + item[0]}
+            issueAndBurn={true}
+          />
+          <TxAssetDetail
+            amount={-item[1] - (mapped.get(item[0]) ?? 0n)}
+            id={item[0]}
+            networkType={wallet.networkType}
+            key={'rs-' + item[0]}
+          />
+        </React.Fragment>
       ))}
-      {issuedAndBurnt.burnt.length > 0 ? (
-        <React.Fragment>
-          <Typography variant="body2" color="textSecondary" mt={2}>
-            Burnt tokens
-          </Typography>
-          <Stack sx={{ mb: 2, mt: 1 }} gap={0.5}>
-            {issuedAndBurnt.burnt.map((item) => (
-              <IssuedBurntTokenAmount
-                key={item.tokenId}
-                tokenId={item.tokenId}
-                amount={item.amount}
-                networkType={wallet.networkType}
-                color={'error'}
-              />
-            ))}
-          </Stack>
-        </React.Fragment>
-      ) : null}
-      {issuedAndBurnt.issued.length > 0 ? (
-        <React.Fragment>
-          <Typography variant="body2" color="textSecondary" mt={2}>
-            Issued tokens
-          </Typography>
-          <Stack sx={{ mb: 2, mt: 1 }} gap={0.5}>
-            {issuedAndBurnt.issued.map((item) => (
-              <IssuedBurntTokenAmount
-                key={item.tokenId}
-                tokenId={item.tokenId}
-                amount={item.amount}
-                networkType={wallet.networkType}
-                color={'success'}
-              />
-            ))}
-          </Stack>
-        </React.Fragment>
-      ) : null}
     </React.Fragment>
   );
 };
