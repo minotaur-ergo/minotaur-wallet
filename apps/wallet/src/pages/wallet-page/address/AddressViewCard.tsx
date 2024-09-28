@@ -51,12 +51,12 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
             errorDescription={''}
             errorTitle={''}
           />
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{my: 2}}/>
         </React.Fragment>
       ) : null}
-      <Box sx={{ pt: 8, pb: 8, textAlign: 'center', fontStyle: 'italic' }}>
-        <QRCodeSVG value={props.address.address} />
-      </Box>
+        <Typography sx={{ p: 4, fontStyle: 'italic', color: 'textSecondary' }}>
+          <QRCodeSVG value={props.address.address} />
+        </Typography>
       <Box>
         <Card sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}>
           <Typography sx={{ overflowWrap: 'anywhere' }}>

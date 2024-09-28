@@ -3,4 +3,4 @@ const CapacitorCommunitySqlite = require('../../../node_modules/@capacitor-commu
 
 module.exports = {
   CapacitorCommunitySqlite,
-};
+}
