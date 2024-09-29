@@ -1,9 +1,8 @@
-
-.qrcode-svg-container{
-    display: block;
+.qrcode-svg-container {
+  display: block;
 }
 
-.qrcode-svg-container svg{
-    width: 100%;
-    height: auto;
+.qrcode-svg-container svg {
+  width: 100%;
+  height: auto;
 }

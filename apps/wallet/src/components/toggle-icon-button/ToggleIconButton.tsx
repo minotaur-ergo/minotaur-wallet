@@ -11,11 +11,11 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const ToggleIconButton = ({
-                                           selected,
-                                           color = 'primary',
-                                           className,
-                                           ...restProps
-                                         }: ToggleIconButtonPropsType) => {
+  selected,
+  color = 'primary',
+  className,
+  ...restProps
+}: ToggleIconButtonPropsType) => {
   return (
     <StyledIconButton
       {...restProps}
@@ -23,6 +23,6 @@ const ToggleIconButton = ({
       className={(selected ? 'selected ' : '') + className}
     />
   );
-}
+};
 
 export default ToggleIconButton;

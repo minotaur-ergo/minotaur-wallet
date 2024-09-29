@@ -9,14 +9,18 @@ import {
   MobileStepper,
   Slider,
   Stack,
-  Typography
+  Typography,
 } from '@mui/material';
 import QRCodeSVG from './QrCodeSVG';
 import { MAX_CHUNK_SIZE, QRCODE_MINIMUM_CHUNK_SIZE } from '@/utils/const';
 import {
-  ContentCopyOutlined, DownloadOutlined,
+  ContentCopyOutlined,
+  DownloadOutlined,
   KeyboardArrowLeft,
-  KeyboardArrowRight, PauseCircleOutline, PlayCircleOutline, ZoomIn
+  KeyboardArrowRight,
+  PauseCircleOutline,
+  PlayCircleOutline,
+  ZoomIn,
 } from '@mui/icons-material';
 import CopyToClipboard from '../copy-to-clipboard/CopyToClipboard';
 
@@ -29,7 +33,7 @@ interface DisplayQRCodePropsType {
 const DisplayQRCode = (props: DisplayQRCodePropsType) => {
   const dataSize = props.value.length;
   const minPages = Math.ceil(
-    dataSize / (MAX_CHUNK_SIZE - 10 - props.type.length)
+    dataSize / (MAX_CHUNK_SIZE - 10 - props.type.length),
   );
   const maxPages = Math.ceil(dataSize / QRCODE_MINIMUM_CHUNK_SIZE);
   const [pageCount, setPageCount] = useState(minPages);
@@ -37,7 +41,9 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
   const size = Math.ceil(props.value.length / usedPageCount);
   const [index, setIndex] = useState(0);
   const chunk = props.value.substring(index * size, (index + 1) * size);
-  const [animatedTimer, setAnimatedTimer] = useState<NodeJS.Timeout | undefined>();
+  const [animatedTimer, setAnimatedTimer] = useState<
+    NodeJS.Timeout | undefined
+  >();
   const playing = animatedTimer !== undefined;
   const handleSizeSlicer = (_event: Event, newValue: number | number[]) => {
     const value = newValue as number;
@@ -49,13 +55,13 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
     [props.type]: chunk,
     p: index + 1,
     n: maxSteps,
-    a: playing ? 1 : 0
+    a: playing ? 1 : 0,
   });
   const copyValue = JSON.stringify({ [props.type]: props.value });
   const [showConfig, setShowConfig] = useState<boolean>(false);
   const startPlaying = () => {
     const timer = setInterval(() => {
-      setIndex(index => (index + 1) % maxPages);
+      setIndex((index) => (index + 1) % maxPages);
     }, 800);
     setAnimatedTimer(timer);
     setIndex(0);
@@ -89,7 +95,7 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
           alignItems: 'center',
           mx: 'auto',
           mt: 2,
-          border: '0'
+          border: '0',
         }}
       >
         <QRCodeSVG value={value} />

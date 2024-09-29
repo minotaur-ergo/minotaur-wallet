@@ -8,7 +8,7 @@ interface QrCodeSVGPropsType {
 
 const QrCodeSVG = (props: QrCodeSVGPropsType) => {
   return (
-    <Typography className='qrcode-svg-container'>
+    <Typography className="qrcode-svg-container">
       <PackageQrCode size={128} value={props.value} />
     </Typography>
   );
