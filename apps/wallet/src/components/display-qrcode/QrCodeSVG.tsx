@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { QRCodeSVG as PackageQrCode } from 'qrcode.react';
 import './QrCodeSVG.css';
 
@@ -8,9 +8,9 @@ interface QrCodeSVGPropsType {
 
 const QrCodeSVG = (props: QrCodeSVGPropsType) => {
   return (
-    <Typography className="qrcode-svg-container">
+    <Box className="qrcode-svg-container">
       <PackageQrCode size={128} value={props.value} />
-    </Typography>
+    </Box>
   );
 };
 

@@ -84,22 +84,9 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
     }
   };
   return (
-    <Card variant="outlined" sx={{ p: 3 }}>
+    <Card variant="outlined" sx={{ p: 2 }}>
       {props.children}
-      <Box
-        sx={{
-          width: 300,
-          height: 300,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          mx: 'auto',
-          mt: 2,
-          border: '0',
-        }}
-      >
-        <QRCodeSVG value={value} />
-      </Box>
+      <QRCodeSVG value={value} />
       <Collapse in={pageCount > 1}>
         <MobileStepper
           variant="text"

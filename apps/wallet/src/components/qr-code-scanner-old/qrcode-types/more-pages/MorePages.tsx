@@ -5,7 +5,7 @@ import { QrCodeTypeEnum } from '@/types/qrcode';
 import { Button } from '@mui/material';
 import SvgIcon from '@/icons/SvgIcon';
 import { useContext } from 'react';
-import { QrCodeContext } from '../../QrCodeContext';
+import { QrCodeContext } from '../../../qr-code-scanner/QrCodeContext';
 
 interface MorePagesPropsType {
   error: string;
@@ -18,7 +18,7 @@ interface MorePagesPropsType {
 const MorePages = (props: MorePagesPropsType) => {
   const context = useContext(QrCodeContext);
   const scan = () => {
-    context.start();
+    context.start().then(() => null);
   };
   return (
     <AppFrame

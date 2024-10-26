@@ -1,29 +1,25 @@
-import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
 import { Capacitor } from '@capacitor/core';
 import QrCodeReaderWeb from './QrCodeReaderWeb';
-// import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
+import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
 
-interface PropsType {
+interface QrCodeReaderSwitchPropsType {
   success: (scanned: string) => unknown;
   fail: () => unknown;
   closeQrCode: () => unknown;
-  setSupportMultipleCamera: (supportMultiple: boolean) => unknown;
 }
 
-const QrCodeReaderSwitch = (props: PropsType) => {
+const QrCodeReaderSwitch = (props: QrCodeReaderSwitchPropsType) => {
   const platform = Capacitor.getPlatform();
   if (platform === 'android' || platform === 'ios') {
     return (
       <QrCodeReaderCapacitor
         handleScan={props.success}
         handleError={props.fail}
-        setSupportMultipleCamera={props.setSupportMultipleCamera}
       />
     );
   }
   return (
     <QrCodeReaderWeb
-      setSupportMultipleCamera={props.setSupportMultipleCamera}
       closeQrCode={props.closeQrCode}
       handleScan={props.success}
       handleError={props.fail}

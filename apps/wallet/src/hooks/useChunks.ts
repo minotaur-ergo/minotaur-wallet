@@ -1,81 +1,61 @@
-import { ChunkResponse, ChunkedData, QrCodeTypeEnum } from '@/types/qrcode';
 import { createEmptyArray } from '@/utils/functions';
 import { useEffect, useState } from 'react';
 
-const useChunks = (scanned: string, type?: QrCodeTypeEnum): ChunkResponse => {
+const useChunks = (scanned: string) => {
   const [chunks, setChunks] = useState<Array<string>>([]);
+  const [completed, setCompleted] = useState<string>('');
+  const [type, setType] = useState<string>('')
   const [loaded, setLoaded] = useState('');
   const [loading, setLoading] = useState(false);
-  const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
-    const updateChunks = (newChunks: Array<string>) => {
-      setChunks(newChunks);
-      setError('');
-      setLoaded(scanned);
-      setLoading(false);
-    };
-    const initialize = (length: number, index: number, content: string) => {
-      if (!initialized) {
-        const newChunks = createEmptyArray(length, '');
-        newChunks[index] = content;
-        setInitialized(true);
-        updateChunks(newChunks);
-      } else {
-        setError('Invalid QrCode Scanned');
-        setLoaded(scanned);
-        setLoading(false);
-      }
-    };
-    if (type) {
-      if (loaded !== scanned && !loading) {
-        try {
-          setLoading(true);
-          const newRaw = JSON.parse(scanned) as ChunkedData;
-          const chunk = newRaw[type];
-          const index = newRaw.p ?? 1;
-          const total = newRaw.n ?? 1;
-          if (chunks.length === 0) {
-            initialize(total, index - 1, chunk);
-          } else if (total !== chunks.length) {
-            setError('Invalid QrCode Scanned. Page size are mismatched');
+    if(!loading && loaded !== scanned) {
+      setLoading(true)
+      try {
+        const scannedJSON = JSON.parse(scanned);
+        if (type !== '') {
+          if (scannedJSON[type] !== type || scannedJSON.n !== chunks.length) {
+            setError('It seems qrcode changed. Please close qrcode scanner and try again');
           } else {
-            const newChunks = [...chunks];
-            newChunks[index - 1] = chunk;
-            updateChunks(newChunks);
+            setChunks(chunks => {
+              const newChunks = [...chunks];
+              newChunks[scannedJSON.p] = scannedJSON[type]
+              return newChunks;
+            })
           }
-        } catch (exp) {
-          console.warn(exp);
-          if (chunks.length === 0) {
-            initialize(1, 0, scanned);
-          } else {
-            setError('Invalid Json Scanned');
-            setLoaded(scanned);
-            setLoading(false);
+        } else {
+
+          const newType = Object.keys(scannedJSON).filter(item => !['p', 'n'].includes(item))[0];
+          setType(newType);
+          if(!scannedJSON.n || scannedJSON.n === 1){
+            setCompleted(scannedJSON[newType]);
+          }else{
+            const newChunks = createEmptyArray(scannedJSON.n, '');
+            newChunks[scannedJSON.p] = scannedJSON[newType];
+            setChunks(newChunks)
           }
         }
-      }
-    } else {
-      if (chunks.length > 0) {
-        setLoading(true);
-        setChunks([]);
-        setLoaded('');
-        setError('');
-        setInitialized(false);
-        setLoading(false);
+        setLoaded(scanned);
+      } catch (e) {
+        if (chunks.length === 0) {
+          setCompleted(scanned)
+        } else {
+          setError('Invalid Data Scanned')
+        }
       }
     }
-  }, [chunks, loaded, loading, scanned, type, initialized]);
-  const validChunks = chunks.filter((item) => item !== '').length;
+  }, [scanned, loaded, loading, chunks,type]);
+  useEffect(() => {
+    if(chunks.length > 0 && chunks.filter(item => item === '').length == 0){
+      setCompleted(JSON.stringify({[type]: chunks.join('')}));
+    }
+  }, [type, chunks]);
   return {
-    displayChunks: validChunks !== chunks.length,
-    error: error,
-    completedChunks: validChunks,
-    totalPages: chunks.length,
-    loading: loading,
-    data: chunks.join(''),
-    last: loaded,
-  };
+    chunks,
+    error,
+    loading,
+    completed
+  }
 };
 
 export default useChunks;
