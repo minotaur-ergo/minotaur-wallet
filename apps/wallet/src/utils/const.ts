@@ -25,3 +25,6 @@ export const SIGN_ACTION = 'sign';
 export const PUBLISH_ACTION = 'publish';
 
 export const ADDRESS_PLACE_HOLDER = '#P2PK_ADDRESS#';
+
+export const LOCAL_MULTI_SIG_COMMUNICATION = 'local';
+export const SERVER_MULTI_SIG_COMMUNICATION = 'server';

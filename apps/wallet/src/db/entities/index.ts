@@ -1,3 +1,4 @@
+import Server from '@/db/entities/Server';
 import Wallet from './Wallet';
 import Address from './Address';
 import Asset from './Asset';
@@ -26,6 +27,7 @@ const Entities = [
   MultiSigner,
   AddressValueInfo,
   SavedAddress,
+  Server,
 ];
 
 export default Entities;

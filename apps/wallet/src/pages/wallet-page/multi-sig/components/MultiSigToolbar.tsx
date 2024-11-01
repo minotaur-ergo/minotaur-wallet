@@ -39,7 +39,7 @@ const MultiSigToolbar = () => {
     if (
       data.reduced &&
       multiSigData.related &&
-      multiSigData.myAction.committed === false
+      !multiSigData.myAction.committed
     ) {
       return commit(
         data.reduced,

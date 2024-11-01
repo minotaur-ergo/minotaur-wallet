@@ -43,6 +43,7 @@
     "@minotaur-ergo/icons": "^0.1.5",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
+    "@noble/secp256k1": "^2.1.0",
     "@reduxjs/toolkit": "^2.2.5",
     "@rosen-clients/ergo-explorer": "^1.1.1",
     "@zxing/browser": "^0.1.5",

@@ -29,10 +29,10 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   const needMyCommitment =
     multiDataContext.state === MultiSigStateEnum.COMMITMENT &&
-    multiDataContext.myAction.committed === false;
+    !multiDataContext.myAction.committed;
   const needMySign =
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
-    multiDataContext.myAction.signed === false;
+    !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
   if (txDataContext.tx) {
     return (

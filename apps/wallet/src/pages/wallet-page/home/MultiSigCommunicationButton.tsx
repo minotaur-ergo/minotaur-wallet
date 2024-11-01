@@ -1,3 +1,4 @@
+import { LOCAL_MULTI_SIG_COMMUNICATION } from '@/utils/const';
 import { Box, Button, Typography } from '@mui/material';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import { getRoute, RouteMap } from '@/router/routerMap';
@@ -19,7 +20,12 @@ const MultiSigCommunicationButton = (
           bgcolor: 'primary.dark',
         }}
         onClick={() =>
-          navigate(getRoute(RouteMap.WalletMultiSig, { id: props.walletId }))
+          navigate(
+            getRoute(RouteMap.WalletMultiSig, {
+              id: props.walletId,
+              type: LOCAL_MULTI_SIG_COMMUNICATION,
+            }),
+          )
         }
       >
         <Typography>Multi-sig Communication</Typography>

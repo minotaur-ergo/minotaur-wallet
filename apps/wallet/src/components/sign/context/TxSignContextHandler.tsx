@@ -1,16 +1,17 @@
+import { LOCAL_MULTI_SIG_COMMUNICATION } from '@/utils/const';
 import * as wasm from 'ergo-lib-wasm-browser';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { multiSigStoreNewTx } from '../../../action/multi-sig/store';
+import { multiSigStoreNewTx } from '@/action/multi-sig/store';
 import {
   signNormalWalletReducedTx,
   signNormalWalletTx,
-} from '../../../action/tx';
-import { WalletType } from '../../../db/entities/Wallet';
-import { StateWallet } from '../../../store/reducer/wallet';
+} from '@/action/tx';
+import { WalletType } from '@/db/entities/Wallet';
+import { StateWallet } from '@/store/reducer/wallet';
 import TxDataContextHandler from './TxDataContextHandler';
 import TxSignContext, { StatusEnum } from './TxSignContext';
-import { RouteMap, getRoute } from '../../../router/routerMap';
+import { RouteMap, getRoute } from '@/router/routerMap';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from './TxSubmitContext';
 import TxSubmitContextHandler from './TxSubmitContextHandler';
@@ -44,6 +45,7 @@ const TxSignContextHandlerInternal = (
   const [dataBoxes, setDataBoxes] = useState<Array<wasm.ErgoBox>>([]);
   const [password, setPassword] = useState('');
   const [signedStr, setSignedStr] = useState('');
+  const [useServer, setUseServer] = useState(false);
   const qrCodeContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
   const signer = useSignerWallet(props.wallet);
@@ -123,11 +125,15 @@ const TxSignContextHandlerInternal = (
             await multiSigStoreNewTx(reduced, boxes, props.wallet);
             props.close(true);
             navigate(
-              getRoute(RouteMap.WalletMultiSig, { id: props.wallet.id }),
+              getRoute(RouteMap.WalletMultiSig, {
+                id: props.wallet.id,
+                type: LOCAL_MULTI_SIG_COMMUNICATION,
+              }),
             );
             navigate(
               getRoute(RouteMap.WalletMultiSigTxView, {
                 id: props.wallet.id,
+                type: LOCAL_MULTI_SIG_COMMUNICATION,
                 txId: reduced.unsigned_tx().id().to_str(),
               }),
             );
@@ -149,6 +155,8 @@ const TxSignContextHandlerInternal = (
         setPassword,
         setTx: setTransactionDetail,
         signed: signedStr,
+        useServer: useServer,
+        setUseServer: setUseServer,
       }}
     >
       <TxDataContextHandler

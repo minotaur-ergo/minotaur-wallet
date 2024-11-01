@@ -22,7 +22,7 @@ const getData = async (url: string, address: string) => {
   const res = await CapacitorHttp.get({
     url: getUrl(url, address),
   });
-  if (res.status / 100 === 2) {
+  if (res.status >= 200 && res.status < 300) {
     return res.data as ErgoPayResponse;
   }
   throw Error(`Api Call respond with status code ${res.status}: ${res.data}`);
@@ -34,7 +34,7 @@ const getDataMultiple = async (url: string, addresses: Array<string>) => {
     data: addresses,
     headers: { 'ErgoPay-CanSelectMultipleAddresses': 'supported' },
   });
-  if (res.status / 100 === 2) {
+  if (res.status >= 200 && res.status < 300) {
     return res.data as ErgoPayResponse;
   }
   throw Error(`Api Call respond with status code ${res.status}: ${res.data}`);

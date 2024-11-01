@@ -11,7 +11,7 @@ export default defineConfig({
   },
   plugins: [react(), wasm(), topLevelAwait()],
   optimizeDeps: {
-    include: ['crypto-js'],
+    include: ['crypto-js', '@emotion/styled'],
   },
   resolve: {
     alias: [{ find: '@', replacement: '/src' }],

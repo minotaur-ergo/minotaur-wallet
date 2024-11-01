@@ -8,8 +8,9 @@ export const WalletPageSuffix = {
   WalletDAppView: 'dApp/:dAppId',
   WalletSettings: 'settings',
   WalletXPub: 'x-pub',
-  WalletMultiSig: 'multi-sig-communication/',
-  WalletMultiSigTxView: 'multi-sig-communication/:txId',
+  WalletMultiSigRegistration: 'multi-sig-communication/server/registration',
+  WalletMultiSig: 'multi-sig-communication/:type',
+  WalletMultiSigTxView: 'multi-sig-communication/:type/:txId',
   WalletSend: 'send',
 };
 
@@ -32,8 +33,10 @@ export const RouteMap = {
   WalletDApps: '/wallet/:id/dApps/',
   WalletDAppView: '/wallet/:id/dApp/:dAppId',
   WalletSettings: '/wallet/:id/settings',
-  WalletMultiSig: '/wallet/:id/multi-sig-communication',
-  WalletMultiSigTxView: '/wallet/:id/multi-sig-communication/:txId',
+  WalletMultiSigRegistration:
+    '/wallet/:id/multi-sig-communication/server/registration',
+  WalletMultiSig: '/wallet/:id/multi-sig-communication/:type/',
+  WalletMultiSigTxView: '/wallet/:id/multi-sig-communication/:type/:txId',
   WalletXPub: '/wallet/:id/x-pub',
   WalletSend: '/wallet/:id/send',
   WalletAddressBookAdd: '/address-book/add',

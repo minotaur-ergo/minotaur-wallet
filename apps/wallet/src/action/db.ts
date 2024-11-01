@@ -1,3 +1,4 @@
+import Server from '@/db/entities/Server';
 import { DataSource, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
 import AddressValueInfo, {
@@ -1085,6 +1086,66 @@ class MultiStoreDbAction {
   };
 }
 
+class ServerDbAction {
+  private repository: Repository<Server>;
+  private static instance: ServerDbAction;
+
+  constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Server);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    ServerDbAction.instance = new ServerDbAction(dataSource);
+  };
+
+  getWalletServer = async (walletId: number) => {
+    return await this.repository.findOne({
+      where: {
+        wallet: {
+          id: walletId,
+        },
+      },
+    });
+  };
+
+  getAllServers = async () => {
+    return await this.repository.find();
+  };
+
+  deleteWalletServer = async (walletId: number) => {
+    return await this.repository
+      .createQueryBuilder()
+      .delete()
+      .where('walletId = :walletId', { walletId })
+      .execute();
+  };
+
+  addWalletServer = async (
+    walletId: number,
+    address: string,
+    secret: string,
+    pubKey: string,
+  ) => {
+    const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
+    if (wallet) {
+      await this.repository.insert({
+        wallet: wallet,
+        address: address,
+        secret: secret,
+        public: pubKey,
+      });
+    }
+    return this.getWalletServer(walletId);
+  };
+}
+
 const initializeAction = (dataSource: DataSource) => {
   WalletDbAction.initialize(dataSource);
   AddressDbAction.initialize(dataSource);
@@ -1095,6 +1156,7 @@ const initializeAction = (dataSource: DataSource) => {
   SavedAddressDbAction.initialize(dataSource);
   MultiSigDbAction.initialize(dataSource);
   MultiStoreDbAction.initialize(dataSource);
+  ServerDbAction.initialize(dataSource);
 };
 
 export {
@@ -1107,5 +1169,6 @@ export {
   SavedAddressDbAction,
   MultiSigDbAction,
   MultiStoreDbAction,
+  ServerDbAction,
   initializeAction,
 };

@@ -1,3 +1,4 @@
+import { MultiSigCommunicationRegister } from '@/pages/wallet-page/multi-sig/MultiSigCommunicationRegister';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { useEffect, useState } from 'react';
 import { GlobalStateType } from '@/store';
@@ -44,6 +45,10 @@ const WalletPage = () => {
   }
   return (
     <Routes>
+      <Route
+        path={WalletPageSuffix.WalletMultiSigRegistration}
+        element={<MultiSigCommunicationRegister wallet={wallet} />}
+      />
       <Route
         path={WalletPageSuffix.WalletMultiSig}
         element={<MultiSigCommunication wallet={wallet} />}
