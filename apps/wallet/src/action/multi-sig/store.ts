@@ -37,10 +37,12 @@ const multiSigStoreNewTx = async (
 const fetchMultiSigRows = async (
   wallet: StateWallet,
   txIds?: Array<string>,
+  onlyLocal?: boolean
 ): Promise<Array<MultiSigDataRow>> => {
   const rows = await MultiStoreDbAction.getInstance().getWalletRows(
     wallet.id,
     txIds,
+    onlyLocal
   );
   const signerCount = (
     await MultiSigDbAction.getInstance().getWalletKeys(wallet.id)
@@ -175,10 +177,12 @@ const storeMultiSigRow = async (
   simulated: Array<string>,
   updateTime: number,
   partial?: wasm.Transaction,
+  serverId?: string,
 ) => {
   const row = await MultiStoreDbAction.getInstance().insertMultiSigRow(
     wallet.id,
     tx.unsigned_tx().id().to_str(),
+    serverId
   );
   if (row) {
     await MultiStoreDbAction.getInstance().insertMultiSigInputs(
@@ -190,6 +194,7 @@ const storeMultiSigRow = async (
       Buffer.from(tx.sigma_serialize_bytes()).toString(encoding),
       MultiSigTxType.Reduced,
     );
+    debugger
     await updateMultiSigRow(
       row.id,
       commitments,

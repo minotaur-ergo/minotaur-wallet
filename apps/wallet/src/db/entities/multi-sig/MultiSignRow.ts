@@ -11,6 +11,9 @@ class MultiSignRow {
 
   @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
   wallet: Wallet | null = null;
+
+  @Column('text', {nullable: true})
+  serverId = ''
 }
 
 export default MultiSignRow;

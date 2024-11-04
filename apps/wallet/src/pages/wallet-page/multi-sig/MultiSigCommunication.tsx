@@ -34,6 +34,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
     );
   };
   const localAllowed = signer && signer.type === WalletType.Normal;
+  console.log(localAllowed)
   return (
     <AppFrame title="Multi-sig Communication" navigation={<BackButtonRouter />}>
       {localAllowed ? (
@@ -47,7 +48,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
             <Tab label="Server" value={SERVER_MULTI_SIG_COMMUNICATION} />
           </Tabs>
         </Box>
-      ) : undefined}
+      ) : ''}
       {localAllowed && params.type === LOCAL_MULTI_SIG_COMMUNICATION ? (
         <MultiSigCommunicationLocal wallet={props.wallet} />
       ) : (

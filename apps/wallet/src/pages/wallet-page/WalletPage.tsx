@@ -1,4 +1,5 @@
 import { MultiSigCommunicationRegister } from '@/pages/wallet-page/multi-sig/MultiSigCommunicationRegister';
+import MultiSigTransactionServerPage from '@/pages/wallet-page/multi-sig/MultiSigTransactionServerPage';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { useEffect, useState } from 'react';
 import { GlobalStateType } from '@/store';
@@ -10,7 +11,7 @@ import WalletAsset from './asset/WalletAsset';
 import WalletDApps from './dapps/WalletDApps';
 import WalletHome from './home/WalletHome';
 import MultiSigCommunication from './multi-sig/MultiSigCommunication';
-import MultiSigTransactionPage from './multi-sig/MultiSigTransactionPage';
+import MultiSigTransactionLocalPage from './multi-sig/MultiSigTransactionLocalPage';
 import WalletSendPage from './send/WalletSendPage';
 import WalletTransaction from './transaction/WalletTransaction';
 import { StateWallet } from '@/store/reducer/wallet';
@@ -55,7 +56,7 @@ const WalletPage = () => {
       />
       <Route
         path={WalletPageSuffix.WalletMultiSigTxView}
-        element={<MultiSigTransactionPage wallet={wallet} />}
+        element={<MultiSigTransactionLocalPage wallet={wallet} />}
       />
       <Route
         path={WalletPageSuffix.WalletHome}

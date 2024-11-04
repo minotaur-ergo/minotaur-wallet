@@ -1,7 +1,6 @@
 import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DisplayId from '@/components/display-id/DisplayId';
-import { getRoute, RouteMap } from '@/router/routerMap';
 import { StateWallet } from '@/store/reducer/wallet';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 
@@ -14,6 +13,7 @@ interface MultiSigTransactionItemPropsType {
   tokensOut: number;
   commitments: number;
   signs: number;
+  route: string;
 }
 
 const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
@@ -42,13 +42,9 @@ const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
     };
   };
   const rowState = getState();
-  const route = getRoute(RouteMap.WalletMultiSigTxView, {
-    id: props.wallet.id,
-    txId: props.txId,
-  });
   return (
     <Card>
-      <CardActionArea sx={{ p: 2 }} onClick={() => navigate(route)}>
+      <CardActionArea sx={{ p: 2 }} onClick={() => navigate(props.route)}>
         <Box display="flex" mb={1}>
           <Typography sx={{ flexGrow: 1, color: rowState.color }}>
             {rowState.title}

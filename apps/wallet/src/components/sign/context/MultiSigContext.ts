@@ -13,6 +13,8 @@ const MultiSigContext = createContext<MultiSigContextType>({
   password: '',
   setPassword: () => null,
   setData: () => null,
+  isServer: false,
+  serverId: '',
 });
 
 export { MultiSigContext };

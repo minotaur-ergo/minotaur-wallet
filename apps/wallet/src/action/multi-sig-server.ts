@@ -3,9 +3,14 @@ import Server from '@/db/entities/Server';
 import { StateWallet } from '@/store/reducer/wallet';
 import { blake2b } from 'blakejs';
 import { Buffer } from 'buffer';
-import { RegisteredTeam } from '@/types/multi-sig-server';
+import {
+  ReducedTx,
+  ReducedTxList,
+  RegisteredTeam, TxCommitmentResponse
+} from '@/types/multi-sig-server';
 import axios from 'axios';
 import * as secp from '@noble/secp256k1';
+import * as wasm from 'ergo-lib-wasm-browser';
 
 const signPayload = async (payload: string, secret: string) => {
   const msg = blake2b(Uint8Array.from(Buffer.from(payload)), undefined, 32);
@@ -35,6 +40,7 @@ const addTeam = async (server: Server, wallet: StateWallet, xpub: string) => {
         baseURL: server.address,
       },
     );
+    await ServerDbAction.getInstance().setTeamId(wallet.id, res.data.teamId);
     return res.data.teamId;
   } catch (err) {
     console.error(err);
@@ -60,7 +66,11 @@ const getTeams = async (server: Server, wallet: StateWallet, xpub: string) => {
     const filteredTeam = response.data.filter((item) =>
       walletAddresses.includes(item.address),
     );
-    return filteredTeam.length > 0 ? filteredTeam[0] : null;
+    const team = filteredTeam.length > 0 ? filteredTeam[0] : null;
+    if (team) {
+      await ServerDbAction.getInstance().setTeamId(wallet.id, team.id);
+    }
+    return team;
   } catch (err) {
     console.error(err);
   }
@@ -165,11 +175,12 @@ const addTx = async (
   try {
     const data = {
       reducedTx: reduced,
-      xpub,
-      pub: server.public,
-      teamId: server.teamId,
+      xpub: xpub,
+      pub: Buffer.from(server.public, 'hex').toString('base64'),
+      teamId: server.team_id,
       inputBoxes: boxes,
       dataInputs: dataBoxes,
+      maxDerived: wallet.addresses.length,
     };
     const signature = await signPayload(JSON.stringify(data), server.secret);
     const res = await axios.post(
@@ -179,9 +190,151 @@ const addTx = async (
         baseURL: server.address,
       },
     );
-    return res.data.teamId;
+    return res.data.reducedId;
   } catch (err) {
     console.error(err);
   }
 };
-export { register, unregister, registerTeam, getTeams, addTx };
+
+const addCommitments = async (
+  server: Server,
+  xpub: string,
+  txId: string,
+  commitments: wasm.TransactionHintsBag
+) => {
+  try {
+    const data = {
+      xpub: xpub,
+      pub: Buffer.from(server.public, 'hex').toString('base64'),
+      commitment: commitments.to_json(),
+      reducedId: txId
+    }
+    const signature = await signPayload(JSON.stringify(data), server.secret);
+    const res = await axios.post(
+      'addCommitment',
+      { ...data, signature },
+      {
+        baseURL: server.address,
+      },
+    );
+    return res.data.reducedId;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const addProof = async (
+  server: Server,
+  xpub: string,
+  txId: string,
+  proofs: wasm.TransactionHintsBag
+) => {
+  try {
+    const data = {
+      xpub: xpub,
+      pub: Buffer.from(server.public, 'hex').toString('base64'),
+      proof: proofs.to_json(),
+      reducedId: txId
+    }
+    const signature = await signPayload(JSON.stringify(data), server.secret);
+    const res = await axios.post(
+      'addPartialProof',
+      { ...data, signature },
+      {
+        baseURL: server.address,
+      },
+    );
+    return res.data.reducedId;
+  } catch (err) {
+    console.error(err);
+  }
+}
+const getTxs = async (
+  server: Server,
+  xpub: string,
+): Promise<Array<ReducedTxList>> => {
+  if (!server.team_id) return [];
+  const data = {
+    xpub: xpub,
+    pub: Buffer.from(server.public, 'hex').toString('base64'),
+    teamId: server.team_id,
+  };
+  const signature = await signPayload(JSON.stringify(data), server.secret);
+  const res = await axios.post<Array<ReducedTxList>>(
+    'getReducedTxs',
+    { ...data, signature },
+    {
+      baseURL: server.address,
+    },
+  );
+  return res.data;
+};
+
+const getTx = async (
+  server: Server,
+  xpub: string,
+  txId: string,
+): Promise<ReducedTx> => {
+  const data = {
+    xpub: xpub,
+    pub: Buffer.from(server.public, 'hex').toString('base64'),
+    reducedId: txId,
+  };
+  const signature = await signPayload(JSON.stringify(data), server.secret);
+  const res = await axios.post<ReducedTx>(
+    'getTx',
+    { ...data, signature },
+    {
+      baseURL: server.address,
+    },
+  );
+  return res.data;
+};
+
+const getTxStatus = async (server: Server, xpub: string, txId: string) => {
+  const data = {
+    xpub: xpub,
+    pub: Buffer.from(server.public, 'hex').toString('base64'),
+    reducedId: txId,
+  };
+  const signature = await signPayload(JSON.stringify(data), server.secret);
+  const res = await axios.post(
+    'getReducedStatus',
+    { ...data, signature },
+    {
+      baseURL: server.address,
+    },
+  );
+  return res.data;
+};
+
+const getCommitments = async (server: Server, xpub: string, txId: string) => {
+  const data = {
+    xpub: xpub,
+    pub: Buffer.from(server.public, 'hex').toString('base64'),
+    reducedId: txId,
+  };
+  const signature = await signPayload(JSON.stringify(data), server.secret);
+  const res = await axios.post<TxCommitmentResponse>(
+    'getCommitments',
+    { ...data, signature },
+    {
+      baseURL: server.address,
+    },
+  );
+  return res.data;
+};
+
+export {
+  register,
+  unregister,
+  registerTeam,
+  addTx,
+  addCommitments,
+  addProof,
+  getTeams,
+  getTxs,
+  getTxStatus,
+  getTx,
+  getCommitments,
+};

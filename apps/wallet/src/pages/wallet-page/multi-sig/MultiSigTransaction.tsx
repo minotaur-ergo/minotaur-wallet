@@ -74,7 +74,7 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
           ) : null
         ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
           <DisplaySignedTx tx={txContext.data.partial} />
-        ) : (
+        ) : txContext.isServer ? undefined : (
           <ShareTransaction />
         )}
         <TransactionBoxes

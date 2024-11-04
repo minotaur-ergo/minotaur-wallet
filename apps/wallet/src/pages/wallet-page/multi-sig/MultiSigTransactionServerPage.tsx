@@ -8,7 +8,9 @@ interface MultiSigTransactionPagePropsType {
   wallet: StateWallet;
 }
 
-const MultiSigTransactionPage = (props: MultiSigTransactionPagePropsType) => {
+const MultiSigTransactionServerPage = (
+  props: MultiSigTransactionPagePropsType,
+) => {
   return (
     <MultiSigContextHandler wallet={props.wallet}>
       <MultiSigDataContextHandler wallet={props.wallet}>
@@ -20,4 +22,4 @@ const MultiSigTransactionPage = (props: MultiSigTransactionPagePropsType) => {
   );
 };
 
-export default MultiSigTransactionPage;
+export default MultiSigTransactionServerPage;

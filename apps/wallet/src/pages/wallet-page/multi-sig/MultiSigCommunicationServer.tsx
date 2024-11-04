@@ -1,8 +1,12 @@
+import ListController from '@/components/list-controller/ListController';
 import LoadingPage from '@/components/loading-page/LoadingPage';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import useCommunicationSecret from '@/hooks/signing-server/useCommunicationSecret';
+import useReducedTxs from '@/hooks/signing-server/useReducedTxs';
 import useRegisteredTeam from '@/hooks/signing-server/useRegisteredTeam';
+import MultiSigTransactionItem from '@/pages/wallet-page/multi-sig/MultiSigTransactionItem';
 import { getRoute, RouteMap } from '@/router/routerMap';
+import { SERVER_MULTI_SIG_COMMUNICATION } from '@/utils/const';
 import React from 'react';
 import { StateWallet } from '@/store/reducer/wallet';
 import { ChevronRight } from '@mui/icons-material';
@@ -14,16 +18,20 @@ interface MultiSigCommunicationServerPropsType {
 }
 
 const MultiSigCommunicationServer = (
-  props: MultiSigCommunicationServerPropsType,
+  props: MultiSigCommunicationServerPropsType
 ) => {
   const navigate = useNavigate();
-  // const [lastUpdate, setLastUpdate] = useState(0)
   const signer = useSignerWallet(props.wallet);
   const secretLoading = useCommunicationSecret(props.wallet.id, 0);
+  const reduced = useReducedTxs(
+    secretLoading.server ?? undefined,
+    props.wallet,
+    signer
+  );
   const { team, loading } = useRegisteredTeam(
     secretLoading.server,
     props.wallet,
-    signer,
+    signer
   );
   const registered = team?.xpubs.filter((item) => item.registered).length ?? 0;
   return (
@@ -44,8 +52,8 @@ const MultiSigCommunicationServer = (
             onClick={() =>
               navigate(
                 getRoute(RouteMap.WalletMultiSigRegistration, {
-                  id: props.wallet.id,
-                }),
+                  id: props.wallet.id
+                })
               )
             }
             sx={{ mb: 2 }}
@@ -54,32 +62,36 @@ const MultiSigCommunicationServer = (
           </Button>
         </React.Fragment>
       )}
-
-      {/*<Alert severity="warning" icon={false} sx={{ mb: 2 }}>*/}
-      {/*  <AlertTitle>*/}
-      {/*    /!*{registrationState.requiredSignatures - registerCount} more*!/*/}
-      {/*    registers!*/}
-      {/*  </AlertTitle>*/}
-      {/*  /!*{registerCount} of {registrationState.requiredSignatures} required*!/*/}
-      {/*  signers are registered.*/}
-      {/*</Alert>*/}
-      {/*<Button*/}
-      {/*  variant="outlined"*/}
-      {/*  endIcon={<ChevronRight />}*/}
-      {/*  onClick={() => navigate(getRoute(RouteMap.WalletMultiSigRegistration, {id: props.wallet.id}))}*/}
-      {/*  sx={{ mb: 2 }}*/}
-      {/*>*/}
-      {/*  Register*/}
-      {/*</Button>*/}
-
-      {/*<ListController*/}
-      {/*  ListItem={<MultiSigTransactionItem />}*/}
-      {/*  getData={getTransactions}*/}
-      {/*  divider={false}*/}
-      {/*  emptyTitle="There is no transaction in progress!"*/}
-      {/*  emptyDescription="You can..."*/}
-      {/*  emptyIcon="folder"*/}
-      {/*/>*/}
+      {registered ? (
+        <ListController
+          loading={loading}
+          error={false}
+          errorDescription={''}
+          errorTitle={''}
+          data={reduced.rows}
+          render={(row) => (
+            <MultiSigTransactionItem
+              wallet={props.wallet}
+              txId={row.txId}
+              ergIn={row.ergIn}
+              ergOut={row.ergOut}
+              signs={row.signed}
+              commitments={row.committed}
+              tokensIn={row.tokensIn}
+              tokensOut={row.tokensOut}
+              route={getRoute(RouteMap.WalletMultiSigTxView, {
+                id: props.wallet.id,
+                type: SERVER_MULTI_SIG_COMMUNICATION,
+                txId: row.rowId
+              })}
+            />
+          )}
+          divider={false}
+          emptyTitle="There is no transaction in progress!"
+          emptyDescription="You can add transaction using botton below to start signing process"
+          emptyIcon="folder"
+        />
+      ) : undefined}
     </React.Fragment>
   );
 };

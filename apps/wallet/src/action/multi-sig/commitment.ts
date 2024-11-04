@@ -38,13 +38,15 @@ const commitmentToByte = (
     const hints = json[`${index}`] || [];
     const rowCommitments = rowPublicKeys.map(() => '');
     hints.forEach(
-      (item: { pubkey: { h: string }; a: string; secret: string }) => {
-        const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
-        if (pubIndex >= 0)
-          rowCommitments[pubIndex] =
-            password !== undefined
-              ? encrypt(Buffer.from(item.secret, 'hex'), password)
-              : Buffer.from(item.a, 'hex').toString('base64');
+      (item: { hint: string, pubkey: { h: string }; a: string; secret: string }) => {
+        if(item.hint.indexOf('Simulated') === -1) {
+          const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
+          if (pubIndex >= 0)
+            rowCommitments[pubIndex] =
+              password !== undefined
+                ? encrypt(Buffer.from(item.secret, 'hex'), password)
+                : Buffer.from(item.a, 'hex').toString('base64');
+        }
       },
     );
     return rowCommitments;

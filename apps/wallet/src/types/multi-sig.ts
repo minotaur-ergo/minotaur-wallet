@@ -21,7 +21,7 @@ export interface MultiSigDataRow {
 }
 
 export interface MultiSigBriefRow {
-  rowId: number;
+  rowId: number | string;
   txId: string;
   committed: number;
   signed: number;
@@ -55,6 +55,8 @@ export interface MultiSigContextType {
   password: string;
   setPassword: (password: string) => unknown;
   setData: (data: MultiSigData, updateTime: number) => unknown;
+  isServer: boolean;
+  serverId: string;
 }
 
 export interface MultiSigAddressHolder {

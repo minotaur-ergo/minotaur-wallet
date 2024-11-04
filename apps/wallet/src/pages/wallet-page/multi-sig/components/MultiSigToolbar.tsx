@@ -1,3 +1,5 @@
+import { addTx } from '@/action/multi-sig-server';
+import useCommunicationSecret from '@/hooks/signing-server/useCommunicationSecret';
 import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Button, Grid } from '@mui/material';
@@ -24,6 +26,7 @@ const MultiSigToolbar = () => {
   const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
+  const serverLoading = useCommunicationSecret(data.wallet.id, 0);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
@@ -48,6 +51,7 @@ const MultiSigToolbar = () => {
         context.password,
         data.boxes,
         context.data,
+        context.serverId
       ).then((res) => {
         if (res.changed) {
           context.setData(
@@ -68,6 +72,7 @@ const MultiSigToolbar = () => {
   };
 
   const signAction = () => {
+    debugger
     if (multiSigData.related && data.reduced) {
       sign(
         data.wallet,
@@ -175,12 +180,38 @@ const MultiSigToolbar = () => {
     }
   };
 
+  const modeToServer = () => {
+    if (serverLoading.server && signer && data.reduced) {
+      addTx(
+        serverLoading.server,
+        data.wallet,
+        signer.xPub,
+        Buffer.from(data.reduced.sigma_serialize_bytes()).toString('base64'),
+        data.boxes.map((item) =>
+          Buffer.from(item.sigma_serialize_bytes()).toString('base64'),
+        ),
+        data.dataBoxes.map((item) =>
+          Buffer.from(item.sigma_serialize_bytes()).toString('base64'),
+        ),
+      ).then((res) => {
+        console.log(res);
+      });
+    }
+  };
+
   const passwordInvalid =
     multiSigData.related !== undefined &&
     !validatePassword(multiSigData.related.seed, context.password);
+
+  const serverAllowed = serverLoading.server && serverLoading.server.team_id && !context.isServer;
   return (
     <React.Fragment>
       <Grid container spacing={2}>
+        {serverAllowed ? (
+          <Grid item xs={12}>
+            <Button onClick={modeToServer}>Start sign using server</Button>
+          </Grid>
+        ) : undefined}
         {allowAction() ? (
           <Grid item xs={12}>
             <Button
@@ -199,7 +230,7 @@ const MultiSigToolbar = () => {
             </Button>
           </Grid>
         ) : null}
-        {needModeData() ? (
+        {needModeData() && !context.isServer ? (
           <React.Fragment>
             <Grid item xs={6}>
               <Button

@@ -849,8 +849,8 @@ class MultiStoreDbAction {
     const row = await this.getRowById(rowId);
     if (row) {
       const queryRunner = this.dataSource.createQueryRunner();
-      queryRunner.connect();
-      queryRunner.startTransaction();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       try {
         await queryRunner.manager
           .getRepository(MultiSignInput)
@@ -884,13 +884,13 @@ class MultiStoreDbAction {
           .execute();
         await queryRunner.commitTransaction();
       } catch (e) {
-        queryRunner.rollbackTransaction();
+        await queryRunner.rollbackTransaction();
         throw e;
       }
     }
   };
 
-  public insertMultiSigRow = async (walletId: number, txId: string) => {
+  public insertMultiSigRow = async (walletId: number, txId: string, serverId?: string) => {
     const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
     const old = await this.rowRepository
       .createQueryBuilder()
@@ -901,12 +901,13 @@ class MultiStoreDbAction {
       await this.rowRepository.insert({
         txId: txId,
         wallet: wallet,
+        serverId: serverId
       });
     } else {
       await this.rowRepository
         .createQueryBuilder()
         .update()
-        .set({ wallet: wallet })
+        .set({ wallet: wallet, serverId: serverId })
         .where('id=:id', { id: old.id })
         .execute();
     }
@@ -1011,13 +1012,16 @@ class MultiStoreDbAction {
     return await this.rowRepository.findOneBy({ id });
   };
 
-  public getWalletRows = (walletId: number, txIds?: Array<string>) => {
+  public getWalletRows = (walletId: number, txIds?: Array<string>, onlyLocal: boolean = true) => {
     let query = this.rowRepository
       .createQueryBuilder()
       .select()
-      .where('walletId=:walletId', { walletId });
+      .where("walletId=:walletId", { walletId });
     if (txIds) {
       query = query.andWhere('txId IN (:...txIds)', { txIds });
+    }
+    if(onlyLocal){
+      query = query.andWhere("serverId IS NULL");
     }
     return query.getMany();
   };
@@ -1124,6 +1128,15 @@ class ServerDbAction {
       .createQueryBuilder()
       .delete()
       .where('walletId = :walletId', { walletId })
+      .execute();
+  };
+
+  setTeamId = async (walletId: number, teamId: string) => {
+    return await this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ team_id: teamId })
+      .where('walletId= :walletId', { walletId: walletId })
       .execute();
   };
 

@@ -3,10 +3,7 @@ import * as wasm from 'ergo-lib-wasm-browser';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { multiSigStoreNewTx } from '@/action/multi-sig/store';
-import {
-  signNormalWalletReducedTx,
-  signNormalWalletTx,
-} from '@/action/tx';
+import { signNormalWalletReducedTx, signNormalWalletTx } from '@/action/tx';
 import { WalletType } from '@/db/entities/Wallet';
 import { StateWallet } from '@/store/reducer/wallet';
 import TxDataContextHandler from './TxDataContextHandler';
@@ -103,6 +100,7 @@ const TxSignContextHandlerInternal = (
   };
 
   const handle = async () => {
+    debugger
     if (tx && props.status === StatusEnum.WAITING) {
       switch (props.wallet.type) {
         case WalletType.Normal:

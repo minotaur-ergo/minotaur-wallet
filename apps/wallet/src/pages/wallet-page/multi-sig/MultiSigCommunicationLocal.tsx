@@ -109,6 +109,11 @@ const MultiSigCommunicationLocal = (
             commitments={row.committed}
             tokensIn={row.tokensIn}
             tokensOut={row.tokensOut}
+            route={getRoute(RouteMap.WalletMultiSigTxView, {
+              id: props.wallet.id,
+              type: LOCAL_MULTI_SIG_COMMUNICATION,
+              txId: row.txId,
+            })}
           />
         )}
         divider={false}

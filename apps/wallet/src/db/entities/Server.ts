@@ -19,7 +19,7 @@ class Server {
   public = '';
 
   @Column('text', { nullable: true })
-  teamId = '';
+  team_id = '';
 }
 
 export default Server;

@@ -25,6 +25,7 @@ export const commit = async (
   password: string,
   boxes: Array<wasm.ErgoBox>,
   data: MultiSigData,
+  serverId: string,
 ) => {
   const prover = await getProver(signer, password, wallet.addresses);
   const myCommitments = await generateCommitments(prover, tx);
@@ -58,6 +59,7 @@ export const commit = async (
       data.simulated,
       currentTime,
       data.partial,
+      serverId
     );
     return {
       commitments: newCommitments.commitments,
@@ -76,7 +78,7 @@ export const commit = async (
   };
 };
 
-const getInputPKs = (
+export const getInputPKs = (
   wallet: StateWallet,
   addresses: Array<MultiSigAddressHolder>,
   tx: wasm.UnsignedTransaction,
@@ -136,7 +138,7 @@ const generateHintBagJson = (
   return res;
 };
 
-const getHintBags = (
+export const getHintBags = (
   publicKeys: Array<Array<string>>,
   commitments: Array<Array<string>>,
 ): wasm.TransactionHintsBag => {
@@ -260,6 +262,7 @@ export const sign = async (
   currentTime: number;
 }> => {
   // generate simulated list
+  debugger
   const simulatedAddress = simulated.length
     ? simulated
     : committed.filter((item) => !item.completed).map((item) => item.address);
@@ -284,7 +287,7 @@ export const sign = async (
     signedPKs,
   );
   const publicHintBag = getHintBags(inputPKs, usedCommitments);
-  if (signedPKs && signedPKs.length > 0) {
+  if (oldPartial) {
     const simulatedPKs = addresses
       .filter((item) => simulatedAddress.includes(item.address))
       .reduce((a, b) => [...a, ...b.pubKeys], [] as Array<string>);

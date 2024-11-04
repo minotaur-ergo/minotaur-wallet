@@ -1,14 +1,14 @@
-import * as wasm from 'ergo-lib-wasm-browser';
-import React, { useEffect, useState } from 'react';
+import useMultiSigLocalRow from '@/hooks/multi-sig/useMultiSigLocalRow';
+import useMultiSigServerRow from '@/hooks/signing-server/useMultiSigServerRow';
+import { LOCAL_MULTI_SIG_COMMUNICATION, SERVER_MULTI_SIG_COMMUNICATION } from '@/utils/const';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchMultiSigRows } from '@/action/multi-sig/store';
 import { GlobalStateType } from '@/store';
 import { StateWallet } from '@/store/reducer/wallet';
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '../../../types/multi-sig';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;
@@ -16,58 +16,15 @@ interface MultiSigContextHandlerPropsType {
 }
 
 const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
-  const [tx, setTx] = useState<wasm.ReducedTransaction>();
-  const [data, setData] = useState<MultiSigData>({
-    commitments: [[]],
-    secrets: [[]],
-    signed: [],
-    simulated: [],
-  });
-  const [rowId, setRowId] = useState(-1);
-  const [boxes, setBoxes] = useState<Array<wasm.ErgoBox>>([]);
-  const [dataBoxes, setDataBoxes] = useState<Array<wasm.ErgoBox>>([]);
-  const [updateTime, setUpdateTime] = useState(-1);
-  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
-  const { txId } = useParams();
+  const { txId, type } = useParams();
 
   const lastUpdateTime = useSelector(
     (config: GlobalStateType) => config.config.multiSigLoadedTime,
   );
-
-  const storeData = (data: MultiSigData, update: number) => {
-    setData(data);
-    setUpdateTime(update);
-  };
-
-  useEffect(() => {
-    if (!loading && txId) {
-      if (
-        (tx && tx.unsigned_tx().id().to_str() !== txId) ||
-        updateTime < lastUpdateTime
-      ) {
-        setLoading(true);
-        fetchMultiSigRows(props.wallet, [txId]).then((rows) => {
-          if (rows.length > 0) {
-            const row = rows[0];
-            setTx(row.tx);
-            setBoxes(row.boxes);
-            setDataBoxes(row.dataBoxes);
-            setRowId(row.rowId);
-            setUpdateTime(Date.now());
-            setData({
-              commitments: row.commitments,
-              secrets: row.secrets,
-              signed: row.signed,
-              simulated: row.simulated,
-              partial: row.partial,
-            });
-          }
-          setLoading(false);
-        });
-      }
-    }
-  }, [loading, tx, txId, props.wallet, updateTime, lastUpdateTime]);
+  const local = useMultiSigLocalRow(txId ?? '', props.wallet, lastUpdateTime, type === LOCAL_MULTI_SIG_COMMUNICATION)
+  const server = useMultiSigServerRow(txId ?? '', props.wallet, lastUpdateTime, type === SERVER_MULTI_SIG_COMMUNICATION);
+  const {serverId, rowId, tx, data, boxes, dataBoxes, storeData} = type === LOCAL_MULTI_SIG_COMMUNICATION ? local : server
   if (tx) {
     return (
       <MultiSigContext.Provider
@@ -78,6 +35,8 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
           rowId,
           setData: storeData,
           setPassword,
+          isServer: type === SERVER_MULTI_SIG_COMMUNICATION,
+          serverId,
         }}
       >
         <TxDataContext.Provider
