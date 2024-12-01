@@ -25,11 +25,11 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
   }, []);
 
   const senDataToCallbacks = (data: string) => {
-    callbacks.forEach(item => item.resolve(data));
+    callbacks.forEach((item) => item.resolve(data));
     setCallbacks([]);
     setOpen(false);
     setData('');
-  }
+  };
 
   const stopScanning = () => {
     callbacks.forEach((item) => item.reject('Canceled by user'));
@@ -47,11 +47,11 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     setData('');
     setScanning(false);
     setOpen(false);
-  }
+  };
   return (
     <QrCodeContext.Provider
       value={{
-        start: startScan
+        start: startScan,
       }}
     >
       {open && scanning && (
@@ -62,12 +62,16 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
         />
       )}
       <div style={{ display: open && !scanning ? 'block' : 'none' }}>
-        <QrCodeDetectedType scanned={data} open={open} scanning={scanning} close={close} callback={senDataToCallbacks}/>
+        <QrCodeDetectedType
+          scanned={data}
+          open={open}
+          scanning={scanning}
+          close={close}
+          callback={senDataToCallbacks}
+        />
       </div>
 
-      <div style={{ display: open ? 'none' : 'block' }}>
-        {props.children}
-      </div>
+      <div style={{ display: open ? 'none' : 'block' }}>{props.children}</div>
     </QrCodeContext.Provider>
   );
 };

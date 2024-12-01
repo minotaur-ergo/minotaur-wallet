@@ -47,8 +47,9 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
         if (data.sender) {
           const filtered = wallets.filter(
             (item) =>
-              item.addresses.filter((address) => address.address === data.sender)
-                .length > 0,
+              item.addresses.filter(
+                (address) => address.address === data.sender,
+              ).length > 0,
           );
           if (filtered.length >= 1) {
             walletContext.setWallet(filtered[0]);
@@ -68,7 +69,8 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
             return (
               wallet.addresses
                 .map((address) => address.address)
-                .filter((address) => inputAddressStr.includes(address)).length > 0
+                .filter((address) => inputAddressStr.includes(address)).length >
+              0
             );
           });
           if (filtered.length === 1) {
@@ -82,7 +84,7 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
         txSignContext.setReducedTx(reduced);
         txSignContext.setTx(reduced.unsigned_tx(), boxes);
         setHasError(false);
-      }catch (exp){
+      } catch (exp) {
         console.error(exp);
         setError('Invalid Data Scanned');
         setHasError(true);

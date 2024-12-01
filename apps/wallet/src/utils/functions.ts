@@ -1,3 +1,4 @@
+import { commaSeparate } from '@/utils/convert';
 import * as ecc from 'tiny-secp256k1';
 import { BIP32Factory } from 'bip32';
 import base58 from 'bs58';
@@ -56,7 +57,7 @@ const ergPriceUsd = (amount: bigint, erg_price: number) => {
   const erg_price_cent = BigInt(Math.floor(erg_price * 100));
   const total_cent = ((amount * erg_price_cent) / BigInt(1e9)).toString();
   return (
-    (total_cent.substring(0, total_cent.length - 2) || '0') +
+    commaSeparate(total_cent.substring(0, total_cent.length - 2) || '0') +
     '.' +
     total_cent.substring(total_cent.length - 2)
   );

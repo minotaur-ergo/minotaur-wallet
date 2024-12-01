@@ -11,7 +11,6 @@ import { readClipBoard } from '@/utils/clipboard';
 import { IconButton } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 
-
 interface QrCodeReaderPropsType {
   success: (scanned: string) => unknown;
   fail: () => unknown;
@@ -20,7 +19,7 @@ interface QrCodeReaderPropsType {
 
 const QrCodeReader = (props: QrCodeReaderPropsType) => {
   const [scanned, setScanned] = useState('');
-  const {chunks, error, completed} = useChunks(scanned);
+  const { chunks, error, completed } = useChunks(scanned);
   const [multipleCamera, setMultipleCamera] = useState(false);
   const readClipboard = () => {
     readClipBoard().then((data) => {
@@ -28,20 +27,20 @@ const QrCodeReader = (props: QrCodeReaderPropsType) => {
     });
   };
   const newData = useCallback((scanned: string) => {
-    setScanned(scanned)
-  }, [])
+    setScanned(scanned);
+  }, []);
   useEffect(() => {
-    if(completed){
+    if (completed) {
       props.success(completed);
     }
   }, [completed, props]);
   return (
     <AppFrame
       title="Scan QrCode"
-      className='barcode-scanner-modal'
+      className="barcode-scanner-modal"
       navigation={<BackButton onClick={props.closeQrCode} />}
       actions={
-        <div style={{zIndex: 1}}>
+        <div style={{ zIndex: 1 }}>
           <IconButton onClick={readClipboard}>
             <ContentPasteRounded />
           </IconButton>
@@ -52,11 +51,13 @@ const QrCodeReader = (props: QrCodeReaderPropsType) => {
           ) : null}
         </div>
       }
-      toolbar={
-        <ScannedChunkStatus error={error} chunks={chunks} />
-      }
+      toolbar={<ScannedChunkStatus error={error} chunks={chunks} />}
     >
-      <QrCodeReaderSwitch {...props} setSupportMultipleCamera={setMultipleCamera} success={newData}/>
+      <QrCodeReaderSwitch
+        {...props}
+        setSupportMultipleCamera={setMultipleCamera}
+        success={newData}
+      />
       <CameraBox>
         <ScanQrBox>
           <div className="line" />
