@@ -1,0 +1,46 @@
+{
+  "name": "@minotaur-ergo/icons",
+  "version": "0.1.5",
+  "description": "Asset Icons for minotaur wallet",
+  "repository": "https://github.com/minotaur-ergo/icons",
+  "license": "MIT",
+  "author": "vorujack",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build-all": "npm run clean-icons && npm run create-icons && npm run create-descriptions && npm run build",
+    "build": "npm run clean && tsc",
+    "create-descriptions": "node --loader ./ts-node-esm-loader.js --loader extensionless ./bin/generate-tokens.ts",
+    "create-icons": "npx @svgr/cli --typescript --no-index --expand-props \"none\" --out-dir ./src/icons ./svgs && cd ./src/icons/ && for f in `find *.tsx`; do mv -v \"$f\" \"Icon`echo $f | tr '[A-Z]' '[a-z]'`\"; done",
+    "clean-icons": "node --loader ./ts-node-esm-loader.js --loader extensionless ./bin/clean-tokens.ts",
+    "clean": "rimraf dist",
+    "lint": "eslint --fix . && npm run prettify",
+    "prepare": "husky install",
+    "prettify": "prettier --write . --ignore-path ./.gitignore",
+    "type-check": "tsc --noEmit",
+    "release": "npm run build-all && npm publish --access public"
+  },
+  "devDependencies": {
+    "@svgr/cli": "^8.1.0",
+    "@types/node": "^20.14.8",
+    "@types/react": "^18.3.3",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "axios": "^1.7.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "extensionless": "^1.9.6",
+    "husky": "^9.0.11",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.3.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.2"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}
