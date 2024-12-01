@@ -1,7 +1,7 @@
 export const MAX_CHUNK_SIZE = 2800;
 
 export const QRCODE_SIZE_DEFAULT = 1000;
-export const QRCODE_MINIMUM_CHUNK_SIZE = 500;
+export const QRCODE_MINIMUM_CHUNK_SIZE = 200;
 export const QRCODE_CHUNK_STEP = 100;
 
 export const CONFIRMATION_HEIGHT = 720;

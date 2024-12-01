@@ -3,13 +3,11 @@ import { Box, styled } from '@mui/material';
 const ScanQrBox = styled(Box)(() => ({
   position: 'relative',
   width: '80%',
-  boxShadow: '0 0 0 4000px rgba(0, 0, 0, 0.3)',
   aspectRatio: '1/1',
   border: '1px solid #fff',
-  zIndex: 1,
-  marginBottom: '-100vh',
+  boxShadow: 'rgba(0, 0, 0, 0.3) 0px 0px 0px 4000px',
   backgroundColor: '#ffffff11',
-  margin: '150px auto 0',
+  margin: '120px auto 0',
   '& .line': {
     borderTop: '2px solid #fff',
     width: '100%',

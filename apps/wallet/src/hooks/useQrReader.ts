@@ -9,7 +9,7 @@ const useQrReader = (
   const controller: MutableRefObject<IScannerControls | undefined> = useRef();
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader(undefined, {
-      delayBetweenScanAttempts: 500,
+      delayBetweenScanAttempts: 200,
     });
     codeReader
       .decodeFromConstraints(
@@ -20,8 +20,13 @@ const useQrReader = (
           if (error) errorCallback(error);
         },
       )
-      .then((controls) => (controller.current = controls))
+      .then((controls) => {
+        console.log("initialized")
+        if(controller.current) controller.current.stop();
+        controller.current = controls;
+      })
       .catch((error) => {
+        console.log(`error ${error}`)
         errorCallback(error);
       });
     return () => {

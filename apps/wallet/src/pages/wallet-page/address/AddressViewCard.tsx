@@ -54,7 +54,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
           <Divider sx={{ my: 2 }} />
         </React.Fragment>
       ) : null}
-      <Box sx={{ pt: 8, pb: 8, textAlign: 'center', fontStyle: 'italic' }}>
+      <Box sx={{ p: 4, fontStyle: 'italic', color: 'textSecondary' }}>
         <QRCodeSVG value={props.address.address} />
       </Box>
       <Box>

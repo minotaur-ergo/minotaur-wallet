@@ -57,19 +57,17 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
         </Typography>
       </div>
       {Object.entries(txValues.tokens).map((item) => (
-        <React.Fragment>
+        <React.Fragment key={item[0]}>
           <TxAssetDetail
             amount={mapped.get(item[0]) ?? 0n}
             id={item[0]}
             networkType={wallet.networkType}
-            key={'ib-' + item[0]}
             issueAndBurn={true}
           />
           <TxAssetDetail
             amount={-item[1] - (mapped.get(item[0]) ?? 0n)}
             id={item[0]}
             networkType={wallet.networkType}
-            key={'rs-' + item[0]}
           />
         </React.Fragment>
       ))}
