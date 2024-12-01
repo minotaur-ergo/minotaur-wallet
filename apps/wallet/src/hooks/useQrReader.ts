@@ -21,12 +21,12 @@ const useQrReader = (
         },
       )
       .then((controls) => {
-        console.log("initialized")
-        if(controller.current) controller.current.stop();
+        console.log('initialized');
+        if (controller.current) controller.current.stop();
         controller.current = controls;
       })
       .catch((error) => {
-        console.log(`error ${error}`)
+        console.log(`error ${error}`);
         errorCallback(error);
       });
     return () => {

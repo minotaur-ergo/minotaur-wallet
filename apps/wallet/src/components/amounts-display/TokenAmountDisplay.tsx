@@ -14,7 +14,8 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
   const valuePart = commaSeparate(
     amount_str
       .substring(0, amount_str.length - props.decimal)
-      .replace(/^0+/, '') || '0');
+      .replace(/^0+/, '') || '0',
+  );
   const decimalPart = amount_str.substring(amount_str.length - props.decimal);
   const decimalPartTrimmed =
     props.displayDecimal === undefined

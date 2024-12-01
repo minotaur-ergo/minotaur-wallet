@@ -27,10 +27,10 @@ const QrCodeReaderWeb = (props: QrCodeReaderWebPropsType) => {
           left: 0,
           objectFit: 'cover',
           transform: 'scaleX(-1)',
-          zIndex: -1
+          zIndex: -1,
         }}
       />
-      <video/>
+      <video />
       {totalDevices > 1 ? (
         <Fab onClick={() => selectNext}>
           <CameraswitchOutlined />

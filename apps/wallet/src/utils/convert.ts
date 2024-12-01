@@ -44,9 +44,11 @@ export const boxArrayToBoxes = (boxes: Array<wasm.ErgoBox>): wasm.ErgoBoxes => {
   return res;
 };
 
-export const commaSeparate = (amount: string, fromEnd: boolean=true) => {
-  const processingAmount = fromEnd ? amount.split('').reverse().join('') : amount
-  const chunks = processingAmount.match(/.{1,3}/g)
-  const res = (chunks ?? []).join(",")
-  return fromEnd ? res.split('').reverse().join(''): res
-}
+export const commaSeparate = (amount: string, fromEnd: boolean = true) => {
+  const processingAmount = fromEnd
+    ? amount.split('').reverse().join('')
+    : amount;
+  const chunks = processingAmount.match(/.{1,3}/g);
+  const res = (chunks ?? []).join(',');
+  return fromEnd ? res.split('').reverse().join('') : res;
+};

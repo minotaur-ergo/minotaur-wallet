@@ -8,9 +8,6 @@ import { RouteMap } from '@/router/routerMap';
 import ItemCard from './components/item-card/ItemCard';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
-
-
-
 const AddWallet = () => {
   return (
     <AppFrame title="Add Wallet" navigation={<BackButtonRouter />}>

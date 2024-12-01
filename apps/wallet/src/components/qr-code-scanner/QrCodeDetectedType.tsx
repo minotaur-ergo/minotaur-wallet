@@ -31,7 +31,7 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   };
   useEffect(() => {
     if (props.scanned !== checked && !checking) {
-      console.log("start process detected type")
+      console.log('start process detected type');
       setChecking(true);
       const selectedTypes = QrCodeTypes.filter((item) =>
         item.detect(props.scanned),
@@ -45,11 +45,11 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
     }
   }, [checked, checking, props]);
   const usedWallet = wallet === undefined ? firstWallet : wallet;
-  console.log(selectedType, usedWallet)
+  console.log(selectedType, usedWallet);
   if (checking) {
-    return <LoadingPage/>
+    return <LoadingPage />;
   }
-  if(usedWallet && selectedType !== undefined && selectedType.render){
+  if (usedWallet && selectedType !== undefined && selectedType.render) {
     return (
       <SelectableWalletContext.Provider
         value={{ setWallet: storeWallet, wallet: usedWallet }}
@@ -62,7 +62,7 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
           {selectedType.render(props.scanned, props.close)}
         </TxSignContextHandler>
       </SelectableWalletContext.Provider>
-    )
+    );
   }
 };
 
