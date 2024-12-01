@@ -1,7 +1,6 @@
 import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
 import { Capacitor } from '@capacitor/core';
 import QrCodeReaderWeb from './QrCodeReaderWeb';
-// import QrCodeReaderCapacitor from './QrCodeReaderCapacitor';
 
 interface PropsType {
   success: (scanned: string) => unknown;

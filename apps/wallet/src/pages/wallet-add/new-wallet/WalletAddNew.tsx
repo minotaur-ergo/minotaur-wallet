@@ -37,7 +37,6 @@ const WalletAddNew = () => {
   });
   const MNEMONIC_STEP_NUM = 2;
   const STEPS_COUNTS = 4;
-  console.log(values);
   const setMnemonicSize = (size: number) => {
     setParam('mnemonic', bip39.generateMnemonic((size / 3) * 32));
   };

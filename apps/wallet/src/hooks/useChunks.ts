@@ -14,28 +14,30 @@ const useChunks = (scanned: string) => {
       try {
         const scannedJSON = JSON.parse(scanned);
         if (type !== '') {
-          if (scannedJSON[type] !== type || scannedJSON.n !== chunks.length) {
+          if (!Object.prototype.hasOwnProperty.call(scannedJSON, type) || scannedJSON.n !== chunks.length) {
             setError('It seems qrcode changed. Please close qrcode scanner and try again');
+          }else if(scannedJSON.p > scannedJSON.n){
+            setError('Invalid QrCode Scanned');
           } else {
             setChunks(chunks => {
               const newChunks = [...chunks];
-              newChunks[scannedJSON.p] = scannedJSON[type]
+              newChunks[scannedJSON.p - 1] = scannedJSON[type]
               return newChunks;
             })
           }
         } else {
-
           const newType = Object.keys(scannedJSON).filter(item => !['p', 'n'].includes(item))[0];
           setType(newType);
           if(!scannedJSON.n || scannedJSON.n === 1){
-            setCompleted(scannedJSON[newType]);
+            setCompleted(JSON.stringify({[newType]: scannedJSON[newType]}));
           }else{
             const newChunks = createEmptyArray(scannedJSON.n, '');
-            newChunks[scannedJSON.p] = scannedJSON[newType];
+            newChunks[scannedJSON.p - 1] = scannedJSON[newType];
             setChunks(newChunks)
           }
         }
         setLoaded(scanned);
+        setLoading(false);
       } catch (e) {
         if (chunks.length === 0) {
           setCompleted(scanned)
@@ -46,7 +48,7 @@ const useChunks = (scanned: string) => {
     }
   }, [scanned, loaded, loading, chunks,type]);
   useEffect(() => {
-    if(chunks.length > 0 && chunks.filter(item => item === '').length == 0){
+    if(chunks.length > 0 && chunks.filter(item => item === '').length === 0){
       setCompleted(JSON.stringify({[type]: chunks.join('')}));
     }
   }, [type, chunks]);

@@ -34,7 +34,7 @@ const QrCodeReader = (props: QrCodeReaderPropsType) => {
     if(completed){
       props.success(completed);
     }
-  }, []);
+  }, [completed, props]);
   return (
     <AppFrame
       title="Scan QrCode"

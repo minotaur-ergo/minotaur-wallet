@@ -1,3 +1,4 @@
+import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
 import { QrCodeContext } from './QrCodeContext';
 import { QrCodeCallback } from '@/types/qrcode';
@@ -11,6 +12,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
   const [open, setOpen] = React.useState(false);
   const [scanning, setScanning] = useState(false);
   const [callbacks, setCallbacks] = useState<Array<QrCodeCallback>>([]);
+  const [data, setData] = useState<string>('');
   const startScan = () => {
     return new Promise<string>((resolve, reject) => {
       setCallbacks([...callbacks, { resolve, reject }]);
@@ -22,6 +24,13 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     console.log('fail to scan qrcode');
   }, []);
 
+  const senDataToCallbacks = (data: string) => {
+    callbacks.forEach(item => item.resolve(data));
+    setCallbacks([]);
+    setOpen(false);
+    setData('');
+  }
+
   const stopScanning = () => {
     callbacks.forEach((item) => item.reject('Canceled by user'));
     setOpen(false);
@@ -30,8 +39,15 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
   };
 
   const scannedQrCode = (scannedCode: string) => {
-    console.log(scannedCode);
+    setData(scannedCode);
+    setScanning(false);
   };
+
+  const close = () => {
+    setData('');
+    setScanning(false);
+    setOpen(false);
+  }
   return (
     <QrCodeContext.Provider
       value={{
@@ -46,7 +62,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
         />
       )}
       <div style={{ display: open && !scanning ? 'block' : 'none' }}>
-        <div>QrCode Detected Type</div>
+        <QrCodeDetectedType scanned={data} open={open} scanning={scanning} close={close} callback={senDataToCallbacks}/>
       </div>
 
       <div style={{ display: open ? 'none' : 'block' }}>

@@ -16,7 +16,6 @@ const useQrReader = (
         { video: { facingMode: 'user' } },
         'qr-code-scanner-video',
         (result, error) => {
-          console.log("res", result, error)
           if (result) scannedCallback(result.getText());
           if (error) errorCallback(error);
         },
@@ -27,7 +26,7 @@ const useQrReader = (
         controller.current = controls;
       })
       .catch((error) => {
-        console.log("error")
+        console.log(`error ${error}`)
         errorCallback(error);
       });
     return () => {
