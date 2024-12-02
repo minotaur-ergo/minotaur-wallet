@@ -2,7 +2,7 @@ import axios from 'axios';
 import { writeFileSync, readdirSync, readFileSync } from 'fs';
 const exec = async () => {
   // reading all tokens
-  const tokenDir = 'svgs/';
+  const tokenDir = './svgs/';
   const files = readdirSync(tokenDir);
   // for(const iconFile of files) {
   const res = (

@@ -5,7 +5,7 @@ if (existsSync('src/icons')) {
 }
 mkdirSync('src/icons', { recursive: true });
 readdirSync('src').forEach((fileName) => {
-  if (fileName.startsWith('token-') && fileName.endsWith('.ts')) {
+  if (fileName.startsWith('token-') && fileName.endsWith('.ts') || fileName === 'index.ts') {
     rmSync(`src/${fileName}`);
   }
 });

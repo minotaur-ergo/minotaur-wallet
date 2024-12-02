@@ -13,7 +13,7 @@
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
 <svg  version="1.1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;" xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;"
-	 width="510" height="510" viewBox="0 0 510 510" overflow="visible" enable-background="new 0 0 510 510" xml:space="preserve">
+	 width="510" height="510" viewBox="0 0 510 510" overflow="visible" xml:space="preserve">
 <switch>
 	<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
 		<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
