@@ -1,5 +1,18 @@
 # minotaur-wallet
 
+## 2.3.0
+
+### Minor Changes
+
+- Display Transaction Details
+- Display all values comma separated
+- Animated qrcode display and scanning
+- Add Transaction Display page
+
+### Patch Changes
+
+- Fix token select order
+
 ## 2.2.0
 
 ### Minor Changes

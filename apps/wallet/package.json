@@ -1,7 +1,7 @@
 {
   "name": "minotaur-wallet",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "type": "module",
   "scripts": {
     "postinstall": "patch-package",
@@ -93,7 +93,6 @@
     "sql.js": "1.6.2",
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
-    "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0"
   },
   "engines": {
