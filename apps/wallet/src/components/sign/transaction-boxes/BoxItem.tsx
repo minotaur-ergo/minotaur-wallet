@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { ReceiverTokenType } from '../../../types/sign-modal';
+import { ReceiverTokenType } from '@/types/sign-modal';
 import DisplayId from '../../display-id/DisplayId';
 import TokenAmount from '../../token-amount/TokenAmount';
 import { StateWallet } from '@/store/reducer/wallet';

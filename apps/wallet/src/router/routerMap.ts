@@ -1,6 +1,7 @@
 export const WalletPageSuffix = {
   WalletHome: 'home',
   WalletTransaction: 'transaction',
+  WalletTransactionDetail: 'transaction/:txId',
   WalletAsset: 'asset',
   WalletAddress: 'address',
   WalletDApps: 'dApps',
@@ -25,6 +26,7 @@ export const RouteMap = {
   Wallet: '/wallet/:id/*',
   WalletHome: '/wallet/:id/home/',
   WalletTransaction: '/wallet/:id/transaction/',
+  WalletTransactionDetail: '/wallet/:id/transaction/:txId',
   WalletAddress: '/wallet/:id/address/',
   WalletAsset: '/wallet/:id/asset/',
   WalletDApps: '/wallet/:id/dApps/',

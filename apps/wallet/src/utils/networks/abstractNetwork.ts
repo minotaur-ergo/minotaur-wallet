@@ -20,6 +20,12 @@ export abstract class AbstractNetwork {
 
   abstract syncBoxes: (address: Address) => Promise<boolean>;
 
+  abstract getTransaction: (txId: string) => Promise<{
+    tx?: wasm.Transaction;
+    date: string;
+    boxes: Array<wasm.ErgoBox>;
+  }>;
+
   abstract getUnspentBoxByTokenId: (
     tokenId: string,
     offset: number,

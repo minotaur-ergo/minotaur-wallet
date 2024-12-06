@@ -1,3 +1,4 @@
+import { createEmptyArrayWithIndex } from '@/utils/functions';
 import { deserialize } from './box';
 import { AddressDbAction, BoxDbAction } from './db';
 
@@ -6,6 +7,7 @@ interface WalletTransactionType {
   date: Date;
   ergIn: bigint;
   ergOut: bigint;
+  tokens: Map<string, bigint>;
 }
 
 const getWalletTransactionsTotal = async (
@@ -31,6 +33,7 @@ const getWalletTransactions = async (
     date: new Date(),
     ergIn: 0n,
     ergOut: 0n,
+    tokens: new Map<string, bigint>(),
     txId: item.txId,
   }));
   for (const txRaw of result) {
@@ -40,6 +43,18 @@ const getWalletTransactions = async (
     );
     for (const box of boxes) {
       const boxWasm = deserialize(box.serialized);
+      const tokens = boxWasm.tokens();
+      const sign = boxWasm.tx_id().to_str() === txRaw.txId ? 1n : -1n;
+      createEmptyArrayWithIndex(tokens.len()).forEach((index) => {
+        const token = tokens.get(index);
+        const total =
+          (txRaw.tokens.get(token.id().to_str()) ?? 0n) +
+          sign * BigInt(token.amount().as_i64().to_str());
+        txRaw.tokens.set(token.id().to_str(), total);
+        if (total === 0n) {
+          txRaw.tokens.delete(token.id().to_str());
+        }
+      });
       if (boxWasm.tx_id().to_str() === txRaw.txId) {
         txRaw.ergIn += BigInt(boxWasm.value().as_i64().to_str());
         txRaw.date = new Date(box.create_timestamp);

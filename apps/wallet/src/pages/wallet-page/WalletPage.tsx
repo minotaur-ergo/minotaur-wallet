@@ -1,3 +1,4 @@
+import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { useEffect, useState } from 'react';
 import { GlobalStateType } from '@/store';
 import { useSelector } from 'react-redux';
@@ -58,6 +59,10 @@ const WalletPage = () => {
       <Route
         path={WalletPageSuffix.WalletTransaction}
         element={<WalletTransaction wallet={wallet} />}
+      />
+      <Route
+        path={WalletPageSuffix.WalletTransactionDetail}
+        element={<WalletTransactionDetails wallet={wallet} />}
       />
       <Route
         path={WalletPageSuffix.WalletAddress}

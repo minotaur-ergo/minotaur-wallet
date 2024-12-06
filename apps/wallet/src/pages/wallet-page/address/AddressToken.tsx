@@ -34,9 +34,9 @@ const AddressToken = (props: AddressTokenPropsType) => {
   });
   return (
     <Box display="flex">
-      <Typography sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }}>
         {name ? name : <DisplayId id={props.id} />}
-      </Typography>
+      </Box>
       <Typography>{tokenStr(props.amount, decimal)}</Typography>
     </Box>
   );

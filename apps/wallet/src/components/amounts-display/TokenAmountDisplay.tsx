@@ -1,3 +1,4 @@
+import { commaSeparate } from '@/utils/convert';
 import { createEmptyArray } from '@/utils/functions';
 import React from 'react';
 
@@ -6,13 +7,15 @@ interface TokenAmountDisplayPropsType {
   decimal: number;
   displayDecimal?: number;
 }
+
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
   const amount_str =
     createEmptyArray(props.decimal, '0').join('') + props.amount.toString();
-  const valuePart =
+  const valuePart = commaSeparate(
     amount_str
       .substring(0, amount_str.length - props.decimal)
-      .replace(/^0+/, '') || '0';
+      .replace(/^0+/, '') || '0',
+  );
   const decimalPart = amount_str.substring(amount_str.length - props.decimal);
   const decimalPartTrimmed =
     props.displayDecimal === undefined

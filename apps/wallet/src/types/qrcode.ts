@@ -3,6 +3,7 @@ import React from 'react';
 export interface QrCodePropsType {
   handleScan: (scan: string) => unknown;
   handleError: () => unknown;
+  setSupportMultipleCamera: (supportMultiple: boolean) => unknown;
 }
 
 export interface QrCodeContextType {

@@ -16,15 +16,18 @@ const extractTokens = (
 };
 
 const useIssuedAndBurntTokens = (
-  tx: wasm.UnsignedTransaction | wasm.Transaction,
+  tx: wasm.UnsignedTransaction | wasm.Transaction | undefined,
   boxes: Array<wasm.ErgoBox>,
 ) => {
+  const [mapped, setMapped] = useState<Map<string, bigint>>(
+    new Map<string, bigint>(),
+  );
   const [issued, setIssued] = useState<Array<TokenType>>([]);
   const [burnt, setBurnt] = useState<Array<TokenType>>([]);
   const [storedTxId, setStoredTxId] = useState('');
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (!loading && storedTxId !== tx.id().to_str()) {
+    if (tx && !loading && storedTxId !== tx.id().to_str()) {
       setLoading(true);
       const inputs = tx.inputs();
       const tokens = new Map<string, bigint>();
@@ -41,20 +44,25 @@ const useIssuedAndBurntTokens = (
       }
       const issuedTokens: Array<TokenType> = [];
       const burntTokens: Array<TokenType> = [];
+      const mappedTokens: Map<string, bigint> = new Map<string, bigint>();
       for (const [tokenId, amount] of tokens.entries()) {
         if (amount > 0n) {
           issuedTokens.push({ tokenId, amount });
         } else if (amount < 0n) {
           burntTokens.push({ tokenId, amount: -amount });
         }
+        if (amount !== 0n) {
+          mappedTokens.set(tokenId, amount);
+        }
       }
       setIssued(issuedTokens);
       setBurnt(burntTokens);
+      setMapped(mappedTokens);
       setStoredTxId(tx.id().to_str());
       setLoading(false);
     }
   }, [tx, boxes, storedTxId, loading]);
-  return { issued, burnt };
+  return { issued, burnt, mapped };
 };
 
 export default useIssuedAndBurntTokens;

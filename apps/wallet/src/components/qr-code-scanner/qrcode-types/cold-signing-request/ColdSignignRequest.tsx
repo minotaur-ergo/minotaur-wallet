@@ -36,50 +36,59 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
   useEffect(() => {
     if (props.scanned !== loaded && !loading) {
-      setLoading(true);
-      setError('');
-      const data = JSON.parse(props.scanned) as ColdSigningRequestData;
-      const reduced = wasm.ReducedTransaction.sigma_parse_bytes(
-        Buffer.from(data.reducedTx, 'base64'),
-      );
-      const boxes = data.inputs.map(deserialize);
-      if (data.sender) {
-        const filtered = wallets.filter(
-          (item) =>
-            item.addresses.filter((address) => address.address === data.sender)
-              .length > 0,
+      try {
+        setLoading(true);
+        setError('');
+        const data = JSON.parse(props.scanned) as ColdSigningRequestData;
+        const reduced = wasm.ReducedTransaction.sigma_parse_bytes(
+          Buffer.from(data.reducedTx, 'base64'),
         );
-        if (filtered.length >= 1) {
-          walletContext.setWallet(filtered[0]);
+        const boxes = data.inputs.map(deserialize);
+        if (data.sender) {
+          const filtered = wallets.filter(
+            (item) =>
+              item.addresses.filter(
+                (address) => address.address === data.sender,
+              ).length > 0,
+          );
+          if (filtered.length >= 1) {
+            walletContext.setWallet(filtered[0]);
+          } else {
+            setError('Transaction does not belong to any of your wallets');
+          }
         } else {
-          setError('Transaction does not belong to any of your wallets');
+          const inputAddresses = boxes.map((item) =>
+            wasm.Address.recreate_from_ergo_tree(item.ergo_tree()),
+          );
+          const filtered = wallets.filter((wallet) => {
+            const chain = getChain(wallet.networkType);
+            const prefix = chain.prefix;
+            const inputAddressStr = inputAddresses.map((item) =>
+              item.to_base58(prefix),
+            );
+            return (
+              wallet.addresses
+                .map((address) => address.address)
+                .filter((address) => inputAddressStr.includes(address)).length >
+              0
+            );
+          });
+          if (filtered.length === 1) {
+            walletContext.setWallet(filtered[0]);
+          } else {
+            setError(
+              'Can Not Determine Which Wallet Can Sign This Transaction. Please Fill Sender Field in Request',
+            );
+          }
         }
-      } else {
-        const inputAddresses = boxes.map((item) =>
-          wasm.Address.recreate_from_ergo_tree(item.ergo_tree()),
-        );
-        const filtered = wallets.filter((wallet) => {
-          const chain = getChain(wallet.networkType);
-          const prefix = chain.prefix;
-          const inputAddressStr = inputAddresses.map((item) =>
-            item.to_base58(prefix),
-          );
-          return (
-            wallet.addresses
-              .map((address) => address.address)
-              .filter((address) => inputAddressStr.includes(address)).length > 0
-          );
-        });
-        if (filtered.length === 1) {
-          walletContext.setWallet(filtered[0]);
-        } else {
-          setError(
-            'Can Not Determine Which Wallet Can Sign This Transaction. Please Fill Sender Field in Request',
-          );
-        }
+        txSignContext.setReducedTx(reduced);
+        txSignContext.setTx(reduced.unsigned_tx(), boxes);
+        setHasError(false);
+      } catch (exp) {
+        console.error(exp);
+        setError('Invalid Data Scanned');
+        setHasError(true);
       }
-      txSignContext.setReducedTx(reduced);
-      txSignContext.setTx(reduced.unsigned_tx(), boxes);
       setLoaded(props.scanned);
       setLoading(false);
     }

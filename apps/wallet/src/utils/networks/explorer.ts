@@ -4,6 +4,7 @@ import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
 import * as wasm from 'ergo-lib-wasm-browser';
 import Address from '@/db/entities/Address';
 import { TokenInfo } from '@/types/db';
+import JSONBigInt from 'json-bigint';
 import { JsonBI } from '../json';
 import { AbstractNetwork } from './abstractNetwork';
 import { BalanceInfo } from './interfaces';
@@ -226,6 +227,53 @@ class ErgoExplorerNetwork extends AbstractNetwork {
 
   trackMempool = async (box: wasm.ErgoBox): Promise<wasm.ErgoBox> => {
     return box;
+  };
+
+  getTransaction = async (
+    txId: string,
+  ): Promise<{
+    tx?: wasm.Transaction;
+    date: string;
+    boxes: Array<wasm.ErgoBox>;
+  }> => {
+    try {
+      const res = await this.client.v1.getApiV1TransactionsP1(txId);
+      if (res === undefined) return { date: '', boxes: [] };
+      const boxes = (res.inputs || []).map((box) => {
+        const boxJson = {
+          creationHeight: box.outputCreatedAt,
+          transactionId: box.outputTransactionId,
+          boxId: box.boxId,
+          value: box.value,
+          index: box.outputIndex,
+          ergoTree: box.ergoTree,
+          assets: box.assets,
+          additionalRegisters: box.additionalRegisters,
+        };
+        return wasm.ErgoBox.from_json(JsonBI.stringify(boxJson));
+      });
+      const txJson = {
+        id: res.id,
+        inputs: (res.inputs ?? []).map((item) => ({
+          boxId: item.boxId,
+          spendingProof: {
+            proofBytes: item.spendingProof ? item.spendingProof : '',
+            extension: {},
+          },
+        })),
+        dataInputs: res.dataInputs,
+        outputs: res.outputs,
+      };
+      const date = new Date(parseInt(res.timestamp.toString()));
+      return {
+        tx: wasm.Transaction.from_json(JSONBigInt.stringify(txJson)),
+        date: date.toDateString() + ', ' + date.toLocaleTimeString(),
+        boxes: boxes,
+      };
+    } catch (e) {
+      console.error(e);
+      return { date: '', boxes: [] };
+    }
   };
 }
 

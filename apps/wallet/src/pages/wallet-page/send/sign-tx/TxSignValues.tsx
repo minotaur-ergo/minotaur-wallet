@@ -1,8 +1,8 @@
+import useTxValues from '@/hooks/useTxValues';
 import { Box, FormHelperText, Typography } from '@mui/material';
 import { ErgoBox } from 'ergo-lib-wasm-browser';
 import * as wasm from 'ergo-lib-wasm-browser';
-import React, { useEffect, useState } from 'react';
-import { extractErgAndTokenSpent } from '@/action/tx';
+import React from 'react';
 import TokenAmount from '@/components/token-amount/TokenAmount';
 import { StateWallet } from '@/store/reducer/wallet';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
@@ -14,45 +14,13 @@ interface WalletSignNormalPropsType {
   wallet: StateWallet;
 }
 
-interface Values {
-  total: bigint;
-  txId: string;
-  tokens: { [tokenId: string]: bigint };
-}
-
 const TxSignValues = (props: WalletSignNormalPropsType) => {
-  const [txValues, setTxValues] = useState<Values>({
-    total: 0n,
-    txId: '',
-    tokens: {},
-  });
-  const issuedAndBurnt = useIssuedAndBurntTokens(props.tx, props.boxes);
-  const [valuesDirection, setValuesDirection] = useState({
-    incoming: false,
-    outgoing: false,
-  });
-  useEffect(() => {
-    const unsigned = props.tx;
-    if (txValues.txId !== unsigned.id().to_str()) {
-      const values = extractErgAndTokenSpent(
-        props.wallet,
-        props.boxes,
-        unsigned,
-      );
-      const incoming =
-        values.value < 0n ||
-        Object.values(values.tokens).filter((amount) => amount < 0n).length > 0;
-      const outgoing =
-        values.value > 0n ||
-        Object.values(values.tokens).filter((amount) => amount > 0n).length > 0;
-      setValuesDirection({ incoming, outgoing });
-      setTxValues({
-        total: values.value,
-        tokens: values.tokens,
-        txId: unsigned.id().to_str(),
-      });
-    }
-  }, [txValues.txId, props.tx, props.wallet, props.boxes]);
+  const { issued, burnt } = useIssuedAndBurntTokens(props.tx, props.boxes);
+  const { txValues, valuesDirection } = useTxValues(
+    props.tx,
+    props.boxes,
+    props.wallet,
+  );
   return (
     <Box>
       {valuesDirection.outgoing ? (
@@ -107,13 +75,13 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
         These amount will be spent when transaction proceed.
       </FormHelperText>
       <UnBalancedTokensAmount
-        amounts={issuedAndBurnt.burnt}
+        amounts={burnt}
         color="error"
         label="Burning"
         networkType={props.wallet.networkType}
       />
       <UnBalancedTokensAmount
-        amounts={issuedAndBurnt.issued}
+        amounts={issued}
         color="success"
         label="Issuing"
         networkType={props.wallet.networkType}

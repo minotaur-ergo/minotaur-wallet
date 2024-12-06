@@ -19,16 +19,18 @@ const QrCodeReaderWeb = (props: QrCodeReaderWebPropsType) => {
       <video
         id="qr-code-scanner-video"
         style={{
-          width: '100%',
-          height: '100vh',
+          width: '100vw',
+          height: 'calc(100vh - 72px)',
           position: 'fixed',
           background: '#000',
-          top: 0,
+          top: 72,
           left: 0,
           objectFit: 'cover',
           transform: 'scaleX(-1)',
+          zIndex: -1,
         }}
       />
+      <video />
       {totalDevices > 1 ? (
         <Fab onClick={() => selectNext}>
           <CameraswitchOutlined />

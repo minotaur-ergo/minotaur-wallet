@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Box,
   Card,
   CardActionArea,
   ToggleButton,
@@ -60,9 +61,9 @@ const WalletExtendedPublicKey = (props: WalletExtendedPublicKeyPropsType) => {
         elevation={0}
         sx={{ bgcolor: 'white', textAlign: 'center', mt: 1, mb: 2 }}
       >
-        <Typography sx={{ p: 8, fontStyle: 'italic', color: 'textSecondary' }}>
+        <Box sx={{ p: 8, fontStyle: 'italic', color: 'textSecondary' }}>
           <QRCodeSVG value={xPubEncoded} />
-        </Typography>
+        </Box>
       </Card>
       <Card>
         <CardActionArea sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}>

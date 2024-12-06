@@ -1,0 +1,7 @@
+android/*
+ios/*
+dist/*
+electron/app/*
+electron/build/*
+electron/dist/*
+node_modules
