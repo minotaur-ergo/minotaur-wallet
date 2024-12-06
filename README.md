@@ -92,7 +92,7 @@ For Apple Silicon chips (M series) you must use the `arm64` build. Using the int
 In case of **_damaged file_** error, use this command:
 
 ```
-sudo xattr -r -s com.apple.quarantine /Application/minotaur.app
+sudo xattr -r -s com.apple.quarantine /Applications/minotaur.app
 ```
 
 ### Tip the developer

@@ -1,7 +1,7 @@
 {
   "name": "minotaur-wallet",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "type": "module",
   "scripts": {
     "postinstall": "patch-package",
@@ -40,7 +40,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@minotaur-ergo/icons": "^0.1.5",
+    "@minotaur-ergo/icons": "^0.2.0",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
     "@reduxjs/toolkit": "^2.2.5",
@@ -93,7 +93,6 @@
     "sql.js": "1.6.2",
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
-    "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0"
   },
   "engines": {
