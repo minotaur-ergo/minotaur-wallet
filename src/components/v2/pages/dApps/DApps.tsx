@@ -127,7 +127,7 @@ const DApps = () => {
           <ItemCardA
             title="Burn Token"
             description="Buy or sell SigmaUSD or SigmaRSV"
-            path={RouterMap.SigmaUSD}
+            path={RouterMap.BurnToken}
             icon={<LocalFireDepartmentTwoToneIcon fontSize="large" />}
             color="error.main"
           />

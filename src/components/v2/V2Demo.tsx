@@ -37,6 +37,7 @@ import ImportAddresses from './pages/addressBook/import/ImportAddresses';
 import ExportAsset from './pages/assets/export/ExportAsset';
 import MultiSigRegistration from './pages/multiSig/registration/MultiSigRegistration';
 import ExportWallet from './pages/wallets/export/ExportWallet';
+import BurnToken from './pages/dApps/burnToken/BurnToken';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -48,6 +49,7 @@ export const RouterMap = {
   WhiteList: '/v2/wallet/:id/dapps/whiteList',
   ConnectedDApp: '/v2/wallet/:id/dapps/whiteList/:dappid',
   IssueToken: '/v2/wallet/dapps/issueToken',
+  BurnToken: '/v2/wallet/dapps/burnToken',
   SigmaUSD: '/v2/wallet/dapps/sigmaUsd',
   BoxConsolidation: '/v2/wallet/dapps/boxConsolidation',
   Wallets: '/v2/wallets',
@@ -94,6 +96,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.IssueToken.replace('/v2', '')}
           element={<IssueToken />}
+        />
+        <Route
+          path={RouterMap.BurnToken.replace('/v2', '')}
+          element={<BurnToken />}
         />
         <Route
           path={RouterMap.SigmaUSD.replace('/v2', '')}
