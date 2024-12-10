@@ -1,13 +1,14 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import DisplayId from '../../components/DisplayId';
+import { TokenType } from '../../models';
+import DisplayToken from '../../components/DisplayToken';
 
 interface PropsType {
-  amount?: number;
-  id?: string;
+  id: string;
+  tokens: TokenType[];
 }
 
-export default function ({ amount = 0, id = '' }: PropsType) {
+export default function ({ tokens, id = '' }: PropsType) {
   return (
     <Box display="flex" sx={{ gap: 1 }}>
       <Box
@@ -19,12 +20,12 @@ export default function ({ amount = 0, id = '' }: PropsType) {
           bgcolor: 'primary.light',
         }}
       />
-      <Box sx={{ overflow: 'auto' }}>
+      <Stack spacing={1} sx={{ overflow: 'auto' }}>
         <DisplayId variant="body2" color="textSecondary" id={id} />
-        <Typography>
-          {amount.toFixed(2)} <small>ERG</small>
-        </Typography>
-      </Box>
+        {tokens.map((token) => (
+          <DisplayToken key={token.id} {...token} />
+        ))}
+      </Stack>
     </Box>
   );
 }

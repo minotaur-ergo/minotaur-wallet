@@ -13,18 +13,51 @@ export default function ({ open, handleClose }: PropsType) {
   const boxes = {
     spent: [
       {
-        amount: 3.0011,
         id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+        tokens: [
+          {
+            name: 'Erg',
+            amount: 0.00101,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+          {
+            name: 'eRSN',
+            amount: 3.979,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+        ],
       },
     ],
     created: [
       {
-        amount: 3,
         id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+        tokens: [
+          {
+            name: 'Erg',
+            amount: 0.00101,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+          {
+            name: 'eRSN',
+            amount: 3.979,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+        ],
       },
       {
-        amount: 0.0011,
         id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+        tokens: [
+          {
+            name: 'Erg',
+            amount: 0.00101,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+          {
+            name: 'eRSN',
+            amount: 3.979,
+            id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+          },
+        ],
       },
     ],
   };
@@ -53,7 +86,7 @@ export default function ({ open, handleClose }: PropsType) {
       </Typography>
       <Stack spacing={1}>
         {boxes.spent.map((item, index) => (
-          <BoxItem {...item} key={index} />
+          <BoxItem id={item.id} tokens={item.tokens} key={index} />
         ))}
       </Stack>
 
@@ -65,7 +98,7 @@ export default function ({ open, handleClose }: PropsType) {
       </Typography>
       <Stack spacing={1}>
         {boxes.created.map((item, index) => (
-          <BoxItem {...item} key={index} />
+          <BoxItem id={item.id} tokens={item.tokens} key={index} />
         ))}
       </Stack>
     </Drawer>
