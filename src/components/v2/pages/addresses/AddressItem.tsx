@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Box } from '@mui/material';
-import { TokenType } from './TokenItem';
 import AddressItemCard from './AddressItemCard';
 import AddressItemDrawer from './AddressItemDrawer';
+import { TokenType } from '../../models';
 
 interface PropsType {
   name: string;

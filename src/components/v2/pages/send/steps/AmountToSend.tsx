@@ -16,11 +16,11 @@ import IconButton from '@mui/material/IconButton';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import AddIcon from '@mui/icons-material/Add';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
-import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import { BookOutlined } from '@mui/icons-material';
 import useDrawer from '../../../reducers/useDrawer';
 import AddressBookModal from '../../../components/AddressBookModal';
+import DisplayToken from '../../../components/DisplayToken';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -174,7 +174,11 @@ const ReceiverForm = ({
                   receiver.tokens.findIndex((item) => item.id === token.id) > -1
                 }
               />
-              <ListItemText primary={token.name} />
+              <DisplayToken
+                {...token}
+                displayAmount={false}
+                style={{ width: 'calc(100% - 42px)' }}
+              />
             </MenuItem>
           ))}
         </Select>
@@ -211,9 +215,21 @@ const newReceiver = { address: '', amount: null, tokens: [] };
 export default function () {
   const [age, setAge] = useState('');
   const [tokens, set_tokens] = useState([
-    { id: '01', name: 'Token 1', available: 25 },
-    { id: '02', name: 'Token 2', available: 142 },
-    { id: '03', name: 'Token 3', available: 37.6 },
+    {
+      id: '1506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+      name: 'Token 1',
+      available: 25,
+    },
+    {
+      id: '2506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+      name: 'Token 2',
+      available: 142,
+    },
+    {
+      id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7eeae7ef',
+      name: 'Token 3',
+      available: 37.6,
+    },
   ]);
   const [receivers, set_receivers] = useState<ReceiverType[]>([newReceiver]);
 
