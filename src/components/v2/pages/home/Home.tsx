@@ -9,7 +9,7 @@ import { WALLETS } from '../../data';
 const Home = () => {
   const { id } = useParams();
   const wallet = WALLETS.find((row) => row.id === id);
-  const isMultiSig = wallet?.type === 'Multi-signature Wallet';
+  const isMultiSig = wallet?.type === 'Multi-signature';
 
   return (
     <HomeFrame>
