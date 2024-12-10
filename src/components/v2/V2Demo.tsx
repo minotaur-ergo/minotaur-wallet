@@ -36,6 +36,7 @@ import ExportAddresses from './pages/addressBook/export/ExportAddresses';
 import ImportAddresses from './pages/addressBook/import/ImportAddresses';
 import ExportAsset from './pages/assets/export/ExportAsset';
 import MultiSigRegistration from './pages/multiSig/registration/MultiSigRegistration';
+import ExportWallet from './pages/wallets/export/ExportWallet';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -51,6 +52,7 @@ export const RouterMap = {
   BoxConsolidation: '/v2/wallet/dapps/boxConsolidation',
   Wallets: '/v2/wallets',
   AddWallet: '/v2/wallet/add',
+  ExportWallet: '/v2/wallet/export',
   CreateWallet: '/v2/wallet/add/newWallet',
   RestoreWallet: '/v2/wallet/add/existingWallet',
   AddROWallet: '/v2/wallet/add/readOnlyWallet',
@@ -104,6 +106,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.AddWallet.replace('/v2', '')}
           element={<AddWallet />}
+        />
+        <Route
+          path={RouterMap.ExportWallet.replace('/v2', '')}
+          element={<ExportWallet />}
         />
         <Route
           path={RouterMap.CreateWallet.replace('/v2', '')}

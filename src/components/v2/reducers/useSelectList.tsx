@@ -10,6 +10,7 @@ interface OutputType<T> {
   handleSelectAll: () => void;
   handleToggle: (id: string | number, checked: boolean) => void;
   SelectAllButton: () => JSX.Element;
+  setValue: (id: string | number, value: Partial<T> & SelectableType) => void;
 }
 
 function useSelectList<T>(
@@ -32,7 +33,21 @@ function useSelectList<T>(
     setList(newList);
   };
 
+  const setValue = (
+    id: string | number,
+    value: Partial<T> & SelectableType
+  ) => {
+    const newList = [...list];
+    const index = newList.findIndex((item) => id === item[pk]);
+    if (index > -1) {
+      newList[index] = Object.assign({}, newList[index], value);
+    }
+    setList(newList);
+  };
+
   const handleToggle = (id: string | number, checked: boolean) => {
+    const value = { selected: checked } as Partial<T> & SelectableType;
+    setValue(id, value);
     const newList = [...list];
     const index = newList.findIndex((item) => id === item[pk]);
     if (index > -1) {
@@ -63,6 +78,7 @@ function useSelectList<T>(
     handleSelectAll,
     handleToggle,
     SelectAllButton,
+    setValue,
   };
 }
 

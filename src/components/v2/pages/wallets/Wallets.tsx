@@ -1,19 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { RouterMap } from '../../V2Demo';
+import { FormControlLabel, Stack, Switch } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import TotalBalanceCard from './components/TotalBalanceCard';
 import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
 import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
 import { WALLETS } from '../../data';
 import SubHeading from '../../components/SubHeading';
+import WalletsMoreMenu from './WalletsMoreMenu';
 
 const Wallets = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const alert = useRef<SnackAlertHandle>(null);
   const [showArchived, setShowArchived] = useState(false);
@@ -51,13 +49,7 @@ const Wallets = () => {
     <AppFrame
       title="My Wallets"
       navigation={<BackButton />}
-      actions={
-        <>
-          <IconButton onClick={() => navigate(RouterMap.AddWallet)}>
-            <AddIcon />
-          </IconButton>
-        </>
-      }
+      actions={<WalletsMoreMenu />}
     >
       <TotalBalanceCard />
 
