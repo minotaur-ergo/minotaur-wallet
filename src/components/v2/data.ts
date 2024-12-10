@@ -1,4 +1,9 @@
-import { AddressBookType, AssetType, RegistrationType } from './models';
+import {
+  AddressBookType,
+  AssetType,
+  RegistrationType,
+  WalletType,
+} from './models';
 import { DAppActions } from './pages/dApps/connectedDApp/ConnectedDAppLog';
 
 export const MSTransactions = [
@@ -284,24 +289,28 @@ export const ADDRESSES = [
       {
         name: 'Token 1',
         amount: 12.4,
+        id: 'f2c25f71cb2ae7e41bd1d6add086b2eae366add086b2e7ef2c258308650f',
       },
       {
         name: 'Token 2',
         amount: 337.1,
+        id: 'ae7ef2c25f7086b2e6830841bd1d6add01cb236506add86b2eae7ef2c25f',
+        logoSrc: '/logo192.png',
       },
       {
         name: 'Token 3',
         amount: 21.0,
+        id: 'eae7efd086b2ebd25f71cb22c25f651d6adae7ef2c06ad36830841d086b2',
       },
     ],
   },
 ];
 
-export const WALLETS = [
+export const WALLETS: WalletType[] = [
   {
     id: '10001',
     name: 'My First Wallet',
-    type: 'Normal Wallet',
+    type: 'Normal',
     net: 'MAIN-NET',
     amount: 34.2,
     value: 71.04,
@@ -310,7 +319,7 @@ export const WALLETS = [
   {
     id: '10002',
     name: 'Secondary Wallet',
-    type: 'Normal Wallet',
+    type: 'Normal',
     net: 'MAIN-NET',
     amount: 0,
     value: 0,
@@ -318,7 +327,7 @@ export const WALLETS = [
   {
     id: '10003',
     name: 'Wallet 3',
-    type: 'Normal Wallet',
+    type: 'Normal',
     net: 'MAIN-NET',
     amount: 4202003.52,
     value: 87100.0,
@@ -328,7 +337,7 @@ export const WALLETS = [
   {
     id: '10004',
     name: 'My Wallet with Very Very Very Long Name',
-    type: 'Normal Wallet',
+    type: 'Normal',
     net: 'MAIN-NET',
     amount: 15.31,
     value: 31.04,
@@ -337,7 +346,7 @@ export const WALLETS = [
   {
     id: '10005',
     name: 'Last Wallet',
-    type: 'Multi-signature Wallet',
+    type: 'Multi-signature',
     net: 'MAIN-NET',
     amount: 12.2,
     value: 24.04,
@@ -346,7 +355,7 @@ export const WALLETS = [
   {
     id: '10006',
     name: 'Old Wallet',
-    type: 'Normal Wallet',
+    type: 'Normal',
     net: 'MAIN-NET',
     amount: 4.0,
     value: 7.21,

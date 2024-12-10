@@ -13,8 +13,9 @@ import ListController from '../../components/ListController';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import AddressCopy from '../../components/AddressCopy';
-import TokenItem, { TokenType } from './TokenItem';
 import { useState } from 'react';
+import DisplayToken from '../../components/DisplayToken';
+import { TokenType } from '../../models';
 
 interface PropsType {
   name: string;
@@ -66,7 +67,7 @@ const AddressItemDrawer = ({
         </Box>
         <Heading title="Tokens" />
         <ListController
-          ListItem={<TokenItem amount={0} name="" />}
+          ListItem={<DisplayToken amount={0} name="" id="" />}
           getData={getTokens}
           divider={false}
           emptyTitle="There is no tokens!"

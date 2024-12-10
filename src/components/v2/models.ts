@@ -9,6 +9,13 @@ export type AssetType = {
   logoSrc?: string;
 };
 
+export type TokenType = {
+  name: string;
+  amount: number;
+  id: string;
+  logoSrc?: string;
+};
+
 export type AddressBookType = {
   name: string;
   address: string;
@@ -32,3 +39,20 @@ export type TransactionTokenType = {
   amount: number;
   type: 'Received' | 'Issued' | 'Burned';
 };
+
+export type WalletType = {
+  id: string;
+  name: string;
+  type: 'Normal' | 'Multi-signature';
+  net: 'MAIN-NET' | 'TEST-NET';
+  amount: number;
+  value: number;
+  numberOfTokens?: number;
+  favorite?: boolean;
+  archived?: boolean;
+};
+
+export type SelectWalletType = WalletType &
+  SelectableType & {
+    withSecret?: boolean;
+  };
