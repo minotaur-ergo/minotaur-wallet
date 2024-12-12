@@ -19,6 +19,7 @@ interface QrCodeDetectedTypePropsType {
 const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   const [selectedType, setSelectedType] = useState<QrCodeType | undefined>();
   const [checked, setChecked] = useState('');
+  const [data, setData] = useState('');
   const [checking, setChecking] = useState(false);
   const firstWallet = useSelector(
     (state: GlobalStateType) => state.wallet.wallets[0],
@@ -37,6 +38,11 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
         item.detect(props.scanned),
       );
       setSelectedType(selectedTypes.length > 0 ? selectedTypes[0] : undefined);
+      setData(
+        selectedTypes.length > 0
+          ? (selectedTypes[0].detect(props.scanned) ?? '')
+          : '',
+      );
       if (selectedTypes.length == 0 && props.callback) {
         props.callback(props.scanned);
       }
@@ -59,7 +65,7 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
           wallet={usedWallet}
           close={props.close}
         >
-          {selectedType.render(props.scanned, props.close)}
+          {selectedType.render(data, props.close)}
         </TxSignContextHandler>
       </SelectableWalletContext.Provider>
     );

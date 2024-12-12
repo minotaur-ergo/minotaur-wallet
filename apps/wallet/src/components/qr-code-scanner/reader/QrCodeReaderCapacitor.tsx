@@ -18,28 +18,23 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
   const start = async () => {
     if (!started) {
       if (await checkPermission()) {
-        const listener = await BarcodeScanner.addListener(
-          'barcodeScanned',
-          async (result) => {
-            const boxPosition = getCameraBoxBoundary();
-            const cornerPoints = result.barcode.cornerPoints;
-            if (cornerPoints) {
-              const xs = cornerPoints.map((item) => item[0]);
-              const ys = cornerPoints.map((item) => item[1]);
-              if (
-                Math.min(...xs) < boxPosition.left ||
-                Math.max(...xs) > boxPosition.right ||
-                Math.min(...ys) < boxPosition.top ||
-                Math.max(...ys) > boxPosition.bottom
-              ) {
-                return;
-              }
-              await listener.remove();
-              await stop();
-              props.handleScan(result.barcode.rawValue);
+        await BarcodeScanner.addListener('barcodeScanned', async (result) => {
+          const boxPosition = getCameraBoxBoundary();
+          const cornerPoints = result.barcode.cornerPoints;
+          if (cornerPoints) {
+            const xs = cornerPoints.map((item) => item[0]);
+            const ys = cornerPoints.map((item) => item[1]);
+            if (
+              Math.min(...xs) < boxPosition.left ||
+              Math.max(...xs) > boxPosition.right ||
+              Math.min(...ys) < boxPosition.top ||
+              Math.max(...ys) > boxPosition.bottom
+            ) {
+              return;
             }
-          },
-        );
+            props.handleScan(result.barcode.rawValue);
+          }
+        });
         document.body.classList.add('barcode-scanner-active');
         await BarcodeScanner.startScan({
           lensFacing: usedCamera,

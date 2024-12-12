@@ -27,15 +27,9 @@ export const enum QrCodeTypeEnum {
   MultiSigRequest = 'MSR',
 }
 
-export interface DetectParam {
-  page: number;
-  total: number;
-  payload: string;
-}
-
 export interface QrCodeType {
   render?: (scanned: string, close: () => unknown) => React.ReactNode;
-  detect: (scanned: string) => boolean;
+  detect: (scanned: string) => string | undefined;
   type: QrCodeTypeEnum;
 }
 
