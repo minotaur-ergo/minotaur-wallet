@@ -32,7 +32,7 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   };
   useEffect(() => {
     if (props.scanned !== checked && !checking) {
-      console.log('start process detected type');
+      console.debug('start process detected type');
       setChecking(true);
       const selectedTypes = QrCodeTypes.filter((item) =>
         item.detect(props.scanned),
@@ -51,7 +51,6 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
     }
   }, [checked, checking, props]);
   const usedWallet = wallet === undefined ? firstWallet : wallet;
-  console.log(selectedType, usedWallet);
   if (checking) {
     return <LoadingPage />;
   }

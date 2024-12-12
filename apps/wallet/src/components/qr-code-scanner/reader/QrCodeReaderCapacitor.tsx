@@ -1,10 +1,14 @@
 import MessageContext from '@/components/app/messageContext';
 import { QrCodePropsType } from '@/types/qrcode';
-import { useContext, useEffect, useState } from 'react';
-import { BarcodeScanner, LensFacing } from '@capacitor-mlkit/barcode-scanning';
-import { Fab } from '@mui/material';
-import { CameraswitchOutlined } from '@mui/icons-material';
 import { getCameraBoxBoundary } from '@/utils/qrcode';
+import {
+  BarcodeFormat,
+  BarcodeScanner,
+  LensFacing,
+} from '@capacitor-mlkit/barcode-scanning';
+import { CameraswitchOutlined } from '@mui/icons-material';
+import { Fab } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 
 const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
   const message = useContext(MessageContext);
@@ -38,6 +42,7 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
         document.body.classList.add('barcode-scanner-active');
         await BarcodeScanner.startScan({
           lensFacing: usedCamera,
+          formats: [BarcodeFormat.QrCode],
         });
         setStarted(true);
       } else {
@@ -52,6 +57,7 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
     BarcodeScanner.stopScan().then(() =>
       BarcodeScanner.startScan({
         lensFacing: newFace,
+        formats: [BarcodeFormat.QrCode],
       }),
     );
     setUsedCamera(newFace);
@@ -60,6 +66,7 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
   const stop = async () => {
     document.body.classList.remove('barcode-scanner-active');
     await BarcodeScanner.stopScan();
+    await BarcodeScanner.removeAllListeners();
   };
 
   useEffect(() => {
