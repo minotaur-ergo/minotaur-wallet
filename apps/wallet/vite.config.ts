@@ -8,7 +8,7 @@ import wasm from 'vite-plugin-wasm';
 export default defineConfig({
   build: {
     minify: false,
-    target: "es2022"
+    target: 'es2022',
   },
   plugins: [react(), wasm()],
   optimizeDeps: {

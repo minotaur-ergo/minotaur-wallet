@@ -6,7 +6,8 @@ import ColdSignTransaction from './cold-sign-transaction/ColdSignTransaction';
 
 const QrCodeTypes: Array<QrCodeType> = [
   {
-    detect: (scanned: string) => scanned.startsWith('ergopay:'),
+    detect: (scanned: string) =>
+      scanned.startsWith('ergopay:') ? scanned : undefined,
     render: (scanned: string, close: () => unknown) => (
       <ErgoPay scanned={scanned} close={close} />
     ),
@@ -14,7 +15,7 @@ const QrCodeTypes: Array<QrCodeType> = [
   },
   {
     detect: (scanned: string) =>
-      detectPageFromJson(scanned, QrCodeTypeEnum.ColdSignRequest) !== null,
+      detectPageFromJson(scanned, QrCodeTypeEnum.ColdSignRequest),
     render: (scanned: string, close: () => unknown) => (
       <ColdSigningRequest scanned={scanned} close={close} />
     ),
@@ -22,7 +23,7 @@ const QrCodeTypes: Array<QrCodeType> = [
   },
   {
     detect: (scanned: string) =>
-      detectPageFromJson(scanned, QrCodeTypeEnum.ColdSignTransaction) !== null,
+      detectPageFromJson(scanned, QrCodeTypeEnum.ColdSignTransaction),
     render: (scanned: string, close: () => unknown) => (
       <ColdSignTransaction scanned={scanned} close={close} />
     ),
@@ -30,7 +31,7 @@ const QrCodeTypes: Array<QrCodeType> = [
   },
   {
     detect: (scanned: string) =>
-      detectPageFromJson(scanned, QrCodeTypeEnum.MultiSigRequest) !== null,
+      detectPageFromJson(scanned, QrCodeTypeEnum.MultiSigRequest),
     type: QrCodeTypeEnum.MultiSigRequest,
   },
 ];

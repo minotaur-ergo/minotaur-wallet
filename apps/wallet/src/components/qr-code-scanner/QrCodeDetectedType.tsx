@@ -19,6 +19,7 @@ interface QrCodeDetectedTypePropsType {
 const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   const [selectedType, setSelectedType] = useState<QrCodeType | undefined>();
   const [checked, setChecked] = useState('');
+  const [data, setData] = useState('');
   const [checking, setChecking] = useState(false);
   const firstWallet = useSelector(
     (state: GlobalStateType) => state.wallet.wallets[0],
@@ -31,12 +32,17 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   };
   useEffect(() => {
     if (props.scanned !== checked && !checking) {
-      console.log('start process detected type');
+      console.debug('start process detected type');
       setChecking(true);
       const selectedTypes = QrCodeTypes.filter((item) =>
         item.detect(props.scanned),
       );
       setSelectedType(selectedTypes.length > 0 ? selectedTypes[0] : undefined);
+      setData(
+        selectedTypes.length > 0
+          ? (selectedTypes[0].detect(props.scanned) ?? '')
+          : '',
+      );
       if (selectedTypes.length == 0 && props.callback) {
         props.callback(props.scanned);
       }
@@ -45,7 +51,6 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
     }
   }, [checked, checking, props]);
   const usedWallet = wallet === undefined ? firstWallet : wallet;
-  console.log(selectedType, usedWallet);
   if (checking) {
     return <LoadingPage />;
   }
@@ -59,7 +64,7 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
           wallet={usedWallet}
           close={props.close}
         >
-          {selectedType.render(props.scanned, props.close)}
+          {selectedType.render(data, props.close)}
         </TxSignContextHandler>
       </SelectableWalletContext.Provider>
     );

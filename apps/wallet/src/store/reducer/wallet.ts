@@ -108,11 +108,11 @@ const updateAddressBalance = (
     amount: '0',
   };
   address.balance = addressBalances.amount;
-  address.tokens = addressBalances.tokens.filter(item => {
-    try{
-      return BigInt(item.balance) > 0n
-    }catch (e){
-      return false
+  address.tokens = addressBalances.tokens.filter((item) => {
+    try {
+      return BigInt(item.balance) > 0n;
+    } catch (e) {
+      return false;
     }
   });
 };
