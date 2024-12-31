@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;fill:none;stroke:#E30613;stroke-width:0.5;stroke-miterlimit:10;}
+	.st2{display:inline;fill:none;stroke:#E30613;stroke-width:0.5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st3{fill:#B5E61D;stroke:#422918;stroke-width:10;stroke-linecap:round;stroke-miterlimit:10;}
+	.st4{fill:#2DAB66;stroke:#422918;stroke-width:10;stroke-linecap:round;stroke-miterlimit:10;}
+	.st5{fill:none;stroke:#422918;stroke-width:10;stroke-linecap:round;stroke-miterlimit:10;}
+	.st6{fill:#683C11;stroke:#422918;stroke-width:10;stroke-linecap:round;stroke-miterlimit:10;}
+</style>
+<g id="center" class="st0">
+	<line class="st1" x1="255.81" y1="521.94" x2="255.81" y2="-9.83"/>
+	<line class="st1" x1="-86.72" y1="256.06" x2="598.35" y2="256.06"/>
+</g>
+<g id="center_round" class="st0">
+	<circle class="st2" cx="256" cy="256" r="177.62"/>
+</g>
+<g id="base_round">
+	<g>
+		<circle class="st3" cx="255.81" cy="256.06" r="235.22"/>
+	</g>
+</g>
+<g id="leaf1">
+	<path class="st4" d="M78.38,256c0,0-1.62,77.14,53.37,126.91s122.69,45,122.69,45"/>
+</g>
+<g id="leaf2">
+	<path class="st4" d="M78.38,256c0,0,107.16-15.32,162.06,19.22s14,152.69,14,152.69"/>
+</g>
+<g id="leaf_line">
+	<path class="st5" d="M239.61,384.22c-8.05-18.88-15.05-31.52-39.89-47.92c-4.56-3.01-18.69-8.54-23.16-10.96"/>
+</g>
+<g id="coco_base">
+	<path class="st6" d="M386.79,145c-11.47,3.85-112.01,30.22-145.33,127.12c-24.41,70.99,6.14,138.84,12.98,155.78l1.56,0.5
+		c11.05-0.23,84.88-3,134.1-64.05c45.74-56.74,46.16-133.98,18.81-188.07c-11.37-22.5-26.05-38.03-36.55-47.51"/>
+</g>
+<g id="coco_inline">
+	<path class="st5" d="M371.57,134.49"/>
+	<g>
+		<path class="st5" d="M386.79,145c3.92,25.7,9.48,85.52-18.77,152.62C335.37,375.2,277.52,415.05,256,428.41"/>
+		<path class="st5" d="M388.66,146.9c-21.1,16.29-65.03,39.43-97.9,104.49c-38,75.21-36.93,154.77-34.3,177.02"/>
+	</g>
+</g>
+</svg>
