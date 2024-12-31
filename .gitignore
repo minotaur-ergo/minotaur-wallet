@@ -25,3 +25,4 @@ dist-ssr
 .metals/
 .vscode/
 .idea
+apps/wallet/public/icons/

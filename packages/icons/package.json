@@ -1,0 +1,28 @@
+{
+  "name": "@minotaur-ergo/icons",
+  "version": "0.2.1",
+  "description": "Asset Icons and details for minotaur wallet",
+  "repository": "https://github.com/minotaur-ergo/minotaur",
+  "license": "GPL-3.0",
+  "author": "vorujack",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "add-icons": "cp -r src/icons/ dist/src/icons/",
+    "fetch-details": "tsx bin/fetch-details.ts",
+    "build": "tsc && npm run add-icons"
+  },
+  "files": [
+    "src",
+    "src/icons/*.png"
+  ],
+  "keywords": [],
+  "dependencies": {
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.10",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2"
+  }
+}
