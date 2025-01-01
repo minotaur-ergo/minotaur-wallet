@@ -41,9 +41,15 @@ const exec = async () => {
     )
   ).filter((item) => item !== '');
   const sortedTokens = res.sort((a, b) => a.id.localeCompare(b.id));
+  const codeBody = sortedTokens
+    .map((item) => {
+      return `  '${item.id}': ${JSON.stringify(item, undefined, 2)}`;
+    })
+    .join(',\n');
   const code =
-    'import type { TokenType } from "."\n\nexport const tokens: Array<TokenType> = ' +
-    JSON.stringify(sortedTokens, undefined, 2);
+    'import type { TokenType } from "./types"\n\nexport const tokens: {[tokenId: string]: TokenType} = {\n' +
+    codeBody +
+    '\n};\n';
   writeFileSync('src/tokens.ts', code);
 };
 

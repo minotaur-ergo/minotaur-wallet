@@ -14,7 +14,8 @@
     "target": "esnext",
     "jsx": "react",
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "rootDir": "./src/"
   },
   "include": ["src/**/*.ts"],
   "ts-node": {

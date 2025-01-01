@@ -2,6 +2,7 @@ image: node:20.12
 
 stages:
   - installation
+  - build
   - type_check
   - lint
   - test
@@ -13,9 +14,21 @@ installation:
     policy: push
     paths:
       - node_modules
-      - apps/wallet/node_modules
+      - '**/node_modules'
   script:
     - npm ci
+
+build:
+  stage: build
+  cache:
+    - key: $CI_COMMIT_REF_NAME
+      policy: pull-push
+      paths:
+        - node_modules
+        - '**/node_modules'
+        - '**/dist'
+  script:
+    - ./cli/build.sh
 
 type_check:
   stage: type_check

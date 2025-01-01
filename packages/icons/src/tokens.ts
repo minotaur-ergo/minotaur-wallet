@@ -1,7 +1,7 @@
-import type { TokenType } from '.';
+import type { TokenType } from './types';
 
-export const tokens: Array<TokenType> = [
-  {
+export const tokens: { [tokenId: string]: TokenType } = {
+  '003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0': {
     id: '003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0',
     boxId: 'f9a68078bea48ca7aa23474fe405c13b1927385a353b031192b17b625126688e',
     decimals: 0,
@@ -13,7 +13,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c9e3f7fea5997ecde8c77ad503c1f8dc2a4d207f3d76efd238a35cdc10822739',
     fileExtension: 'svg',
   },
-  {
+  '007fd64d1ee54d78dd269c8930a38286caa28d3f29d27cadcb796418ab15c283': {
     id: '007fd64d1ee54d78dd269c8930a38286caa28d3f29d27cadcb796418ab15c283',
     boxId: 'a27328d482016a2fd3e449c037248c1a11ff6644c7637ed46add1c1db86e11eb',
     decimals: 4,
@@ -25,7 +25,7 @@ export const tokens: Array<TokenType> = [
     txId: '81b1eca24624db068ff797bcffa11b205ad7e5cf71a412b41816c33cc27f59bd',
     fileExtension: 'svg',
   },
-  {
+  '00b1e236b60b95c2c6f8007a9d89bc460fc9e78f98b09faec9449007b40bccf3': {
     id: '00b1e236b60b95c2c6f8007a9d89bc460fc9e78f98b09faec9449007b40bccf3',
     boxId: '59d6e52511391cfbbe88aaef5f4f28a44335bb9f6a14fe499cdd1692ed6ee534',
     decimals: 4,
@@ -37,7 +37,7 @@ export const tokens: Array<TokenType> = [
     txId: '420db18e4cee3e2e0c77fa016fb6d53b1cf3297c09f0f86daf5358aa48bf3926',
     fileExtension: 'png',
   },
-  {
+  '00b42b41cb438c41d0139aa8432eb5eeb70d5a02d3df891f880d5fe08670c365': {
     id: '00b42b41cb438c41d0139aa8432eb5eeb70d5a02d3df891f880d5fe08670c365',
     boxId: 'e653fde886a382e3ff24eaa378908caeeaf355244cfdc3e4a37c957e5831bd15',
     decimals: 4,
@@ -49,7 +49,7 @@ export const tokens: Array<TokenType> = [
     txId: '6087b9e1168805d469de6f7b09b572b97eadb29a392d963122f0181b03e94fbe',
     fileExtension: 'png',
   },
-  {
+  '00bd762484086cf560d3127eb53f0769d76244d9737636b2699d55c56cd470bf': {
     id: '00bd762484086cf560d3127eb53f0769d76244d9737636b2699d55c56cd470bf',
     boxId: 'd868fe2a770c0322dee894f8ef9512f7d4eb0d48a089e6b94e51b2f9b42eba79',
     decimals: 4,
@@ -61,7 +61,7 @@ export const tokens: Array<TokenType> = [
     txId: '8f82a74129a90c01e22aa593e82096b29ecc308e358d0d4049afe520ef144bb5',
     fileExtension: 'svg',
   },
-  {
+  '012c74dcd0920ce0c3f9f3945d509ea07b33872f3f144b816bcd7b664b22d5b3': {
     id: '012c74dcd0920ce0c3f9f3945d509ea07b33872f3f144b816bcd7b664b22d5b3',
     boxId: '563ce82ec19b529e15fd9b1efbc88726333b18bf2f39b2c48b5208901c5258ba',
     decimals: 0,
@@ -73,7 +73,7 @@ export const tokens: Array<TokenType> = [
     txId: '959c9da53fafd300c6a3397dd9f8dc6cdfcae47bfbf559f3df3b6b0fadb562b3',
     fileExtension: 'png',
   },
-  {
+  '01dce8a5632d19799950ff90bca3b5d0ca3ebfa8aaafd06f0cc6dd1e97150e7f': {
     id: '01dce8a5632d19799950ff90bca3b5d0ca3ebfa8aaafd06f0cc6dd1e97150e7f',
     boxId: '4c843d402fe41dd4b1610ba919d1e401830180eee185bf55ce3e7e4a964edfb3',
     decimals: 4,
@@ -85,7 +85,7 @@ export const tokens: Array<TokenType> = [
     txId: '1e317dff75cb028d6f106005a0be81dd22cf90503b59951336401c0ec85ced4c',
     fileExtension: 'svg',
   },
-  {
+  '01ddcc3d0205c2da8a067ffe047a2ccfc3e8241bc3fcc6f6ebc96b7f7363bb36': {
     id: '01ddcc3d0205c2da8a067ffe047a2ccfc3e8241bc3fcc6f6ebc96b7f7363bb36',
     boxId: 'bf50c4eef695e38d4b475db1c67f0f481b7354357d64a1faea1f04fd1f3b2b9e',
     decimals: 6,
@@ -98,7 +98,7 @@ export const tokens: Array<TokenType> = [
     txId: '39497656b7e1ef2d541d5e2789cf2505b6c810f36f40f603a9b22d5d2930a68f',
     fileExtension: 'png',
   },
-  {
+  '02f31739e2e4937bb9afb552943753d1e3e9cdd1a5e5661949cb0cef93f907ea': {
     id: '02f31739e2e4937bb9afb552943753d1e3e9cdd1a5e5661949cb0cef93f907ea',
     boxId: '9b9ba81cd11dcfc2d0031c291123316276675dfeabae7bb6548eb7171eb2a6d4',
     decimals: 4,
@@ -110,7 +110,7 @@ export const tokens: Array<TokenType> = [
     txId: '99b9b1d1ecbbaaa00804f2ea03f52c6ecc0654b5231de8f9610b207d5b4246c2',
     fileExtension: 'svg',
   },
-  {
+  '03faf2cb329f2e90d6d23b58d91bbb6c046aa143261cc21f52fbe2824bfcbf04': {
     id: '03faf2cb329f2e90d6d23b58d91bbb6c046aa143261cc21f52fbe2824bfcbf04',
     boxId: 'a49076f75e8446fec018d5d32cddf6e05575ef1273232e680f4cd5d716f4e78b',
     decimals: 2,
@@ -122,7 +122,7 @@ export const tokens: Array<TokenType> = [
     txId: '695f7249f70e4d7ec6239694e1cc720f3e37c217bd54fbad74e7fdfbaf9415f9',
     fileExtension: 'svg',
   },
-  {
+  '0779ec04f2fae64e87418a1ad917639d4668f78484f45df962b0dec14a2591d2': {
     id: '0779ec04f2fae64e87418a1ad917639d4668f78484f45df962b0dec14a2591d2',
     boxId: '80ce3f0b24f914cb3de463aef2d6e6e4d90a060de1321b07414d412dd0ad78df',
     decimals: 0,
@@ -135,7 +135,7 @@ export const tokens: Array<TokenType> = [
     txId: '7edfb829316b78a02d8ecdda3e667a3aed93157647f3a0b87e7eac7717ba8113',
     fileExtension: 'png',
   },
-  {
+  '089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f': {
     id: '089990451bb430f05a85f4ef3bcb6ebf852b3d6ee68d86d78658b9ccef20074f',
     boxId: 'c5bb435cebee13141b28a309859fd0c1c2e1f8aed789aae8fa896b76f9752271',
     decimals: 6,
@@ -147,7 +147,7 @@ export const tokens: Array<TokenType> = [
     txId: '119413f28bf08e2cbeafb74c4c7c183de3c305502c095e4275c5e762d126a4ce',
     fileExtension: 'png',
   },
-  {
+  '0cd8c9f416e5b1ca9f986a7f10a84191dfb85941619e49e53c0dc30ebf83324b': {
     id: '0cd8c9f416e5b1ca9f986a7f10a84191dfb85941619e49e53c0dc30ebf83324b',
     boxId: 'd1957ee6d5de2d53c066ca49fe87f910409652d7308bfc63bf1f550695932657',
     decimals: 0,
@@ -160,7 +160,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a7b9089b6225aa819d527af0d15d5b7c33a1d44c9e865e266776644322e6755f',
     fileExtension: 'png',
   },
-  {
+  '0d9ef46408f11aed2a7f840d3928baefaf8153032f42296cbe9d640845d4082c': {
     id: '0d9ef46408f11aed2a7f840d3928baefaf8153032f42296cbe9d640845d4082c',
     boxId: 'f1e880f64b1f34172112e195308a20f82a37f2e30bf62a6b2ece0938284a40ea',
     decimals: 0,
@@ -172,7 +172,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c01848b6f9bd9d0c489a49f76b86dc96f6dbc33cec244faf5c7da7a7ae4d9cd4',
     fileExtension: 'svg',
   },
-  {
+  '0f604d3d5e20d6ea5bc1eee9117230f8679fc36603468c79c8246df462893ae7': {
     id: '0f604d3d5e20d6ea5bc1eee9117230f8679fc36603468c79c8246df462893ae7',
     boxId: 'fdaf938289ed12a55754fd9813098e4f9fdeffc2b6a59f20ed0a119977865407',
     decimals: 5,
@@ -185,7 +185,7 @@ export const tokens: Array<TokenType> = [
     txId: '590872a9b48b1dbf96efb468f721869bac0876ffe0a973fb2279cd3546ddc836',
     fileExtension: 'svg',
   },
-  {
+  '0fdb7ff8b37479b6eb7aab38d45af2cfeefabbefdc7eebc0348d25dd65bc2c91': {
     id: '0fdb7ff8b37479b6eb7aab38d45af2cfeefabbefdc7eebc0348d25dd65bc2c91',
     boxId: '2211c8d263231c871435b9b3bd0b0f20a6aa0262bb6b6b2b8f438b7125fb63f9',
     decimals: 0,
@@ -198,7 +198,7 @@ export const tokens: Array<TokenType> = [
     txId: 'e726558d48ea5f0d5229d976438a9f0bf1fc38cebdccadbca1a5933c3505d0a3',
     fileExtension: 'svg',
   },
-  {
+  '118ed3f9d11700e870569c4b9f3166773ff44410a1d690c8890327a97f1bda39': {
     id: '118ed3f9d11700e870569c4b9f3166773ff44410a1d690c8890327a97f1bda39',
     boxId: '1e2b26acd61d85a50902888b75258a7336ade4f53b891a2626697d4104db3f9d',
     decimals: 5,
@@ -210,7 +210,7 @@ export const tokens: Array<TokenType> = [
     txId: '249bfb650d62602e199b594403bce39766cb9436e25594fb53dfbeec58971c49',
     fileExtension: 'png',
   },
-  {
+  '1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8': {
     id: '1465c9b9de602bd75f8f38df83118e2c8b1d5b2f5518514dd1438149053652a8',
     boxId: '98e9c2585f16b0d9d6772b0a97968126711e07520d98070c808bc95d68213956',
     decimals: 6,
@@ -222,7 +222,7 @@ export const tokens: Array<TokenType> = [
     txId: '4735ebb699ff18ebe231874410305368c87f7f4619eed7caabde04a08980ad8a',
     fileExtension: 'svg',
   },
-  {
+  '151f9e9e0cb4aca29b8c8eaa765661c9f6cb4e018131b09bc63680e3e2585576': {
     id: '151f9e9e0cb4aca29b8c8eaa765661c9f6cb4e018131b09bc63680e3e2585576',
     boxId: '92478c702984d73701742ff6040f70aca1fcb8f0976d6eac19cc4275e9db7271',
     decimals: 0,
@@ -235,7 +235,7 @@ export const tokens: Array<TokenType> = [
     txId: '6a88b4831e61444d9f644a64d80dc489c98201eb4193c0886c5bc470fc0ba7fe',
     fileExtension: 'svg',
   },
-  {
+  '185e217d80d797800bfa699afda708ee101ae664f8ea237d9fc3a3824b7c3ecb': {
     id: '185e217d80d797800bfa699afda708ee101ae664f8ea237d9fc3a3824b7c3ecb',
     boxId: '126dba744b3998125adb393833b60a7d4ac4209ee09087942571d08fe745b80f',
     decimals: 0,
@@ -247,7 +247,7 @@ export const tokens: Array<TokenType> = [
     txId: 'e4afdbb962c6047d461612567a5420abf2041d95a9dd06bb80c7b4c18115f7f2',
     fileExtension: 'png',
   },
-  {
+  '18c938e1924fc3eadc266e75ec02d81fe73b56e4e9f4e268dffffcb30387c42d': {
     id: '18c938e1924fc3eadc266e75ec02d81fe73b56e4e9f4e268dffffcb30387c42d',
     boxId: 'cb6312c9683a14d3fde7b9895274bef5b56939b2fabde9e112783e5779120588',
     decimals: 4,
@@ -259,7 +259,7 @@ export const tokens: Array<TokenType> = [
     txId: '50c4b65359ae5ed1fb7fcb964e8058229eb748a29b30c2381b8712352d757925',
     fileExtension: 'png',
   },
-  {
+  '1a0dad7633c634ffda3578a3eab07e949c19b0c82f05fb00461c1e429a874298': {
     id: '1a0dad7633c634ffda3578a3eab07e949c19b0c82f05fb00461c1e429a874298',
     boxId: '1f3ffe26ab7208dca8e49763ba4c6f67a719355942b599c99c2ecbaa5fa41c31',
     decimals: 6,
@@ -272,7 +272,7 @@ export const tokens: Array<TokenType> = [
     txId: '312dd00d6126589869e3c8cf94d3af1262125a56d9df3a03cefc74a211000d03',
     fileExtension: 'svg',
   },
-  {
+  '1e0b4e64499cadd4838b6e4e935b9104a6f80975efe1395b714aac19b67a7ac0': {
     id: '1e0b4e64499cadd4838b6e4e935b9104a6f80975efe1395b714aac19b67a7ac0',
     boxId: '97d77850ab02ee6b7ac208d492e75a37179be6893dcaba596fff2947bedeb295',
     decimals: 0,
@@ -284,7 +284,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c12c5ccdf7139d50d11d9db003616af0fc904ae4b2cb4f4224ab17a81fc85d56',
     fileExtension: 'svg',
   },
-  {
+  '1f649a7560f9d1b697d4225c57c9040c9101e4181dae134541ee8afec92944c5': {
     id: '1f649a7560f9d1b697d4225c57c9040c9101e4181dae134541ee8afec92944c5',
     boxId: 'f8bbb3618c4373a5b330269b39137ca0c188858bf2db573cafddf8038e04bb33',
     decimals: 0,
@@ -297,7 +297,7 @@ export const tokens: Array<TokenType> = [
     txId: '88ec5c776114dbf875a7395b3811f50d321c0db2927258f9101200663303291e',
     fileExtension: 'png',
   },
-  {
+  '1fd6e032e8476c4aa54c18c1a308dce83940e8f4a28f576440513ed7326ad489': {
     id: '1fd6e032e8476c4aa54c18c1a308dce83940e8f4a28f576440513ed7326ad489',
     boxId: 'e172d5737145a0a7fdf551d122dec848207b2fd5e02df52d475e5dd45ec2aa80',
     decimals: 4,
@@ -309,7 +309,7 @@ export const tokens: Array<TokenType> = [
     txId: '94202a7f6926348c107814364595a9223686b5f865884459307158e01b08eb34',
     fileExtension: 'svg',
   },
-  {
+  '1ffacf13ccfa4bcf0f8879a5e6143987d21354baa38b140708b1d2450f83849e': {
     id: '1ffacf13ccfa4bcf0f8879a5e6143987d21354baa38b140708b1d2450f83849e',
     boxId: '7a607a356cc4d0018e440dd63e66d3fa70cfe84a32662c9790bae4caab0d0830',
     decimals: 2,
@@ -321,7 +321,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a0f0a9cc4b2ea3e7731294a302971bcc7d4a7494031c3ba385f6c162db1c310b',
     fileExtension: 'png',
   },
-  {
+  '203ef3066a912f35c488487cc2cb94bdb0d30680dab22551c7e6fdbc70dfcc8e': {
     id: '203ef3066a912f35c488487cc2cb94bdb0d30680dab22551c7e6fdbc70dfcc8e',
     boxId: 'a89ea70a2dcb5ccc192536cbbca20905de509123ee13a0367fc5abf5e73310f4',
     decimals: 9,
@@ -334,7 +334,7 @@ export const tokens: Array<TokenType> = [
     txId: '3e8b8c818dc5046a2eb78e1fdd90896d56571b45135a8dfcd3581f88f55ca1a5',
     fileExtension: 'svg',
   },
-  {
+  '24c380b40c934db2273affc782e091df28c965f1e513f8f5f09fc1d12646ecf2': {
     id: '24c380b40c934db2273affc782e091df28c965f1e513f8f5f09fc1d12646ecf2',
     boxId: 'b82946d18c64140e29a03cacbc591dcf5eb9024dfe5c179841103013e13553af',
     decimals: 2,
@@ -346,7 +346,7 @@ export const tokens: Array<TokenType> = [
     txId: '7115e5b2521bf0dd9803254d13ef7f049052dee1680bbf74d1075528f8d410f9',
     fileExtension: 'png',
   },
-  {
+  '27fd0367536ef3f05c460115087c38b6ff25a944047cc6ab06a74aaec52ccb48': {
     id: '27fd0367536ef3f05c460115087c38b6ff25a944047cc6ab06a74aaec52ccb48',
     boxId: '0945063a482e0d9b1bd3fb04eb2eccbbc8a84ae42463f29368935cf3f8582fa8',
     decimals: 6,
@@ -359,7 +359,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c0315e1b3511b5399b86d1e0418a85a5527bf3014d3526ffc85ca87500900fce',
     fileExtension: 'svg',
   },
-  {
+  '2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f': {
     id: '2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f',
     boxId: 'f927dba6d616ef010d8f74c0375adaf758202d0a5927d24d09ccd8d9729d7e24',
     decimals: 0,
@@ -371,7 +371,7 @@ export const tokens: Array<TokenType> = [
     txId: '70284830812b995ccd1a3358e76022f99b28f3d3a4a0789f995d0303b490d1fd',
     fileExtension: 'png',
   },
-  {
+  '3405d8f709a19479839597f9a22a7553bdfc1a590a427572787d7c44a88b6386': {
     id: '3405d8f709a19479839597f9a22a7553bdfc1a590a427572787d7c44a88b6386',
     boxId: '4ab8620f343e5bae9a8b5a0dba4b160376eb4cd5d1ed3d199e87fc16cc3646b1',
     decimals: 0,
@@ -384,7 +384,7 @@ export const tokens: Array<TokenType> = [
     txId: 'af74b3e083045840aaa76ccc06e8fa02ef796af92985688c0fc9c550817ff586',
     fileExtension: 'png',
   },
-  {
+  '36aba4b4a97b65be491cf9f5ca57b5408b0da8d0194f30ec8330d1e8946161c1': {
     id: '36aba4b4a97b65be491cf9f5ca57b5408b0da8d0194f30ec8330d1e8946161c1',
     boxId: '159d1d534722cdd97dc8509abeb8c752ea757ac9a17b8fbcb45a936529df1334',
     decimals: 0,
@@ -396,7 +396,7 @@ export const tokens: Array<TokenType> = [
     txId: '5520e614b136fb498e72e6520b1f864a2e0d64473e349519d5bc3684df05f18d',
     fileExtension: 'svg',
   },
-  {
+  '3e0b62c7bc36bc7abf2bf76303722c31788aa579d771e427a0b2c8357da160ba': {
     id: '3e0b62c7bc36bc7abf2bf76303722c31788aa579d771e427a0b2c8357da160ba',
     boxId: '87125f824386ad8cb65f8c047ed4f4fc8b95142d9816ac505fe32869f8c69f82',
     decimals: 4,
@@ -409,7 +409,7 @@ export const tokens: Array<TokenType> = [
     txId: '71a2cbbc1b2e1efcef2a7a26a3957b3943d1fbfbb5a1252116f58c18bf991145',
     fileExtension: 'png',
   },
-  {
+  '46936b4b906f8853696f533427af2099bf07fbc25f20f3273e1def166b7c88d0': {
     id: '46936b4b906f8853696f533427af2099bf07fbc25f20f3273e1def166b7c88d0',
     boxId: 'c3d925db7aa71d03a64b7330ecfe8392060624ccf530ec1c349979ea01f5d820',
     decimals: 0,
@@ -422,7 +422,7 @@ export const tokens: Array<TokenType> = [
     txId: '499c78d68a210df34e7811f113681bd347cf691c953bdc2f834358f65ebccfb0',
     fileExtension: 'png',
   },
-  {
+  '472c3d4ecaa08fb7392ff041ee2e6af75f4a558810a74b28600549d5392810e8': {
     id: '472c3d4ecaa08fb7392ff041ee2e6af75f4a558810a74b28600549d5392810e8',
     boxId: '12ba7cb7c13f738ae3a5be2b353774bc3eb8f0ef72933a839907cbdcb046af9a',
     decimals: 6,
@@ -434,7 +434,7 @@ export const tokens: Array<TokenType> = [
     txId: 'ac8d179b8376d9f224c8c460213817dd0bb428b7a1154c6dfe5b43c893d25be9',
     fileExtension: 'png',
   },
-  {
+  '4ba9550720bc6520c8d58b1e8d7615627b775440f8d642415df1581eacf6d68a': {
     id: '4ba9550720bc6520c8d58b1e8d7615627b775440f8d642415df1581eacf6d68a',
     boxId: 'a77bf8d1fb44719fc078588ce86ec9f024648a1210e6fa89de5d6dccf4c3eb59',
     decimals: 0,
@@ -447,7 +447,7 @@ export const tokens: Array<TokenType> = [
     txId: '503499960e2f362516e81a47a3b4bd50d1fda865b4ec72fa8b12aa3bfa60efde',
     fileExtension: 'png',
   },
-  {
+  '4c8ac00a28b198219042af9c03937eecb422b34490d55537366dc9245e85d4e1': {
     id: '4c8ac00a28b198219042af9c03937eecb422b34490d55537366dc9245e85d4e1',
     boxId: '69a6d963b93f1e904d69edb9ca51bb75c7151a7b701cffdd9b0ad1ac3b5490e2',
     decimals: 6,
@@ -460,7 +460,7 @@ export const tokens: Array<TokenType> = [
     txId: 'd7aa39d8dcf34e4cd1a93782f76a0182e5b1d38589ee36404538c316cf7662f3',
     fileExtension: 'svg',
   },
-  {
+  '4f5c05967a2a68d5fe0cdd7a688289f5b1a8aef7d24cab71c20ab8896068e0a8': {
     id: '4f5c05967a2a68d5fe0cdd7a688289f5b1a8aef7d24cab71c20ab8896068e0a8',
     boxId: '601dfce7d463639b91fb2b7e273817efcacbad75e0093a796b931b2740d2fb4d',
     decimals: 9,
@@ -473,7 +473,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a9475442e535e2892c28a7b96c2af1b24f30f08fb7c1bcad98cbf5c30899654d',
     fileExtension: 'svg',
   },
-  {
+  '52f4544ce8a420d484ece16f9b984d81c23e46971ef5e37c29382ac50f80d5bd': {
     id: '52f4544ce8a420d484ece16f9b984d81c23e46971ef5e37c29382ac50f80d5bd',
     boxId: '1a77bc459f6543330111998b5f9e74ce76679ca8951c8975054c7c6b45ce6311',
     decimals: 0,
@@ -486,7 +486,7 @@ export const tokens: Array<TokenType> = [
     txId: '8a6de3d57ecf15f62a6041060ab1bc449a509f8f306770c6b7838cb74bc70382',
     fileExtension: 'png',
   },
-  {
+  '556598b2ca017610a0c5911f1eb1185f1d5a539287979730394d291dbd87186f': {
     id: '556598b2ca017610a0c5911f1eb1185f1d5a539287979730394d291dbd87186f',
     boxId: '3e3f7d199f97df2e438bb351383819a70cc61bb069c339a701b12102190b302b',
     decimals: 0,
@@ -499,7 +499,7 @@ export const tokens: Array<TokenType> = [
     txId: 'b013e34bfad822d5eb2b1672a01637acbec0b90ed81408ded33f8c09e8e70588',
     fileExtension: 'png',
   },
-  {
+  '59ee24951ce668f0ed32bdb2e2e5731b6c36128748a3b23c28407c5f8ccbf0f6': {
     id: '59ee24951ce668f0ed32bdb2e2e5731b6c36128748a3b23c28407c5f8ccbf0f6',
     boxId: 'ef6c6125589b9469b1d59368a6cc98c86e0ba1d96c40554690c2117c3f6e1e0a',
     decimals: 0,
@@ -511,7 +511,7 @@ export const tokens: Array<TokenType> = [
     txId: 'cdef6684957be68de7d3ddb33d05663b0fb900af83da0a9dcea3999bae00c68a',
     fileExtension: 'png',
   },
-  {
+  '5a34d53ca483924b9a6aa0c771f11888881b516a8d1a9cdc535d063fe26d065e': {
     id: '5a34d53ca483924b9a6aa0c771f11888881b516a8d1a9cdc535d063fe26d065e',
     boxId: 'c448515a88049f6e55060614bd1848e8083bd2ade96136d5151ce7a0d16070dd',
     decimals: 8,
@@ -523,7 +523,7 @@ export const tokens: Array<TokenType> = [
     txId: '0e12c339ff3bfa11d667d472d81997b2826ce2fc5f0ac43127efcc19bd503c01',
     fileExtension: 'png',
   },
-  {
+  '6ad70cdbf928a2bdd397041a36a5c2490a35beb4d20eabb5666f004b103c7189': {
     id: '6ad70cdbf928a2bdd397041a36a5c2490a35beb4d20eabb5666f004b103c7189',
     boxId: '1c83e6f79b94f6ccf9243bbfdf9f13896c42ee3c2a33b4a5547e303eaa13097e',
     decimals: 0,
@@ -536,7 +536,7 @@ export const tokens: Array<TokenType> = [
     txId: '774f0c1e171a567e93ab775ee82ca1d7bf3e0b1eadb3830b72ba36ec596b4260',
     fileExtension: 'png',
   },
-  {
+  '6c35aa395c7c75b0f67f7804d6930f0e11ef93c3387dc1faa86498d54af7962c': {
     id: '6c35aa395c7c75b0f67f7804d6930f0e11ef93c3387dc1faa86498d54af7962c',
     boxId: '074473c795e27b94e3305ed6bb3d803e78f95a524401d6687829f5beae07da54',
     decimals: 2,
@@ -548,7 +548,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c62482bd3ed09604bcfe53f3cb387e311cb1f37356f4b7dc82c4e21d87902d6a',
     fileExtension: 'svg',
   },
-  {
+  '6de6f46e5c3eca524d938d822e444b924dbffbe02e5d34bd9dcd4bbfe9e85940': {
     id: '6de6f46e5c3eca524d938d822e444b924dbffbe02e5d34bd9dcd4bbfe9e85940',
     boxId: '77e9ad1f4422c3d0b4ce5346ac1d993a9bfa1313902f0f9974cc9bf6fdacb34f',
     decimals: 0,
@@ -560,7 +560,7 @@ export const tokens: Array<TokenType> = [
     txId: 'eb71dfc9e481cee4e51633258fafdb9016f2e1b60c5dc8b62d408b5bb188cad8',
     fileExtension: 'png',
   },
-  {
+  '7a51950e5f548549ec1aa63ffdc38279505b11e7e803d01bcf8347e0123c88b0': {
     id: '7a51950e5f548549ec1aa63ffdc38279505b11e7e803d01bcf8347e0123c88b0',
     boxId: 'e2ed4d64393222db666f20e67803e9e6fbe6d64531e14ff52ddd95615b0cbf17',
     decimals: 8,
@@ -573,7 +573,7 @@ export const tokens: Array<TokenType> = [
     txId: 'd9b6933507ed3d391fbc3b0f4b2ed31998b821e56494c1b60932433fad856c34',
     fileExtension: 'svg',
   },
-  {
+  '7ba2a85fdb302a181578b1f64cb4a533d89b3f8de4159efece75da41041537f9': {
     id: '7ba2a85fdb302a181578b1f64cb4a533d89b3f8de4159efece75da41041537f9',
     boxId: '06e44af7b1578e17db454ae091607a02f15180919c4a4c8b642881067e83b6f0',
     decimals: 0,
@@ -585,7 +585,7 @@ export const tokens: Array<TokenType> = [
     txId: '6c3612a3fa3ab0da7028ac130755c6178b8c70edaf9dfec0909ebbb641dc3b78',
     fileExtension: 'png',
   },
-  {
+  '80075ae9a6545eb1fc4473d3d7a7feab571fa1e444baf6816021af3a78d8bca3': {
     id: '80075ae9a6545eb1fc4473d3d7a7feab571fa1e444baf6816021af3a78d8bca3',
     boxId: 'a82bc245ba01cf8a6d11ebc99742ba879debdbcec303c0b8347397205ecfce37',
     decimals: 1,
@@ -598,7 +598,7 @@ export const tokens: Array<TokenType> = [
     txId: 'd5109689e56947be5267395c1efebdd211b7730f22aa23ebdf019cb793532a5a',
     fileExtension: 'png',
   },
-  {
+  '843b5a2a0658550339c38f29827861fe459ce5206edaf17163113cccafc77af1': {
     id: '843b5a2a0658550339c38f29827861fe459ce5206edaf17163113cccafc77af1',
     boxId: 'e3aa229efccb5fa16ed040ebcf23277e185afca137dc6c113a338adc2dd567ac',
     decimals: 6,
@@ -610,7 +610,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a0e806b87941cad8d45f84143203e2fb3725da618231cd7e8a94d506da02e43e',
     fileExtension: 'png',
   },
-  {
+  '886b7721bef42f60c6317d37d8752da8aca01898cae7dae61808c4a14225edc8': {
     id: '886b7721bef42f60c6317d37d8752da8aca01898cae7dae61808c4a14225edc8',
     boxId: 'c4d5a384716888427f2fa342d9e337a2b15a312126898beea062ed27d5655266',
     decimals: 9,
@@ -622,7 +622,7 @@ export const tokens: Array<TokenType> = [
     txId: '742d3326de028f27916dbbb9b23c1cac6d31e7a05906d53636caa1808c14ba20',
     fileExtension: 'svg',
   },
-  {
+  '8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b': {
     id: '8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b',
     boxId: '5409bf9f3367e8511428df972b3ed871d72351c9faf307107f794cef9e2829d0',
     decimals: 3,
@@ -634,7 +634,7 @@ export const tokens: Array<TokenType> = [
     txId: 'baa458cecd7262931fc21c7eb037b0ff77231c28a639ac693fbb91d2327a7a85',
     fileExtension: 'svg',
   },
-  {
+  '8b607006f2d9b9f4d6875b54026a191676ab23d2c8e49c2593bca87b26757579': {
     id: '8b607006f2d9b9f4d6875b54026a191676ab23d2c8e49c2593bca87b26757579',
     boxId: 'f1b6930e983b230d8889c0bc54288ccf5c4c2507890bf92458a21faa34254ce1',
     decimals: 6,
@@ -647,7 +647,7 @@ export const tokens: Array<TokenType> = [
     txId: 'd1550d9d423abd9ec8209469a77589f2db08ff44c3431648888ce78f8870355d',
     fileExtension: 'svg',
   },
-  {
+  '8da6eec252f720a09bc0655abfc4ac943a9769728e1b167454ed9c3298d151ff': {
     id: '8da6eec252f720a09bc0655abfc4ac943a9769728e1b167454ed9c3298d151ff',
     boxId: '375ff343e7fd6635e54f7aa128f12b18cebcae429193ea5024ec6b00ae5943f4',
     decimals: 6,
@@ -660,7 +660,7 @@ export const tokens: Array<TokenType> = [
     txId: '32961b0fe36826a5e12ff53e1738a35b65ed7efe8f8a33bf282846e2553b9d02',
     fileExtension: 'png',
   },
-  {
+  '91289d5cefb9d78e3ea248d4e9c5b0e3c3de54f64bfae85c0070580961995262': {
     id: '91289d5cefb9d78e3ea248d4e9c5b0e3c3de54f64bfae85c0070580961995262',
     boxId: '453142fd1d9ada42df0f453600ddb5c1b7754a47cd1cfcd91912ea374ee3e382',
     decimals: 0,
@@ -673,7 +673,7 @@ export const tokens: Array<TokenType> = [
     txId: '5d9cee86460e1f37d436e57deae56651a19d4baef75c548fae3a9c1ca5bbbe03',
     fileExtension: 'png',
   },
-  {
+  '94180232cc0d91447178a0a995e2c14c57fbf03b06d5d87d5f79226094f52ffc': {
     id: '94180232cc0d91447178a0a995e2c14c57fbf03b06d5d87d5f79226094f52ffc',
     boxId: '9432480eff75b21bfe0680587b4233079d437e9d1639891236ae562fd85fbbba',
     decimals: 6,
@@ -685,7 +685,7 @@ export const tokens: Array<TokenType> = [
     txId: 'eeddee03f1b9612df74695cf9d53235236f0da96821276c346cc1e482f5811ee',
     fileExtension: 'svg',
   },
-  {
+  '956bcab1ea3ed40c91bf845fe4f2dee727fe130a95f244a41a6ee7a25f14e23f': {
     id: '956bcab1ea3ed40c91bf845fe4f2dee727fe130a95f244a41a6ee7a25f14e23f',
     boxId: 'f1ccf75fd2ae98d197ba5df26b942e27f4226480c6dae9b8f0149c24a4a61653',
     decimals: 6,
@@ -697,7 +697,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a01fee07fffdce14ac00065974a26d1e30253d7ef0441588d800643b45ae12d9',
     fileExtension: 'png',
   },
-  {
+  '993e5e617ac834a5f57409b39e408fc5f2e674fa5e33cf488e7dfe1fa1b7930f': {
     id: '993e5e617ac834a5f57409b39e408fc5f2e674fa5e33cf488e7dfe1fa1b7930f',
     boxId: 'cf7eac4b1469459215959ea4afa528665a9bbd415f7803b41c862f12c7d43437',
     decimals: 4,
@@ -710,7 +710,7 @@ export const tokens: Array<TokenType> = [
     txId: '0a9014414abec5df86a81592c2287bd7ec7866bba0e3de5db704c348972eafbf',
     fileExtension: 'svg',
   },
-  {
+  '9944ff273ff169f32b851b96bbecdbb67f223101c15ae143de82b3e7f75b19d2': {
     id: '9944ff273ff169f32b851b96bbecdbb67f223101c15ae143de82b3e7f75b19d2',
     boxId: 'c28da11952f886a6d97ace6378ec2ff33b1aa189481fe923fa214ce3f1ca56c7',
     decimals: 9,
@@ -722,7 +722,7 @@ export const tokens: Array<TokenType> = [
     txId: '44c856e844ef1725f57f5b1b09f78aff693267b6dbf3901431d149ed460edf32',
     fileExtension: 'svg',
   },
-  {
+  '9a06d9e545a41fd51eeffc5e20d818073bf820c635e2a9d922269913e0de369d': {
     id: '9a06d9e545a41fd51eeffc5e20d818073bf820c635e2a9d922269913e0de369d',
     boxId: '2ec6d0fe8a8f20fedeb5a8279ead47ce6b89f4d43d1ce494a05165a22f7426de',
     decimals: 6,
@@ -735,7 +735,7 @@ export const tokens: Array<TokenType> = [
     txId: '95e6c7fe7cd69aef9971e4146a409fc14f793016e2076ff7316ea87072237bae',
     fileExtension: 'svg',
   },
-  {
+  '9dbc8dd9d7ea75e38ef43cf3c0ffde2c55fd74d58ac7fc0489ec8ffee082991b': {
     id: '9dbc8dd9d7ea75e38ef43cf3c0ffde2c55fd74d58ac7fc0489ec8ffee082991b',
     boxId: 'ae39fe645fd90255e52878cec19b1119d4812cac20584481c5d1dddae3a11cfe',
     decimals: 2,
@@ -748,7 +748,7 @@ export const tokens: Array<TokenType> = [
     txId: 'e6ddf7fdbfd60bb2acf0acad276281a34990c2a1c9221ad80fbed8d24b3a737d',
     fileExtension: 'svg',
   },
-  {
+  a01cb7b8ab08dec2e191b3ba58165a88a510d0f310dff5d81eb8e62e4ea6ab20: {
     id: 'a01cb7b8ab08dec2e191b3ba58165a88a510d0f310dff5d81eb8e62e4ea6ab20',
     boxId: 'd74a4f5b43fd07a93e221e99fd0cb185d83a212e5559ce4605d068fbdbe99787',
     decimals: 6,
@@ -761,7 +761,7 @@ export const tokens: Array<TokenType> = [
     txId: '6106213a79fd1f8b2d9e6e9874df19c123794113164825b7562273e340e6fa5f',
     fileExtension: 'svg',
   },
-  {
+  a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386: {
     id: 'a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386',
     boxId: '36ff29af3bf1cb65667ea62e95ec849a5a7808affcfbec140d2648a98e12c3d6',
     decimals: 6,
@@ -774,7 +774,7 @@ export const tokens: Array<TokenType> = [
     txId: '17b02d977a74ea757231a01e677aad99762323a4768156695d12f5a0df817c99',
     fileExtension: 'svg',
   },
-  {
+  a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26: {
     id: 'a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26',
     boxId: 'c3126ffbecba90ef12aa78ab163b4eb9e47a6c001a7c44f35b39df7751453bfd',
     decimals: 4,
@@ -787,7 +787,7 @@ export const tokens: Array<TokenType> = [
     txId: '2ec54f3a8589c094dfb82021eaa30af9e2a301a5ae6b732f74b06c3c3535505b',
     fileExtension: 'png',
   },
-  {
+  abe0a3c2f646dcd430aac9c29d80feee865bd8b5231edb545a41105d4c8e4985: {
     id: 'abe0a3c2f646dcd430aac9c29d80feee865bd8b5231edb545a41105d4c8e4985',
     boxId: '7add4cc89eef88ab62567c12253b8faff7717a64c09d6c307d606ce7afb86765',
     decimals: 4,
@@ -800,7 +800,7 @@ export const tokens: Array<TokenType> = [
     txId: '603c16347ff01903a9b79e42bfec2f1a75adaea4db283ce0736ece8fc0335e04',
     fileExtension: 'png',
   },
-  {
+  b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0: {
     id: 'b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0',
     boxId: '61afa81afcccd4fb66046ce84ab52a5ad6315f9febdb6b4352d8ae7ed706d083',
     decimals: 3,
@@ -812,7 +812,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a9a05661dbf3b164ac07f5b4801a2aed592f9ae4d6d242144ea21399468a71d1',
     fileExtension: 'png',
   },
-  {
+  b2bb4d99ffd6f73c06a4ca1fe9fadd1ad4a20b5b9052373e3cee5ddeb4534e27: {
     id: 'b2bb4d99ffd6f73c06a4ca1fe9fadd1ad4a20b5b9052373e3cee5ddeb4534e27',
     boxId: 'd84b02c22a3c5d26a7b9378ac13e844653fd2889d5bf9db673eec19f6b9d38ee',
     decimals: 6,
@@ -825,7 +825,7 @@ export const tokens: Array<TokenType> = [
     txId: 'ef3c6e3dbd92568db0e6cabde45d247cab8d7985bf2f6f2edab3e7761aa1d515',
     fileExtension: 'svg',
   },
-  {
+  b780a9682ba1ea68eedfe3dd00169e414ea8968d96142ee95e2391d64df05c3d: {
     id: 'b780a9682ba1ea68eedfe3dd00169e414ea8968d96142ee95e2391d64df05c3d',
     boxId: 'b2373e2ff2fce6e2c143cb7a73672b4504cdbf59f598d23b265d142e46849fa1',
     decimals: 8,
@@ -838,7 +838,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a07d7090c01e2e0974ed3b06f191810c897ab8ebbfbd4494ec469c385df3ecee',
     fileExtension: 'svg',
   },
-  {
+  c0f315e4adcb1463ca27988cb1d61668a539a5dd516f996f1f576567fbb0b158: {
     id: 'c0f315e4adcb1463ca27988cb1d61668a539a5dd516f996f1f576567fbb0b158',
     boxId: '22cdfb8e11795f3ff59f672809b61e3c2908cd5e81d72d027620ef42f7276e9e',
     decimals: 3,
@@ -850,7 +850,7 @@ export const tokens: Array<TokenType> = [
     txId: '2a9cfef236ee9c119dec2774a69e1dbf2eba35d2949bd817a523ddba0c875c5a',
     fileExtension: 'png',
   },
-  {
+  c15a8e1ff8c60e1cd280d9c5b4daa0e92292da06919c2496c27374f9507da65d: {
     id: 'c15a8e1ff8c60e1cd280d9c5b4daa0e92292da06919c2496c27374f9507da65d',
     boxId: 'cd35e739036ffa97e71f82a50960fa3b379ce9e1bde6e3e155e657282489acdb',
     decimals: 6,
@@ -863,7 +863,7 @@ export const tokens: Array<TokenType> = [
     txId: '31ddf6439d16e7bb10d022b7c60d954748fa9fbb79f5bd9cbed996633570cb61',
     fileExtension: 'svg',
   },
-  {
+  ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675: {
     id: 'ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675',
     boxId: '045c76222dfdf2dbf033258d4b45ceeac755e0c0f2075ecc1d04795379cb2a3e',
     decimals: 4,
@@ -875,7 +875,7 @@ export const tokens: Array<TokenType> = [
     txId: 'c4da9daba88c0da1eabd62a408304cf0f1ed1dd5d901136ef44761c1f2e542a7',
     fileExtension: 'svg',
   },
-  {
+  cbd75cfe1a4f37f9a22eaee516300e36ea82017073036f07a09c1d2e10277cda: {
     id: 'cbd75cfe1a4f37f9a22eaee516300e36ea82017073036f07a09c1d2e10277cda',
     boxId: '7925962159b27b2ac0fc4ebdf3ff92e490fabc7b50d8084957f6b89dbe0e9f9d',
     decimals: 9,
@@ -888,7 +888,7 @@ export const tokens: Array<TokenType> = [
     txId: '157a174168ee6beed1adee4ef5ef83175e2f57059d1d92a95d9d3d6c3c5588d4',
     fileExtension: 'svg',
   },
-  {
+  ccaac3de4098aa63de90c56973bb1bff7563e8c58594b2075dd04005dac13ae6: {
     id: 'ccaac3de4098aa63de90c56973bb1bff7563e8c58594b2075dd04005dac13ae6',
     boxId: '6546badba720c2e2754a1a48c4ca6b86826ff54707cba3defd8fc00d602aa358',
     decimals: 4,
@@ -901,7 +901,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a7b7e44d9d217cae86d7962dc6c83090830c9d5b0bd02e9cf02c198b27fdf4d8',
     fileExtension: 'png',
   },
-  {
+  d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334: {
     id: 'd1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334',
     boxId: '3d31c8e0d8397c8c0c7a97564f4ee8f1efacf774ce72537a86ff0733b91e8595',
     decimals: 0,
@@ -913,7 +913,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a8edd7ff177d88e401f0b5236893e1d754573053b6bcd6d12985198a854b24c5',
     fileExtension: 'svg',
   },
-  {
+  d1dcfca3330bc884298c7111a9ef1e7b2970ab0c1d11bbcbacf31d319f0c2d55: {
     id: 'd1dcfca3330bc884298c7111a9ef1e7b2970ab0c1d11bbcbacf31d319f0c2d55',
     boxId: 'd91843a0be1f51eee4d21884f0383c4534bb6be8fd3f4658d9c48db247361b45',
     decimals: 6,
@@ -926,7 +926,7 @@ export const tokens: Array<TokenType> = [
     txId: '28336f1fec37ec3e5b2cbd239650131ffd6b944491fba47b8312753c86c24f22',
     fileExtension: 'png',
   },
-  {
+  d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413: {
     id: 'd71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413',
     boxId: '057ef7fc690550e26d6eee2e37b0ed3164cb4a786c6becd32d8ce5d7f7fde141',
     decimals: 2,
@@ -938,7 +938,7 @@ export const tokens: Array<TokenType> = [
     txId: 'e0a0164ba457d2d4bc9db431f1579883977f3c11154616a585cce3b434587478',
     fileExtension: 'svg',
   },
-  {
+  da754307c5823cf39e098414919b3fac8821f4aa0c909fac474742942878dc1c: {
     id: 'da754307c5823cf39e098414919b3fac8821f4aa0c909fac474742942878dc1c',
     boxId: '45a0f2ca3beefc5343753a15f88ba22eb075d4773153d7d3496a9eb8e445fc9a',
     decimals: 6,
@@ -951,7 +951,7 @@ export const tokens: Array<TokenType> = [
     txId: '5c1fdab49bebf8be44655f7045c4d4570dad4d9b21cea5b348a0c0d974c4fd30',
     fileExtension: 'svg',
   },
-  {
+  e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297: {
     id: 'e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297',
     boxId: '62c47974afd271c8bd57e1d8526d3a3e7a7685c1f37d3add8a6870c5dfb2dd70',
     decimals: 6,
@@ -964,7 +964,7 @@ export const tokens: Array<TokenType> = [
     txId: '1b9b482165b9aa6496212df93227c65f543fdbfdd729494c09dec5dc681657c7',
     fileExtension: 'svg',
   },
-  {
+  e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807: {
     id: 'e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807',
     boxId: '83710fe470bf2f235e9a0e7b552550eef5552dbe8fe11228d46879155a333df8',
     decimals: 8,
@@ -977,7 +977,7 @@ export const tokens: Array<TokenType> = [
     txId: 'a2b1973a9c530d4903d19c3b9c2413c9f8e52b7655c8a06c17572e5cbc232ab8',
     fileExtension: 'svg',
   },
-  {
+  e91cbc48016eb390f8f872aa2962772863e2e840708517d1ab85e57451f91bed: {
     id: 'e91cbc48016eb390f8f872aa2962772863e2e840708517d1ab85e57451f91bed',
     boxId: '2e2d2070848385c6c3158274849f538972967e56b3b511d793e6112d51f4392d',
     decimals: 0,
@@ -990,7 +990,7 @@ export const tokens: Array<TokenType> = [
     txId: 'fc71baf3512fdb582cd0415cbb505b000cd1affd1fa79962ab8e128a61bfe303',
     fileExtension: 'svg',
   },
-  {
+  eeb17283c641d1c74c1d44b1dee7509766350ec31ca954c420ddd788bff8f412: {
     id: 'eeb17283c641d1c74c1d44b1dee7509766350ec31ca954c420ddd788bff8f412',
     boxId: 'b8dd45198491f52803d24b62d00cbece7ac31a1a9fc173dddd870d88899fa277',
     decimals: 6,
@@ -1003,7 +1003,7 @@ export const tokens: Array<TokenType> = [
     txId: 'ecdbfb37f8983375615d7cf824edda03c50d58b8aebdbc7c783ec7ce6b8ec6a0',
     fileExtension: 'png',
   },
-  {
+  f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3: {
     id: 'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
     boxId: 'f45a9cb014b9beb9e92fe4e86d26577b45a3ec93f3a0e79634a549fe3708210d',
     decimals: 0,
@@ -1016,7 +1016,7 @@ export const tokens: Array<TokenType> = [
     txId: '76ddff9906b4fb981c1f94811d5d6bcf7c6de0f3ead559c917729d765f672ad3',
     fileExtension: 'png',
   },
-  {
+  f31bfeaa68564b49775eface452f831d9f60b4567837bbeb909c6401e0a19485: {
     id: 'f31bfeaa68564b49775eface452f831d9f60b4567837bbeb909c6401e0a19485',
     boxId: '0e79fdae58878622605f352a164e9f93bf79fbdb5c2c2347f9fed9902701514f',
     decimals: 6,
@@ -1029,7 +1029,7 @@ export const tokens: Array<TokenType> = [
     txId: '34755f4844cd889b0387b4204211028973234dcf1df6d60849dd38fdb727f629',
     fileExtension: 'svg',
   },
-  {
+  f35cc232da3e1d4fd0bf84da9908f6de5ed4f3d57a649629ffaf3fc0e858a3e5: {
     id: 'f35cc232da3e1d4fd0bf84da9908f6de5ed4f3d57a649629ffaf3fc0e858a3e5',
     boxId: '07ffe09a58d66c876d1be78936cd0e70bddb61c920f055e7bda98cb21b789709',
     decimals: 2,
@@ -1041,7 +1041,7 @@ export const tokens: Array<TokenType> = [
     txId: '80ac12069e8d6cab0c9f67d44a666e9373b835c67c12c09ed45a852de21238ef',
     fileExtension: 'png',
   },
-  {
+  f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0: {
     id: 'f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0',
     boxId: '54ff689a333ac3228db38e4a895bd493a4806987847bbfb52aaabe9c8c992e6e',
     decimals: 0,
@@ -1054,7 +1054,7 @@ export const tokens: Array<TokenType> = [
     txId: '49b2d8fcb40843c24e0c0efce198b0a465592bb225d2057023d7e63c83bb3993',
     fileExtension: 'png',
   },
-  {
+  fa8fd58c4ad2203dace0d517226da72facf1421c6bae1935d591b526316a7af9: {
     id: 'fa8fd58c4ad2203dace0d517226da72facf1421c6bae1935d591b526316a7af9',
     boxId: '62932b849b3184c140b2a9811b891df5114b52f51da36f597701959a745c9a8d',
     decimals: 6,
@@ -1067,7 +1067,7 @@ export const tokens: Array<TokenType> = [
     txId: '8ad652841a9291eb39a73c7383734b91a3bc2ee8a82360bae06bd559a7857e27',
     fileExtension: 'svg',
   },
-  {
+  fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40: {
     id: 'fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40',
     boxId: '00ef11830d923c432b5a85ee78a151c717d65ef8a280d1e2e8afb32a7ca32ac1',
     decimals: 0,
@@ -1079,7 +1079,7 @@ export const tokens: Array<TokenType> = [
     txId: '25d7420c44b90386bb314384f4873ffdaed63f1c6ded15ff595e65821aa33233',
     fileExtension: 'svg',
   },
-  {
+  fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b: {
     id: 'fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b',
     boxId: '96c559f706c266da43d7524a29624970c9a33c6a64d6ecaab56f1030619575cf',
     decimals: 8,
@@ -1092,4 +1092,4 @@ export const tokens: Array<TokenType> = [
     txId: 'd7910b16809453338980ca75751b08a062ea7c4c006719237e503850d50a2de4',
     fileExtension: 'svg',
   },
-];
+};

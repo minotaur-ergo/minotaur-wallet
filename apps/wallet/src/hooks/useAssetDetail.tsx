@@ -1,11 +1,13 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
-import tokens from '@minotaur-ergo/icons';
+import { tokens } from '@minotaur-ergo/icons';
 import { AssetDbAction } from '@/action/db';
 
 const useAssetDetail = (assetId: string, networkType: string) => {
   const [details, setDetails] = useState<{
     name: string;
-    logo?: React.ElementType;
+    logoPath?: string;
+    logo?: React.ReactElement;
     description: string;
     decimal: number;
     emissionAmount: bigint;
@@ -23,24 +25,25 @@ const useAssetDetail = (assetId: string, networkType: string) => {
   useEffect(() => {
     if (!loading && assetId !== details.tokenId) {
       setLoading(true);
-      const saved = tokens.get(assetId);
+      const saved = tokens[assetId];
       if (saved) {
+        const logoPath = `/icons/${saved.id}.${saved.fileExtension}`;
+
         setDetails({
           name: saved.name,
           decimal: saved.decimals,
           description: saved.description,
-          emissionAmount: saved.emissionAmount,
+          emissionAmount: BigInt(saved.emissionAmount),
           tokenId: saved.id,
           txId: saved.txId,
-          logo: () =>
-            saved.iconB64 ? (
-              <img
-                src={`data:image/svg+xml;base64,${saved.iconB64}`}
-                style={{ width: '100%', height: '100%' }}
-              />
-            ) : (
-              <saved.icon />
-            ),
+          logoPath: logoPath,
+          logo: (
+            <img
+              alt={saved.name}
+              src={logoPath}
+              style={{ width: '100%', height: '100%' }}
+            />
+          ),
         });
         setLoading(false);
       } else {

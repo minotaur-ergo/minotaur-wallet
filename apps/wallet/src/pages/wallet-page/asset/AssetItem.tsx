@@ -1,13 +1,6 @@
+import AssetRow from '@/components/asset-row/AssetRow';
 import { useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Card,
-  CardActionArea,
-  Drawer,
-  Typography,
-} from '@mui/material';
-import DisplayId from '@/components/display-id/DisplayId';
+import { Card, CardActionArea, Drawer } from '@mui/material';
 import AssetItemDetail from './AssetItemDetail';
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
 import useAssetDetail from '@/hooks/useAssetDetail';
@@ -24,27 +17,12 @@ const AssetItem = (props: PropsType) => {
   return (
     <Card>
       <CardActionArea onClick={() => setShowDetail(true)} sx={{ p: 2 }}>
-        <Box sx={{ float: 'left', mr: 2 }}>
-          {details.logo ? (
-            <Avatar alt={details.name}>
-              <details.logo />
-            </Avatar>
-          ) : (
-            <Avatar alt={details.name} src="/" />
-          )}
-        </Box>
-        <Box display="flex">
-          <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>
-          <Typography>
-            <TokenAmountDisplay
-              amount={props.amount}
-              decimal={details.decimal}
-            />
-          </Typography>
-        </Box>
-        <DisplayId variant="body2" color="textSecondary" id={props.id} />
+        <AssetRow
+          id={props.id}
+          network_type={props.network_type}
+          amount={props.amount}
+        />
       </CardActionArea>
-
       <Drawer
         anchor="bottom"
         open={showDetail}

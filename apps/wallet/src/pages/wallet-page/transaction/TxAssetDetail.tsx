@@ -29,13 +29,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   return (
     <React.Fragment>
       <Box sx={{ float: 'left', mr: 2 }}>
-        {details.logo ? (
-          <Avatar alt={details.name}>
-            <details.logo />
-          </Avatar>
-        ) : (
-          <Avatar alt={details.name} src="/" />
-        )}
+        <Avatar alt={details.name} src={details.logoPath ?? '/'} />
       </Box>
       <Box display="flex" onClick={() => setShowDetail(true)}>
         <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>
