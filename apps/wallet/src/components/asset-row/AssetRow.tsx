@@ -13,7 +13,7 @@ interface AssetRowPropsType {
 const AssetRow = (props: AssetRowPropsType) => {
   const details = useAssetDetail(props.id, props.networkType);
   return (
-    <div style={{ width: props.width }}>
+    <div style={{ width: props.width, flexGrow: 1 }}>
       <Box sx={{ float: 'left', mr: 2 }}>
         <Avatar alt={details.name} src={details.logoPath ?? '/'} />
       </Box>
