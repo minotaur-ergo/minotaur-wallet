@@ -19,7 +19,7 @@ const AssetItem = (props: PropsType) => {
       <CardActionArea onClick={() => setShowDetail(true)} sx={{ p: 2 }}>
         <AssetRow
           id={props.id}
-          network_type={props.network_type}
+          networkType={props.network_type}
           amount={props.amount}
         />
       </CardActionArea>

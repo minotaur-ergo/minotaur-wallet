@@ -19,12 +19,34 @@ const useAssetDetail = (assetId: string, networkType: string) => {
     description: '',
     txId: '',
     emissionAmount: -1n,
-    tokenId: '',
+    tokenId: '-',
   });
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!loading && assetId !== details.tokenId) {
       setLoading(true);
+      if (assetId === '') {
+        const logoPath = `/ergo.svg`;
+        setDetails({
+          name: 'Erg',
+          logoPath: logoPath,
+          logo: (
+            <img
+              alt="ergo"
+              src={logoPath}
+              style={{ width: '100%', height: '100%' }}
+            />
+          ),
+          decimal: 9,
+          txId: '',
+          description: '',
+          emissionAmount: 0n,
+          tokenId: '',
+        });
+        console.log('we are here');
+        setLoading(false);
+        return;
+      }
       const saved = tokens[assetId];
       if (saved) {
         const logoPath = `/icons/${saved.id}.${saved.fileExtension}`;

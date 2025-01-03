@@ -45,7 +45,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
             render={(item: TokenInfo) => (
               <AssetRow
                 id={item.tokenId}
-                network_type={props.chain.label}
+                networkType={props.chain.label}
                 amount={item.balance}
               />
             )}

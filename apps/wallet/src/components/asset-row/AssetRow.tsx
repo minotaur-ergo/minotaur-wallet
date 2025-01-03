@@ -5,15 +5,15 @@ import { Avatar, Box, Typography } from '@mui/material';
 
 interface AssetRowPropsType {
   id: string;
-  network_type: string;
+  networkType: string;
   amount?: bigint | string;
   width?: string;
 }
 
 const AssetRow = (props: AssetRowPropsType) => {
-  const details = useAssetDetail(props.id, props.network_type);
+  const details = useAssetDetail(props.id, props.networkType);
   return (
-    <Box style={{ width: props.width }}>
+    <div style={{ width: props.width }}>
       <Box sx={{ float: 'left', mr: 2 }}>
         <Avatar alt={details.name} src={details.logoPath ?? '/'} />
       </Box>
@@ -29,7 +29,7 @@ const AssetRow = (props: AssetRowPropsType) => {
         ) : undefined}
       </Box>
       <DisplayId variant="body2" color="textSecondary" id={props.id} />
-    </Box>
+    </div>
   );
 };
 
