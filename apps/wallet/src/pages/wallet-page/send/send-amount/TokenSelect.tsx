@@ -1,9 +1,9 @@
+import AssetRow from '@/components/asset-row/AssetRow';
 import { useContext, useEffect, useState } from 'react';
 import { SelectChangeEvent } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { AssetDbAction } from '@/action/db';
@@ -90,7 +90,12 @@ const TokenSelect = (props: TokenSelectPropsType) => {
         {Object.keys(generatorContext.tokens).map((tokenId) => (
           <MenuItem key={tokenId} value={tokenId}>
             <Checkbox checked={selected.indexOf(tokenId) > -1} />
-            <ListItemText primary={getTokenName(tokenId)} />
+            <AssetRow
+              id={tokenId}
+              networkType={props.wallet.networkType}
+              amount={''}
+              width="calc(100% - 42px)"
+            />
           </MenuItem>
         ))}
       </Select>
