@@ -6,6 +6,7 @@ import {
   Typography,
 } from '@mui/material';
 import { TransactionTokenType } from '../../models';
+import DisplayId from '../../components/DisplayId';
 
 export default function TransactionTokenItem({
   name,
@@ -16,18 +17,33 @@ export default function TransactionTokenItem({
     ? 'success.main'
     : 'error.main';
   return (
-    <ListItem
-      disableGutters
-      disablePadding
-      secondaryAction={<Typography color={color}>{amount}</Typography>}
-    >
+    <ListItem disableGutters disablePadding>
       <ListItemAvatar>
         <Avatar>{name.charAt(0)}</Avatar>
       </ListItemAvatar>
       <ListItemText
-        primary={name}
-        secondary={type}
-        secondaryTypographyProps={{ color }}
+        primary={
+          <>
+            <Typography component="span">{name}</Typography>
+            <Typography component="span" color={color}>
+              {amount}
+            </Typography>
+          </>
+        }
+        primaryTypographyProps={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+        secondary={
+          <DisplayId
+            id="c25f71cb2368306506add086b2eae7ef2841bd1d6add086b2eae7eeae7ef"
+            endAdornment={
+              <Typography color={color} ml={3}>
+                {type}
+              </Typography>
+            }
+          />
+        }
       />
     </ListItem>
   );
