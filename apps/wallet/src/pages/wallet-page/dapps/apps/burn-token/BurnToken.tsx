@@ -167,7 +167,7 @@ const BurnToken = (props: DAppPropsType) => {
     if (isValid !== (isAmountsValid && total > 0n)) {
       setIsValid(isAmountsValid && total > 0n);
     }
-  }, [amounts]);
+  }, [amounts, isValid]);
   return (
     <Stack spacing={2}>
       <FormControl>
