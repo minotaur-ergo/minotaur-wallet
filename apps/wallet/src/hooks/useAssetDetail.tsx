@@ -43,7 +43,6 @@ const useAssetDetail = (assetId: string, networkType: string) => {
           emissionAmount: 0n,
           tokenId: '',
         });
-        console.log('we are here');
         setLoading(false);
         return;
       }

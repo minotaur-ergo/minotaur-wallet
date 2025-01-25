@@ -50,12 +50,6 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
               />
             )}
           />
-          {/*<ListController*/}
-          {/*  ListItem={<AssetRow amount={0n} id={''} network_type={''}/>}*/}
-          {/*  data={props.address.tokens}*/}
-          {/*  divider={false}*/}
-          {/*  emptyTitle="There is no tokens!"*/}
-          {/*/>*/}
         </React.Fragment>
       ) : undefined}
       <Divider sx={{ my: 2 }} />
