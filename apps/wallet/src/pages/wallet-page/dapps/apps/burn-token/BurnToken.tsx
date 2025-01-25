@@ -118,7 +118,7 @@ const BurnToken = (props: DAppPropsType) => {
       setBurning(false);
     }
   };
-  const selectToken = (event: SelectChangeEvent) => {
+  const selectToken = (event: SelectChangeEvent<Array<string>>) => {
     const value = event.target.value;
     const keys = typeof value === 'string' ? value.split(',') : value;
     const newAmounts: TokenAmount = {};
