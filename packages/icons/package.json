@@ -8,13 +8,13 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "add-icons": "cp -r src/icons/ dist/src/icons/",
-    "fetch-details": "tsx bin/fetch-details.ts",
+    "add-icons": "mkdir -p dist/icons && cp -r src/icons/ dist/icons/",
+    "prettify": "npx prettier --ignore-unknown --write .",
+    "fetch-details": "tsx bin/fetch-details.ts && npm run prettify",
     "build": "tsc && npm run add-icons"
   },
   "files": [
-    "src",
-    "src/icons/*.png"
+    "src"
   ],
   "keywords": [],
   "dependencies": {

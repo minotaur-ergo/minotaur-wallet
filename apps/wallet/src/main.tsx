@@ -10,7 +10,10 @@ import * as wasm from 'ergo-lib-wasm-browser';
 //
 // const msg = `If you want to tip the developer for making this app, thanks in advance! Send your tips to ${addressVerified}`
 //
-console.debug(wasm);
+console.debug(
+  'If you want to tip the developer for making this app, thanks in advance! Send your tips to 9hN2UY1ZvvWMeWRBso28vSyjrAAfGJHh2DkZpE47J7Wqr51YLAR',
+);
+console.log(wasm);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <AppTheme>
