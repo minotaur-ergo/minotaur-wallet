@@ -1,9 +1,9 @@
+import AssetRow from '@/components/asset-row/AssetRow';
 import useTxValues from '@/hooks/useTxValues';
 import { Box, FormHelperText, Typography } from '@mui/material';
 import { ErgoBox } from 'ergo-lib-wasm-browser';
 import * as wasm from 'ergo-lib-wasm-browser';
 import React from 'react';
-import TokenAmount from '@/components/token-amount/TokenAmount';
 import { StateWallet } from '@/store/reducer/wallet';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import UnBalancedTokensAmount from '@/components/token-amount/UnBalancedTokensAmount';
@@ -28,41 +28,48 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
           <Typography variant="body2" color="textSecondary">
             Total spent
           </Typography>
-          {txValues.total > 0 ? (
-            <TokenAmount
-              tokenId={'erg'}
-              amount={txValues.total}
-              networkType={props.wallet.networkType}
-            />
-          ) : null}
-          {Object.entries(txValues.tokens).map(([tokenId, value]) =>
-            value > 0 ? (
-              <TokenAmount
-                tokenId={tokenId}
-                amount={value}
+          <Box
+            marginTop={2}
+            display="flex"
+            flexDirection="column"
+            sx={{ gap: 1 }}
+          >
+            {txValues.total > 0 ? (
+              <AssetRow
+                amount={txValues.total}
+                id={''}
                 networkType={props.wallet.networkType}
-                key={tokenId}
               />
-            ) : null,
-          )}
+            ) : null}
+            {Object.entries(txValues.tokens).map(([tokenId, value]) =>
+              value > 0 ? (
+                <AssetRow
+                  id={tokenId}
+                  amount={value}
+                  networkType={props.wallet.networkType}
+                  key={tokenId}
+                />
+              ) : null,
+            )}
+          </Box>
         </React.Fragment>
       ) : null}
       {valuesDirection.incoming ? (
         <React.Fragment>
-          <Typography variant="body2" color="textSecondary">
+          <Typography marginTop={4} variant="body2" color="textSecondary">
             Total Income
           </Typography>
           {txValues.total < 0 ? (
-            <TokenAmount
-              tokenId={'erg'}
+            <AssetRow
+              id={''}
               amount={-txValues.total}
               networkType={props.wallet.networkType}
             />
           ) : null}
           {Object.entries(txValues.tokens).map(([tokenId, value]) =>
             value < 0 ? (
-              <TokenAmount
-                tokenId={tokenId}
+              <AssetRow
+                id={tokenId}
                 amount={-value}
                 networkType={props.wallet.networkType}
                 key={tokenId}

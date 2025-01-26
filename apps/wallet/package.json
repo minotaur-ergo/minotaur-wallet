@@ -1,10 +1,10 @@
 {
   "name": "minotaur-wallet",
   "private": true,
-  "version": "2.3.0",
+  "version": "2.4.0",
   "type": "module",
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "patch-package && npm run copyIcons",
     "dev": "vite --host",
     "clean": "rimraf ./dist",
     "build": "tsc && vite build",
@@ -16,7 +16,8 @@
     "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron",
     "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
     "test": "echo 'no test'",
-    "coverage": "npm run test -- --coverage"
+    "coverage": "npm run test -- --coverage",
+    "copyIcons": "node bin/copy-icons.js"
   },
   "dependencies": {
     "@capacitor-community/electron": "^5.0.1",
@@ -40,9 +41,9 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@minotaur-ergo/icons": "^0.2.0",
-    "@mui/icons-material": "^5.15.20",
-    "@mui/material": "^5.15.20",
+    "@minotaur-ergo/icons": "^1.0.0",
+    "@mui/icons-material": "^5.16.14",
+    "@mui/material": "^5.16.14",
     "@reduxjs/toolkit": "^2.2.5",
     "@rosen-clients/ergo-explorer": "^1.1.1",
     "@zxing/browser": "^0.1.5",

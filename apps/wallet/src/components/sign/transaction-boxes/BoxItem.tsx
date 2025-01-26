@@ -1,7 +1,7 @@
-import { Box } from '@mui/material';
+import AssetRow from '@/components/asset-row/AssetRow';
+import { Box, Stack } from '@mui/material';
 import { ReceiverTokenType } from '@/types/sign-modal';
 import DisplayId from '../../display-id/DisplayId';
-import TokenAmount from '../../token-amount/TokenAmount';
 import { StateWallet } from '@/store/reducer/wallet';
 
 interface BoxItemPropsType {
@@ -24,7 +24,7 @@ const BoxItem = (props: BoxItemPropsType) => {
           bgcolor: 'primary.light',
         }}
       />
-      <Box sx={{ overflow: 'auto' }}>
+      <Stack spacing={1} style={{ flexGrow: 1 }} sx={{ overflow: 'auto' }}>
         <DisplayId
           variant="body2"
           color="textSecondary"
@@ -32,20 +32,16 @@ const BoxItem = (props: BoxItemPropsType) => {
           showAddress={true}
           customAddresses={props.wallet?.addresses ?? []}
         />
-        <TokenAmount
-          tokenId={'erg'}
-          amount={props.amount}
-          networkType={props.networkType}
-        />
+        <AssetRow id="" amount={props.amount} networkType={props.networkType} />
         {props.tokens.map((token) => (
-          <TokenAmount
+          <AssetRow
             key={token.id}
-            tokenId={token.id}
+            id={token.id}
             amount={token.amount}
             networkType={props.networkType}
           />
         ))}
-      </Box>
+      </Stack>
     </Box>
   );
 };

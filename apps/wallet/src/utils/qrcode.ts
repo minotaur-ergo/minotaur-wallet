@@ -1,5 +1,3 @@
-import { DetectParam } from '@/types/qrcode';
-
 const getCameraBoxBoundary = () => {
   const height = window.innerHeight - 72;
   const width = window.innerWidth;
@@ -15,23 +13,15 @@ const getCameraBoxBoundary = () => {
 const detectPageFromJson = (
   value: string,
   prefix: string,
-): DetectParam | null => {
+): string | undefined => {
   try {
     const valueJson = JSON.parse(value);
     if (Object.prototype.hasOwnProperty.call(valueJson, prefix)) {
-      const payload = valueJson[prefix];
-      const total = Object.prototype.hasOwnProperty.call(valueJson, 'n')
-        ? valueJson['n']
-        : 1;
-      const page = Object.prototype.hasOwnProperty.call(valueJson, 'p')
-        ? valueJson['p']
-        : 1;
-      return { payload, page, total };
+      return valueJson[prefix];
     }
   } catch (e) {
     console.log(e);
   }
-  return null;
 };
 
 export { getCameraBoxBoundary, detectPageFromJson };

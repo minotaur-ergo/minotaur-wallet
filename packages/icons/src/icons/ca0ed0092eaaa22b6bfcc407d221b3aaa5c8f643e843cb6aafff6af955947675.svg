@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   width="500px"
+   height="500px"
+   style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+   id="svg55"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs55">
+    <linearGradient id="linearGradient61">
+      <stop
+         style="stop-color:#27b9ed;stop-opacity:1;"
+         offset="0"
+         id="stop61" />
+      <stop
+         style="stop-color:#da27f9;stop-opacity:1;"
+         offset="1"
+         id="stop62" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient61"
+       id="linearGradient62"
+       x1="30.924652"
+       y1="244.97636"
+       x2="478.92465"
+       y2="244.97636"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke-width:1.01977"
+     id="circle57"
+     cx="254.92465"
+     cy="244.97638"
+     transform="rotate(1.1400641)"
+     r="250" />
+  <circle
+     style="fill:url(#linearGradient62);fill-opacity:1;stroke-width:0.913707"
+     id="circle58"
+     cx="254.92465"
+     cy="244.97636"
+     transform="rotate(1.1400641)"
+     r="224" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.607778"
+     id="circle59"
+     cx="254.92465"
+     cy="244.97635"
+     transform="rotate(1.1400642)"
+     r="149" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.203953"
+     id="circle60"
+     cx="112.80354"
+     cy="139.78326"
+     transform="rotate(1.1400641)"
+     r="50" />
+  <circle
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.203953"
+     id="circle61"
+     cx="394.74771"
+     cy="134.17244"
+     transform="rotate(1.1400641)"
+     r="50" />
+</svg>

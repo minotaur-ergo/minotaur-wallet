@@ -3,7 +3,13 @@ import DisplayId from '@/components/display-id/DisplayId';
 import useAssetDetail from '@/hooks/useAssetDetail';
 import AssetItemDetail from '@/pages/wallet-page/asset/AssetItemDetail';
 import { getValueColor } from '@/utils/functions';
-import { Avatar, Box, Typography } from '@mui/material';
+import {
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import React, { useState } from 'react';
 
@@ -28,23 +34,43 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
         : 'Sent';
   return (
     <React.Fragment>
-      <Box sx={{ float: 'left', mr: 2 }}>
-        {details.logo ? (
-          <Avatar alt={details.name}>
-            <details.logo />
-          </Avatar>
-        ) : (
-          <Avatar alt={details.name} src="/" />
-        )}
-      </Box>
-      <Box display="flex" onClick={() => setShowDetail(true)}>
-        <Typography sx={{ flexGrow: 1 }}>{details.name}</Typography>
-        <Typography color={color}>
-          {props.amount > 0 ? '+' : ''}
-          <TokenAmountDisplay amount={props.amount} decimal={details.decimal} />
-        </Typography>
-      </Box>
-      <DisplayId variant="body2" color={color} id={getLabel()} />
+      <ListItem
+        disableGutters
+        disablePadding
+        onClick={() => setShowDetail(true)}
+      >
+        <ListItemAvatar>
+          <Avatar alt={details.name} src={details.logoPath ?? '/'} />
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <React.Fragment>
+              <Typography component="span">{details.name}</Typography>
+              <Typography component="span" color={color}>
+                {props.amount > 0 ? '+' : ''}
+                <TokenAmountDisplay
+                  amount={props.amount}
+                  decimal={details.decimal}
+                />
+              </Typography>
+            </React.Fragment>
+          }
+          primaryTypographyProps={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+          secondary={
+            <DisplayId
+              id={props.id}
+              endAdornment={
+                <Typography color={color} ml={3}>
+                  {getLabel()}
+                </Typography>
+              }
+            />
+          }
+        />
+      </ListItem>
       <Drawer
         anchor="bottom"
         open={showDetail}

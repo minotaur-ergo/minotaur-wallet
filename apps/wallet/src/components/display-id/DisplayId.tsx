@@ -9,6 +9,7 @@ interface DisplayIdPropsType extends TypographyProps {
   paddingSize?: number;
   prefixDisplay?: React.ReactNode | null;
   customAddresses?: Array<{ name: string; address: string }>;
+  endAdornment?: React.ReactElement;
 }
 
 const DisplayId = ({
@@ -18,6 +19,7 @@ const DisplayId = ({
   showAddress = false,
   prefixDisplay = null,
   customAddresses = [],
+  endAdornment = undefined,
   ...restProps
 }: DisplayIdPropsType) => {
   const name = useAddressName(showAddress ? id : '', customAddresses);
@@ -25,9 +27,10 @@ const DisplayId = ({
   return (
     <Box display="flex" sx={sx}>
       {prefixDisplay}
-      <Typography noWrap {...restProps} sx={{ flexGrow: 0 }}>
+      <Typography noWrap {...restProps} sx={{ flexGrow: 1 }}>
         {name ? `${name} (${dotted})` : dotted}
       </Typography>
+      {endAdornment && <Box>{endAdornment}</Box>}
     </Box>
   );
 };

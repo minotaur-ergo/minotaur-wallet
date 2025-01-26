@@ -8,7 +8,7 @@ interface AssetItemDetailPropsType {
   name?: string;
   id: string;
   description?: string;
-  logo?: React.ElementType;
+  logo?: React.ReactNode;
   balance?: React.ReactNode | string;
   emissionAmount: React.ReactNode | string;
   txId: string;
@@ -22,7 +22,7 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
         <Box>
           {props.logo ? (
             <Avatar sx={{ mt: 2, width: 64, height: 64 }} alt={props.name}>
-              <props.logo />
+              {props.logo}
             </Avatar>
           ) : undefined}
           <Typography variant="h2" sx={{ mt: 2 }}>
