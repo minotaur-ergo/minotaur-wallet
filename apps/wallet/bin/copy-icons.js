@@ -1,12 +1,13 @@
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 try {
-  const packagePath = import.meta
-    .resolve('@minotaur-ergo/icons/dist')
-    .replace('file://', '');
+  const packagePath = fileURLToPath(
+    import.meta.resolve('@minotaur-ergo/icons/dist'),
+  );
   const destIconPath = path.join(process.cwd(), 'public/icons');
   fs.mkdirSync(destIconPath, { recursive: true });
-  const iconsPath = path.join(packagePath, 'src/icons');
+  const iconsPath = path.join(packagePath, 'icons');
   const files = fs.readdirSync(iconsPath);
   files.forEach((fileName) => {
     const iconPath = path.join(iconsPath, fileName);

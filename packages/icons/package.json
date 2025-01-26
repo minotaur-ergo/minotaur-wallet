@@ -8,9 +8,9 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "add-icons": "mkdir -p dist/icons && cp -r src/icons/ dist/icons/",
+    "add-icons": "tsx bin/add-icons.ts",
     "prettify": "npx prettier --ignore-unknown --write .",
-    "fetch-details": "tsx bin/fetch-details.ts && npm run prettify",
+    "fetch-details": "tsx bin/fetch-details.tsROOT_PATH && npm run prettify",
     "build": "tsc && npm run add-icons"
   },
   "files": [

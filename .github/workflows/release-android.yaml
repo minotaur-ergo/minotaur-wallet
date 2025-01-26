@@ -41,6 +41,10 @@ jobs:
         shell: bash
         run: ./cli/build.sh
 
+      - name: Copy icons to public dir
+        shell: bash
+        run: npm run copyIcons --prefix apps/wallet
+
       - name: Build Minotaur JS app and update capacitor
         shell: bash
         run: npm run sync --prefix apps/wallet/
