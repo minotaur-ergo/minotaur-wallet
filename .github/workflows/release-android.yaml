@@ -37,6 +37,10 @@ jobs:
         shell: bash
         run: npm install
 
+      - name: Build icons
+        shell: bash
+        run: ./cli/build.sh
+
       - name: Build Minotaur JS app and update capacitor
         shell: bash
         run: npm run sync --prefix apps/wallet/
