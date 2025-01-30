@@ -14,7 +14,7 @@ import { RouterMap } from '../../V2Demo';
 import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
 import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
 import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
-import { BuildCircleTwoTone } from '@mui/icons-material';
+import { BuildCircleTwoTone, CardGiftcardTwoTone } from '@mui/icons-material';
 
 interface ItemCardPropsType {
   title: string;
@@ -139,6 +139,15 @@ const DApps = () => {
             path={RouterMap.BoxConsolidation}
             icon={<BuildCircleTwoTone fontSize="large" />}
             color="success.main"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <ItemCardA
+            title="Air Drop"
+            description="Aliquip cupidatat sunt dolor ea elit sunt ut irure dolore."
+            path={RouterMap.AirDrop}
+            icon={<CardGiftcardTwoTone fontSize="large" />}
+            color="secondary.dark"
           />
         </Grid>
       </Grid>
