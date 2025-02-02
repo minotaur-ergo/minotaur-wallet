@@ -1,6 +1,7 @@
 import Wallet from '@/db/entities/Wallet';
 import { StateAddress, StateWallet } from '@/store/reducer/wallet';
 import Address from '@/db/entities/Address';
+import { WALLET_FLAG_ENUM } from '@/utils/const';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { createEmptyArrayWithIndex } from './functions';
 
@@ -16,6 +17,8 @@ export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({
   requiredSign: wallet.required_sign,
   seed: wallet.seed,
   version: wallet.version,
+  archived: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.ARCHIVE),
+  favorite: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.FAVORITE),
 });
 
 export const addressEntityToAddressState = (

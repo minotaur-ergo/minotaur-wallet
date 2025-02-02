@@ -110,6 +110,27 @@ class WalletDbAction {
       store.dispatch(invalidateWallets());
     }
   };
+
+  setFlagOnWallet = async (
+    walletId: number,
+    flag: string,
+    remove: boolean = false,
+  ) => {
+    const wallet = await this.getWalletById(walletId);
+    if (wallet) {
+      const flags = [...wallet.flags.split('|'), flag]
+        .filter((item) => !remove || item !== flag)
+        .filter(Boolean);
+      const flagStr = [...new Set(flags.map((item) => item.trim()))].join('|');
+      await this.walletRepository
+        .createQueryBuilder()
+        .update()
+        .set({ flags: flagStr })
+        .where('id=:id', { id: walletId })
+        .execute();
+      store.dispatch(invalidateWallets());
+    }
+  };
 }
 
 class MultiSigDbAction {

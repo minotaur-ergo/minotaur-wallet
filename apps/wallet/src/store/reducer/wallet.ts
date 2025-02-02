@@ -18,6 +18,8 @@ export interface StateWallet {
   balance: string;
   tokens: Array<TokenInfo>;
   addresses: Array<StateAddress>;
+  archived: boolean;
+  favorite: boolean;
 }
 
 export interface StateAddress {
