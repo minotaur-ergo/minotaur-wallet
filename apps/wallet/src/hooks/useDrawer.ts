@@ -6,12 +6,10 @@ type DrawerOutput = {
   handleClose: () => void;
 };
 
-type handleOpenType = () => void;
-
 const useDrawer = (): DrawerOutput => {
   const [open, setOpen] = useState(false);
 
-  const handleOpen: handleOpenType = () => setOpen(true);
+  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return {
