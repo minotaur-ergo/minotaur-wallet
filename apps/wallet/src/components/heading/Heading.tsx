@@ -7,36 +7,34 @@ interface HeadingPropsType {
   actionLabel?: string;
   actionPath?: string;
   disabled?: boolean;
+  customActions?: React.ReactNode;
 }
 
-const Heading: React.FC<HeadingPropsType> = ({
-  title,
-  actionLabel,
-  actionPath,
-  disabled = false,
-}) => {
+const Heading = (props: HeadingPropsType) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    if (actionPath) {
-      navigate(actionPath);
+    if (props.actionPath) {
+      navigate(props.actionPath);
     }
   };
   return (
     <Box display="flex">
       <Typography variant="h2" sx={{ py: '0.75rem' }}>
-        {title}
+        {props.title}
       </Typography>
-      {actionLabel && (
+      {props.actionLabel && (
         <Button
           variant="text"
           onClick={handleClick}
           fullWidth={false}
-          disabled={disabled}
+          disabled={props.disabled}
+          size="small"
           sx={{ px: 0, minWidth: 48 }}
         >
-          {actionLabel}
+          {props.actionLabel}
         </Button>
       )}
+      {props.customActions}
     </Box>
   );
 };

@@ -28,18 +28,6 @@ const theme = createTheme({
       dark: '#7a5600',
       contrastText: '#fff',
     },
-    success: {
-      light: '#00ff0a',
-      main: '#2f7f57',
-      dark: '#1b5e20',
-      contrastText: '#fff',
-    },
-    error: {
-      light: '#ff2828',
-      main: '#d32f2f',
-      dark: '#c62828',
-      contrastText: '#fff',
-    },
   },
   shape: {
     borderRadius: BORDER_RADIUS,
@@ -55,10 +43,19 @@ const theme = createTheme({
       fontWeight: 600,
       flexGrow: 1,
     },
+    h3: {
+      fontSize: '0.875rem',
+      fontWeight: 400,
+      flexGrow: 1,
+    },
     h4: {
       fontSize: '1rem',
       fontWeight: 600,
       lineHeight: 1.5,
+    },
+    h5: {
+      fontSize: '1rem',
+      fontWeight: 600,
     },
   },
   shadows,
@@ -70,17 +67,29 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          padding: '0.75rem',
-          fontSize: '1rem',
           textTransform: 'none',
         },
+        sizeMedium: {
+          padding: '0.75rem',
+          fontSize: '1rem',
+        },
+        sizeSmall: {
+          padding: '0.25rem 0.5rem',
+        },
         outlined: {
-          backgroundColor: '#eaeaea',
+          backgroundColor: '#eaeaea80',
           border: 0,
           '&:focus': {
             backgroundColor: '#eaeaea',
             border: 0,
           },
+          '&:hover': {
+            backgroundColor: '#eaeaea',
+            border: 0,
+          },
+        },
+        containedSizeSmall: {
+          padding: '0.5rem',
         },
       },
     },
@@ -135,6 +144,15 @@ const theme = createTheme({
         root: {
           backgroundColor: '#ffffffa8',
         },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '&:last-child': {
+            padding: theme.spacing(2),
+          },
+        }),
       },
     },
     MuiAlertTitle: {

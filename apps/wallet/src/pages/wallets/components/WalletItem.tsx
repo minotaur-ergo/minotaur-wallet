@@ -1,15 +1,24 @@
-import { Box, Card, CardActionArea, Typography } from '@mui/material';
+import { Star, StarBorder } from '@mui/icons-material';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  Chip,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
 import SvgIcon from '@/icons/SvgIcon';
 import { ergPriceUsd } from '@/utils/functions';
 import { WalletType, WalletTypeLabel } from '@/db/entities/Wallet';
 import { RouteMap, getRoute } from '@/router/routerMap';
 import { useNavigate } from 'react-router-dom';
-import { ConfigDbAction } from '@/action/db';
+import { ConfigDbAction, WalletDbAction } from '@/action/db';
 import { ConfigType } from '@/db/entities/Config';
 import { GlobalStateType } from '@/store';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
-import { MAIN_NET_LABEL } from '@/utils/const';
+import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@/utils/const';
+import { MouseEvent } from 'react';
 
 interface PropsType {
   id: string;
@@ -19,6 +28,8 @@ interface PropsType {
   amount?: bigint;
   tokensCount?: number;
   onClick?: () => unknown;
+  archived: boolean;
+  favorite: boolean;
 }
 
 const WalletColorMap = {
@@ -49,54 +60,100 @@ const WalletItem = (props: PropsType) => {
         });
     }
   };
+
+  const toggleFavorite = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    WalletDbAction.getInstance()
+      .setFlagOnWallet(
+        parseInt(props.id),
+        WALLET_FLAG_ENUM.FAVORITE,
+        props.favorite,
+      )
+      .then(() => null);
+  };
   return (
     <Card>
       <CardActionArea
+        component={'div'}
         onClick={activateWallet}
-        sx={{ bgcolor: color + '70', display: 'flex' }}
+        sx={{
+          bgcolor: color + '70',
+          pb: 2,
+          pt: 1,
+        }}
       >
-        <Box
-          sx={{
-            bgcolor: '#ffffff8f',
-            p: 1,
-            my: 2,
-            borderTopRightRadius: 12,
-            borderBottomRightRadius: 12,
-          }}
-        >
-          <SvgIcon icon="ergo" style={{ width: '1.6rem', fill: color }} />
-        </Box>
-        <Box sx={{ p: 2, flexGrow: 1 }}>
-          <Box display="flex" alignItems="baseline">
+        <Box px={2}>
+          <Box display="flex" alignItems="start">
             <Typography
-              sx={{ fontSize: '1.2rem', fontWeight: 500, flexGrow: 1 }}
+              fontSize="1.25rem"
+              fontWeight={500}
+              lineHeight="1.5rem"
+              sx={{ flexGrow: 1, py: 1 }}
             >
               {props.name}
+              {props.archived ? <Chip label="Archived" sx={{ ml: 1 }} /> : null}
             </Typography>
+            <IconButton onClick={toggleFavorite}>
+              {props.favorite ? (
+                <Star style={{ color: 'goldenrod' }} />
+              ) : (
+                <StarBorder />
+              )}
+            </IconButton>
+          </Box>
+          {props.tokensCount ? (
+            <Typography variant="body2" color="textSecondary">
+              {props.tokensCount > 0
+                ? `Includes ${props.tokensCount} token${
+                    props.tokensCount > 1 ? 's' : ''
+                  }`
+                : ' '}
+            </Typography>
+          ) : undefined}
+        </Box>
+
+        <Box display="flex" alignItems="end" gap={2} mt={1}>
+          <Box
+            sx={{
+              bgcolor: '#ffffff8f',
+              width: 44,
+              height: 44,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderTopRightRadius: 12,
+              borderBottomRightRadius: 12,
+              fill: color,
+            }}
+          >
+            <SvgIcon icon="ergo" style={{ width: '1.6rem', fill: 'inherit' }} />
+          </Box>
+          <Box flexGrow={1}>
             <Typography>
               <ErgAmountDisplay amount={amount} />
               <small>&nbsp;ERG</small>
             </Typography>
-          </Box>
-          <Box display="flex">
-            <Typography
-              color="textSecondary"
-              sx={{ fontSize: '0.7rem', flexGrow: 1 }}
-            >
-              {WalletTypeLabel[props.type]} on {props.net}
-            </Typography>
-            {props.net === MAIN_NET_LABEL ? (
-              <Typography sx={{ fontSize: '0.7rem' }} color="textSecondary">
-                ${ergPriceUsd(amount, ergPrice)}
-              </Typography>
-            ) : null}
-          </Box>
-          {props.tokensCount && props.tokensCount > 0 ? (
             <Typography variant="body2" color="textSecondary">
-              Includes {props.tokensCount} token
-              {props.tokensCount > 1 ? 's' : ''}
+              {props.net === MAIN_NET_LABEL ? (
+                ergPriceUsd(amount, ergPrice)
+              ) : (
+                <span>&nbsp;</span>
+              )}
             </Typography>
-          ) : null}
+          </Box>
+          <Box mr={2}>
+            <Typography
+              variant="body2"
+              fontSize="small"
+              color="textSecondary"
+              textAlign="right"
+            >
+              {props.net}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" textAlign="right">
+              {WalletTypeLabel[props.type]}
+            </Typography>
+          </Box>
         </Box>
       </CardActionArea>
     </Card>
