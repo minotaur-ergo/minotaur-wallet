@@ -1,3 +1,5 @@
+import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
+import { WALLET_FLAG_ENUM } from '@/utils/const';
 import { Box, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Heading from '@/components/heading/Heading';
@@ -18,6 +20,12 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
   const setName = (newName: string) => {
     WalletDbAction.getInstance()
       .setWalletName(props.wallet.id, newName)
+      .then(() => null);
+  };
+  const setArchived = (archived: boolean) => {
+    console.log(archived);
+    WalletDbAction.getInstance()
+      .setFlagOnWallet(props.wallet.id, WALLET_FLAG_ENUM.ARCHIVE, !archived)
       .then(() => null);
   };
   return (
@@ -58,6 +66,13 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
         {/*    helperText="Some description about this option goes here."*/}
         {/*    icon={<IosShareOutlinedIcon />}*/}
         {/*/>*/}
+        <SolitarySwitchField
+          label="Archive wallet"
+          checkedDescription="Archived"
+          uncheckedDescription="No"
+          value={props.wallet.archived}
+          onChange={setArchived}
+        />
       </Stack>
     </Box>
   );

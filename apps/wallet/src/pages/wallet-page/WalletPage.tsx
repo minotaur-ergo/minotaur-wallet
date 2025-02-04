@@ -24,13 +24,7 @@ const WalletPage = () => {
   useEffect(() => {
     const selected = wallets.filter((item) => `${item.id}` === id);
     if (selected.length > 0) {
-      if (
-        wallet === undefined ||
-        wallet.id !== selected[0].id ||
-        wallet.balance !== selected[0].balance ||
-        wallet.name !== selected[0].name ||
-        wallet.addresses.length !== selected[0].addresses.length
-      ) {
+      if (selected[0] !== wallet) {
         setWallet(selected[0]);
       }
     } else {
