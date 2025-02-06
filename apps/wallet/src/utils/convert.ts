@@ -17,6 +17,7 @@ export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({
   requiredSign: wallet.required_sign,
   seed: wallet.seed,
   version: wallet.version,
+  flags: wallet.flags.split('|').filter(Boolean),
   archived: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.ARCHIVE),
   favorite: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.FAVORITE),
 });
@@ -33,6 +34,7 @@ export const addressEntityToAddressState = (
   path: address.path,
   proceedHeight: address.process_height,
   id: address.id,
+  isDefault: false,
 });
 
 export const boxesToArrayBox = (boxes: wasm.ErgoBoxes): Array<wasm.ErgoBox> => {

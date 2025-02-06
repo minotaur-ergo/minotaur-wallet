@@ -1,4 +1,5 @@
 import { WalletType } from '@/db/entities/Wallet';
+import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface TokenInfo {
@@ -18,6 +19,7 @@ export interface StateWallet {
   balance: string;
   tokens: Array<TokenInfo>;
   addresses: Array<StateAddress>;
+  flags: Array<string>;
   archived: boolean;
   favorite: boolean;
 }
@@ -32,6 +34,7 @@ export interface StateAddress {
   walletId: number;
   proceedHeight: number;
   tokens: Array<TokenInfo>;
+  isDefault: boolean;
 }
 
 export interface AddressBalance {
@@ -98,6 +101,18 @@ const updateWalletBalance = (
     tokenId: item[0],
     balance: item[1].toString(),
   }));
+  if (
+    wallet.flags.filter((item) => item.startsWith(DEFAULT_ADDRESS_PREFIX))
+      .length === 0
+  ) {
+    wallet.flags.push(DEFAULT_ADDRESS_PREFIX + '0');
+  }
+  addresses.forEach(
+    (item) =>
+      (item.isDefault = wallet.flags.includes(
+        DEFAULT_ADDRESS_PREFIX + item.idx,
+      )),
+  );
   wallet.addresses = addresses;
 };
 
