@@ -10,7 +10,7 @@ interface PurchasePanelPropsType {
   label: 'Purchase' | 'Redeem';
   action: (amount: bigint) => unknown;
 }
-const PurchasePanel = (props: PurchasePanelPropsType) => {
+const ActionPanel = (props: PurchasePanelPropsType) => {
   const [amount, setAmount] = useState('');
   const [valid, setValid] = useState(false);
   const getValue = () => {
@@ -53,4 +53,4 @@ const PurchasePanel = (props: PurchasePanelPropsType) => {
   );
 };
 
-export default PurchasePanel;
+export default ActionPanel;

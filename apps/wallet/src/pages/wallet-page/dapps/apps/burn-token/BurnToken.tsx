@@ -35,7 +35,7 @@ const BurnToken = (props: DAppPropsType) => {
   const burnToken = async () => {
     if (isValid && !burning) {
       setBurning(true);
-      const addresses = await props.getAddresses();
+      const address = await props.getDefaultAddress();
       const height = await props.chain.getNetwork().getHeight();
       const selectedTokens = Object.entries(amounts).map((item) => ({
         id: item[0],
@@ -78,7 +78,7 @@ const BurnToken = (props: DAppPropsType) => {
             .reduce((a, b) => a + b, BigInt(0)) - fee;
         const candidateBuilder = new wasm.ErgoBoxCandidateBuilder(
           wasm.BoxValue.from_i64(wasm.I64.from_str(totalErg.toString())),
-          wasm.Contract.pay_to_address(wasm.Address.from_base58(addresses[0])),
+          wasm.Contract.pay_to_address(wasm.Address.from_base58(address)),
           height,
         );
         Object.keys(remainingTokens).forEach((token_id) => {
@@ -97,7 +97,7 @@ const BurnToken = (props: DAppPropsType) => {
           new wasm.ErgoBoxCandidates(candidate),
           height,
           wasm.BoxValue.from_i64(wasm.I64.from_str(fee.toString())),
-          wasm.Address.from_base58(addresses[0]),
+          wasm.Address.from_base58(address),
         );
         const burnToken = new wasm.Tokens();
         selectedTokens.forEach((item) => {

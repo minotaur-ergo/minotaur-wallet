@@ -31,9 +31,13 @@ const selectBoxesDApps =
 export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
   const message = useContext(MessageContext);
   const txSign = useContext(TxSignContext);
+  const addresses = [...wallet.addresses].sort((a, b) => {
+    return a.isDefault === b.isDefault ? a.idx - b.idx : a.isDefault ? -1 : 1;
+  });
   return {
     walletId: wallet.id,
-    getAddresses: async () => wallet.addresses.map((item) => item.address),
+    getAddresses: async () => addresses.map((item) => item.address),
+    getDefaultAddress: async () => addresses[0].address,
     getCoveringForErgAndToken: selectBoxesDApps(wallet),
     chain: getChain(wallet.networkType),
     getAssets: async () => {

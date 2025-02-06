@@ -176,11 +176,16 @@ const generateTx = async (
   const network = chain.getNetwork();
   const height = await network.getHeight();
   const candidates = generateCandidates(height, receivers);
+  const selectedAddresses = wallet.addresses
+    .filter((item) => addresses.includes(item.id))
+    .sort((a, b) => {
+      return a.isDefault === b.isDefault ? a.idx - b.idx : a.isDefault ? -1 : 1;
+    });
   const changeBox = generateChangeBox(
     selectedBoxes,
     candidates,
     fee,
-    wallet.addresses.filter((item) => addresses.includes(item.id))[0].address,
+    selectedAddresses[0].address,
     height,
   );
   const inputBoxes = wasm.ErgoBoxes.empty();

@@ -35,6 +35,7 @@ export type UnsignedGeneratedTx = {
 interface DAppPropsType {
   walletId: number;
   getAddresses: () => Promise<Array<string>>;
+  getDefaultAddress: () => Promise<string>;
   getAssets: () => Promise<Array<AssetInfo>>;
   getCoveringForErgAndToken: (
     amount: bigint,
