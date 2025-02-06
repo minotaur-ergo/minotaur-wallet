@@ -40,7 +40,7 @@ const AddressItem = (props: AddressItemPropsType) => {
         <AddressViewCard
           address={props.address}
           name={props.address.name}
-          isDefault={true}
+          isDefault={props.address.isDefault}
           chain={props.chain}
           handleEdit={() => setEditing(true)}
           handleClose={() => setOpen(false)}

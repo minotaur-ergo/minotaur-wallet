@@ -22,7 +22,7 @@ import { BoxInfo, TokenInfo, TxInfo } from '@/types/db';
 import { SpendDetail } from '@/types/network';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
-import { TX_CHUNK_SIZE } from '@/utils/const';
+import { DEFAULT_ADDRESS_PREFIX, TX_CHUNK_SIZE } from '@/utils/const';
 import { sliceToChunksString } from '@/utils/functions';
 
 class WalletDbAction {
@@ -111,6 +111,18 @@ class WalletDbAction {
     }
   };
 
+  protected setFlags = async (walletId: number, flags: Array<string>) => {
+    const flagStr = [
+      ...new Set(flags.filter(Boolean).map((item) => item.trim())),
+    ].join('|');
+    await this.walletRepository
+      .createQueryBuilder()
+      .update()
+      .set({ flags: flagStr })
+      .where('id=:id', { id: walletId })
+      .execute();
+  };
+
   setFlagOnWallet = async (
     walletId: number,
     flag: string,
@@ -118,16 +130,24 @@ class WalletDbAction {
   ) => {
     const wallet = await this.getWalletById(walletId);
     if (wallet) {
-      const flags = [...wallet.flags.split('|'), flag]
-        .filter((item) => !remove || item !== flag)
-        .filter(Boolean);
-      const flagStr = [...new Set(flags.map((item) => item.trim()))].join('|');
-      await this.walletRepository
-        .createQueryBuilder()
-        .update()
-        .set({ flags: flagStr })
-        .where('id=:id', { id: walletId })
-        .execute();
+      const flags = [...wallet.flags.split('|'), flag].filter(
+        (item) => !remove || item !== flag,
+      );
+      await this.setFlags(walletId, flags);
+      store.dispatch(invalidateWallets());
+    }
+  };
+
+  setDefaultAddress = async (walletId: number, index: number) => {
+    const wallet = await this.getWalletById(walletId);
+    if (wallet) {
+      const flags = [
+        ...wallet.flags
+          .split('|')
+          .filter((item) => !item.startsWith(DEFAULT_ADDRESS_PREFIX)),
+        DEFAULT_ADDRESS_PREFIX + index,
+      ];
+      await this.setFlags(walletId, flags);
       store.dispatch(invalidateWallets());
     }
   };

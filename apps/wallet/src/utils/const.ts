@@ -29,6 +29,8 @@ export const ADDRESS_PLACE_HOLDER = '#P2PK_ADDRESS#';
 export const WALLET_FAVORITE_FLAG = 'favorite';
 export const WALLET_ARCHIVE_FLAG = 'archive';
 
+export const DEFAULT_ADDRESS_PREFIX = 'default_';
+
 export const enum WALLET_FLAG_ENUM {
   FAVORITE = WALLET_FAVORITE_FLAG,
   ARCHIVE = WALLET_ARCHIVE_FLAG,

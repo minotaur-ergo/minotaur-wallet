@@ -1,3 +1,4 @@
+import { WalletDbAction } from '@/action/db';
 import AddressCopyable from '@/components/address-copyable/AddressCopyable';
 import AssetRow from '@/components/asset-row/AssetRow';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,6 +21,11 @@ interface AddressViewCardPropsType {
 }
 
 const AddressViewCard = (props: AddressViewCardPropsType) => {
+  const setDefaultAddress = () => {
+    WalletDbAction.getInstance()
+      .setDefaultAddress(props.address.walletId, props.address.idx)
+      .then(() => null);
+  };
   return (
     <React.Fragment>
       <Box display="flex" mb={2}>
@@ -64,7 +70,11 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
       >
         Derivation path: {"m/44'/429'/0'/00/"}
       </Typography>
-      {!props.isDefault && <Button variant="text">Set as default</Button>}
+      {!props.isDefault && (
+        <Button variant="text" onClick={() => setDefaultAddress()}>
+          Set as default
+        </Button>
+      )}
     </React.Fragment>
   );
 };

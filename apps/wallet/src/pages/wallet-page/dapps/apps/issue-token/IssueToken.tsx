@@ -18,7 +18,7 @@ const IssueToken = (props: DAppPropsType) => {
   const [decimal, setDecimal] = useState('');
   const [hasError, setHasError] = useState(false);
   const issueToken = async () => {
-    const addresses = await props.getAddresses();
+    const address = await props.getDefaultAddress();
     const height = await props.chain.getNetwork().getHeight();
     const box_value =
       BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str()) + fee;
@@ -53,7 +53,7 @@ const IssueToken = (props: DAppPropsType) => {
           .reduce((a, b) => a + b, BigInt(0)) - fee;
       const candidateBuilder = new wasm.ErgoBoxCandidateBuilder(
         wasm.BoxValue.from_i64(wasm.I64.from_str(totalErg.toString())),
-        wasm.Contract.pay_to_address(wasm.Address.from_base58(addresses[0])),
+        wasm.Contract.pay_to_address(wasm.Address.from_base58(address)),
         height,
       );
       candidateBuilder.add_token(
@@ -90,7 +90,7 @@ const IssueToken = (props: DAppPropsType) => {
         new wasm.ErgoBoxCandidates(candidate),
         height,
         wasm.BoxValue.from_i64(wasm.I64.from_str(fee.toString())),
-        wasm.Address.from_base58(addresses[0]),
+        wasm.Address.from_base58(address),
       ).build();
       await props.signAndSendTx({ tx, boxes });
     } else {
