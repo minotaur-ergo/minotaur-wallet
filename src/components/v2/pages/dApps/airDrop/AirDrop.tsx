@@ -100,6 +100,7 @@ export default function AirDrop() {
               </InputAdornment>
             ),
           }}
+          sx={{ '& .MuiInputBase-root': { alignItems: 'start' } }}
         />
         <TextField
           label="Amount"
