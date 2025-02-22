@@ -5,6 +5,7 @@ import { WalletType } from '@/db/entities/Wallet';
 import store from '@/store';
 import {
   addedWallets,
+  invalidateWallets,
   StateAddress,
   StateWallet,
 } from '@/store/reducer/wallet';
@@ -62,6 +63,27 @@ const createWallet = async (
   await addAllWalletAddresses(walletEntityToWalletState(wallet));
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
+};
+
+const changeWalletPassword = async (
+  walletId: number,
+  oldPassword: string,
+  newPassword: string,
+) => {
+  const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
+  if (wallet) {
+    const seed = encrypt(decrypt(wallet.seed, oldPassword), newPassword);
+    const mnemonic = encrypt(
+      decrypt(wallet.encrypted_mnemonic, oldPassword),
+      newPassword,
+    );
+    await WalletDbAction.getInstance().changeSeedAndMnemonic(
+      walletId,
+      seed,
+      mnemonic,
+    );
+    store.dispatch(invalidateWallets());
+  }
 };
 
 const createReadOnlyWallet = async (
@@ -153,5 +175,6 @@ export {
   createReadOnlyWallet,
   validatePassword,
   createMultiSigWallet,
+  changeWalletPassword,
   getProver,
 };

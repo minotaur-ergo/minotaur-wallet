@@ -1,3 +1,4 @@
+import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { useEffect, useState } from 'react';
 import { GlobalStateType } from '@/store';
@@ -77,6 +78,10 @@ const WalletPage = () => {
       <Route
         path={WalletPageSuffix.WalletXPub}
         element={<WalletExtendedPublicKey wallet={wallet} />}
+      />
+      <Route
+        path={WalletPageSuffix.WalletChangePassword}
+        element={<ChangeWalletPassword wallet={wallet} />}
       />
       <Route
         path={WalletPageSuffix.WalletSend}

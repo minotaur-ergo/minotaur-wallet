@@ -23,7 +23,6 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
       .then(() => null);
   };
   const setArchived = (archived: boolean) => {
-    console.log(archived);
     WalletDbAction.getInstance()
       .setFlagOnWallet(props.wallet.id, WALLET_FLAG_ENUM.ARCHIVE, !archived)
       .then(() => null);
@@ -55,12 +54,19 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
         {/*    }*/}
         {/*    helperText="Some description about this option goes here."*/}
         {/*/>*/}
-
-        {/*<ActionButton*/}
-        {/*    label="Change sign-tx"*/}
-        {/*    helperText="Some description about this option goes here."*/}
-        {/*    onClick={() => navigate(RouterMap.ChangePassword)}*/}
-        {/*/>*/}
+        {props.wallet.type === WalletType.Normal ? (
+          <ActionButton
+            label="Change Password"
+            helperText="Change Wallet Encryption Password"
+            onClick={() =>
+              navigate(
+                getRoute(RouteMap.WalletChangePassword, {
+                  id: props.wallet.id,
+                }),
+              )
+            }
+          />
+        ) : null}
         {/*<ActionButton*/}
         {/*    label="Export wallet"*/}
         {/*    helperText="Some description about this option goes here."*/}

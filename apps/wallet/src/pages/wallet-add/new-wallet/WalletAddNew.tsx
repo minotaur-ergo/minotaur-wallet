@@ -40,7 +40,7 @@ const WalletAddNew = () => {
   const setMnemonicSize = (size: number) => {
     setParam('mnemonic', bip39.generateMnemonic((size / 3) * 32));
   };
-
+  console.log(values);
   const handleBack = () => {
     if (step > 1) setStep((prevState) => prevState - 1);
     else navigate(-1);

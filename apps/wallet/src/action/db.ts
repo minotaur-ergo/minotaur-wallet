@@ -52,6 +52,19 @@ class WalletDbAction {
     return this.walletRepository.findOneBy({ id: walletId });
   };
 
+  changeSeedAndMnemonic = async (
+    walletId: number,
+    seed: string,
+    encrypted_mnemonic: string,
+  ) => {
+    await this.walletRepository
+      .createQueryBuilder()
+      .update()
+      .set({ seed, encrypted_mnemonic })
+      .where('id=:id', { id: walletId })
+      .execute();
+  };
+
   createWallet = async (
     name: string,
     type: WalletType,
