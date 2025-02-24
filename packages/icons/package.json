@@ -10,7 +10,7 @@
   "scripts": {
     "add-icons": "tsx bin/add-icons.ts",
     "prettify": "npx prettier --ignore-unknown --write .",
-    "fetch-details": "tsx bin/fetch-details.tsROOT_PATH && npm run prettify",
+    "fetch-details": "tsx bin/fetch-details.ts && npm run prettify",
     "build": "tsc && npm run add-icons"
   },
   "files": [

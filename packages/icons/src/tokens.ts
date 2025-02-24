@@ -122,6 +122,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '695f7249f70e4d7ec6239694e1cc720f3e37c217bd54fbad74e7fdfbaf9415f9',
     fileExtension: 'svg',
   },
+  '050322548722d36f094e341f59ed93eb22118b363eb4efe8c461a52c4d93e2c3': {
+    id: '050322548722d36f094e341f59ed93eb22118b363eb4efe8c461a52c4d93e2c3',
+    boxId: '817296af2d9e52c89cb0a26e1655422d83e9c5ed941fa01772aa89bb38c2455b',
+    decimals: 9,
+    description:
+      '{"title":"rosen bridge wrapped BNB","originNetwork":"Binance","originToken":"binance","isNativeToken":true}',
+    emissionAmount: '100000000000000000',
+    height: 1459127,
+    name: 'rsBNB',
+    networkType: 'Main Net',
+    txId: 'c9aaf1fccb5bfbccfeee9ba7dc44db26aeb6a6637117eed087329fa3c599bd5d',
+    fileExtension: 'svg',
+  },
   '0779ec04f2fae64e87418a1ad917639d4668f78484f45df962b0dec14a2591d2': {
     id: '0779ec04f2fae64e87418a1ad917639d4668f78484f45df962b0dec14a2591d2',
     boxId: '80ce3f0b24f914cb3de463aef2d6e6e4d90a060de1321b07414d412dd0ad78df',
