@@ -8,6 +8,7 @@ export const WalletPageSuffix = {
   WalletDAppView: 'dApp/:dAppId',
   WalletSettings: 'settings',
   WalletXPub: 'x-pub',
+  WalletChangePassword: 'password-change',
   WalletMultiSig: 'multi-sig-communication/',
   WalletMultiSigTxView: 'multi-sig-communication/:txId',
   WalletSend: 'send',
@@ -35,6 +36,7 @@ export const RouteMap = {
   WalletMultiSig: '/wallet/:id/multi-sig-communication',
   WalletMultiSigTxView: '/wallet/:id/multi-sig-communication/:txId',
   WalletXPub: '/wallet/:id/x-pub',
+  WalletChangePassword: '/wallet/:id/password-change',
   WalletSend: '/wallet/:id/send',
   WalletAddressBookAdd: '/address-book/add',
 };
