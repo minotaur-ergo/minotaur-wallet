@@ -17,6 +17,7 @@ export const WalletPageSuffix = {
 export const RouteMap = {
   Home: '',
   Settings: '/settings/',
+  Pin: '/pin/',
   AddressBook: '/address-book',
   Wallets: '/wallet/list/',
   WalletAdd: '/wallet/add/',

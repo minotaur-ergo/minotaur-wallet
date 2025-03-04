@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { AddressDbAction, ConfigDbAction, WalletDbAction } from '@/action/db';
+import {
+  AddressDbAction,
+  ConfigDbAction,
+  PinDbAction,
+  WalletDbAction,
+} from '@/action/db';
 import { getInitializeData } from '@/action/initialize';
 import { ConfigType } from '@/db/entities/Config';
 import { GlobalStateType } from '@/store';
@@ -25,24 +30,32 @@ const useInitConfig = () => {
   );
   const dispatch = useDispatch();
   if (!configLoaded) {
-    ConfigDbAction.getInstance()
-      .getAllConfig()
-      .then((configs) => {
-        const config: ConfigPayload = {
-          display: 'advanced',
-          currency: 'USD',
-          activeWallet: -1,
-        };
-        configs.forEach((item) => {
-          if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
-            config.display = 'simple';
-          } else if (item.key === ConfigType.Currency) {
-            config.currency = item.value;
-          } else if (item.key === ConfigType.ActiveWallet) {
-            config.activeWallet = parseInt(item.value);
-          }
-        });
-        dispatch(setConfig(config));
+    PinDbAction.getInstance()
+      .getAllPins()
+      .then((pins) => {
+        ConfigDbAction.getInstance()
+          .getAllConfig()
+          .then((configs) => {
+            const config: ConfigPayload = {
+              display: 'advanced',
+              currency: 'USD',
+              activeWallet: -1,
+              hasPin: pins.length > 0,
+            };
+            configs.forEach((item) => {
+              if (
+                item.key === ConfigType.DisplayMode &&
+                item.value === 'simple'
+              ) {
+                config.display = 'simple';
+              } else if (item.key === ConfigType.Currency) {
+                config.currency = item.value;
+              } else if (item.key === ConfigType.ActiveWallet) {
+                config.activeWallet = parseInt(item.value);
+              }
+            });
+            dispatch(setConfig(config));
+          });
       });
   } else if (!initialized) {
     getInitializeData().then((res) => dispatch(initialize(res)));

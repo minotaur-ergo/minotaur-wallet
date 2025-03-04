@@ -1,3 +1,4 @@
+import Pin from '@/db/entities/Pin';
 import { DataSource, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
 import AddressValueInfo, {
@@ -797,6 +798,68 @@ class ConfigDbAction {
   };
 }
 
+class PinDbAction {
+  private repository: Repository<Pin>;
+  private static instance: PinDbAction;
+
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Pin);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    this.instance = new PinDbAction(dataSource);
+  };
+
+  getAllPins = async () => {
+    return this.repository.find();
+  };
+
+  getPinOfType = (type: string) => {
+    return this.repository.findOne({
+      where: {
+        type,
+      },
+    });
+  };
+
+  findPinByValue = (pin: string) => {
+    return this.repository.findOne({
+      where: {
+        value: pin,
+      },
+      order: {
+        type: 'asc',
+      },
+    });
+  };
+
+  setPin = async (pin: string, type: string) => {
+    const oldPin = await this.getPinOfType(type);
+    if (oldPin) {
+      await this.repository.update(
+        {
+          id: oldPin.id,
+        },
+        {
+          value: pin,
+        },
+      );
+    } else {
+      await this.repository.insert({
+        type,
+        value: pin,
+      });
+    }
+  };
+}
+
 class SavedAddressDbAction {
   private repository: Repository<SavedAddress>;
   private static instance: SavedAddressDbAction;
@@ -1146,6 +1209,7 @@ const initializeAction = (dataSource: DataSource) => {
   BoxDbAction.initialize(dataSource);
   AssetDbAction.initialize(dataSource);
   ConfigDbAction.initialize(dataSource);
+  PinDbAction.initialize(dataSource);
   SavedAddressDbAction.initialize(dataSource);
   MultiSigDbAction.initialize(dataSource);
   MultiStoreDbAction.initialize(dataSource);
@@ -1156,6 +1220,7 @@ export {
   AddressDbAction,
   AddressValueDbAction,
   ConfigDbAction,
+  PinDbAction,
   BoxDbAction,
   AssetDbAction,
   SavedAddressDbAction,

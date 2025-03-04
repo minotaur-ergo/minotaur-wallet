@@ -36,6 +36,19 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
           value={props.wallet.name}
           onChange={(newValue) => setName(newValue)}
         />
+        {props.wallet.type === WalletType.Normal ? (
+          <ActionButton
+            label="Change Password"
+            helperText="Change Wallet Encryption Password"
+            onClick={() =>
+              navigate(
+                getRoute(RouteMap.WalletChangePassword, {
+                  id: props.wallet.id,
+                }),
+              )
+            }
+          />
+        ) : null}
         {props.wallet.xPub && props.wallet.type !== WalletType.MultiSig ? (
           <ActionButton
             label="Extended public key"
@@ -54,19 +67,6 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
         {/*    }*/}
         {/*    helperText="Some description about this option goes here."*/}
         {/*/>*/}
-        {props.wallet.type === WalletType.Normal ? (
-          <ActionButton
-            label="Change Password"
-            helperText="Change Wallet Encryption Password"
-            onClick={() =>
-              navigate(
-                getRoute(RouteMap.WalletChangePassword, {
-                  id: props.wallet.id,
-                }),
-              )
-            }
-          />
-        ) : null}
         {/*<ActionButton*/}
         {/*    label="Export wallet"*/}
         {/*    helperText="Some description about this option goes here."*/}

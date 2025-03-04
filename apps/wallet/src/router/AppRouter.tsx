@@ -1,3 +1,4 @@
+import AppPin from '@/pages/settings/AppPin';
 import { Route, Routes } from 'react-router-dom';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
@@ -29,6 +30,7 @@ const AppRouter = () => {
       <Route path={RouteMap.WalletAddRestore} element={<WalletRestore />} />
       <Route path={RouteMap.WalletAddReadOnly} element={<WalletReadOnly />} />
       <Route path={RouteMap.Settings} element={<Settings />} />
+      <Route path={RouteMap.Pin} element={<AppPin />} />
       <Route
         path={RouteMap.WalletAddMultiSig}
         element={<WalletAddMultiSig />}

@@ -2,6 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type DisplayType = 'simple' | 'advanced';
 
+export interface PinConfig {
+  hasPin: boolean;
+  activePinType: string;
+  locked: boolean;
+}
+
 export interface ConfigStateType {
   display: DisplayType;
   currency: string;
@@ -10,6 +16,7 @@ export interface ConfigStateType {
   activeWallet?: number;
   loaded: boolean;
   multiSigLoadedTime: number;
+  pin: PinConfig;
 }
 
 export const configInitialState: ConfigStateType = {
@@ -19,6 +26,11 @@ export const configInitialState: ConfigStateType = {
   display: 'advanced',
   loaded: false,
   multiSigLoadedTime: Date.now(),
+  pin: {
+    hasPin: false,
+    activePinType: '',
+    locked: false,
+  },
 };
 
 export type DisplayPayload = {
@@ -33,9 +45,15 @@ export type ActiveWalletPayload = {
   activeWallet: number;
 };
 
+export type PinPayload = {
+  hasPin?: boolean;
+  activeType?: string;
+  locked?: boolean;
+};
+
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
-  ActiveWalletPayload;
+  ActiveWalletPayload & { hasPin: boolean };
 
 export type PricePayload = {
   current: number;
@@ -63,7 +81,24 @@ const configSlice = createSlice({
       state.display = action.payload.display;
       state.currency = action.payload.currency;
       state.activeWallet = action.payload.activeWallet;
+      state.pin.hasPin = action.payload.hasPin;
+      state.pin.activePinType = '';
+      state.pin.locked = action.payload.hasPin;
       state.loaded = true;
+    },
+    setPin: (state, action: PayloadAction<PinPayload>) => {
+      state.pin.hasPin =
+        action.payload.hasPin === undefined
+          ? state.pin.hasPin
+          : action.payload.hasPin;
+      state.pin.activePinType =
+        action.payload.activeType === undefined
+          ? state.pin.activePinType
+          : action.payload.activeType;
+      state.pin.locked =
+        action.payload.locked === undefined
+          ? state.pin.locked
+          : action.payload.locked;
     },
     setMultiSigLoadedTime: (state, action: PayloadAction<number>) => {
       state.multiSigLoadedTime = action.payload;
@@ -80,4 +115,5 @@ export const {
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,
+  setPin,
 } = configSlice.actions;

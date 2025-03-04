@@ -1,3 +1,5 @@
+import ActionButton from '@/pages/settings/ActionButton';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import Heading from '@/components/heading/Heading';
@@ -7,6 +9,7 @@ import { GlobalStateType } from '@/store';
 import { DisplayType, setCurrency, setDisplay } from '@/store/reducer/config';
 import { ConfigDbAction } from '@/action/db';
 import { ConfigType } from '@/db/entities/Config';
+import { useNavigate } from 'react-router-dom';
 
 const GlobalSettings = () => {
   const currency = useSelector(
@@ -17,13 +20,20 @@ const GlobalSettings = () => {
   );
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
-    ConfigDbAction.getInstance().setConfig(ConfigType.Currency, currency);
-    dispatch(setCurrency({ currency }));
+    ConfigDbAction.getInstance()
+      .setConfig(ConfigType.Currency, currency)
+      .then(() => {
+        dispatch(setCurrency({ currency }));
+      });
   };
   const saveDisplayMode = (displayMode: string) => {
-    ConfigDbAction.getInstance().setConfig(ConfigType.DisplayMode, displayMode);
-    dispatch(setDisplay({ display: displayMode as DisplayType }));
+    ConfigDbAction.getInstance()
+      .setConfig(ConfigType.DisplayMode, displayMode)
+      .then(() => {
+        dispatch(setDisplay({ display: displayMode as DisplayType }));
+      });
   };
+  const navigate = useNavigate();
   return (
     <React.Fragment>
       <Box mb={2}>
@@ -35,15 +45,16 @@ const GlobalSettings = () => {
             options={[{ value: 'USD' }]}
             onChange={saveCurrency}
           />
-        </Stack>
-      </Box>
-      <Box>
-        <Stack spacing={2}>
           <SolitarySelectField
             label="Display Mode"
             value={displayMode}
             options={[{ value: 'simple' }, { value: 'advanced' }]}
             onChange={saveDisplayMode}
+          />
+          <ActionButton
+            label="Wallet Pin"
+            helperText="Set or change wallet pin. This pin used to protect wallet usage only."
+            onClick={() => navigate(getRoute(RouteMap.Pin, {}))}
           />
         </Stack>
       </Box>
