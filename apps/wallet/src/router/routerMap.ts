@@ -18,6 +18,7 @@ export const RouteMap = {
   Home: '',
   Settings: '/settings/',
   Pin: '/pin/',
+  HoneyPin: '/pin/honey/',
   AddressBook: '/address-book',
   Wallets: '/wallet/list/',
   WalletAdd: '/wallet/add/',

@@ -1,5 +1,5 @@
 import Pin from '@/db/entities/Pin';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
 import AddressValueInfo, {
   AddressValueType,
@@ -837,6 +837,12 @@ class PinDbAction {
       order: {
         type: 'asc',
       },
+    });
+  };
+
+  deletePinType = async (pinType: string) => {
+    await this.repository.delete({
+      type: Like(pinType + '%'),
     });
   };
 

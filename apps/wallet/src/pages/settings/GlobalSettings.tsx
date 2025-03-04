@@ -34,6 +34,10 @@ const GlobalSettings = () => {
       });
   };
   const navigate = useNavigate();
+  const hasPin = useSelector(
+    (state: GlobalStateType) => state.config.pin.hasPin,
+  );
+
   return (
     <React.Fragment>
       <Box mb={2}>
@@ -56,6 +60,13 @@ const GlobalSettings = () => {
             helperText="Set or change wallet pin. This pin used to protect wallet usage only."
             onClick={() => navigate(getRoute(RouteMap.Pin, {}))}
           />
+          {hasPin ? (
+            <ActionButton
+              label="Honey Pin"
+              helperText="Use Honey Pin to enter honey mode. in honey mode you can only view some selected wallets"
+              onClick={() => navigate(getRoute(RouteMap.HoneyPin, {}))}
+            />
+          ) : undefined}
         </Stack>
       </Box>
     </React.Fragment>

@@ -62,3 +62,5 @@ export const commaSeparate = (amount: string, fromEnd: boolean = true) => {
 export const pinHash = (pin: string) => {
   return blake2bHex(pin, undefined, 32);
 };
+
+export const honeyPinType = (pinType: string) => `${pinType}[honey]`;

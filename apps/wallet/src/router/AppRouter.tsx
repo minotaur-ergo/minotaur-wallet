@@ -1,3 +1,4 @@
+import AppHoneyPin from '@/pages/settings/AppHoneyPin';
 import AppPin from '@/pages/settings/AppPin';
 import { Route, Routes } from 'react-router-dom';
 import useInitConfig from '@/hooks/useInitConfig';
@@ -31,6 +32,7 @@ const AppRouter = () => {
       <Route path={RouteMap.WalletAddReadOnly} element={<WalletReadOnly />} />
       <Route path={RouteMap.Settings} element={<Settings />} />
       <Route path={RouteMap.Pin} element={<AppPin />} />
+      <Route path={RouteMap.HoneyPin} element={<AppHoneyPin />} />
       <Route
         path={RouteMap.WalletAddMultiSig}
         element={<WalletAddMultiSig />}
