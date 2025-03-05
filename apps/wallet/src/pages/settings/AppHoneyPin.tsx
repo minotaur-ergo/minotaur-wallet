@@ -3,7 +3,7 @@ import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import PasswordField from '@/components/password-field/PasswordField';
 import { GlobalStateType } from '@/store';
-import { honeyPinType, pinHash } from '@/utils/convert';
+import { honeyPinType, getPinHash } from '@/utils/convert';
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import AppFrame from '../../layouts/AppFrame';
@@ -27,7 +27,7 @@ const WalletSetPin = () => {
   const handleSubmit = async () => {
     if (isValid) {
       if (action === PinActionType.Update) {
-        await PinDbAction.getInstance().setPin(pinHash(newPin), pinType);
+        await PinDbAction.getInstance().setPin(getPinHash(newPin), pinType);
       } else {
         PinDbAction.getInstance().deletePinType(pinType).then();
       }

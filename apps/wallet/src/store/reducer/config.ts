@@ -86,7 +86,7 @@ const configSlice = createSlice({
       state.pin.locked = action.payload.hasPin;
       state.loaded = true;
     },
-    setPin: (state, action: PayloadAction<PinPayload>) => {
+    setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
         action.payload.hasPin === undefined
           ? state.pin.hasPin
@@ -115,5 +115,5 @@ export const {
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,
-  setPin,
+  setPinConfig,
 } = configSlice.actions;

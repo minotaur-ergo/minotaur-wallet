@@ -59,7 +59,7 @@ export const commaSeparate = (amount: string, fromEnd: boolean = true) => {
   return fromEnd ? res.split('').reverse().join('') : res;
 };
 
-export const pinHash = (pin: string) => {
+export const getPinHash = (pin: string) => {
   return blake2bHex(pin, undefined, 32);
 };
 

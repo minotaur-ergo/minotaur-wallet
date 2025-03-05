@@ -3,8 +3,8 @@ import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import PasswordField from '@/components/password-field/PasswordField';
 import { GlobalStateType } from '@/store';
-import { setPin } from '@/store/reducer/config';
-import { pinHash } from '@/utils/convert';
+import { setPinConfig } from '@/store/reducer/config';
+import { getPinHash } from '@/utils/convert';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppFrame from '../../layouts/AppFrame';
@@ -38,7 +38,7 @@ const AppPin = () => {
         });
     }
   }, [hasPin, loadingPinType, oldPinHash, pinType]);
-  const newPinHash = useMemo(() => pinHash(newPin), [newPin]);
+  const newPinHash = useMemo(() => getPinHash(newPin), [newPin]);
   const oldPinValid = newPinHash !== oldPinHash;
   const newPinValid = newPin === newPinConfirm && newPin !== '';
   const isValid = oldPinValid && newPinValid;
@@ -47,13 +47,13 @@ const AppPin = () => {
   const handleSubmit = () => {
     if (isValid) {
       PinDbAction.getInstance()
-        .setPin(pinHash(newPin), pinType)
+        .setPin(getPinHash(newPin), pinType)
         .then(() => {
           message.insert(
             `successfully ${hasPin ? 'changed' : 'set'}`,
             'success',
           );
-          dispatch(setPin({ hasPin: true }));
+          dispatch(setPinConfig({ hasPin: true }));
           navigate(-1);
         });
     }
