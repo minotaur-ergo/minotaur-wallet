@@ -1,3 +1,4 @@
+import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import ActionButton from '@/pages/settings/ActionButton';
 import { getRoute, RouteMap } from '@/router/routerMap';
 import React from 'react';
@@ -6,7 +7,12 @@ import Heading from '@/components/heading/Heading';
 import SolitarySelectField from '@/components/solitary/SolitarySelectField';
 import { useDispatch, useSelector } from 'react-redux';
 import { GlobalStateType } from '@/store';
-import { DisplayType, setCurrency, setDisplay } from '@/store/reducer/config';
+import {
+  DisplayType,
+  setActiveWallet,
+  setCurrency,
+  setDisplay,
+} from '@/store/reducer/config';
 import { ConfigDbAction } from '@/action/db';
 import { ConfigType } from '@/db/entities/Config';
 import { useNavigate } from 'react-router-dom';
@@ -15,11 +21,11 @@ const GlobalSettings = () => {
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
-  const currency = useSelector(
-    (state: GlobalStateType) => state.config.currency,
-  );
   const displayMode = useSelector(
     (state: GlobalStateType) => state.config.display,
+  );
+  const { useActiveWallet, activeWallet, currency } = useSelector(
+    (state: GlobalStateType) => state.config,
   );
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
@@ -34,6 +40,22 @@ const GlobalSettings = () => {
       .setConfig(ConfigType.DisplayMode, displayMode, activePinType)
       .then(() => {
         dispatch(setDisplay({ display: displayMode as DisplayType }));
+      });
+  };
+  const saveUseActiveWallet = (useActiveWallet: boolean) => {
+    ConfigDbAction.getInstance()
+      .setConfig(
+        ConfigType.useActiveWallet,
+        useActiveWallet ? 'true' : 'false',
+        activePinType,
+      )
+      .then(() => {
+        dispatch(
+          setActiveWallet({
+            useActiveWallet,
+            activeWallet: activeWallet ?? -1,
+          }),
+        );
       });
   };
   const navigate = useNavigate();
@@ -70,6 +92,13 @@ const GlobalSettings = () => {
               onClick={() => navigate(getRoute(RouteMap.HoneyPin, {}))}
             />
           ) : undefined}
+          <SolitarySwitchField
+            label="Display last active wallet on load"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={useActiveWallet}
+            onChange={saveUseActiveWallet}
+          />
         </Stack>
       </Box>
     </React.Fragment>
