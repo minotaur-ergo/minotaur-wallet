@@ -59,6 +59,7 @@ export interface WalletStateType {
   wallets: Array<StateWallet>;
   addresses: Array<StateAddress>;
   balances: { [address: string]: AddressBalance };
+  loadedWalletPinType: string;
   walletsValid: boolean;
   addressesValid: boolean;
   initialized: boolean;
@@ -70,6 +71,7 @@ export const walletInitialState: WalletStateType = {
   wallets: [],
   addresses: [],
   balances: {},
+  loadedWalletPinType: '',
   walletsValid: false,
   addressesValid: false,
   initialized: false,
@@ -152,11 +154,16 @@ const walletSlice = createSlice({
       state.addressesValid = true;
       state.initialized = true;
     },
-    setWallets(state, action: PayloadAction<Array<StateWallet>>) {
-      action.payload.forEach((wallet) =>
+    setWallets(
+      state,
+      action: PayloadAction<{ pinType: string; wallets: Array<StateWallet> }>,
+    ) {
+      console.log(action);
+      action.payload.wallets.forEach((wallet) =>
         updateWalletBalance(wallet, state.addresses),
       );
-      state.wallets = action.payload;
+      state.wallets = action.payload.wallets;
+      state.loadedWalletPinType = action.payload.pinType;
       state.walletsValid = true;
     },
     setAddresses(state, action: PayloadAction<Array<StateAddress>>) {

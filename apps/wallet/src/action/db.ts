@@ -108,7 +108,7 @@ class WalletDbAction {
     store.dispatch(invalidateWallets());
   };
 
-  deleteWallet = async (walletId: number) => {
+  deleteWallet = async (walletId: number, pinType: string) => {
     await AddressDbAction.getInstance().deleteWalletAddresses(walletId);
     const entity = await this.getWalletById(walletId);
     if (entity) {
@@ -120,7 +120,10 @@ class WalletDbAction {
         .delete()
         .where('id=:id', { id: walletId })
         .execute();
-      await ConfigDbAction.getInstance().deleteConfig(ConfigType.ActiveWallet);
+      await ConfigDbAction.getInstance().deleteConfig(
+        ConfigType.ActiveWallet,
+        pinType,
+      );
       store.dispatch(invalidateWallets());
     }
   };
@@ -768,32 +771,41 @@ class ConfigDbAction {
     ConfigDbAction.instance = new ConfigDbAction(dataSource);
   };
 
-  getAllConfig = async () => {
-    return await this.repository.find();
+  getAllConfig = async (pinType: string) => {
+    return await this.repository.find({ where: { pinType: pinType } });
   };
 
-  setConfig = async (key: string, value: string) => {
-    const entity = await this.repository.findOneBy({ key: key });
+  setConfig = async (key: string, value: string, pinType: string) => {
+    const entity = await this.repository.findOneBy({
+      key: key,
+      pinType: pinType,
+    });
     if (entity) {
       return await this.repository
         .createQueryBuilder()
         .update()
         .set({ value: value })
-        .where('key=:key', { key: key })
+        .where('key=:key AND pinType=:pinType', { key: key, pinType: pinType })
         .execute();
     } else {
-      return await this.repository.insert({
-        key: key,
-        value: value,
-      });
+      return await this.repository.insert({ key, value, pinType });
     }
   };
 
-  deleteConfig = async (key: string) => {
+  deleteConfig = async (key: string, pinType: string) => {
+    const configs = await this.repository.find({
+      where: {
+        key: key,
+        pinType: Like(pinType),
+      },
+    });
     return await this.repository
       .createQueryBuilder()
       .delete()
-      .where('key=:key', { key: key })
+      .where(
+        'id IN (:...ids)',
+        configs.map((item) => item.id),
+      )
       .execute();
   };
 }

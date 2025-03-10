@@ -1,4 +1,5 @@
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
+import DisplayInHoneyMode from '@/pages/settings/DisplayInHoneyMode';
 import { WALLET_FLAG_ENUM } from '@/utils/const';
 import { Box, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -79,6 +80,7 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
           value={props.wallet.archived}
           onChange={setArchived}
         />
+        <DisplayInHoneyMode wallet={props.wallet} />
       </Stack>
     </Box>
   );

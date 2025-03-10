@@ -6,6 +6,7 @@ export interface PinConfig {
   hasPin: boolean;
   activePinType: string;
   locked: boolean;
+  loaded: boolean;
 }
 
 export interface ConfigStateType {
@@ -14,8 +15,8 @@ export interface ConfigStateType {
   price: number;
   priceLastWeek: number;
   activeWallet?: number;
-  loaded: boolean;
   multiSigLoadedTime: number;
+  loadedPinType: string;
   pin: PinConfig;
 }
 
@@ -24,12 +25,13 @@ export const configInitialState: ConfigStateType = {
   priceLastWeek: 0,
   price: 0,
   display: 'advanced',
-  loaded: false,
   multiSigLoadedTime: Date.now(),
+  loadedPinType: '-',
   pin: {
     hasPin: false,
     activePinType: '',
     locked: false,
+    loaded: false,
   },
 };
 
@@ -53,7 +55,7 @@ export type PinPayload = {
 
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
-  ActiveWalletPayload & { hasPin: boolean };
+  ActiveWalletPayload & { pinType: string };
 
 export type PricePayload = {
   current: number;
@@ -81,10 +83,7 @@ const configSlice = createSlice({
       state.display = action.payload.display;
       state.currency = action.payload.currency;
       state.activeWallet = action.payload.activeWallet;
-      state.pin.hasPin = action.payload.hasPin;
-      state.pin.activePinType = '';
-      state.pin.locked = action.payload.hasPin;
-      state.loaded = true;
+      state.loadedPinType = action.payload.pinType;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -99,6 +98,7 @@ const configSlice = createSlice({
         action.payload.locked === undefined
           ? state.pin.locked
           : action.payload.locked;
+      state.pin.loaded = true;
     },
     setMultiSigLoadedTime: (state, action: PayloadAction<number>) => {
       state.multiSigLoadedTime = action.payload;

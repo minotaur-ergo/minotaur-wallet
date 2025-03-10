@@ -12,6 +12,9 @@ import { ConfigType } from '@/db/entities/Config';
 import { useNavigate } from 'react-router-dom';
 
 const GlobalSettings = () => {
+  const activePinType = useSelector(
+    (state: GlobalStateType) => state.config.pin.activePinType,
+  );
   const currency = useSelector(
     (state: GlobalStateType) => state.config.currency,
   );
@@ -21,14 +24,14 @@ const GlobalSettings = () => {
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
     ConfigDbAction.getInstance()
-      .setConfig(ConfigType.Currency, currency)
+      .setConfig(ConfigType.Currency, currency, activePinType)
       .then(() => {
         dispatch(setCurrency({ currency }));
       });
   };
   const saveDisplayMode = (displayMode: string) => {
     ConfigDbAction.getInstance()
-      .setConfig(ConfigType.DisplayMode, displayMode)
+      .setConfig(ConfigType.DisplayMode, displayMode, activePinType)
       .then(() => {
         dispatch(setDisplay({ display: displayMode as DisplayType }));
       });

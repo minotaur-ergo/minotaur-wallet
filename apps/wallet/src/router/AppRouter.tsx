@@ -29,6 +29,7 @@ const AppRouter = () => {
   const { hasPin, locked } = useSelector(
     (state: GlobalStateType) => state.config.pin,
   );
+  console.log(hasPin, locked);
   return initialized ? (
     <React.Fragment>
       {hasPin && locked ? <EnterPin /> : undefined}

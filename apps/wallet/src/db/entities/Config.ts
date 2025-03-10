@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 export enum ConfigType {
   DisplayMode = 'DISPLAY_DETAIL',
@@ -7,12 +7,16 @@ export enum ConfigType {
 }
 
 @Entity({ name: 'config' })
+@Unique(['key', 'pinType'])
 class Config {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @Column('text', { unique: true })
+  @Column('text')
   key: string = ConfigType.DisplayMode;
+
+  @Column('text', { default: '' })
+  pinType: string = '';
 
   @Column('text')
   value = '';
