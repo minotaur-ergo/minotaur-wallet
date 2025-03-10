@@ -12,26 +12,33 @@ const Home = () => {
   const activeWallet = useSelector(
     (state: GlobalStateType) => state.config.activeWallet,
   );
+  const locked = useSelector(
+    (state: GlobalStateType) => state.config.pin.locked,
+  );
   const navigate = useNavigate();
   useEffect(() => {
-    if (activeWallet && activeWallet !== -1) {
-      const currentWallets = wallets.filter((item) => item.id === activeWallet);
-      if (currentWallets.length > 0) {
-        navigate(getRoute(RouteMap.WalletHome, { id: activeWallet }), {
-          replace: true,
-        });
+    if (!locked) {
+      if (activeWallet && activeWallet !== -1) {
+        const currentWallets = wallets.filter(
+          (item) => item.id === activeWallet,
+        );
+        if (currentWallets.length > 0) {
+          navigate(getRoute(RouteMap.WalletHome, { id: activeWallet }), {
+            replace: true,
+          });
+        }
+      } else {
+        WalletDbAction.getInstance()
+          .getWallets()
+          .then((wallets) => {
+            if (wallets.length === 0) {
+              navigate(RouteMap.Wallets, { replace: true });
+              navigate(RouteMap.WalletAdd, { replace: false });
+            } else {
+              navigate(RouteMap.Wallets, { replace: true });
+            }
+          });
       }
-    } else {
-      WalletDbAction.getInstance()
-        .getWallets()
-        .then((wallets) => {
-          if (wallets.length === 0) {
-            navigate(RouteMap.Wallets, { replace: true });
-            navigate(RouteMap.WalletAdd, { replace: false });
-          } else {
-            navigate(RouteMap.Wallets, { replace: true });
-          }
-        });
     }
   });
   return (

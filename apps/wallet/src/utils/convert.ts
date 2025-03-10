@@ -2,6 +2,7 @@ import Wallet from '@/db/entities/Wallet';
 import { StateAddress, StateWallet } from '@/store/reducer/wallet';
 import Address from '@/db/entities/Address';
 import { WALLET_FLAG_ENUM } from '@/utils/const';
+import { blake2bHex } from 'blakejs';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { createEmptyArrayWithIndex } from './functions';
 
@@ -57,3 +58,9 @@ export const commaSeparate = (amount: string, fromEnd: boolean = true) => {
   const res = (chunks ?? []).join(',');
   return fromEnd ? res.split('').reverse().join('') : res;
 };
+
+export const getPinHash = (pin: string) => {
+  return blake2bHex(pin, undefined, 32);
+};
+
+export const honeyPinType = (pinType: string) => `${pinType}[honey]`;

@@ -11,6 +11,7 @@ import MultiSigner from './multi-sig/MultiSigner';
 import AddressValueInfo from './AddressValueInfo';
 import SavedAddress from './SavedAddress';
 import Box from './Box';
+import Pin from './Pin';
 
 const Entities = [
   Wallet,
@@ -26,6 +27,7 @@ const Entities = [
   MultiSigner,
   AddressValueInfo,
   SavedAddress,
+  Pin,
 ];
 
 export default Entities;

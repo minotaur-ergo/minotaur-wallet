@@ -1,4 +1,5 @@
-import { DataSource, Repository } from 'typeorm';
+import Pin from '@/db/entities/Pin';
+import { DataSource, Like, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
 import AddressValueInfo, {
   AddressValueType,
@@ -107,7 +108,7 @@ class WalletDbAction {
     store.dispatch(invalidateWallets());
   };
 
-  deleteWallet = async (walletId: number) => {
+  deleteWallet = async (walletId: number, pinType: string) => {
     await AddressDbAction.getInstance().deleteWalletAddresses(walletId);
     const entity = await this.getWalletById(walletId);
     if (entity) {
@@ -119,7 +120,10 @@ class WalletDbAction {
         .delete()
         .where('id=:id', { id: walletId })
         .execute();
-      await ConfigDbAction.getInstance().deleteConfig(ConfigType.ActiveWallet);
+      await ConfigDbAction.getInstance().deleteConfig(
+        ConfigType.ActiveWallet,
+        pinType,
+      );
       store.dispatch(invalidateWallets());
     }
   };
@@ -767,33 +771,110 @@ class ConfigDbAction {
     ConfigDbAction.instance = new ConfigDbAction(dataSource);
   };
 
-  getAllConfig = async () => {
-    return await this.repository.find();
+  getAllConfig = async (pinType: string) => {
+    return await this.repository.find({ where: { pinType: pinType } });
   };
 
-  setConfig = async (key: string, value: string) => {
-    const entity = await this.repository.findOneBy({ key: key });
+  setConfig = async (key: string, value: string, pinType: string) => {
+    const entity = await this.repository.findOneBy({
+      key: key,
+      pinType: pinType,
+    });
     if (entity) {
       return await this.repository
         .createQueryBuilder()
         .update()
         .set({ value: value })
-        .where('key=:key', { key: key })
+        .where('key=:key AND pinType=:pinType', { key: key, pinType: pinType })
         .execute();
     } else {
-      return await this.repository.insert({
-        key: key,
-        value: value,
-      });
+      return await this.repository.insert({ key, value, pinType });
     }
   };
 
-  deleteConfig = async (key: string) => {
+  deleteConfig = async (key: string, pinType: string) => {
+    const configs = await this.repository.find({
+      where: {
+        key: key,
+        pinType: Like(pinType),
+      },
+    });
     return await this.repository
       .createQueryBuilder()
       .delete()
-      .where('key=:key', { key: key })
+      .where(
+        'id IN (:...ids)',
+        configs.map((item) => item.id),
+      )
       .execute();
+  };
+}
+
+class PinDbAction {
+  private repository: Repository<Pin>;
+  private static instance: PinDbAction;
+
+  private constructor(dataSource: DataSource) {
+    this.repository = dataSource.getRepository(Pin);
+  }
+
+  static getInstance = () => {
+    if (this.instance) {
+      return this.instance;
+    }
+    throw Error('Not initialized');
+  };
+
+  static initialize = (dataSource: DataSource) => {
+    this.instance = new PinDbAction(dataSource);
+  };
+
+  getAllPins = async () => {
+    return this.repository.find();
+  };
+
+  getPinOfType = (type: string) => {
+    return this.repository.findOne({
+      where: {
+        type,
+      },
+    });
+  };
+
+  findPinByValue = (pin: string) => {
+    return this.repository.findOne({
+      where: {
+        value: pin,
+      },
+      order: {
+        type: 'asc',
+      },
+    });
+  };
+
+  deletePinType = async (pinType: string) => {
+    await this.repository.delete({
+      type: Like(pinType + '%'),
+    });
+  };
+
+  setPin = async (pin: string, type: string) => {
+    const oldPin = await this.getPinOfType(type);
+    if (oldPin) {
+      await this.repository.update(
+        {
+          id: oldPin.id,
+        },
+        {
+          value: pin,
+        },
+      );
+    } else {
+      await this.repository.insert({
+        type,
+        value: pin,
+      });
+    }
   };
 }
 
@@ -1146,6 +1227,7 @@ const initializeAction = (dataSource: DataSource) => {
   BoxDbAction.initialize(dataSource);
   AssetDbAction.initialize(dataSource);
   ConfigDbAction.initialize(dataSource);
+  PinDbAction.initialize(dataSource);
   SavedAddressDbAction.initialize(dataSource);
   MultiSigDbAction.initialize(dataSource);
   MultiStoreDbAction.initialize(dataSource);
@@ -1156,6 +1238,7 @@ export {
   AddressDbAction,
   AddressValueDbAction,
   ConfigDbAction,
+  PinDbAction,
   BoxDbAction,
   AssetDbAction,
   SavedAddressDbAction,

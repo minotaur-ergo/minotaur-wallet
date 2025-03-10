@@ -43,6 +43,9 @@ const WalletColorMap = {
 
 const WalletItem = (props: PropsType) => {
   const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
+  const activePinType = useSelector(
+    (state: GlobalStateType) => state.config.pin.activePinType,
+  );
   const navigate = useNavigate();
   const amount = props.amount ? props.amount : 0n;
   const color = WalletColorMap[props.type];
@@ -51,7 +54,7 @@ const WalletItem = (props: PropsType) => {
       props.onClick();
     } else {
       ConfigDbAction.getInstance()
-        .setConfig(ConfigType.ActiveWallet, props.id)
+        .setConfig(ConfigType.ActiveWallet, props.id, activePinType)
         .then(() => {
           navigate(-navigate.length);
           navigate(getRoute(RouteMap.WalletHome, { id: props.id }), {

@@ -40,6 +40,7 @@ const createWallet = async (
   network_type: string,
   encryptionPassword: string,
 ) => {
+  const pinType = store.getState().config.pin.activePinType;
   const seed = mnemonicToSeedSync(mnemonic, password);
   const master = bip32.fromSeed(seed);
   const extended_public_key = master
@@ -60,6 +61,7 @@ const createWallet = async (
     1,
     encryptedMnemonic,
   );
+  await WalletDbAction.getInstance().setFlagOnWallet(wallet.id, pinType, false);
   await addAllWalletAddresses(walletEntityToWalletState(wallet));
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
@@ -92,6 +94,7 @@ const createReadOnlyWallet = async (
   extended_public_key: string,
   network_type: string,
 ) => {
+  const pinType = store.getState().config.pin.activePinType;
   const walletEntity = await WalletDbAction.getInstance().createWallet(
     name,
     WalletType.ReadOnly,
@@ -101,6 +104,12 @@ const createReadOnlyWallet = async (
     1,
     '',
   );
+  await WalletDbAction.getInstance().setFlagOnWallet(
+    walletEntity.id,
+    pinType,
+    false,
+  );
+
   if (extended_public_key) {
     await addAllWalletAddresses(walletEntityToWalletState(walletEntity));
   } else {
@@ -122,6 +131,7 @@ const createMultiSigWallet = async (
   keys: Array<string>,
   minSig: number,
 ) => {
+  const pinType = store.getState().config.pin.activePinType;
   const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
   if (wallet) {
     const is_derivable =
@@ -134,6 +144,11 @@ const createMultiSigWallet = async (
       wallet.network_type,
       minSig,
       '',
+    );
+    await WalletDbAction.getInstance().setFlagOnWallet(
+      createdWallet.id,
+      pinType,
+      false,
     );
     await MultiSigDbAction.getInstance().createKey(
       createdWallet,

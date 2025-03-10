@@ -1,3 +1,9 @@
+import React from 'react';
+import AppHoneyPin from '@/pages/settings/AppHoneyPin';
+import AppPin from '@/pages/settings/AppPin';
+import EnterPin from '@/pages/wallet-page/enter-pin/EnterPin';
+import { GlobalStateType } from '@/store';
+import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
@@ -20,26 +26,40 @@ const AppRouter = () => {
   const { initialized } = useInitConfig();
   useUpdater();
   usePriceUpdate();
+  const { hasPin, locked } = useSelector(
+    (state: GlobalStateType) => state.config.pin,
+  );
+  console.log(hasPin, locked);
   return initialized ? (
-    <Routes>
-      <Route path={RouteMap.Wallets} element={<Wallets />} />
-      <Route path={RouteMap.Wallet} element={<WalletPage />} />
-      <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
-      <Route path={RouteMap.WalletAddNew} element={<WalletAddNew />} />
-      <Route path={RouteMap.WalletAddRestore} element={<WalletRestore />} />
-      <Route path={RouteMap.WalletAddReadOnly} element={<WalletReadOnly />} />
-      <Route path={RouteMap.Settings} element={<Settings />} />
-      <Route
-        path={RouteMap.WalletAddMultiSig}
-        element={<WalletAddMultiSig />}
-      />
-      <Route path={RouteMap.AddressBook} element={<AddressBook />} />
-      <Route
-        path={RouteMap.WalletAddressBookAdd}
-        element={<AddSavedAddress />}
-      />
-      <Route path={RouteMap.Home} element={<Home />} />
-    </Routes>
+    <React.Fragment>
+      {hasPin && locked ? <EnterPin /> : undefined}
+      <div style={{ display: hasPin && locked ? 'none' : 'block' }}>
+        <Routes>
+          <Route path={RouteMap.Wallets} element={<Wallets />} />
+          <Route path={RouteMap.Wallet} element={<WalletPage />} />
+          <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
+          <Route path={RouteMap.WalletAddNew} element={<WalletAddNew />} />
+          <Route path={RouteMap.WalletAddRestore} element={<WalletRestore />} />
+          <Route
+            path={RouteMap.WalletAddReadOnly}
+            element={<WalletReadOnly />}
+          />
+          <Route path={RouteMap.Settings} element={<Settings />} />
+          <Route path={RouteMap.Pin} element={<AppPin />} />
+          <Route path={RouteMap.HoneyPin} element={<AppHoneyPin />} />
+          <Route
+            path={RouteMap.WalletAddMultiSig}
+            element={<WalletAddMultiSig />}
+          />
+          <Route path={RouteMap.AddressBook} element={<AddressBook />} />
+          <Route
+            path={RouteMap.WalletAddressBookAdd}
+            element={<AddSavedAddress />}
+          />
+          <Route path={RouteMap.Home} element={<Home />} />
+        </Routes>
+      </div>
+    </React.Fragment>
   ) : (
     <Splash />
   );

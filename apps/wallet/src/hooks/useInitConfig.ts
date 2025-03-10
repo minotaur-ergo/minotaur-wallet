@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { AddressDbAction, ConfigDbAction, WalletDbAction } from '@/action/db';
+import {
+  AddressDbAction,
+  ConfigDbAction,
+  PinDbAction,
+  WalletDbAction,
+} from '@/action/db';
 import { getInitializeData } from '@/action/initialize';
 import { ConfigType } from '@/db/entities/Config';
 import { GlobalStateType } from '@/store';
-import { ConfigPayload, setConfig } from '@/store/reducer/config';
+import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
 import {
   addressEntityToAddressState,
@@ -11,11 +16,14 @@ import {
 } from '@/utils/convert';
 
 const useInitConfig = () => {
-  const configLoaded = useSelector(
-    (state: GlobalStateType) => state.config.loaded,
+  const configLoadedPinType = useSelector(
+    (state: GlobalStateType) => state.config.loadedPinType,
   );
-  const walletsValid = useSelector(
-    (state: GlobalStateType) => state.wallet.walletsValid,
+  const pinLoaded = useSelector(
+    (state: GlobalStateType) => state.config.pin.loaded,
+  );
+  const { walletsValid, loadedWalletPinType } = useSelector(
+    (state: GlobalStateType) => state.wallet,
   );
   const addressesValid = useSelector(
     (state: GlobalStateType) => state.wallet.addressesValid,
@@ -23,15 +31,27 @@ const useInitConfig = () => {
   const initialized = useSelector(
     (state: GlobalStateType) => state.wallet.initialized,
   );
+  const activePinType = useSelector(
+    (state: GlobalStateType) => state.config.pin.activePinType,
+  );
+  const configLoaded = configLoadedPinType === activePinType;
   const dispatch = useDispatch();
-  if (!configLoaded) {
+  if (!pinLoaded) {
+    PinDbAction.getInstance()
+      .getAllPins()
+      .then((pins) => {
+        const hasPin = pins.length > 0;
+        dispatch(setPinConfig({ locked: hasPin, hasPin, activeType: '' }));
+      });
+  } else if (!configLoaded) {
     ConfigDbAction.getInstance()
-      .getAllConfig()
+      .getAllConfig(activePinType)
       .then((configs) => {
         const config: ConfigPayload = {
           display: 'advanced',
           currency: 'USD',
           activeWallet: -1,
+          pinType: activePinType,
         };
         configs.forEach((item) => {
           if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
@@ -46,11 +66,23 @@ const useInitConfig = () => {
       });
   } else if (!initialized) {
     getInitializeData().then((res) => dispatch(initialize(res)));
-  } else if (!walletsValid) {
+  } else if (!walletsValid || activePinType !== loadedWalletPinType) {
     WalletDbAction.getInstance()
       .getWallets()
       .then((wallets) => {
-        dispatch(setWallets(wallets.map(walletEntityToWalletState)));
+        const loadingPinType = activePinType;
+        dispatch(
+          setWallets({
+            wallets: wallets
+              .map(walletEntityToWalletState)
+              .filter(
+                (item) =>
+                  item.flags.filter((item) => item.startsWith(loadingPinType))
+                    .length > 0,
+              ),
+            pinType: loadingPinType,
+          }),
+        );
       });
   } else if (!addressesValid) {
     AddressDbAction.getInstance()
