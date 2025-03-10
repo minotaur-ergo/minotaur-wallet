@@ -15,6 +15,7 @@ export interface ConfigStateType {
   price: number;
   priceLastWeek: number;
   activeWallet?: number;
+  useActiveWallet: boolean;
   multiSigLoadedTime: number;
   loadedPinType: string;
   pin: PinConfig;
@@ -27,6 +28,7 @@ export const configInitialState: ConfigStateType = {
   display: 'advanced',
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
+  useActiveWallet: true,
   pin: {
     hasPin: false,
     activePinType: '',
@@ -45,6 +47,7 @@ export type CurrencyPayload = {
 
 export type ActiveWalletPayload = {
   activeWallet: number;
+  useActiveWallet?: boolean;
 };
 
 export type PinPayload = {
@@ -78,11 +81,16 @@ const configSlice = createSlice({
     },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
+      state.useActiveWallet =
+        action.payload.useActiveWallet === undefined
+          ? state.useActiveWallet
+          : action.payload.useActiveWallet;
     },
     setConfig: (state, action: PayloadAction<ConfigPayload>) => {
       state.display = action.payload.display;
       state.currency = action.payload.currency;
       state.activeWallet = action.payload.activeWallet;
+      state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {

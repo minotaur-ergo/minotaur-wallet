@@ -4,6 +4,7 @@ export enum ConfigType {
   DisplayMode = 'DISPLAY_DETAIL',
   Currency = 'CURRENCY',
   ActiveWallet = 'ACTIVE_WALLET',
+  useActiveWallet = 'USE_ACTIVE_WALLET',
 }
 
 @Entity({ name: 'config' })

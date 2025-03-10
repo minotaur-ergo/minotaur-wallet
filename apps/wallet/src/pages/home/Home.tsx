@@ -9,8 +9,8 @@ import LoadingPage from '@/components/loading-page/LoadingPage';
 
 const Home = () => {
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
-  const activeWallet = useSelector(
-    (state: GlobalStateType) => state.config.activeWallet,
+  const { activeWallet, useActiveWallet } = useSelector(
+    (state: GlobalStateType) => state.config,
   );
   const locked = useSelector(
     (state: GlobalStateType) => state.config.pin.locked,
@@ -18,7 +18,7 @@ const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!locked) {
-      if (activeWallet && activeWallet !== -1) {
+      if (activeWallet && activeWallet !== -1 && useActiveWallet) {
         const currentWallets = wallets.filter(
           (item) => item.id === activeWallet,
         );

@@ -52,6 +52,7 @@ const useInitConfig = () => {
           currency: 'USD',
           activeWallet: -1,
           pinType: activePinType,
+          useActiveWallet: true,
         };
         configs.forEach((item) => {
           if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
@@ -60,6 +61,8 @@ const useInitConfig = () => {
             config.currency = item.value;
           } else if (item.key === ConfigType.ActiveWallet) {
             config.activeWallet = parseInt(item.value);
+          } else if (item.key === ConfigType.useActiveWallet) {
+            config.useActiveWallet = item.value !== 'false';
           }
         });
         dispatch(setConfig(config));
