@@ -1,7 +1,7 @@
 {
   "name": "minotaur-wallet",
   "private": true,
-  "version": "2.4.0",
+  "version": "2.5.0",
   "type": "module",
   "scripts": {
     "postinstall": "patch-package && npm run copyIcons",
@@ -41,7 +41,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@minotaur-ergo/icons": "^1.0.0",
+    "@minotaur-ergo/icons": "^1.1.0",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.14",
     "@reduxjs/toolkit": "^2.2.5",

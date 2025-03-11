@@ -1,5 +1,24 @@
 # minotaur-wallet
 
+## 2.5.0
+
+### Minor Changes
+
+- Wallet pin
+- Honey mode - Only display a list of specific wallets in this mode
+- Allow to archive some wallets. These wallets are not displayed in wallet select page by default.
+- Favorite wallets are displayed in start of wallets list.
+- Toggle display archived wallet
+- Change wallet password
+- Select default address used for change box
+- Select address from address book
+- Add setting to configure whether open last active wallet or wallets list on next app load
+
+### Patch Changes
+
+- Updated dependencies
+  - @minotaur-ergo/icons@1.1.0
+
 ## 2.4.0
 
 ### Minor Changes
