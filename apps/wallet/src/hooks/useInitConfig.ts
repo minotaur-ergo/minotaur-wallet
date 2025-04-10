@@ -80,6 +80,7 @@ const useInitConfig = () => {
               .map(walletEntityToWalletState)
               .filter(
                 (item) =>
+                  activePinType === '' ||
                   item.flags.filter((item) => item.startsWith(loadingPinType))
                     .length > 0,
               ),
