@@ -1,3 +1,5 @@
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Button, Grid } from '@mui/material';
@@ -12,9 +14,8 @@ import { readClipBoard } from '@/utils/clipboard';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
-import { verifyAndSaveData } from '@/action/multi-sig/verify';
+
 import MessageContext from '@/components/app/messageContext';
-import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);

@@ -1,3 +1,6 @@
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
@@ -7,18 +10,15 @@ import AppFrame from '@/layouts/AppFrame';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { GlobalStateType } from '@/store';
 import { StateWallet } from '@/store/reducer/wallet';
+import { useNavigate } from 'react-router-dom';
 import MultiSigTransactionItem from './MultiSigTransactionItem';
 import { readClipBoard } from '@/utils/clipboard';
 import MessageContext from '@/components/app/messageContext';
-import { useNavigate } from 'react-router-dom';
-import { RouteMap, getRoute } from '@/router/routerMap';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import { Fab } from '@mui/material';
 import FabStack from '@/components/fab-stack/FabStack';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
-import { verifyAndSaveData } from '@/action/multi-sig/verify';
-import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface MultiSigCommunicationPropsType {
   wallet: StateWallet;

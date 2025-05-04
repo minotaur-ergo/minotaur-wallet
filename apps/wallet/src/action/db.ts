@@ -16,6 +16,9 @@ import MultiSignRow from '@/db/entities/multi-sig/MultiSignRow';
 import MultiSignTx, {
   MultiSigTxType,
 } from '@/db/entities/multi-sig/MultiSignTx';
+import MultiSigHint, {
+  MultiSigHintType,
+} from '@/db/entities/multi-sig/MultiSigHint';
 import MultiSigKey from '@/db/entities/MultiSigKey';
 import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet, { WalletType } from '@/db/entities/Wallet';
@@ -955,6 +958,7 @@ class MultiStoreDbAction {
   private inputRepository: Repository<MultiSignInput>;
   private rowRepository: Repository<MultiSignRow>;
   private txRepository: Repository<MultiSignTx>;
+  private hintRepository: Repository<MultiSigHint>;
   private dataSource: DataSource;
 
   private static instance: MultiStoreDbAction;
@@ -965,6 +969,7 @@ class MultiStoreDbAction {
     this.inputRepository = dataSource.getRepository(MultiSignInput);
     this.rowRepository = dataSource.getRepository(MultiSignRow);
     this.txRepository = dataSource.getRepository(MultiSignTx);
+    this.hintRepository = dataSource.getRepository(MultiSigHint);
     this.dataSource = dataSource;
   }
 
@@ -1139,6 +1144,172 @@ class MultiStoreDbAction {
         type: MultiSigSignerType.Simulated,
       });
     }
+  };
+
+  /**
+   * Inserts multi-signature hints into the database.
+   *
+   * This function processes and stores hint data for multi-signature transactions.
+   * The hints are provided as base64 encoded strings and are processed as follows:
+   *
+   * - For all hints, the first 32 bytes are extracted as the commitment
+   *
+   * - For proof data:
+   *   - If the decoded hint is exactly 32 bytes, the proof is set to empty
+   *   - Otherwise, bytes 32-88 (if available) are extracted as the proof
+   *
+   * - For determining the type (REAL or SIMULATED):
+   *   - If the decoded hint is less than 88 bytes, the type is set to REAL
+   *   - Otherwise, the byte at index 88 determines the type (0 = REAL, 1 = SIMULATED)
+   *
+   * All data is stored in base64 format in the database.
+   *
+   * @param row - The MultiSignRow to associate the hints with
+   * @param hints - 2D array of base64 encoded hint data
+   * @param secrets - 2D array of secrets corresponding to the hints
+   */
+  public insertMultiSigHints = async (
+    row: MultiSignRow,
+    hints: Array<Array<string>>,
+    secrets: Array<Array<string>>,
+  ) => {
+    // Delete existing hints for this row
+    await this.hintRepository
+      .createQueryBuilder()
+      .delete()
+      .where({ tx: row })
+      .execute();
+
+    // Insert new hints
+    for (const [inputIndex, inputHints] of hints.entries()) {
+      for (const [index, hintData] of inputHints.entries()) {
+        if (hintData) {
+          try {
+            // Decode base64 string to byte array
+            const decoded = Buffer.from(hintData, 'base64');
+
+            // Get secret if available
+            const secret =
+              secrets.length > inputIndex && secrets[inputIndex].length > index
+                ? secrets[inputIndex][index]
+                : '';
+            // Extract commitment (first 32 bytes)
+            const commitBytes = decoded.slice(0, 32);
+            const commit = Buffer.from(commitBytes).toString('base64');
+
+            // Extract proof (next 56 bytes)
+            const proofBytes =
+              decoded.length === 32
+                ? Buffer.from('', 'hex')
+                : decoded.slice(32, 88);
+            const proof = Buffer.from(proofBytes).toString('base64');
+
+            // Extract type (last byte)
+            const typeValue = decoded.length < 88 ? 0 : decoded[88];
+            const type =
+              typeValue === 0
+                ? MultiSigHintType.Real
+                : MultiSigHintType.Simulated;
+
+            await this.hintRepository.insert({
+              tx: row,
+              type: type,
+              commit: commit,
+              proof: proof,
+              index: index,
+              inputIndex: inputIndex,
+              secret: secret,
+            });
+          } catch (error) {
+            console.error('Error processing hint data:', error);
+          }
+        }
+      }
+    }
+  };
+
+  /**
+   * Retrieves multi-signature hints from the database and formats them for use.
+   *
+   * This function retrieves hint data for multi-signature transactions and formats it
+   * into a structure that matches the expected format for processing. For each hint,
+   * it combines the commitment and proof data (if available) into a single base64 string.
+   *
+   * The format of the returned data is as follows:
+   * - For all hints, the commitment is always included
+   * - If proof data exists, it is appended after the commitment
+   * - If proof data exists, a type byte is also appended (0 = REAL, 1 = SIMULATED)
+   * - If proof data is empty, no type byte is added
+   *
+   * The final format is a base64 encoded string of:
+   * [commitment (32 bytes)][proof (if exists, 56 bytes)][type byte (if proof exists, 1 byte)]
+   *
+   * @param row - The MultiSignRow to retrieve hints for
+   * @param type - The type of hints to retrieve (REAL or SIMULATED)
+   * @param inputCount - The number of inputs in the transaction
+   * @param signerCount - The number of signers for each input
+   * @returns An object containing 2D arrays of hints and secrets
+   */
+  public getHints = async (
+    row: MultiSignRow,
+    type: MultiSigHintType,
+    inputCount: number,
+    signerCount: number,
+  ) => {
+    const hints = await this.hintRepository
+      .createQueryBuilder()
+      .select()
+      .where({ tx: row, type: type })
+      .orderBy('inputIndex', 'ASC')
+      .addOrderBy('index', 'ASC')
+      .getMany();
+
+    // Initialize 2D arrays
+    const hintArray: Array<Array<string>> = Array(inputCount)
+      .fill([])
+      .map(() => Array(signerCount).fill(''));
+
+    const secrets: Array<Array<string>> = Array(inputCount)
+      .fill([])
+      .map(() => Array(signerCount).fill(''));
+
+    // Fill arrays with data
+    for (const hint of hints) {
+      if (hint.inputIndex < inputCount && hint.index < signerCount) {
+        // Get the commitment and proof
+        const commit = hint.commit;
+        const proof = hint.proof || '';
+        // Otherwise, combine commitment, proof, and type byte
+        try {
+          const commitBytes = Buffer.from(commit, 'base64');
+          const proofBytes = Buffer.from(proof, 'base64');
+          const typeByte =
+            proofBytes.length === 0
+              ? Buffer.from([])
+              : Buffer.from([hint.type === MultiSigHintType.Real ? 0 : 1]);
+
+          // Combine all parts
+          const combinedBuffer = Buffer.concat([
+            commitBytes,
+            proofBytes,
+            typeByte,
+          ]);
+          hintArray[hint.inputIndex][hint.index] =
+            combinedBuffer.toString('base64');
+        } catch (error) {
+          console.error('Error combining hint data:', error);
+          hintArray[hint.inputIndex][hint.index] = commit; // Fallback to just the commitment
+        }
+
+        // Store the secret
+        secrets[hint.inputIndex][hint.index] = hint.secret || '';
+      }
+    }
+
+    return {
+      hints: hintArray,
+      secrets,
+    };
   };
 
   public getRowById = async (id: number) => {

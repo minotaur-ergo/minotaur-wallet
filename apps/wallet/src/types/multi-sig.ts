@@ -34,10 +34,7 @@ export interface MultiSigBriefRow {
 export interface MultiSigShareData {
   tx: string;
   boxes: Array<string>;
-  commitments: Array<Array<string>>;
-  simulated?: Array<string>;
-  signed?: Array<string>;
-  partial?: string;
+  hints: Array<Array<string>>;
 }
 
 export interface MultiSigData {
@@ -46,6 +43,11 @@ export interface MultiSigData {
   signed: Array<string>;
   simulated: Array<string>;
   partial?: wasm.Transaction;
+}
+
+export interface MultiSigSimpleData {
+  hints: Array<Array<string>>;
+  secrets: Array<Array<string>>;
 }
 
 export interface MultiSigContextType {
@@ -123,4 +125,17 @@ export interface TxSecretHintType {
 export interface TransactionHintBagType {
   publicHints: TxHintType;
   secretHints: TxSecretHintType;
+}
+
+export interface DetachedCommitments {
+  own: wasm.TransactionHintsBag;
+  known: wasm.TransactionHintsBag;
+}
+
+export interface CommitResult {
+  hints: Array<Array<string>>;
+  secrets: Array<Array<string>>;
+  updateTime: number;
+  rowId?: number;
+  changed: boolean;
 }

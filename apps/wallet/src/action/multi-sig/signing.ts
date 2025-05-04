@@ -12,7 +12,10 @@ import {
   HintType,
   MultiSigAddressHolder,
   MultiSigData,
+  SecretHintType,
   TransactionHintBagType,
+  TxHintType,
+  TxSecretHintType,
 } from '@/types/multi-sig';
 import { getTxBoxes } from '../tx';
 import { decrypt } from '@/utils/enc';
@@ -113,6 +116,44 @@ const removeSignedCommitments = (
   });
 };
 
+const generateSecretHintBagJson = (
+  publicKey: string,
+  hint: string,
+  index: number,
+): SecretHintType => {
+  const hintBuffer = Buffer.from(hint, 'base64');
+  const hintType = hintBuffer[86] === 1 ? 'proofReal' : 'proofSimulated';
+  const proofHex = hintBuffer.slice(32, 86).toString('hex');
+  return {
+    hint: hintType,
+    position: `0-${index}`,
+    challenge: proofHex.substr(0, 48),
+    proof: proofHex,
+    pubkey: {
+      op: '205',
+      h: publicKey,
+    },
+  };
+};
+
+/**
+ * Generates a hint bag JSON object for a commitment.
+ *
+ * This function creates a hint bag JSON object that can be used in the transaction hints bag.
+ * It takes a public key, commitment, index, secret, and optional password as input.
+ *
+ * If a secret and password are provided, the function will include the decrypted secret
+ * in the hint, which allows the transaction to be signed with this commitment.
+ *
+ * The commitment should be a base64 encoded string of exactly 32 bytes.
+ *
+ * @param publicKey - The public key associated with this commitment
+ * @param commitment - The base64 encoded commitment (32 bytes)
+ * @param index - The index of this commitment in the input
+ * @param secret - The encrypted secret corresponding to this commitment (if any)
+ * @param password - The password to decrypt the secret (required if secret is provided)
+ * @returns A HintType object that can be included in the transaction hints bag
+ */
 const generateHintBagJson = (
   publicKey: string,
   commitment: string,
@@ -134,6 +175,111 @@ const generateHintBagJson = (
     res['secret'] = decrypt(secret, password).toString('hex');
   }
   return res;
+};
+
+/**
+ * Converts public keys, hints, and secrets to a HintBag object.
+ *
+ * This function takes arrays of public keys, hints, and secrets and converts them
+ * to a HintBag object that can be used for signing transactions. It ensures that
+ * only the first 32 bytes of each hint are used as the commitment.
+ *
+ * For each hint, the function extracts the first 32 bytes as the commitment and
+ * creates a hint bag JSON object. If a secret is provided for the hint, the function
+ * will create two hint bag JSON objects - one without the secret and one with the secret.
+ * This allows the transaction to be verified and signed with the same commitment.
+ *
+ * The function is careful to handle base64 encoded data properly, as both the input
+ * hints and the generateHintBagJson function work with base64 encoded data.
+ *
+ * @param publicKeys - 2D array of public keys for each input
+ * @param hints - 2D array of hints in the new format (base64 encoded)
+ * @param secrets - Optional 2D array of secrets corresponding to the hints
+ * @param password - Optional password to decrypt secrets
+ * @returns A TransactionHintsBag object that can be used for signing
+ */
+export const toHintBag = (
+  publicKeys: Array<Array<string>>,
+  hints: Array<Array<string>>,
+  secrets: Array<Array<string>> = [],
+  password?: string,
+  addSecrets: boolean = false,
+): wasm.TransactionHintsBag => {
+  const publicJson: TxHintType = {};
+  const secretJson: TxSecretHintType = {};
+
+  publicKeys.forEach((inputPublicKeys, index) => {
+    secretJson[`${index}`] = [];
+    const inputHints = hints[index];
+
+    inputPublicKeys.forEach((inputPublicKey, pkIndex) => {
+      if (inputHints[pkIndex]) {
+        try {
+          // Decode base64 string to byte array
+          const decoded = Buffer.from(inputHints[pkIndex], 'base64');
+
+          // Extract only the first 32 bytes (commitment) and convert back to base64
+          const commitment = decoded.slice(0, 32).toString('base64');
+
+          // Check if we have a secret for this hint
+          const hasSecret =
+            secrets[index] &&
+            secrets[index][pkIndex] &&
+            secrets[index][pkIndex] !== '';
+
+          // Always generate a hint without secret first
+          const knownHint = generateHintBagJson(
+            inputPublicKey,
+            commitment,
+            pkIndex,
+            '',
+            undefined,
+          );
+
+          // Initialize the array if needed
+          if (!publicJson[`${index}`]) {
+            publicJson[`${index}`] = [];
+          }
+
+          // Add the public hint
+          publicJson[`${index}`].push(knownHint);
+
+          // If we have a secret and password, generate a second hint with the secret
+          if (hasSecret && password) {
+            const ownHint = generateHintBagJson(
+              inputPublicKey,
+              commitment,
+              pkIndex,
+              secrets[index][pkIndex],
+              password,
+            );
+
+            // Add the secret hint
+            publicJson[`${index}`].push(ownHint);
+            if (decoded.length > 32 && addSecrets) {
+              if (!secretJson[`${index}`]) {
+                secretJson[`${index}`] = [];
+              }
+              const secretHint = generateSecretHintBagJson(
+                inputPublicKey,
+                commitment,
+                pkIndex,
+              );
+              secretJson[`${index}`].push(secretHint);
+            }
+          }
+        } catch (error) {
+          console.error('Error processing hint:', error);
+        }
+      }
+    });
+  });
+
+  const resJson: TransactionHintBagType = {
+    secretHints: secretJson,
+    publicHints: publicJson,
+  };
+  return wasm.TransactionHintsBag.from_json(JSON.stringify(resJson));
 };
 
 const getHintBags = (
