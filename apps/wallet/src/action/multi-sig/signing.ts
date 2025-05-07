@@ -6,7 +6,7 @@ import {
   hintBagToArray,
   overridePublicCommitments,
 } from './commitment';
-import { storeMultiSigRow } from './store';
+import { storeMultiSigRowNew } from './store';
 import {
   AddressActionRow,
   HintType,
@@ -47,31 +47,28 @@ export const commit = async (
     myCommitments.private,
     password,
   );
-  const newCommitments = overridePublicCommitments(data.commitments, known);
-  const newPrivateCommitments = overridePublicCommitments(data.secrets, own);
-  if (newCommitments.changed || newPrivateCommitments.changed) {
+  const newHints = overridePublicCommitments(data.hints, known);
+  const newPrivateHints = overridePublicCommitments(data.secrets, own);
+  if (newHints.changed || newPrivateHints.changed) {
     const currentTime = Date.now();
-    const row = await storeMultiSigRow(
+    const row = await storeMultiSigRowNew(
       wallet,
       tx,
       boxes,
-      newCommitments.commitments,
-      newPrivateCommitments.commitments,
-      data.signed,
-      data.simulated,
+      newHints.commitments,
+      newPrivateHints.commitments,
       currentTime,
-      data.partial,
     );
     return {
-      commitments: newCommitments.commitments,
-      secrets: newPrivateCommitments.commitments,
+      hints: newHints.commitments,
+      secrets: newPrivateHints.commitments,
       updateTime: currentTime,
       rowId: row?.id,
       changed: true,
     };
   }
   return {
-    commitments: data.commitments,
+    hints: data.hints,
     secrets: data.secrets,
     updateTime: -1,
     rowId: -1,
@@ -402,7 +399,6 @@ export const sign = async (
 ): Promise<{
   partial: wasm.Transaction;
   signed: Array<string>;
-  simulated: Array<string>;
   currentTime: number;
 }> => {
   // generate simulated list
@@ -423,13 +419,13 @@ export const sign = async (
   const unsigned = tx.unsigned_tx();
   const inputPKs = getInputPKs(wallet, addresses, unsigned, boxes);
   const myHints = addMyHints(commitments, secrets, inputPKs, myPKs, password);
-  const usedCommitments = removeSignedCommitments(
+  const usedHints = removeSignedCommitments(
     commitments,
     inputPKs,
     myPKs,
     signedPKs,
   );
-  const publicHintBag = getHintBags(inputPKs, usedCommitments);
+  const publicHintBag = getHintBags(inputPKs, usedHints);
   if (signedPKs && signedPKs.length > 0) {
     const simulatedPKs = addresses
       .filter((item) => simulatedAddress.includes(item.address))
@@ -454,21 +450,17 @@ export const sign = async (
   const partial = prover.sign_reduced_transaction_multi(tx, publicHintBag);
   const lastSigned = [...signedAddresses, signer.addresses[0].address].sort();
   const currentTime = Date.now();
-  await storeMultiSigRow(
+  await storeMultiSigRowNew(
     wallet,
     tx,
     boxes,
     commitments,
     secrets,
-    lastSigned,
-    simulatedAddress,
     currentTime,
-    partial,
   );
 
   return {
     signed: lastSigned,
-    simulated: simulatedAddress,
     partial,
     currentTime,
   };

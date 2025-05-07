@@ -8,7 +8,7 @@ import { validatePassword } from '@/action/wallet';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
-import { commit, sign } from '@/action/multi-sig/signing';
+// import {commit} from '@/action/multi-sig/sign';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
@@ -40,61 +40,55 @@ const MultiSigToolbar = () => {
     if (
       data.reduced &&
       multiSigData.related &&
-      multiSigData.myAction.committed === false
+      !multiSigData.myAction.committed
     ) {
-      return commit(
-        data.reduced,
-        data.wallet,
-        multiSigData.related,
-        context.password,
-        data.boxes,
-        context.data,
-      ).then((res) => {
-        if (res.changed) {
-          context.setData(
-            {
-              commitments: res.commitments,
-              secrets: res.secrets,
-              signed: context.data.signed,
-              simulated: context.data.simulated,
-              partial: context.data.partial,
-            },
-            res.updateTime,
-          );
-          multiSigData.setNeedPassword(false);
-        }
-        return null;
-      });
+      // return commit(
+      //   data.reduced,
+      //   data.wallet,
+      //   multiSigData.related,
+      //   context.password,
+      //   data.boxes,
+      //   context.data
+      // ).then(res => {
+      //   if(res.changed){
+      //       context.setData({
+      //         hints: res.hints,
+      //         secrets: res.secrets,
+      //         signed: []
+      //       }, res.updateTime);
+      //   }
+      //   multiSigData.setNeedPassword(false);
+      // })
+      console.log('salam');
     }
   };
 
   const signAction = () => {
     if (multiSigData.related && data.reduced) {
-      sign(
-        data.wallet,
-        multiSigData.related,
-        context.data.simulated,
-        context.data.commitments,
-        context.data.secrets,
-        multiSigData.committed,
-        multiSigData.signed,
-        multiSigData.addresses,
-        data.reduced,
-        data.boxes,
-        context.password,
-        context.data.partial,
-      ).then((res) => {
-        context.setData(
-          {
-            commitments: context.data.commitments,
-            secrets: context.data.secrets,
-            signed: res.signed,
-            simulated: res.simulated,
-            partial: res.partial,
-          },
-          res.currentTime,
-        );
-      });
+      // sign(
+      //   data.wallet,
+      //   multiSigData.related,
+      //   [],
+      //   context.data.hints,
+      //   context.data.secrets,
+      //   multiSigData.committed,
+      //   multiSigData.signed,
+      //   multiSigData.addresses,
+      //   data.reduced,
+      //   data.boxes,
+      //   context.password,
+      //   context.data.partial,
+      // ).then((res) => {
+      //   context.setData(
+      //     {
+      //       hints: context.data.hints,
+      //       secrets: context.data.secrets,
+      //       signed: res.signed,
+      //       partial: res.partial,
+      //     },
+      //     res.currentTime,
+      //   );
+      // });
     }
   };
 

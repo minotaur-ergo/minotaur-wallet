@@ -7,10 +7,6 @@ import AddressValueInfo, {
 import Asset from '@/db/entities/Asset';
 import Box from '@/db/entities/Box';
 import Config, { ConfigType } from '@/db/entities/Config';
-import MultiCommitment from '@/db/entities/multi-sig/MultiCommitment';
-import MultiSigner, {
-  MultiSigSignerType,
-} from '@/db/entities/multi-sig/MultiSigner';
 import MultiSignInput from '@/db/entities/multi-sig/MultiSignInput';
 import MultiSignRow from '@/db/entities/multi-sig/MultiSignRow';
 import MultiSignTx, {
@@ -953,8 +949,6 @@ class SavedAddressDbAction {
 }
 
 class MultiStoreDbAction {
-  private commitmentRepository: Repository<MultiCommitment>;
-  private signerRepository: Repository<MultiSigner>;
   private inputRepository: Repository<MultiSignInput>;
   private rowRepository: Repository<MultiSignRow>;
   private txRepository: Repository<MultiSignTx>;
@@ -964,8 +958,6 @@ class MultiStoreDbAction {
   private static instance: MultiStoreDbAction;
 
   constructor(dataSource: DataSource) {
-    this.commitmentRepository = dataSource.getRepository(MultiCommitment);
-    this.signerRepository = dataSource.getRepository(MultiSigner);
     this.inputRepository = dataSource.getRepository(MultiSignInput);
     this.rowRepository = dataSource.getRepository(MultiSignRow);
     this.txRepository = dataSource.getRepository(MultiSignTx);
@@ -988,8 +980,8 @@ class MultiStoreDbAction {
     const row = await this.getRowById(rowId);
     if (row) {
       const queryRunner = this.dataSource.createQueryRunner();
-      queryRunner.connect();
-      queryRunner.startTransaction();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       try {
         await queryRunner.manager
           .getRepository(MultiSignInput)
@@ -1004,13 +996,7 @@ class MultiStoreDbAction {
           .where({ tx: row })
           .execute();
         await queryRunner.manager
-          .getRepository(MultiCommitment)
-          .createQueryBuilder()
-          .delete()
-          .where({ tx: row })
-          .execute();
-        await queryRunner.manager
-          .getRepository(MultiSigner)
+          .getRepository(MultiSigHint)
           .createQueryBuilder()
           .delete()
           .where({ tx: row })
@@ -1023,12 +1009,23 @@ class MultiStoreDbAction {
           .execute();
         await queryRunner.commitTransaction();
       } catch (e) {
-        queryRunner.rollbackTransaction();
+        await queryRunner.rollbackTransaction();
         throw e;
       }
     }
   };
 
+  /**
+   * Inserts or updates a multi-signature transaction row in the database.
+   *
+   * This function creates a new row in the multi-signature transaction table or updates
+   * an existing one if a row with the same transaction ID already exists. The row serves
+   * as the parent record for all related multi-signature data (inputs, transactions, hints, etc.).
+   *
+   * @param walletId - The ID of the wallet that owns the transaction
+   * @param txId - The transaction ID (Ergo transaction ID as a string)
+   * @returns The created or updated MultiSignRow entity
+   */
   public insertMultiSigRow = async (walletId: number, txId: string) => {
     const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
     const old = await this.rowRepository
@@ -1052,6 +1049,18 @@ class MultiStoreDbAction {
     return await this.rowRepository.findOneBy({ txId: txId });
   };
 
+  /**
+   * Stores a transaction in the multi-signature transaction table.
+   *
+   * This function stores a transaction (either reduced or partial) in the database,
+   * associated with a multi-signature row. The transaction is stored as chunks if it
+   * exceeds the maximum chunk size. Any existing transaction of the same type for the
+   * same row is deleted before inserting the new one.
+   *
+   * @param row - The MultiSignRow entity to associate the transaction with
+   * @param txBytes - The transaction bytes as a base64 encoded string
+   * @param txType - The type of transaction (Reduced or Partial)
+   */
   public insertMultiSigTx = async (
     row: MultiSignRow,
     txBytes: string,
@@ -1073,6 +1082,16 @@ class MultiStoreDbAction {
     }
   };
 
+  /**
+   * Stores input boxes for a multi-signature transaction.
+   *
+   * This function stores the input boxes used in a multi-signature transaction.
+   * Each input box is stored as a serialized string (typically base64 encoded).
+   * Any existing inputs for the same row are deleted before inserting the new ones.
+   *
+   * @param row - The MultiSignRow entity to associate the inputs with
+   * @param inputs - Array of serialized input boxes as strings
+   */
   public insertMultiSigInputs = async (
     row: MultiSignRow,
     inputs: Array<string>,
@@ -1086,62 +1105,6 @@ class MultiStoreDbAction {
       await this.inputRepository.insert({
         tx: row,
         bytes: input,
-      });
-    }
-  };
-
-  public insertMultiSigCommitments = async (
-    row: MultiSignRow,
-    commitments: Array<Array<string>>,
-    secrets: Array<Array<string>>,
-  ) => {
-    await this.commitmentRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const [inputIndex, inputCommitment] of commitments.entries()) {
-      for (const [index, commitment] of inputCommitment.entries()) {
-        if (commitment) {
-          await this.commitmentRepository.insert({
-            tx: row,
-            bytes: commitment,
-            index: index,
-            inputIndex: inputIndex,
-            secret:
-              secrets.length > inputIndex &&
-              secrets[inputIndex].length > index &&
-              secrets[inputIndex][index].length > 0
-                ? secrets[inputIndex][index]
-                : '',
-          });
-        }
-      }
-    }
-  };
-
-  public insertMultiSigSigner = async (
-    row: MultiSignRow,
-    signers: Array<string>,
-    simulated: Array<string>,
-  ) => {
-    await this.signerRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const signer of signers) {
-      await this.signerRepository.insert({
-        tx: row,
-        signer: signer,
-        type: MultiSigSignerType.Signed,
-      });
-    }
-    for (const single of simulated) {
-      await this.signerRepository.insert({
-        tx: row,
-        signer: single,
-        type: MultiSigSignerType.Simulated,
       });
     }
   };
@@ -1245,21 +1208,19 @@ class MultiStoreDbAction {
    * [commitment (32 bytes)][proof (if exists, 56 bytes)][type byte (if proof exists, 1 byte)]
    *
    * @param row - The MultiSignRow to retrieve hints for
-   * @param type - The type of hints to retrieve (REAL or SIMULATED)
    * @param inputCount - The number of inputs in the transaction
    * @param signerCount - The number of signers for each input
    * @returns An object containing 2D arrays of hints and secrets
    */
   public getHints = async (
     row: MultiSignRow,
-    type: MultiSigHintType,
     inputCount: number,
     signerCount: number,
   ) => {
     const hints = await this.hintRepository
       .createQueryBuilder()
       .select()
-      .where({ tx: row, type: type })
+      .where({ tx: row })
       .orderBy('inputIndex', 'ASC')
       .addOrderBy('index', 'ASC')
       .getMany();
@@ -1344,50 +1305,6 @@ class MultiStoreDbAction {
       .where({ tx: row })
       .getMany();
     return elements.map((item) => item.bytes);
-  };
-
-  public getCommitments = async (
-    row: MultiSignRow,
-    inputCount: number,
-    signerCount: number,
-  ) => {
-    const elements = await this.commitmentRepository
-      .createQueryBuilder()
-      .select()
-      .where({ tx: row })
-      .getMany();
-    const commitments = Array(inputCount)
-      .fill('')
-      .map(() => Array(signerCount).fill(''));
-    const secrets = Array(inputCount)
-      .fill('')
-      .map(() => Array(signerCount).fill(''));
-    elements.forEach((dbElement) => {
-      commitments[dbElement.inputIndex][dbElement.index] = dbElement.bytes;
-      secrets[dbElement.inputIndex][dbElement.index] = dbElement.secret;
-    });
-    return {
-      commitments,
-      secrets,
-    };
-  };
-
-  public getSigners = async (row: MultiSignRow) => {
-    const signed: Array<string> = [];
-    const simulated: Array<string> = [];
-    const elements = await this.signerRepository
-      .createQueryBuilder()
-      .select()
-      .where({ tx: row })
-      .getMany();
-    elements.forEach((element) => {
-      if (element.type === MultiSigSignerType.Signed) {
-        signed.push(element.signer);
-      } else {
-        simulated.push(element.signer);
-      }
-    });
-    return { signed, simulated };
   };
 }
 

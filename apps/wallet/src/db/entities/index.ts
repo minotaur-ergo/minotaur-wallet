@@ -6,7 +6,6 @@ import MultiSigKey from './MultiSigKey';
 import MultiSignRow from './multi-sig/MultiSignRow';
 import MultiSignTx from './multi-sig/MultiSignTx';
 import MultiSignInput from './multi-sig/MultiSignInput';
-import MultiCommitment from './multi-sig/MultiCommitment';
 import MultiSigner from './multi-sig/MultiSigner';
 import MultiSigHint from './multi-sig/MultiSigHint';
 import AddressValueInfo from './AddressValueInfo';
@@ -24,7 +23,6 @@ const Entities = [
   MultiSignRow,
   MultiSignTx,
   MultiSignInput,
-  MultiCommitment,
   MultiSigner,
   MultiSigHint,
   AddressValueInfo,

@@ -62,34 +62,23 @@ const fetchMultiSigRows = async (
       row,
       MultiSigTxType.Reduced,
     );
-    const partialBytes = await MultiStoreDbAction.getInstance().getTx(
-      row,
-      MultiSigTxType.Partial,
-    );
     const inputs = await MultiStoreDbAction.getInstance().getInputs(row);
-    const commitments = await MultiStoreDbAction.getInstance().getCommitments(
+    const hints = await MultiStoreDbAction.getInstance().getHints(
       row,
       inputs.length,
       signerCount,
     );
-    const signed = await MultiStoreDbAction.getInstance().getSigners(row);
     res.push({
       rowId: row.id,
       requiredSign: wallet.requiredSign,
       tx: wasm.ReducedTransaction.sigma_parse_bytes(
         Buffer.from(reducedBytes, encoding),
       ),
-      partial: partialBytes
-        ? wasm.Transaction.sigma_parse_bytes(
-            Buffer.from(partialBytes, encoding),
-          )
-        : undefined,
       dataBoxes: [],
       boxes: inputs.map((item) => deserialize(item)),
-      simulated: signed.simulated,
-      signed: signed.signed,
-      commitments: commitments.commitments,
-      secrets: commitments.secrets,
+      hints: hints.hints,
+      secrets: hints.secrets,
+      signed: [],
     });
   }
   return res;
@@ -109,9 +98,8 @@ const fetchMultiSigBriefRow = async (
         rowId: row.rowId,
         signed: row.signed.filter((item) => item !== '').length,
         committed: Math.min(
-          ...row.commitments.map(
-            (commitmentRow) =>
-              commitmentRow.filter((commitment) => commitment !== '').length,
+          ...row.hints.map(
+            (hintRow) => hintRow.filter((hint) => hint !== '').length,
           ),
         ),
         txId: row.tx.unsigned_tx().id().to_str(),
@@ -157,38 +145,6 @@ const notAvailableAddresses = (
   return boxAddresses.filter((item) => !walletAddressSet.has(item));
 };
 
-const updateMultiSigRow = async (
-  rowId: number,
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  signed: Array<string>,
-  simulated: Array<string>,
-  updateTime: number,
-  partial?: wasm.Transaction,
-) => {
-  const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
-  if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigCommitments(
-      row,
-      commitments,
-      secrets,
-    );
-    if (partial) {
-      await MultiStoreDbAction.getInstance().insertMultiSigTx(
-        row,
-        Buffer.from(partial.sigma_serialize_bytes()).toString(encoding),
-        MultiSigTxType.Partial,
-      );
-    }
-    await MultiStoreDbAction.getInstance().insertMultiSigSigner(
-      row,
-      signed,
-      simulated,
-    );
-    store.dispatch(setMultiSigLoadedTime(updateTime));
-  }
-};
-
 /**
  * Updates an existing multi-signature transaction row using the new hint format.
  *
@@ -219,44 +175,6 @@ const updateMultiSigRowNew = async (
     // Update the last loaded time in the store
     store.dispatch(setMultiSigLoadedTime(updateTime));
   }
-};
-
-const storeMultiSigRow = async (
-  wallet: StateWallet,
-  tx: wasm.ReducedTransaction,
-  boxes: Array<wasm.ErgoBox>,
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  signed: Array<string>,
-  simulated: Array<string>,
-  updateTime: number,
-  partial?: wasm.Transaction,
-) => {
-  const row = await MultiStoreDbAction.getInstance().insertMultiSigRow(
-    wallet.id,
-    tx.unsigned_tx().id().to_str(),
-  );
-  if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigInputs(
-      row,
-      boxes.map(serialize),
-    );
-    await MultiStoreDbAction.getInstance().insertMultiSigTx(
-      row,
-      Buffer.from(tx.sigma_serialize_bytes()).toString(encoding),
-      MultiSigTxType.Reduced,
-    );
-    await updateMultiSigRow(
-      row.id,
-      commitments,
-      secrets,
-      signed,
-      simulated,
-      updateTime,
-      partial,
-    );
-  }
-  return row;
 };
 
 /**
@@ -319,9 +237,7 @@ export {
   multiSigStoreNewTx,
   fetchMultiSigRows,
   fetchMultiSigBriefRow,
-  storeMultiSigRow,
   storeMultiSigRowNew,
   notAvailableAddresses,
-  updateMultiSigRow,
   updateMultiSigRowNew,
 };

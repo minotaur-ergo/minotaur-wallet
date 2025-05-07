@@ -15,11 +15,11 @@ const useCommittedAddress = (
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!loading && data.tx) {
-      const newCommitments = [...context.data.commitments];
+      const newHints = [...context.data.hints];
       const newAddresses = [...addresses];
       if (
         JSON.stringify({
-          commitments: newCommitments,
+          hints: newHints,
           addresses: newAddresses,
         }) !== proceed
       ) {
@@ -47,8 +47,7 @@ const useCommittedAddress = (
               );
               const myPub = pubKeys[index];
               const sortedIndex = [...pubKeys].sort().indexOf(myPub);
-              if (newCommitments[boxIndex][sortedIndex] === '')
-                committed = false;
+              if (newHints[boxIndex][sortedIndex] === '') committed = false;
             }
           }
           newResult[index] = { ...newResult[index], completed: committed };
@@ -56,7 +55,7 @@ const useCommittedAddress = (
         setResult(newResult);
         setProceed(
           JSON.stringify({
-            commitments: newCommitments,
+            hints: newHints,
             addresses: newAddresses,
           }),
         );

@@ -296,7 +296,7 @@ const verifyExistingTx = async (
   // Verify my commitments haven't changed
   const verifyCommitments = verifyMyCommitments(
     sharedData.hints,
-    row.commitments,
+    row.hints,
     pks,
     myPks,
   );

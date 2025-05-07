@@ -16,12 +16,12 @@ interface MultiSigContextHandlerPropsType {
 }
 
 const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
-  const [tx, setTx] = useState<wasm.ReducedTransaction>();
+  const [reduced, setReduced] = useState<wasm.ReducedTransaction>();
+  const [unsigned, setUnsigned] = useState<wasm.UnsignedTransaction>();
   const [data, setData] = useState<MultiSigData>({
-    commitments: [[]],
+    hints: [[]],
     secrets: [[]],
     signed: [],
-    simulated: [],
   });
   const [rowId, setRowId] = useState(-1);
   const [boxes, setBoxes] = useState<Array<wasm.ErgoBox>>([]);
@@ -43,32 +43,31 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   useEffect(() => {
     if (!loading && txId) {
       if (
-        (tx && tx.unsigned_tx().id().to_str() !== txId) ||
+        (reduced && reduced.unsigned_tx().id().to_str() !== txId) ||
         updateTime < lastUpdateTime
       ) {
         setLoading(true);
         fetchMultiSigRows(props.wallet, [txId]).then((rows) => {
           if (rows.length > 0) {
             const row = rows[0];
-            setTx(row.tx);
+            setReduced(row.tx);
+            setUnsigned(row.tx.unsigned_tx());
             setBoxes(row.boxes);
             setDataBoxes(row.dataBoxes);
             setRowId(row.rowId);
             setUpdateTime(Date.now());
             setData({
-              commitments: row.commitments,
+              hints: row.hints,
               secrets: row.secrets,
               signed: row.signed,
-              simulated: row.simulated,
-              partial: row.partial,
             });
           }
           setLoading(false);
         });
       }
     }
-  }, [loading, tx, txId, props.wallet, updateTime, lastUpdateTime]);
-  if (tx) {
+  }, [loading, reduced, txId, props.wallet, updateTime, lastUpdateTime]);
+  if (reduced) {
     return (
       <MultiSigContext.Provider
         value={{
@@ -83,8 +82,8 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
         <TxDataContext.Provider
           value={{
             wallet: props.wallet,
-            tx: tx.unsigned_tx(),
-            reduced: tx,
+            tx: unsigned,
+            reduced: reduced,
             dataBoxes: dataBoxes,
             boxes: boxes,
             networkType: props.wallet.networkType,

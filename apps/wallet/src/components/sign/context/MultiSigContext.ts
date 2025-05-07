@@ -1,11 +1,10 @@
 import { createContext } from 'react';
-import { MultiSigContextType } from '../../../types/multi-sig';
+import { MultiSigContextType } from '@/types/multi-sig';
 
 const MultiSigContext = createContext<MultiSigContextType>({
   data: {
     signed: [],
-    simulated: [],
-    commitments: [[]],
+    hints: [[]],
     secrets: [[]],
   },
   rowId: -1,

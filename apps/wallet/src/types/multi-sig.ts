@@ -11,12 +11,10 @@ export interface MultiSigDataRow {
   rowId: number;
   requiredSign: number;
   tx: wasm.ReducedTransaction;
-  partial?: wasm.Transaction;
   dataBoxes: Array<wasm.ErgoBox>;
   boxes: Array<wasm.ErgoBox>;
-  simulated: Array<string>;
   signed: Array<string>;
-  commitments: Array<Array<string>>;
+  hints: Array<Array<string>>;
   secrets: Array<Array<string>>;
 }
 
@@ -38,10 +36,9 @@ export interface MultiSigShareData {
 }
 
 export interface MultiSigData {
-  commitments: Array<Array<string>>;
+  hints: Array<Array<string>>;
   secrets: Array<Array<string>>;
   signed: Array<string>;
-  simulated: Array<string>;
   partial?: wasm.Transaction;
 }
 
