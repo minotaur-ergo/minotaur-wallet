@@ -15,7 +15,10 @@ const useCommittedAddress = (
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (!loading && data.tx) {
-      const newHints = [...context.data.hints];
+      // Convert MultiSigHint objects to string hints for comparison
+      const newHints = context.data.hints.map((inputHints) =>
+        inputHints.map((hint) => hint.commit),
+      );
       const newAddresses = [...addresses];
       if (
         JSON.stringify({

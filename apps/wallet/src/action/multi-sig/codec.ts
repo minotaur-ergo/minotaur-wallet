@@ -1,7 +1,12 @@
 import { encrypt } from '@/utils/enc';
 import { Buffer } from 'buffer';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { DetachedCommitments, TransactionHintBagType } from '@/types/multi-sig';
+import {
+  DetachedCommitments,
+  MultiSigHint,
+  MultiSigHintType,
+  TxHintBag,
+} from '@/types/multi-sig';
 
 /**
  * Extracts public and private commitments from a transaction hints bag.
@@ -69,7 +74,7 @@ const HintsToByte = (
   inputPublicKeys: Array<Array<string>>,
   password?: string,
 ): Array<Array<string>> => {
-  const commitmentJson: TransactionHintBagType = commitment.to_json();
+  const commitmentJson: TxHintBag = commitment.to_json();
   return inputPublicKeys.map((rowPublicKeys, index) => {
     const publicHints = commitmentJson.publicHints[`${index}`] || [];
     const secretHints = commitmentJson.secretHints[`${index}`] || [];
@@ -87,11 +92,13 @@ const HintsToByte = (
       }
     });
     if (password) {
-      return rowCommitment.map((item) => encrypt(item, password));
+      return rowCommitment.map((item) =>
+        item.length === 0 ? '' : encrypt(item, password),
+      );
     }
     secretHints.map((item) => {
       const pubIndex = rowPublicKeys.indexOf(item.pubkey.h);
-      if (pubIndex) {
+      if (pubIndex >= 0) {
         const proof = Buffer.from(item.proof, 'hex');
         const type = Buffer.from([item.hint === 'proofReal' ? 0 : 1]);
         rowCommitment[pubIndex] = Buffer.concat([
@@ -192,10 +199,10 @@ const overrideHints = (
 
           // If override is exactly 32 bytes and base is longer
           if (overrideDecoded.length === 32 && baseDecoded.length > 32) {
-            // Compare the first 32 bytes
-            const baseFirst32 = baseDecoded.slice(0, 32);
-            if (Buffer.compare(baseFirst32, overrideDecoded) === 0) {
-              // First 32 bytes match, keep the base hint
+            // Compare the first 33 bytes
+            const baseFirst33 = baseDecoded.subarray(0, 33);
+            if (Buffer.compare(baseFirst33, overrideDecoded) === 0) {
+              // First 33 bytes match, keep the base hint
               return hint;
             }
           }
@@ -213,4 +220,97 @@ const overrideHints = (
   return { hints, changed };
 };
 
-export { extractCommitments, HintsToByte, detachCommitments, overrideHints };
+/**
+ * Converts a MultiSigHint object to a base64 encoded string representation for sharing.
+ *
+ * This function takes a MultiSigHint object and converts it to a base64 encoded string
+ * that represents a byte array with the following structure:
+ * - First 33 bytes: commitment data
+ * - Next 56 bytes (if proof exists): proof data
+ * - Last byte (if proof exists): type indicator (0 for REAL, 1 for SIMULATED)
+ *
+ * If the hint does not have a proof, only the 33-byte commitment is included in the output.
+ * The function uses Buffer.concat to efficiently combine the different parts of the hint.
+ *
+ * @param hint - The MultiSigHint object to convert
+ * @returns A base64 encoded string representation of the hint, or an empty string if the hint is invalid
+ */
+const HintsToShare = (hint: MultiSigHint): string => {
+  // If the hint is empty or has no commit, return an empty string
+  if (!hint || !hint.commit) {
+    return '';
+  }
+
+  // If there's no proof, just return the commit
+  if (!hint.proof) {
+    return hint.commit;
+  }
+  const hintType = Buffer.from([
+    hint.type === MultiSigHintType.SIMULATED ? 1 : 0,
+  ]);
+  return Buffer.concat([
+    Buffer.from(hint.commit, 'base64'),
+    Buffer.from(hint.proof, 'base64'),
+    hintType,
+  ]).toString('base64');
+};
+
+/**
+ * Converts a base64 encoded string representation back to a MultiSigHint object.
+ *
+ * This function takes a base64 encoded string that was created by HintsToShare
+ * and converts it back to a MultiSigHint object. The input string is expected to
+ * have the following structure when decoded:
+ * - First 33 bytes: commitment data
+ * - Next 56 bytes (if present): proof data
+ * - Last byte (if proof exists): type indicator (0 for REAL, 1 for SIMULATED)
+ *
+ * If the input string only contains commitment data (33 bytes), the resulting
+ * MultiSigHint will have no proof and the type will default to SIGNED.
+ *
+ * @param base64String - The base64 encoded string to convert
+ * @returns A MultiSigHint object, or a default object with empty commit if the input is invalid
+ */
+const ShareToHint = (base64String: string): MultiSigHint => {
+  // If the input is empty, return a default hint
+  if (!base64String) {
+    return { commit: '', proof: '', type: MultiSigHintType.REAL };
+  }
+
+  try {
+    // Decode the base64 string to a buffer
+    const buffer = Buffer.from(base64String, 'base64');
+
+    // Extract the commitment (first 33 bytes)
+    const commit = buffer.subarray(0, 33).toString('base64');
+
+    // If the buffer only contains the commitment, return a hint with just the commit
+    if (buffer.length <= 33) {
+      return { commit, proof: '', type: MultiSigHintType.REAL };
+    }
+
+    // Extract the proof (next 56 bytes)
+    const proof = buffer.subarray(33, 89).toString('base64');
+
+    // Extract the type (last byte, if present)
+    const type =
+      buffer.length > 89 && buffer[89] === 1
+        ? MultiSigHintType.SIMULATED
+        : MultiSigHintType.REAL;
+
+    return { commit, proof, type };
+  } catch (error) {
+    console.error('Error converting base64 string to MultiSigHint:', error);
+    // In case of error, return a default hint
+    return { commit: '', proof: '', type: MultiSigHintType.REAL };
+  }
+};
+
+export {
+  extractCommitments,
+  HintsToByte,
+  detachCommitments,
+  overrideHints,
+  HintsToShare,
+  ShareToHint,
+};

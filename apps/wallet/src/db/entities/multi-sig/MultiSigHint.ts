@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import MultiSignRow from './MultiSignRow';
+import MultiSigRow from './MultiSigRow';
 
 enum MultiSigHintType {
   Real = 'REAL',
@@ -11,8 +11,8 @@ class MultiSigHint {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @ManyToOne(() => MultiSignRow, { onDelete: 'CASCADE' })
-  tx: MultiSignRow | null = null;
+  @ManyToOne(() => MultiSigRow, { onDelete: 'CASCADE' })
+  tx: MultiSigRow | null = null;
 
   @Column('text')
   type: MultiSigHintType = MultiSigHintType.Real;
@@ -24,10 +24,10 @@ class MultiSigHint {
   proof? = ''; // This field can be empty
 
   @Column('int')
-  index = 0; // Index within the input
+  idx = 0; // Index within the input
 
   @Column('int')
-  inputIndex = 0; // Index of the input
+  inpIdx = 0; // Index of the input
 
   @Column('text', { nullable: true })
   secret? = ''; // Secret can be empty

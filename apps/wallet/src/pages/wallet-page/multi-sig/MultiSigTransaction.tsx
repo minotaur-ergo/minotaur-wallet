@@ -16,7 +16,6 @@ import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
-import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;
@@ -29,10 +28,10 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   const needMyCommitment =
     multiDataContext.state === MultiSigStateEnum.COMMITMENT &&
-    multiDataContext.myAction.committed === false;
+    !multiDataContext.myAction.committed;
   const needMySign =
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
-    multiDataContext.myAction.signed === false;
+    !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
   if (txDataContext.tx) {
     return (
@@ -73,7 +72,8 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
             />
           ) : null
         ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
-          <DisplaySignedTx tx={txContext.data.partial} />
+          // <DisplaySignedTx tx={txContext.data.partial} />
+          <div>This part is not implemented yet</div>
         ) : (
           <ShareTransaction />
         )}

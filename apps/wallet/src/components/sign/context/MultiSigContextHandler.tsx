@@ -8,7 +8,7 @@ import { StateWallet } from '@/store/reducer/wallet';
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '@/types/multi-sig';
+import { MultiSigData, MultiSigHintType } from '@/types/multi-sig';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;
@@ -21,7 +21,6 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   const [data, setData] = useState<MultiSigData>({
     hints: [[]],
     secrets: [[]],
-    signed: [],
   });
   const [rowId, setRowId] = useState(-1);
   const [boxes, setBoxes] = useState<Array<wasm.ErgoBox>>([]);
@@ -56,10 +55,46 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
             setDataBoxes(row.dataBoxes);
             setRowId(row.rowId);
             setUpdateTime(Date.now());
+            // Convert string hints to MultiSigHint objects
+            const multiSigHints = row.hints.map((inputHints) =>
+              inputHints.map((hint) => {
+                if (!hint)
+                  return {
+                    commit: '',
+                    proof: '',
+                    type: MultiSigHintType.REAL,
+                  };
+
+                try {
+                  const decoded = Buffer.from(hint, 'base64');
+                  const commit = decoded.subarray(0, 33).toString('base64');
+                  const proof =
+                    decoded.length > 33
+                      ? decoded.subarray(33, 89).toString('base64')
+                      : '';
+                  const type =
+                    decoded.length > 89 && decoded[89] === 1
+                      ? MultiSigHintType.SIMULATED
+                      : MultiSigHintType.REAL;
+
+                  return { commit, proof, type };
+                } catch (error) {
+                  console.error(
+                    'Error converting hint to MultiSigHint:',
+                    error,
+                  );
+                  return {
+                    commit: hint,
+                    proof: '',
+                    type: MultiSigHintType.REAL,
+                  };
+                }
+              }),
+            );
+
             setData({
-              hints: row.hints,
+              hints: multiSigHints,
               secrets: row.secrets,
-              signed: row.signed,
             });
           }
           setLoading(false);

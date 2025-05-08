@@ -1,130 +1,26 @@
 import * as wasm from 'ergo-lib-wasm-browser';
-import { getProver } from '../wallet';
-import { StateWallet } from '@/store/reducer/wallet';
 import {
-  generateCommitments,
-  hintBagToArray,
-  overridePublicCommitments,
-} from './commitment';
-import { storeMultiSigRowNew } from './store';
-import {
-  AddressActionRow,
-  HintType,
-  MultiSigAddressHolder,
-  MultiSigData,
-  SecretHintType,
-  TransactionHintBagType,
-  TxHintType,
-  TxSecretHintType,
+  TxSinglePublicHint,
+  TxSingleSecretHint,
+  TxHintBag,
+  TxPublicHint,
+  TxSecretHint,
+  MultiSigHint,
 } from '@/types/multi-sig';
-import { getTxBoxes } from '../tx';
 import { decrypt } from '@/utils/enc';
-import getChain from '@/utils/networks';
-
-export const commit = async (
-  tx: wasm.ReducedTransaction,
-  wallet: StateWallet,
-  signer: StateWallet,
-  password: string,
-  boxes: Array<wasm.ErgoBox>,
-  data: MultiSigData,
-) => {
-  const prover = await getProver(signer, password, wallet.addresses);
-  const myCommitments = await generateCommitments(prover, tx);
-  const unsigned = tx.unsigned_tx();
-  const known = await hintBagToArray(
-    wallet,
-    signer,
-    unsigned,
-    boxes,
-    myCommitments.public,
-  );
-  const own = await hintBagToArray(
-    wallet,
-    signer,
-    unsigned,
-    boxes,
-    myCommitments.private,
-    password,
-  );
-  const newHints = overridePublicCommitments(data.hints, known);
-  const newPrivateHints = overridePublicCommitments(data.secrets, own);
-  if (newHints.changed || newPrivateHints.changed) {
-    const currentTime = Date.now();
-    const row = await storeMultiSigRowNew(
-      wallet,
-      tx,
-      boxes,
-      newHints.commitments,
-      newPrivateHints.commitments,
-      currentTime,
-    );
-    return {
-      hints: newHints.commitments,
-      secrets: newPrivateHints.commitments,
-      updateTime: currentTime,
-      rowId: row?.id,
-      changed: true,
-    };
-  }
-  return {
-    hints: data.hints,
-    secrets: data.secrets,
-    updateTime: -1,
-    rowId: -1,
-    changed: false,
-  };
-};
-
-const getInputPKs = (
-  wallet: StateWallet,
-  addresses: Array<MultiSigAddressHolder>,
-  tx: wasm.UnsignedTransaction,
-  txBoxes: Array<wasm.ErgoBox>,
-) => {
-  const boxes = getTxBoxes(tx, txBoxes);
-  const ergoTrees = wallet.addresses.map((item) =>
-    wasm.Address.from_base58(item.address).to_ergo_tree().to_base16_bytes(),
-  );
-  return boxes
-    .map((box) => box.ergo_tree().to_base16_bytes())
-    .map((ergoTree) => ergoTrees.indexOf(ergoTree))
-    .map((index) =>
-      addresses.map((item) => (index === -1 ? '' : item.pubKeys[index])),
-    )
-    .map((row) => row.sort());
-};
-
-const removeSignedCommitments = (
-  commitments: Array<Array<string>>,
-  inputPKs: Array<Array<string>>,
-  myPKs: Array<string>,
-  signedPKs: Array<string>,
-) => {
-  return commitments.map((commitmentRow, rowIndex) => {
-    const rowPks = inputPKs[rowIndex];
-    return commitmentRow.map((commitment, pkIndex) => {
-      const pk = rowPks[pkIndex];
-      if (signedPKs.indexOf(pk) >= 0 || myPKs.indexOf(pk) >= 0) {
-        return '';
-      }
-      return commitment;
-    });
-  });
-};
 
 const generateSecretHintBagJson = (
   publicKey: string,
   hint: string,
   index: number,
-): SecretHintType => {
+): TxSingleSecretHint => {
   const hintBuffer = Buffer.from(hint, 'base64');
-  const hintType = hintBuffer[86] === 1 ? 'proofReal' : 'proofSimulated';
-  const proofHex = hintBuffer.slice(32, 86).toString('hex');
+  const hintType = hintBuffer[87] === 1 ? 'proofReal' : 'proofSimulated';
+  const proofHex = hintBuffer.subarray(33, 87).toString('hex');
   return {
     hint: hintType,
     position: `0-${index}`,
-    challenge: proofHex.substr(0, 48),
+    challenge: proofHex.substring(0, 48),
     proof: proofHex,
     pubkey: {
       op: '205',
@@ -149,7 +45,7 @@ const generateSecretHintBagJson = (
  * @param index - The index of this commitment in the input
  * @param secret - The encrypted secret corresponding to this commitment (if any)
  * @param password - The password to decrypt the secret (required if secret is provided)
- * @returns A HintType object that can be included in the transaction hints bag
+ * @returns A TxSinglePublicHint object that can be included in the transaction hints bag
  */
 const generateHintBagJson = (
   publicKey: string,
@@ -157,8 +53,8 @@ const generateHintBagJson = (
   index: number,
   secret: string,
   password?: string,
-): HintType => {
-  const res: HintType = {
+): TxSinglePublicHint => {
+  const res: TxSinglePublicHint = {
     hint: secret ? 'cmtWithSecret' : 'cmtReal',
     pubkey: {
       op: '205',
@@ -175,35 +71,39 @@ const generateHintBagJson = (
 };
 
 /**
- * Converts public keys, hints, and secrets to a HintBag object.
+ * Converts public keys, hints, and secrets to a TransactionHintsBag object for transaction signing.
  *
- * This function takes arrays of public keys, hints, and secrets and converts them
- * to a HintBag object that can be used for signing transactions. It ensures that
- * only the first 32 bytes of each hint are used as the commitment.
+ * This function processes arrays of public keys, MultiSigHint objects, and secrets to create a structured
+ * TransactionHintsBag object that can be used for signing Ergo transactions. The function handles
+ * both regular hints (commitments only) and extended hints (with proofs).
  *
- * For each hint, the function extracts the first 32 bytes as the commitment and
- * creates a hint bag JSON object. If a secret is provided for the hint, the function
- * will create two hint bag JSON objects - one without the secret and one with the secret.
- * This allows the transaction to be verified and signed with the same commitment.
+ * Key behaviors:
+ * - Uses the commit field from each MultiSigHint object directly
+ * - When secrets are provided with a password, creates hints with decrypted secrets
+ * - Optionally adds proof information to the secretHints section when addSecrets=true and proof exists
+ * - Handles base64 encoding/decoding for all cryptographic data
  *
- * The function is careful to handle base64 encoded data properly, as both the input
- * hints and the generateHintBagJson function work with base64 encoded data.
+ * When a secret exists for a hint and addSecrets=true, the function will:
+ * 1. Generate a public hint without the secret
+ * 2. Generate a second hint with the decrypted secret
+ * 3. Add proof information to the secretHints section if the hint contains proof data
  *
- * @param publicKeys - 2D array of public keys for each input
- * @param hints - 2D array of hints in the new format (base64 encoded)
- * @param secrets - Optional 2D array of secrets corresponding to the hints
- * @param password - Optional password to decrypt secrets
- * @returns A TransactionHintsBag object that can be used for signing
+ * @param publicKeys - 2D array of public keys for each input (hex encoded)
+ * @param hints - 2D array of MultiSigHint objects containing commit, proof, and type information
+ * @param secrets - Optional 2D array of encrypted secrets corresponding to the hints
+ * @param password - Optional password to decrypt secrets (required if secrets are provided)
+ * @param addSecrets - Whether to add proof information to secretHints (default: false)
+ * @returns A TransactionHintsBag object that can be used for transaction signing
  */
 export const toHintBag = (
   publicKeys: Array<Array<string>>,
-  hints: Array<Array<string>>,
+  hints: Array<Array<MultiSigHint>>,
   secrets: Array<Array<string>> = [],
   password?: string,
   addSecrets: boolean = false,
 ): wasm.TransactionHintsBag => {
-  const publicJson: TxHintType = {};
-  const secretJson: TxSecretHintType = {};
+  const publicJson: TxPublicHint = {};
+  const secretJson: TxSecretHint = {};
 
   publicKeys.forEach((inputPublicKeys, index) => {
     secretJson[`${index}`] = [];
@@ -212,11 +112,8 @@ export const toHintBag = (
     inputPublicKeys.forEach((inputPublicKey, pkIndex) => {
       if (inputHints[pkIndex]) {
         try {
-          // Decode base64 string to byte array
-          const decoded = Buffer.from(inputHints[pkIndex], 'base64');
-
-          // Extract only the first 32 bytes (commitment) and convert back to base64
-          const commitment = decoded.slice(0, 32).toString('base64');
+          // Get the commitment from the MultiSigHint object
+          const commitment = inputHints[pkIndex].commit;
 
           // Check if we have a secret for this hint
           const hasSecret =
@@ -253,7 +150,7 @@ export const toHintBag = (
 
             // Add the secret hint
             publicJson[`${index}`].push(ownHint);
-            if (decoded.length > 32 && addSecrets) {
+            if (inputHints[pkIndex].proof && addSecrets) {
               if (!secretJson[`${index}`]) {
                 secretJson[`${index}`] = [];
               }
@@ -272,198 +169,11 @@ export const toHintBag = (
     });
   });
 
-  const resJson: TransactionHintBagType = {
+  const resJson: TxHintBag = {
     secretHints: secretJson,
     publicHints: publicJson,
   };
   return wasm.TransactionHintsBag.from_json(JSON.stringify(resJson));
-};
-
-const getHintBags = (
-  publicKeys: Array<Array<string>>,
-  commitments: Array<Array<string>>,
-): wasm.TransactionHintsBag => {
-  const publicJson: { [key: string]: Array<HintType> } = {};
-  const secretJson: { [key: string]: Array<HintType> } = {};
-  publicKeys.forEach((inputPublicKeys, index) => {
-    const inputCommitments = commitments[index];
-    inputPublicKeys.forEach((inputPublicKey, pkIndex) => {
-      if (inputCommitments[pkIndex]) {
-        const commitment = generateHintBagJson(
-          inputPublicKey,
-          inputCommitments[pkIndex],
-          pkIndex,
-          '',
-        );
-        if (publicJson[`${index}`]) {
-          publicJson[`${index}`].push(commitment);
-        } else {
-          publicJson[`${index}`] = [commitment];
-        }
-      }
-    });
-    secretJson[`${index}`] = [];
-  });
-  const resJson = { secretHints: secretJson, publicHints: publicJson };
-  return wasm.TransactionHintsBag.from_json(JSON.stringify(resJson));
-};
-
-const extractAndAddSignedHints = async (
-  wallet: StateWallet,
-  simulated: Array<string>,
-  signed: Array<string>,
-  currentHints: wasm.TransactionHintsBag,
-  tx: wasm.ReducedTransaction,
-  partial?: wasm.Transaction,
-  boxes: Array<wasm.ErgoBox> = [],
-) => {
-  const simulatedPropositions = arrayToProposition(simulated);
-  const realPropositions = arrayToProposition(signed);
-  const context = getChain(wallet.networkType).fakeContext();
-  if (partial) {
-    const ergoBoxes = wasm.ErgoBoxes.empty();
-    boxes.forEach((box) => ergoBoxes.add(box));
-    const hints = wasm.extract_hints(
-      partial,
-      context,
-      ergoBoxes,
-      // TODO handle data inputs
-      wasm.ErgoBoxes.empty(),
-      realPropositions,
-      simulatedPropositions,
-    );
-    Array(tx.unsigned_tx().inputs().len())
-      .fill('')
-      .forEach((_item, index) => {
-        const inputHints = hints.all_hints_for_input(index);
-        currentHints.add_hints_for_input(index, inputHints);
-      });
-  }
-};
-
-const addMyHints = (
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  publicKeys: Array<Array<string>>,
-  myPKs: Array<string>,
-  password: string,
-) => {
-  const myHints: TransactionHintBagType = {
-    secretHints: {},
-    publicHints: {},
-  };
-  commitments.forEach((row, rowIndex) => {
-    if (
-      !Object.prototype.hasOwnProperty.call(myHints.publicHints, `${rowIndex}`)
-    ) {
-      myHints.publicHints[`${rowIndex}`] = [];
-      myHints.secretHints[`${rowIndex}`] = [];
-    }
-    row.forEach((commit, commitIndex) => {
-      const secret = secrets[rowIndex][commitIndex];
-      if (secret !== '') {
-        const committerPK = publicKeys[rowIndex][commitIndex];
-        if (myPKs.includes(committerPK)) {
-          myHints.publicHints[`${rowIndex}`].push(
-            generateHintBagJson(committerPK, commit, commitIndex, ''),
-          );
-          myHints.publicHints[`${rowIndex}`].push(
-            generateHintBagJson(
-              committerPK,
-              commit,
-              commitIndex,
-              secret,
-              password,
-            ),
-          );
-        }
-      }
-    });
-  });
-  return wasm.TransactionHintsBag.from_json(JSON.stringify(myHints));
-};
-
-export const sign = async (
-  wallet: StateWallet,
-  signer: StateWallet,
-  simulated: Array<string>,
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  committed: Array<AddressActionRow>,
-  signed: Array<AddressActionRow>,
-  addresses: Array<MultiSigAddressHolder>,
-  tx: wasm.ReducedTransaction,
-  boxes: Array<wasm.ErgoBox>,
-  password: string,
-  oldPartial?: wasm.Transaction,
-): Promise<{
-  partial: wasm.Transaction;
-  signed: Array<string>;
-  currentTime: number;
-}> => {
-  // generate simulated list
-  const simulatedAddress = simulated.length
-    ? simulated
-    : committed.filter((item) => !item.completed).map((item) => item.address);
-
-  // generate signed
-  const signedAddresses = signed
-    .filter((item) => item.completed)
-    .map((item) => item.address);
-  const signedPKs = addresses
-    .filter((item) => signedAddresses.includes(item.address))
-    .reduce((a, b) => [...a, ...b.pubKeys], [] as Array<string>);
-  const myPKs = addresses
-    .filter((item) => item.address == signer.addresses[0].address)
-    .reduce((a, b) => [...a, ...b.pubKeys], [] as Array<string>);
-  const unsigned = tx.unsigned_tx();
-  const inputPKs = getInputPKs(wallet, addresses, unsigned, boxes);
-  const myHints = addMyHints(commitments, secrets, inputPKs, myPKs, password);
-  const usedHints = removeSignedCommitments(
-    commitments,
-    inputPKs,
-    myPKs,
-    signedPKs,
-  );
-  const publicHintBag = getHintBags(inputPKs, usedHints);
-  if (signedPKs && signedPKs.length > 0) {
-    const simulatedPKs = addresses
-      .filter((item) => simulatedAddress.includes(item.address))
-      .reduce((a, b) => [...a, ...b.pubKeys], [] as Array<string>);
-    await extractAndAddSignedHints(
-      wallet,
-      simulatedPKs,
-      signedPKs,
-      publicHintBag,
-      tx,
-      oldPartial,
-      boxes,
-    );
-  }
-  Array(unsigned.inputs().len())
-    .fill('')
-    .forEach((_item, index) => {
-      const myInputHints = myHints.all_hints_for_input(index);
-      publicHintBag.add_hints_for_input(index, myInputHints);
-    });
-  const prover = await getProver(signer, password, wallet.addresses);
-  const partial = prover.sign_reduced_transaction_multi(tx, publicHintBag);
-  const lastSigned = [...signedAddresses, signer.addresses[0].address].sort();
-  const currentTime = Date.now();
-  await storeMultiSigRowNew(
-    wallet,
-    tx,
-    boxes,
-    commitments,
-    secrets,
-    currentTime,
-  );
-
-  return {
-    signed: lastSigned,
-    partial,
-    currentTime,
-  };
 };
 
 export const arrayToProposition = (input: Array<string>): wasm.Propositions => {

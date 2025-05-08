@@ -7,6 +7,11 @@ export enum MultiSigStateEnum {
   COMPLETED = 'completed',
 }
 
+export enum MultiSigHintType {
+  SIMULATED = 'simulated',
+  REAL = 'real',
+}
+
 export interface MultiSigDataRow {
   rowId: number;
   requiredSign: number;
@@ -35,15 +40,14 @@ export interface MultiSigShareData {
   hints: Array<Array<string>>;
 }
 
-export interface MultiSigData {
-  hints: Array<Array<string>>;
-  secrets: Array<Array<string>>;
-  signed: Array<string>;
-  partial?: wasm.Transaction;
+export interface MultiSigHint {
+  commit: string;
+  proof: string;
+  type: MultiSigHintType;
 }
 
-export interface MultiSigSimpleData {
-  hints: Array<Array<string>>;
+export interface MultiSigData {
+  hints: Array<Array<MultiSigHint>>;
   secrets: Array<Array<string>>;
 }
 
@@ -89,39 +93,39 @@ export interface MultiSigDataContextType {
   setNeedPassword: (needPassword: boolean) => unknown;
 }
 
-interface HintPublicKey {
+interface TxHintPublicKey {
   op: string;
   h: string;
 }
 
-export interface SecretHintType {
+export interface TxSingleSecretHint {
   hint: string;
   challenge: string;
   position: string;
   proof: string;
-  pubkey: HintPublicKey;
+  pubkey: TxHintPublicKey;
 }
 
-export interface HintType {
+export interface TxSinglePublicHint {
   hint: string;
   secret?: string;
-  pubkey: HintPublicKey;
+  pubkey: TxHintPublicKey;
   type: string;
   a: string;
   position: string;
 }
 
-export interface TxHintType {
-  [key: string]: Array<HintType>;
+export interface TxPublicHint {
+  [key: string]: Array<TxSinglePublicHint>;
 }
 
-export interface TxSecretHintType {
-  [key: string]: Array<SecretHintType>;
+export interface TxSecretHint {
+  [key: string]: Array<TxSingleSecretHint>;
 }
 
-export interface TransactionHintBagType {
-  publicHints: TxHintType;
-  secretHints: TxSecretHintType;
+export interface TxHintBag {
+  publicHints: TxPublicHint;
+  secretHints: TxSecretHint;
 }
 
 export interface DetachedCommitments {
@@ -130,7 +134,7 @@ export interface DetachedCommitments {
 }
 
 export interface CommitResult {
-  hints: Array<Array<string>>;
+  hints: Array<Array<MultiSigHint>>;
   secrets: Array<Array<string>>;
   updateTime: number;
   rowId?: number;

@@ -18,6 +18,7 @@ const connectSqlJs = async () => {
   });
   await dataSource.initialize();
   await dataSource.runMigrations({ transaction: 'each' });
+  // await dataSource.undoLastMigration();
   return dataSource;
 };
 

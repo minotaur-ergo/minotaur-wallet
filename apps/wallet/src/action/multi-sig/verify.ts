@@ -179,8 +179,8 @@ const verifyNotSigningNewTx = (
           // Decode base64 string to byte array
           const decoded = Buffer.from(element, 'base64');
 
-          // Check if the decoded byte array has a length of 32
-          if (decoded.length !== 32) {
+          // Check if the decoded byte array has a length of 33
+          if (decoded.length !== 33) {
             return {
               valid: false,
               message: 'Transaction already signing without your commitment',
@@ -389,12 +389,12 @@ const verifyHintsProof = (
 
             if (decoded.length <= 32) return false;
 
-            const commitment = decoded.slice(0, 32);
+            const commitment = decoded.subarray(0, 33);
 
-            if (decoded.length < 88) return false;
+            if (decoded.length < 89) return false;
 
-            const challengeBuffer = decoded.slice(32, 56);
-            const proofBuffer = decoded.slice(56, 88);
+            const challengeBuffer = decoded.subarray(33, 57);
+            const proofBuffer = decoded.subarray(57, 89);
 
             const challengeHex = '0x' + challengeBuffer.toString('hex');
             const proofHex = '0x' + proofBuffer.toString('hex');

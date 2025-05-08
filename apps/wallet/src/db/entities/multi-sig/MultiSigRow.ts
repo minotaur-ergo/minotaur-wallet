@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import Wallet from '../Wallet';
 
-@Entity({ name: 'multi-sign-row' })
-class MultiSignRow {
+@Entity({ name: 'multi-sig-row' })
+class MultiSigRow {
   @PrimaryGeneratedColumn()
   id = 0;
 
@@ -13,4 +13,4 @@ class MultiSignRow {
   wallet: Wallet | null = null;
 }
 
-export default MultiSignRow;
+export default MultiSigRow;

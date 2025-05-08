@@ -8,11 +8,11 @@ import { validatePassword } from '@/action/wallet';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
-// import {commit} from '@/action/multi-sig/sign';
+import { commit, signPartial } from '@/action/multi-sig/sign';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
-import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
+// import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
 
 import MessageContext from '@/components/app/messageContext';
@@ -22,7 +22,7 @@ const MultiSigToolbar = () => {
   const data = useContext(TxDataContext);
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
-  const submitContext = useContext(TxSubmitContext);
+  // const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
   const getLabel = () => {
@@ -42,53 +42,47 @@ const MultiSigToolbar = () => {
       multiSigData.related &&
       !multiSigData.myAction.committed
     ) {
-      // return commit(
-      //   data.reduced,
-      //   data.wallet,
-      //   multiSigData.related,
-      //   context.password,
-      //   data.boxes,
-      //   context.data
-      // ).then(res => {
-      //   if(res.changed){
-      //       context.setData({
-      //         hints: res.hints,
-      //         secrets: res.secrets,
-      //         signed: []
-      //       }, res.updateTime);
-      //   }
-      //   multiSigData.setNeedPassword(false);
-      // })
-      console.log('salam');
+      return commit(
+        data.reduced,
+        data.wallet,
+        multiSigData.related,
+        context.password,
+        data.boxes,
+        context.data,
+      ).then((res) => {
+        if (res.changed) {
+          context.setData(
+            {
+              hints: res.hints,
+              secrets: res.secrets,
+            },
+            res.updateTime,
+          );
+        }
+        multiSigData.setNeedPassword(false);
+      });
     }
   };
 
   const signAction = () => {
     if (multiSigData.related && data.reduced) {
-      // sign(
-      //   data.wallet,
-      //   multiSigData.related,
-      //   [],
-      //   context.data.hints,
-      //   context.data.secrets,
-      //   multiSigData.committed,
-      //   multiSigData.signed,
-      //   multiSigData.addresses,
-      //   data.reduced,
-      //   data.boxes,
-      //   context.password,
-      //   context.data.partial,
-      // ).then((res) => {
-      //   context.setData(
-      //     {
-      //       hints: context.data.hints,
-      //       secrets: context.data.secrets,
-      //       signed: res.signed,
-      //       partial: res.partial,
-      //     },
-      //     res.currentTime,
-      //   );
-      // });
+      signPartial(
+        data.wallet,
+        multiSigData.related,
+        context.data.hints,
+        context.data.secrets,
+        data.reduced,
+        data.boxes,
+        context.password,
+      ).then((res) => {
+        context.setData(
+          {
+            hints: context.data.hints,
+            secrets: context.data.secrets,
+          },
+          res.currentTime,
+        );
+      });
     }
   };
 
@@ -109,11 +103,11 @@ const MultiSigToolbar = () => {
   };
 
   const publishAction = async () => {
-    if (context.data.partial) {
-      submitContext.submit(context.data.partial);
-    } else {
-      console.error('Unknown error occurred');
-    }
+    // if (context.data.partial) {
+    //   submitContext.submit(context.data.partial);
+    // } else {
+    //   console.error('Unknown error occurred');
+    // }
   };
 
   const pasteAction = async () => {

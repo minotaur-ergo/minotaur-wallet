@@ -8,7 +8,12 @@ import { storeMultiSigRowNew } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
 import { StateWallet } from '@/store/reducer/wallet';
-import { CommitResult, MultiSigSimpleData } from '@/types/multi-sig';
+import {
+  CommitResult,
+  MultiSigData,
+  MultiSigHint,
+  MultiSigHintType,
+} from '@/types/multi-sig';
 import getChain from '@/utils/networks';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -55,7 +60,7 @@ export const commit = async (
   signer: StateWallet,
   password: string,
   boxes: Array<wasm.ErgoBox>,
-  data: MultiSigSimpleData,
+  data: MultiSigData,
 ): Promise<CommitResult> => {
   const prover = await getProver(signer, password, wallet.addresses);
   const detached = generateCommitments(prover, tx);
@@ -64,20 +69,50 @@ export const commit = async (
   const known = HintsToByte(detached.known, inputPks);
   const own = HintsToByte(detached.own, inputPks, password);
 
-  const newHints = overrideHints(data.hints, known);
+  // Convert MultiSigHint objects to string hints for overrideHints
+  const stringHints = data.hints.map((inputHints) =>
+    inputHints.map((hint) => hint.commit),
+  );
+
+  const newStringHints = overrideHints(stringHints, known);
   const newOwnHints = overrideHints(data.secrets, own);
-  if (newHints.changed || newOwnHints.changed) {
+
+  // Convert string hints back to MultiSigHint objects
+  const multiSigHints = newStringHints.hints.map((inputHints) =>
+    inputHints.map((hint) => {
+      if (!hint) return { commit: '', proof: '', type: MultiSigHintType.REAL };
+
+      try {
+        const decoded = Buffer.from(hint, 'base64');
+        const commit = decoded.subarray(0, 33).toString('base64');
+        const proof =
+          decoded.length > 33
+            ? decoded.subarray(33, 89).toString('base64')
+            : '';
+        const type =
+          decoded.length > 89 && decoded[89] === 1
+            ? MultiSigHintType.SIMULATED
+            : MultiSigHintType.REAL;
+
+        return { commit, proof, type };
+      } catch (error) {
+        console.error('Error converting hint to MultiSigHint:', error);
+        return { commit: hint, proof: '', type: MultiSigHintType.REAL };
+      }
+    }),
+  );
+  if (newStringHints.changed || newOwnHints.changed) {
     const currentTime = Date.now();
     const row = await storeMultiSigRowNew(
       wallet,
       tx,
       boxes,
-      newHints.hints,
+      newStringHints.hints,
       newOwnHints.hints,
       currentTime,
     );
     return {
-      hints: newHints.hints,
+      hints: multiSigHints,
       secrets: newOwnHints.hints,
       updateTime: currentTime,
       rowId: row?.id,
@@ -120,15 +155,16 @@ export const commit = async (
 export const signPartial = async (
   wallet: StateWallet,
   signer: StateWallet,
-  hints: Array<Array<string>>,
+  hints: Array<Array<MultiSigHint>>,
   secrets: Array<Array<string>>,
   tx: wasm.ReducedTransaction,
   boxes: Array<wasm.ErgoBox>,
   password: string,
-): Promise<{ currentTime: number; hints: Array<Array<string>> }> => {
+): Promise<{ currentTime: number; hints: Array<Array<MultiSigHint>> }> => {
   const unsigned = tx.unsigned_tx();
   const publicKeys = await getInputPks(wallet, signer, unsigned, boxes);
   const myPublicKeys = await getMyInputPks(wallet, signer, unsigned, boxes);
+
   const txHintBag = toHintBag(publicKeys, hints, secrets, password, false);
   const prover = await getProver(signer, password, wallet.addresses);
   const context = getChain(wallet.networkType).fakeContext();
@@ -147,21 +183,55 @@ export const signPartial = async (
     simulatedPropositions,
   );
   const newHints = HintsToByte(extracted, publicKeys);
-  const finalHints = overrideHints(hints, newHints);
-  if (finalHints.changed) {
+  // Convert MultiSigHint objects to string hints for overrideHints
+  const stringHints = hints.map((inputHints) =>
+    inputHints.map((hint) => hint.commit),
+  );
+
+  const finalStringHints = overrideHints(stringHints, newHints);
+  if (finalStringHints.changed) {
     const currentTime = Date.now();
     await storeMultiSigRowNew(
       wallet,
       tx,
       boxes,
-      finalHints.hints,
+      finalStringHints.hints,
       secrets,
       currentTime,
     );
-    return { hints: finalHints.hints, currentTime };
+
+    // Convert string hints back to MultiSigHint objects
+    const multiSigHints = finalStringHints.hints.map((inputHints) =>
+      inputHints.map((hint) => {
+        if (!hint)
+          return { commit: '', proof: '', type: MultiSigHintType.REAL };
+
+        try {
+          const decoded = Buffer.from(hint, 'base64');
+          const commit = decoded.subarray(0, 33).toString('base64');
+          const proof =
+            decoded.length > 33
+              ? decoded.subarray(33, 89).toString('base64')
+              : '';
+          const type =
+            decoded.length > 89 && decoded[89] === 1
+              ? MultiSigHintType.SIMULATED
+              : MultiSigHintType.REAL;
+
+          return { commit, proof, type };
+        } catch (error) {
+          console.error('Error converting hint to MultiSigHint:', error);
+          return { commit: hint, proof: '', type: MultiSigHintType.REAL };
+        }
+      }),
+    );
+
+    return { hints: multiSigHints, currentTime };
   }
+  // Convert to MultiSigHint objects for the unchanged case
+  const multiSigHints = hints.map((inputHints) => inputHints);
   return {
-    hints: finalHints.hints,
+    hints: multiSigHints,
     currentTime: -1,
   };
 };

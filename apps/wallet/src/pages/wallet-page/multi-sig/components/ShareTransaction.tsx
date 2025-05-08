@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { serialize } from '@/action/box';
+import { HintsToShare } from '@/action/multi-sig/codec';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
 
 const ShareTransaction = () => {
@@ -16,7 +17,9 @@ const ShareTransaction = () => {
         ? Buffer.from(txData.reduced.sigma_serialize_bytes()).toString('base64')
         : '',
       boxes: txData.boxes.map(serialize),
-      hints: context.data.hints,
+      hints: context.data.hints.map((inputHints) =>
+        inputHints.map((hint) => HintsToShare(hint)),
+      ),
     };
     const newData = JSON.stringify(res);
     if (data !== newData) {

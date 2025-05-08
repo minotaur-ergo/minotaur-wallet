@@ -3,7 +3,6 @@ import { MultiSigContextType } from '@/types/multi-sig';
 
 const MultiSigContext = createContext<MultiSigContextType>({
   data: {
-    signed: [],
     hints: [[]],
     secrets: [[]],
   },

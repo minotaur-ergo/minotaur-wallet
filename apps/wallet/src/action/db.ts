@@ -7,11 +7,9 @@ import AddressValueInfo, {
 import Asset from '@/db/entities/Asset';
 import Box from '@/db/entities/Box';
 import Config, { ConfigType } from '@/db/entities/Config';
-import MultiSignInput from '@/db/entities/multi-sig/MultiSignInput';
-import MultiSignRow from '@/db/entities/multi-sig/MultiSignRow';
-import MultiSignTx, {
-  MultiSigTxType,
-} from '@/db/entities/multi-sig/MultiSignTx';
+import MultiSigInput from '@/db/entities/multi-sig/MultiSigInput';
+import MultiSigRow from '@/db/entities/multi-sig/MultiSigRow';
+import MultiSigTx, { MultiSigTxType } from '@/db/entities/multi-sig/MultiSigTx';
 import MultiSigHint, {
   MultiSigHintType,
 } from '@/db/entities/multi-sig/MultiSigHint';
@@ -949,18 +947,18 @@ class SavedAddressDbAction {
 }
 
 class MultiStoreDbAction {
-  private inputRepository: Repository<MultiSignInput>;
-  private rowRepository: Repository<MultiSignRow>;
-  private txRepository: Repository<MultiSignTx>;
+  private inputRepository: Repository<MultiSigInput>;
+  private rowRepository: Repository<MultiSigRow>;
+  private txRepository: Repository<MultiSigTx>;
   private hintRepository: Repository<MultiSigHint>;
   private dataSource: DataSource;
 
   private static instance: MultiStoreDbAction;
 
   constructor(dataSource: DataSource) {
-    this.inputRepository = dataSource.getRepository(MultiSignInput);
-    this.rowRepository = dataSource.getRepository(MultiSignRow);
-    this.txRepository = dataSource.getRepository(MultiSignTx);
+    this.inputRepository = dataSource.getRepository(MultiSigInput);
+    this.rowRepository = dataSource.getRepository(MultiSigRow);
+    this.txRepository = dataSource.getRepository(MultiSigTx);
     this.hintRepository = dataSource.getRepository(MultiSigHint);
     this.dataSource = dataSource;
   }
@@ -984,13 +982,13 @@ class MultiStoreDbAction {
       await queryRunner.startTransaction();
       try {
         await queryRunner.manager
-          .getRepository(MultiSignInput)
+          .getRepository(MultiSigInput)
           .createQueryBuilder()
           .delete()
           .where({ tx: row })
           .execute();
         await queryRunner.manager
-          .getRepository(MultiSignTx)
+          .getRepository(MultiSigTx)
           .createQueryBuilder()
           .delete()
           .where({ tx: row })
@@ -1002,7 +1000,7 @@ class MultiStoreDbAction {
           .where({ tx: row })
           .execute();
         await queryRunner.manager
-          .getRepository(MultiSignRow)
+          .getRepository(MultiSigRow)
           .createQueryBuilder()
           .delete()
           .where({ id: row.id })
@@ -1024,7 +1022,7 @@ class MultiStoreDbAction {
    *
    * @param walletId - The ID of the wallet that owns the transaction
    * @param txId - The transaction ID (Ergo transaction ID as a string)
-   * @returns The created or updated MultiSignRow entity
+   * @returns The created or updated MultiSigRow entity
    */
   public insertMultiSigRow = async (walletId: number, txId: string) => {
     const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
@@ -1057,12 +1055,12 @@ class MultiStoreDbAction {
    * exceeds the maximum chunk size. Any existing transaction of the same type for the
    * same row is deleted before inserting the new one.
    *
-   * @param row - The MultiSignRow entity to associate the transaction with
+   * @param row - The MultiSigRow entity to associate the transaction with
    * @param txBytes - The transaction bytes as a base64 encoded string
    * @param txType - The type of transaction (Reduced or Partial)
    */
   public insertMultiSigTx = async (
-    row: MultiSignRow,
+    row: MultiSigRow,
     txBytes: string,
     txType: MultiSigTxType,
   ) => {
@@ -1089,11 +1087,11 @@ class MultiStoreDbAction {
    * Each input box is stored as a serialized string (typically base64 encoded).
    * Any existing inputs for the same row are deleted before inserting the new ones.
    *
-   * @param row - The MultiSignRow entity to associate the inputs with
+   * @param row - The MultiSigRow entity to associate the inputs with
    * @param inputs - Array of serialized input boxes as strings
    */
   public insertMultiSigInputs = async (
-    row: MultiSignRow,
+    row: MultiSigRow,
     inputs: Array<string>,
   ) => {
     await this.inputRepository
@@ -1132,7 +1130,7 @@ class MultiStoreDbAction {
    * @param secrets - 2D array of secrets corresponding to the hints
    */
   public insertMultiSigHints = async (
-    row: MultiSignRow,
+    row: MultiSigRow,
     hints: Array<Array<string>>,
     secrets: Array<Array<string>>,
   ) => {
@@ -1156,19 +1154,19 @@ class MultiStoreDbAction {
               secrets.length > inputIndex && secrets[inputIndex].length > index
                 ? secrets[inputIndex][index]
                 : '';
-            // Extract commitment (first 32 bytes)
-            const commitBytes = decoded.slice(0, 32);
+            // Extract commitment (first 33 bytes)
+            const commitBytes = decoded.subarray(0, 33);
             const commit = Buffer.from(commitBytes).toString('base64');
 
             // Extract proof (next 56 bytes)
             const proofBytes =
-              decoded.length === 32
+              decoded.length === 33
                 ? Buffer.from('', 'hex')
-                : decoded.slice(32, 88);
+                : decoded.subarray(33, 89);
             const proof = Buffer.from(proofBytes).toString('base64');
 
             // Extract type (last byte)
-            const typeValue = decoded.length < 88 ? 0 : decoded[88];
+            const typeValue = decoded.length < 89 ? 0 : decoded[89];
             const type =
               typeValue === 0
                 ? MultiSigHintType.Real
@@ -1179,8 +1177,8 @@ class MultiStoreDbAction {
               type: type,
               commit: commit,
               proof: proof,
-              index: index,
-              inputIndex: inputIndex,
+              idx: index,
+              inpIdx: inputIndex,
               secret: secret,
             });
           } catch (error) {
@@ -1213,7 +1211,7 @@ class MultiStoreDbAction {
    * @returns An object containing 2D arrays of hints and secrets
    */
   public getHints = async (
-    row: MultiSignRow,
+    row: MultiSigRow,
     inputCount: number,
     signerCount: number,
   ) => {
@@ -1221,8 +1219,8 @@ class MultiStoreDbAction {
       .createQueryBuilder()
       .select()
       .where({ tx: row })
-      .orderBy('inputIndex', 'ASC')
-      .addOrderBy('index', 'ASC')
+      .orderBy('inpIdx', 'ASC')
+      .addOrderBy('idx', 'ASC')
       .getMany();
 
     // Initialize 2D arrays
@@ -1236,7 +1234,7 @@ class MultiStoreDbAction {
 
     // Fill arrays with data
     for (const hint of hints) {
-      if (hint.inputIndex < inputCount && hint.index < signerCount) {
+      if (hint.inpIdx < inputCount && hint.idx < signerCount) {
         // Get the commitment and proof
         const commit = hint.commit;
         const proof = hint.proof || '';
@@ -1255,15 +1253,14 @@ class MultiStoreDbAction {
             proofBytes,
             typeByte,
           ]);
-          hintArray[hint.inputIndex][hint.index] =
-            combinedBuffer.toString('base64');
+          hintArray[hint.inpIdx][hint.idx] = combinedBuffer.toString('base64');
         } catch (error) {
           console.error('Error combining hint data:', error);
-          hintArray[hint.inputIndex][hint.index] = commit; // Fallback to just the commitment
+          hintArray[hint.inpIdx][hint.idx] = commit; // Fallback to just the commitment
         }
 
         // Store the secret
-        secrets[hint.inputIndex][hint.index] = hint.secret || '';
+        secrets[hint.inpIdx][hint.idx] = hint.secret || '';
       }
     }
 
@@ -1288,7 +1285,7 @@ class MultiStoreDbAction {
     return query.getMany();
   };
 
-  public getTx = async (row: MultiSignRow, txType: MultiSigTxType) => {
+  public getTx = async (row: MultiSigRow, txType: MultiSigTxType) => {
     const elements = await this.txRepository
       .createQueryBuilder()
       .select()
@@ -1298,7 +1295,7 @@ class MultiStoreDbAction {
     return sortedElements.map((item) => item.bytes).join('');
   };
 
-  public getInputs = async (row: MultiSignRow) => {
+  public getInputs = async (row: MultiSigRow) => {
     const elements = await this.inputRepository
       .createQueryBuilder()
       .select()
