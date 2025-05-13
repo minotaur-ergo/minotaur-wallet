@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from './useSignerWallet';
-import { AddressActionRow, MyAction } from '@/types/multi-sig';
+import { AddressActionRow, MyAction } from '@/types/multi-sig-old';
 
 const useMyAction = (
   committed: Array<AddressActionRow>,

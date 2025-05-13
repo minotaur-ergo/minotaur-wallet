@@ -2,7 +2,7 @@ import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { addressesToPk, arrayToProposition } from './signing';
 import getChain from '@/utils/networks';
-import { MultiSigDataRow, MultiSigShareData } from '@/types/multi-sig';
+import { MultiSigDataRow, MultiSigShareData } from '@/types/multi-sig-old';
 import { deserialize } from '../box';
 import {
   fetchMultiSigRows,

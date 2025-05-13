@@ -10,7 +10,7 @@ import TxSignValues from '../send/sign-tx/TxSignValues';
 import { Box, Typography } from '@mui/material';
 import AddressActionList from './components/AddressActionList';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigStateEnum } from '@/types/multi-sig';
+import { MultiSigStateEnum } from '@/types/multi-sig-old';
 import PasswordField from '@/components/password-field/PasswordField';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';

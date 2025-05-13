@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { AddressActionRow, MultiSigAddressHolder } from '@/types/multi-sig';
+import { AddressActionRow, MultiSigAddressHolder } from '@/types/multi-sig-old';
 
 const useSignedAddresses = (
   addresses: Array<MultiSigAddressHolder>,

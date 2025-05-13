@@ -13,7 +13,7 @@ import {
   MultiSigAddressHolder,
   MultiSigData,
   TransactionHintBagType,
-} from '@/types/multi-sig';
+} from '@/types/multi-sig-old';
 import { getTxBoxes } from '../tx';
 import { decrypt } from '@/utils/enc';
 import getChain from '@/utils/networks';

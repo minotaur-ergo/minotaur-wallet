@@ -3,7 +3,7 @@ import { getTxBoxes } from '../../action/tx';
 import { MultiSigContext } from '../../components/sign/context/MultiSigContext';
 import { TxDataContext } from '../../components/sign/context/TxDataContext';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { AddressActionRow, MultiSigAddressHolder } from '@/types/multi-sig';
+import { AddressActionRow, MultiSigAddressHolder } from '@/types/multi-sig-old';
 
 const useCommittedAddress = (
   addresses: Array<MultiSigAddressHolder>,

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import ListController from '@/components/list-controller/ListController';
-import { MultiSigBriefRow, MultiSigShareData } from '@/types/multi-sig';
+import { MultiSigBriefRow, MultiSigShareData } from '@/types/multi-sig-old';
 import AppFrame from '@/layouts/AppFrame';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { GlobalStateType } from '@/store';

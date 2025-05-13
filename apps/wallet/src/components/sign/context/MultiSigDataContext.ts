@@ -1,5 +1,8 @@
 import { createContext } from 'react';
-import { MultiSigDataContextType, MultiSigStateEnum } from '@/types/multi-sig';
+import {
+  MultiSigDataContextType,
+  MultiSigStateEnum,
+} from '@/types/multi-sig-old';
 
 const MultiSigDataContext = createContext<MultiSigDataContextType>({
   addresses: [],

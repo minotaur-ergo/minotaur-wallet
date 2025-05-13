@@ -1,7 +1,7 @@
 import { CircleOutlined, TaskAltOutlined } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import DisplayId from '@/components/display-id/DisplayId';
-import { AddressActionRow } from '@/types/multi-sig';
+import { AddressActionRow } from '@/types/multi-sig-old';
 import { useContext } from 'react';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 

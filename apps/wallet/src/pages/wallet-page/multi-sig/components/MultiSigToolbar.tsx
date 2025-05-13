@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import { validatePassword } from '@/action/wallet';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
+import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig-old';
 import { commit, sign } from '@/action/multi-sig/signing';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';

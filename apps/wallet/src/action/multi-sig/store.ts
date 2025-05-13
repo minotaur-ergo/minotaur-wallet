@@ -1,6 +1,6 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 import { MultiSigTxType } from '@/db/entities/multi-sig/MultiSigTx';
-import { MultiSigBriefRow, MultiSigDataRow } from '@/types/multi-sig';
+import { MultiSigBriefRow, MultiSigDataRow } from '@/types/multi-sig-old';
 import store from '@/store';
 import { setMultiSigLoadedTime } from '@/store/reducer/config';
 import { StateWallet } from '@/store/reducer/wallet';

@@ -8,7 +8,7 @@ import { StateWallet } from '@/store/reducer/wallet';
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '../../../types/multi-sig';
+import { MultiSigData } from '../../../types/multi-sig-old';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;
