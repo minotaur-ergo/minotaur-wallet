@@ -1,5 +1,5 @@
 import * as wasm from 'ergo-lib-wasm-browser';
-import { MultiSigTxType } from '@/db/entities/multi-sig/MultiSignTx';
+import { MultiSigTxType } from '@/db/entities/multi-sig/MultiSigTx';
 import { MultiSigBriefRow, MultiSigDataRow } from '@/types/multi-sig';
 import store from '@/store';
 import { setMultiSigLoadedTime } from '@/store/reducer/config';
@@ -61,7 +61,6 @@ const fetchMultiSigRows = async (
       inputs.length,
       signerCount,
     );
-    const signed = await MultiStoreDbAction.getInstance().getSigners(row);
     res.push({
       rowId: row.id,
       requiredSign: wallet.requiredSign,
@@ -75,8 +74,8 @@ const fetchMultiSigRows = async (
         : undefined,
       dataBoxes: [],
       boxes: inputs.map((item) => deserialize(item)),
-      simulated: signed.simulated,
-      signed: signed.signed,
+      simulated: [],
+      signed: [],
       commitments: commitments.commitments,
       secrets: commitments.secrets,
     });
@@ -142,6 +141,7 @@ const updateMultiSigRow = async (
   updateTime: number,
   partial?: wasm.Transaction,
 ) => {
+  console.log(signed, simulated);
   const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
   if (row) {
     await MultiStoreDbAction.getInstance().insertMultiSigCommitments(
@@ -156,11 +156,6 @@ const updateMultiSigRow = async (
         MultiSigTxType.Partial,
       );
     }
-    await MultiStoreDbAction.getInstance().insertMultiSigSigner(
-      row,
-      signed,
-      simulated,
-    );
     store.dispatch(setMultiSigLoadedTime(updateTime));
   }
 };

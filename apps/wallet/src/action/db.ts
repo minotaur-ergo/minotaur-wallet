@@ -1,3 +1,5 @@
+import MultiSigHint from '@/db/entities/multi-sig/MultiSigHint';
+import MultiSigRow from '@/db/entities/multi-sig/MultiSigRow';
 import Pin from '@/db/entities/Pin';
 import { DataSource, Like, Repository } from 'typeorm';
 import Address from '../db/entities/Address';
@@ -7,15 +9,11 @@ import AddressValueInfo, {
 import Asset from '@/db/entities/Asset';
 import Box from '@/db/entities/Box';
 import Config, { ConfigType } from '@/db/entities/Config';
-import MultiCommitment from '@/db/entities/multi-sig/MultiCommitment';
-import MultiSigner, {
-  MultiSigSignerType,
-} from '@/db/entities/multi-sig/MultiSigner';
-import MultiSignInput from '@/db/entities/multi-sig/MultiSignInput';
-import MultiSignRow from '@/db/entities/multi-sig/MultiSignRow';
+import MultiSignInput from '@/db/entities/multi-sig/MultiSigInput';
+import MultiSignRow from '@/db/entities/multi-sig/MultiSigRow';
 import MultiSignTx, {
   MultiSigTxType,
-} from '@/db/entities/multi-sig/MultiSignTx';
+} from '@/db/entities/multi-sig/MultiSigTx';
 import MultiSigKey from '@/db/entities/MultiSigKey';
 import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet, { WalletType } from '@/db/entities/Wallet';
@@ -520,7 +518,9 @@ class BoxDbAction {
       .andWhere('spend_tx_id IS NOT NULL')
       .distinct()
       .getQuery();
-    let query = `SELECT distinct txId, height FROM (${createTxs} UNION ${spendTxs}) ORDER BY height DESC`;
+    let query = `SELECT distinct txId, height
+                 FROM (${createTxs} UNION ${spendTxs})
+                 ORDER BY height DESC`;
     if (limit !== undefined) {
       query += ` LIMIT ${limit}`;
     }
@@ -552,7 +552,9 @@ class BoxDbAction {
       .andWhere('spend_tx_id <> NULL')
       .distinct()
       .getQuery();
-    const query = `SELECT distinct txId, height FROM (${createTxs} UNION ${spendTxs}) ORDER BY height DESC`;
+    const query = `SELECT distinct txId, height
+                   FROM (${createTxs} UNION ${spendTxs})
+                   ORDER BY height DESC`;
     return this.repository.query(query);
   };
 
@@ -950,9 +952,8 @@ class SavedAddressDbAction {
 }
 
 class MultiStoreDbAction {
-  private commitmentRepository: Repository<MultiCommitment>;
-  private signerRepository: Repository<MultiSigner>;
   private inputRepository: Repository<MultiSignInput>;
+  private hintRepository: Repository<MultiSigHint>;
   private rowRepository: Repository<MultiSignRow>;
   private txRepository: Repository<MultiSignTx>;
   private dataSource: DataSource;
@@ -960,9 +961,8 @@ class MultiStoreDbAction {
   private static instance: MultiStoreDbAction;
 
   constructor(dataSource: DataSource) {
-    this.commitmentRepository = dataSource.getRepository(MultiCommitment);
-    this.signerRepository = dataSource.getRepository(MultiSigner);
     this.inputRepository = dataSource.getRepository(MultiSignInput);
+    this.hintRepository = dataSource.getRepository(MultiSigHint);
     this.rowRepository = dataSource.getRepository(MultiSignRow);
     this.txRepository = dataSource.getRepository(MultiSignTx);
     this.dataSource = dataSource;
@@ -983,8 +983,8 @@ class MultiStoreDbAction {
     const row = await this.getRowById(rowId);
     if (row) {
       const queryRunner = this.dataSource.createQueryRunner();
-      queryRunner.connect();
-      queryRunner.startTransaction();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       try {
         await queryRunner.manager
           .getRepository(MultiSignInput)
@@ -999,13 +999,7 @@ class MultiStoreDbAction {
           .where({ tx: row })
           .execute();
         await queryRunner.manager
-          .getRepository(MultiCommitment)
-          .createQueryBuilder()
-          .delete()
-          .where({ tx: row })
-          .execute();
-        await queryRunner.manager
-          .getRepository(MultiSigner)
+          .getRepository(MultiSigHint)
           .createQueryBuilder()
           .delete()
           .where({ tx: row })
@@ -1018,7 +1012,7 @@ class MultiStoreDbAction {
           .execute();
         await queryRunner.commitTransaction();
       } catch (e) {
-        queryRunner.rollbackTransaction();
+        await queryRunner.rollbackTransaction();
         throw e;
       }
     }
@@ -1090,55 +1084,30 @@ class MultiStoreDbAction {
     commitments: Array<Array<string>>,
     secrets: Array<Array<string>>,
   ) => {
-    await this.commitmentRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const [inputIndex, inputCommitment] of commitments.entries()) {
-      for (const [index, commitment] of inputCommitment.entries()) {
-        if (commitment) {
-          await this.commitmentRepository.insert({
-            tx: row,
-            bytes: commitment,
-            index: index,
-            inputIndex: inputIndex,
-            secret:
-              secrets.length > inputIndex &&
-              secrets[inputIndex].length > index &&
-              secrets[inputIndex][index].length > 0
-                ? secrets[inputIndex][index]
-                : '',
-          });
-        }
-      }
-    }
-  };
-
-  public insertMultiSigSigner = async (
-    row: MultiSignRow,
-    signers: Array<string>,
-    simulated: Array<string>,
-  ) => {
-    await this.signerRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const signer of signers) {
-      await this.signerRepository.insert({
-        tx: row,
-        signer: signer,
-        type: MultiSigSignerType.Signed,
-      });
-    }
-    for (const single of simulated) {
-      await this.signerRepository.insert({
-        tx: row,
-        signer: single,
-        type: MultiSigSignerType.Simulated,
-      });
-    }
+    console.log(row, commitments, secrets);
+    // await this.commitmentRepository
+    //   .createQueryBuilder()
+    //   .delete()
+    //   .where({ tx: row })
+    //   .execute();
+    // for (const [inputIndex, inputCommitment] of commitments.entries()) {
+    //   for (const [index, commitment] of inputCommitment.entries()) {
+    //     if (commitment) {
+    //       await this.commitmentRepository.insert({
+    //         tx: row,
+    //         bytes: commitment,
+    //         index: index,
+    //         inputIndex: inputIndex,
+    //         secret:
+    //           secrets.length > inputIndex &&
+    //           secrets[inputIndex].length > index &&
+    //           secrets[inputIndex][index].length > 0
+    //             ? secrets[inputIndex][index]
+    //             : '',
+    //       });
+    //     }
+    //   }
+    // }
   };
 
   public getRowById = async (id: number) => {
@@ -1180,43 +1149,32 @@ class MultiStoreDbAction {
     inputCount: number,
     signerCount: number,
   ) => {
-    const elements = await this.commitmentRepository
-      .createQueryBuilder()
-      .select()
-      .where({ tx: row })
-      .getMany();
+    console.log(row);
     const commitments = Array(inputCount)
       .fill('')
       .map(() => Array(signerCount).fill(''));
     const secrets = Array(inputCount)
       .fill('')
       .map(() => Array(signerCount).fill(''));
-    elements.forEach((dbElement) => {
-      commitments[dbElement.inputIndex][dbElement.index] = dbElement.bytes;
-      secrets[dbElement.inputIndex][dbElement.index] = dbElement.secret;
-    });
     return {
       commitments,
       secrets,
     };
   };
 
-  public getSigners = async (row: MultiSignRow) => {
-    const signed: Array<string> = [];
-    const simulated: Array<string> = [];
-    const elements = await this.signerRepository
-      .createQueryBuilder()
-      .select()
-      .where({ tx: row })
-      .getMany();
-    elements.forEach((element) => {
-      if (element.type === MultiSigSignerType.Signed) {
-        signed.push(element.signer);
-      } else {
-        simulated.push(element.signer);
-      }
+  public getHints = async (
+    row: MultiSigRow,
+    inputCount: number,
+    signerCount: number,
+  ) => {
+    console.log(inputCount, signerCount);
+    return this.hintRepository.find({
+      where: {
+        tx: {
+          id: row.id,
+        },
+      },
     });
-    return { signed, simulated };
   };
 }
 

@@ -1,18 +1,18 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import MultiSignRow from './MultiSignRow';
+import MultiSigRow from './MultiSigRow';
 
 enum MultiSigTxType {
   Reduced = 'REDUCED',
   Partial = 'PARTIAL',
 }
 
-@Entity({ name: 'multi-sign-tx' })
-class MultiSigSignTx {
+@Entity({ name: 'multi-sig-tx' })
+class MultiSigTx {
   @PrimaryGeneratedColumn()
   id = 0;
 
-  @ManyToOne(() => MultiSignRow, { onDelete: 'CASCADE' })
-  tx: MultiSignRow | null = null;
+  @ManyToOne(() => MultiSigRow, { onDelete: 'CASCADE' })
+  tx: MultiSigRow | null = null;
 
   @Column('text')
   bytes = '';
@@ -24,5 +24,5 @@ class MultiSigSignTx {
   type: MultiSigTxType = MultiSigTxType.Reduced;
 }
 
-export default MultiSigSignTx;
+export default MultiSigTx;
 export { MultiSigTxType };
