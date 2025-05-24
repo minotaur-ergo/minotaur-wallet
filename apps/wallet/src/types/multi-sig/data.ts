@@ -1,9 +1,5 @@
 import * as wasm from 'ergo-lib-wasm-browser';
-
-export enum MultiSigDataHintType {
-  SIMULATED = 'simulated',
-  REAL = 'real',
-}
+import { MultiSigDataHint } from './hint';
 
 export interface MultiSigDataShare {
   tx: string;
@@ -11,15 +7,26 @@ export interface MultiSigDataShare {
   hints: Array<Array<string>>;
 }
 
-export interface MultiSigDataHint {
-  commit: string;
-  proof: string;
-  type: MultiSigDataHintType;
+export type MultiSigData = Array<Array<MultiSigDataHint>>;
+
+export interface MultiSigDataRow {
+  rowId: number;
+  requiredSign: number;
+  tx: wasm.ReducedTransaction;
+  dataBoxes: Array<wasm.ErgoBox>;
+  boxes: Array<wasm.ErgoBox>;
+  hints: Array<Array<MultiSigDataHint>>;
 }
 
-export interface MultiSigData {
-  hints: Array<Array<MultiSigDataHint>>;
-  secrets: Array<Array<string>>;
+export interface MultiSigBriefRow {
+  rowId: number;
+  txId: string;
+  committed: number;
+  signed: number;
+  ergIn: bigint;
+  ergOut: bigint;
+  tokensIn: number;
+  tokensOut: number;
 }
 
 export interface DetachedCommitments {

@@ -5,12 +5,11 @@ import React, { useContext } from 'react';
 import { validatePassword } from '@/action/wallet';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig-old';
-import { commit, sign } from '@/action/multi-sig/signing';
+import { MultiSigDataShare, MultiSigStateEnum } from '@/types/multi-sig';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { readClipBoard } from '@/utils/clipboard';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
-import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
+// import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { QrCodeTypeEnum } from '@/types/qrcode';
 import { verifyAndSaveData } from '@/action/multi-sig/verify';
 import MessageContext from '@/components/app/messageContext';
@@ -21,7 +20,7 @@ const MultiSigToolbar = () => {
   const data = useContext(TxDataContext);
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
-  const submitContext = useContext(TxSubmitContext);
+  // const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
   const getLabel = () => {
@@ -39,69 +38,69 @@ const MultiSigToolbar = () => {
     if (
       data.reduced &&
       multiSigData.related &&
-      multiSigData.myAction.committed === false
+      !multiSigData.myAction.committed
     ) {
-      return commit(
-        data.reduced,
-        data.wallet,
-        multiSigData.related,
-        context.password,
-        data.boxes,
-        context.data,
-      ).then((res) => {
-        if (res.changed) {
-          context.setData(
-            {
-              commitments: res.commitments,
-              secrets: res.secrets,
-              signed: context.data.signed,
-              simulated: context.data.simulated,
-              partial: context.data.partial,
-            },
-            res.updateTime,
-          );
-          multiSigData.setNeedPassword(false);
-        }
-        return null;
-      });
+      //   return commit(
+      //     data.reduced,
+      //     data.wallet,
+      //     multiSigData.related,
+      //     context.password,
+      //     data.boxes,
+      //     context.data,
+      //   ).then((res) => {
+      //     if (res.changed) {
+      //       context.setData(
+      //         {
+      //           commitments: res.commitments,
+      //           secrets: res.secrets,
+      //           signed: context.data.signed,
+      //           simulated: context.data.simulated,
+      //           partial: context.data.partial,
+      //         },
+      //         res.updateTime,
+      //       );
+      //       multiSigData.setNeedPassword(false);
+      //     }
+      //     return null;
+      //   });
     }
   };
 
   const signAction = () => {
     if (multiSigData.related && data.reduced) {
-      sign(
-        data.wallet,
-        multiSigData.related,
-        context.data.simulated,
-        context.data.commitments,
-        context.data.secrets,
-        multiSigData.committed,
-        multiSigData.signed,
-        multiSigData.addresses,
-        data.reduced,
-        data.boxes,
-        context.password,
-        context.data.partial,
-      ).then((res) => {
-        context.setData(
-          {
-            commitments: context.data.commitments,
-            secrets: context.data.secrets,
-            signed: res.signed,
-            simulated: res.simulated,
-            partial: res.partial,
-          },
-          res.currentTime,
-        );
-      });
+      //   sign(
+      //     data.wallet,
+      //     multiSigData.related,
+      //     context.data.simulated,
+      //     context.data.commitments,
+      //     context.data.secrets,
+      //     multiSigData.committed,
+      //     multiSigData.signed,
+      //     multiSigData.addresses,
+      //     data.reduced,
+      //     data.boxes,
+      //     context.password,
+      //     context.data.partial,
+      //   ).then((res) => {
+      //     context.setData(
+      //       {
+      //         commitments: context.data.commitments,
+      //         secrets: context.data.secrets,
+      //         signed: res.signed,
+      //         simulated: res.simulated,
+      //         partial: res.partial,
+      //       },
+      //       res.currentTime,
+      //     );
+      //   });
     }
   };
 
   const processNewData = async (newContent: string) => {
     if (signer) {
-      const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
+      const clipBoardData = JSON.parse(newContent) as MultiSigDataShare;
       const verification = await verifyAndSaveData(
-        clipBoardData,
+        clipBoardData as MultiSigDataShare,
         data.wallet,
         signer,
         data.tx?.id().to_str(),
@@ -114,11 +113,11 @@ const MultiSigToolbar = () => {
   };
 
   const publishAction = async () => {
-    if (context.data.partial) {
-      submitContext.submit(context.data.partial);
-    } else {
-      console.error('Unknown error occurred');
-    }
+    // if (context.data.partial) {
+    //   submitContext.submit(context.data.partial);
+    // } else {
+    //   console.error('Unknown error occurred');
+    // }
   };
 
   const pasteAction = async () => {

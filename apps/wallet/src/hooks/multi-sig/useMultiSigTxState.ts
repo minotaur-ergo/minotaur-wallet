@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { AddressActionRow, MultiSigStateEnum } from '@/types/multi-sig-old';
+import { AddressActionRow, MultiSigStateEnum } from '@/types/multi-sig';
 
 const useMultiSigTxState = (
   committed: Array<AddressActionRow>,

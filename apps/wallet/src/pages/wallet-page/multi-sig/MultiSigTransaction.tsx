@@ -10,13 +10,12 @@ import TxSignValues from '../send/sign-tx/TxSignValues';
 import { Box, Typography } from '@mui/material';
 import AddressActionList from './components/AddressActionList';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigStateEnum } from '@/types/multi-sig-old';
+import { MultiSigStateEnum } from '@/types/multi-sig';
 import PasswordField from '@/components/password-field/PasswordField';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
-import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;
@@ -29,10 +28,10 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   const needMyCommitment =
     multiDataContext.state === MultiSigStateEnum.COMMITMENT &&
-    multiDataContext.myAction.committed === false;
+    !multiDataContext.myAction.committed;
   const needMySign =
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
-    multiDataContext.myAction.signed === false;
+    !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
   if (txDataContext.tx) {
     return (
@@ -72,9 +71,9 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
               helperText="Please enter your mnemonics passphrase to send transaction."
             />
           ) : null
-        ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
-          <DisplaySignedTx tx={txContext.data.partial} />
         ) : (
+          // ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
+          //   <DisplaySignedTx tx={txContext.data.partial} />
           <ShareTransaction />
         )}
         <TransactionBoxes

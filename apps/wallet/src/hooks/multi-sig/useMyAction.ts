@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from './useSignerWallet';
-import { AddressActionRow, MyAction } from '@/types/multi-sig-old';
+import { AddressActionRow, MultiSigMyAction } from '@/types/multi-sig';
 
 const useMyAction = (
   committed: Array<AddressActionRow>,
@@ -9,7 +9,7 @@ const useMyAction = (
 ) => {
   const context = useContext(TxDataContext);
   const signer = useSignerWallet(context.wallet);
-  const [result, setResult] = useState<MyAction>({
+  const [result, setResult] = useState<MultiSigMyAction>({
     committed: false,
     signed: false,
   });

@@ -1,11 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import MultiSigRow from './MultiSigRow';
 
-enum MultiSigTxType {
-  Reduced = 'REDUCED',
-  Partial = 'PARTIAL',
-}
-
 @Entity({ name: 'multi-sig-tx' })
 class MultiSigTx {
   @PrimaryGeneratedColumn()
@@ -19,10 +14,6 @@ class MultiSigTx {
 
   @Column('int')
   idx = 0;
-
-  @Column('text')
-  type: MultiSigTxType = MultiSigTxType.Reduced;
 }
 
 export default MultiSigTx;
-export { MultiSigTxType };

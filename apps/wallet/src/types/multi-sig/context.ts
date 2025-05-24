@@ -1,10 +1,14 @@
 import { StateWallet } from '@/store/reducer/wallet';
-import { MultiSigMyAction } from '@/types/multi-sig-old';
 import {
   AddressActionRow,
   MultiSigAddressHolder,
 } from '@/types/multi-sig/address';
 import { MultiSigData } from '@/types/multi-sig/data';
+
+export interface MultiSigMyAction {
+  committed: boolean;
+  signed: boolean;
+}
 
 export enum MultiSigStateEnum {
   COMMITMENT = 'commitment',
@@ -13,12 +17,12 @@ export enum MultiSigStateEnum {
 }
 
 export interface MultiSigContextType {
-  data: MultiSigData;
+  hints: MultiSigData;
   rowId: number;
   requiredSign: number;
   password: string;
   setPassword: (password: string) => unknown;
-  setData: (data: MultiSigData, updateTime: number) => unknown;
+  setHints: (hints: MultiSigData, updateTime: number) => unknown;
 }
 
 export interface MultiSigDataContextType {

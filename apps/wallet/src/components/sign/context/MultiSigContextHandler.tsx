@@ -8,7 +8,7 @@ import { StateWallet } from '@/store/reducer/wallet';
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '../../../types/multi-sig-old';
+import { MultiSigData } from '@/types/multi-sig';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;
@@ -17,12 +17,7 @@ interface MultiSigContextHandlerPropsType {
 
 const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   const [tx, setTx] = useState<wasm.ReducedTransaction>();
-  const [data, setData] = useState<MultiSigData>({
-    commitments: [[]],
-    secrets: [[]],
-    signed: [],
-    simulated: [],
-  });
+  const [hints, setHints] = useState<MultiSigData>([[]]);
   const [rowId, setRowId] = useState(-1);
   const [boxes, setBoxes] = useState<Array<wasm.ErgoBox>>([]);
   const [dataBoxes, setDataBoxes] = useState<Array<wasm.ErgoBox>>([]);
@@ -36,7 +31,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   );
 
   const storeData = (data: MultiSigData, update: number) => {
-    setData(data);
+    setHints(data);
     setUpdateTime(update);
   };
 
@@ -55,13 +50,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
             setDataBoxes(row.dataBoxes);
             setRowId(row.rowId);
             setUpdateTime(Date.now());
-            setData({
-              commitments: row.commitments,
-              secrets: row.secrets,
-              signed: row.signed,
-              simulated: row.simulated,
-              partial: row.partial,
-            });
+            setHints(row.hints);
           }
           setLoading(false);
         });
@@ -72,11 +61,11 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
     return (
       <MultiSigContext.Provider
         value={{
-          data: data,
+          hints,
           password,
           requiredSign: props.wallet.requiredSign,
           rowId,
-          setData: storeData,
+          setHints: storeData,
           setPassword,
         }}
       >
