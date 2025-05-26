@@ -10,7 +10,7 @@ export class NewMultiSig1746719636595 implements MigrationInterface {
       'DROP TABLE "multi-signer"',
       'DROP TABLE "multi-sign-row"',
       'CREATE TABLE "multi-sig-row" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "txId" text NOT NULL, "walletId" integer, CONSTRAINT "UQ_d10abb7fa2138c33ec626b68a1d" UNIQUE ("txId"), CONSTRAINT "FK_0b3815e8b45296a4d886efac84d" FOREIGN KEY ("walletId") REFERENCES "wallet" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)',
-      'CREATE TABLE "multi-sig-tx" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bytes" text NOT NULL, "idx" integer NOT NULL, "type" text NOT NULL, "txId" integer, CONSTRAINT "FK_86f5f5e7efbc0783144e8810a53" FOREIGN KEY ("txId") REFERENCES "multi-sig-row" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)',
+      'CREATE TABLE "multi-sig-tx" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bytes" text NOT NULL, "idx" integer NOT NULL, "txId" integer, CONSTRAINT "FK_86f5f5e7efbc0783144e8810a53" FOREIGN KEY ("txId") REFERENCES "multi-sig-row" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)',
       'CREATE TABLE "multi-sig-input" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "bytes" text NOT NULL, "txId" integer, CONSTRAINT "FK_221e70b5e378dff19fff0aaf566" FOREIGN KEY ("txId") REFERENCES "multi-sig-row" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)',
       'CREATE TABLE "multi-sig-hint" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "type" text NOT NULL, "commit" text NOT NULL, "proof" text, "idx" integer NOT NULL, "inpIdx" integer NOT NULL, "secret" text, "txId" integer, CONSTRAINT "FK_01741904ebec30e536c79a55225" FOREIGN KEY ("txId") REFERENCES "multi-sig-row" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)',
       'ALTER TABLE "multi_sig_key" RENAME TO "multi-sig-key"',

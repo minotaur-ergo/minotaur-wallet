@@ -113,47 +113,33 @@ const fetchMultiSigBriefRow = async (
 };
 
 /**
- * Updates an existing multi-signature transaction with new hint data.
- *
- * This function updates the hint and secret data associated with a multi-signature
- * transaction identified by its row ID. After saving the data to the database,
- * it also updates the last loaded time in the application state to trigger UI updates.
+ * Updates an existing multi-signature transaction row with new hint data.
  *
  * @param rowId - The ID of the multi-signature row to update
  * @param hints - 2D array of hint data organized by [inputIndex][signerIndex]
- * @param secrets - 2D array of secret strings organized by [inputIndex][signerIndex]
- * @param updateTime - Timestamp to set as the last update time
+ * @param updateTime - Timestamp to set as the update time
  */
 const updateMultiSigRow = async (
   rowId: number,
   hints: Array<Array<MultiSigDataHint>>,
-  secrets: Array<Array<string>>,
   updateTime: number,
 ) => {
   const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
   if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigHints(
-      row,
-      hints,
-      secrets,
-    );
+    await MultiStoreDbAction.getInstance().insertMultiSigHints(row, hints);
     store.dispatch(setMultiSigLoadedTime(updateTime));
   }
 };
 
 /**
- * Creates and stores a new multi-signature transaction with associated data.
- *
- * This function creates a new multi-signature transaction row in the database and
- * stores all related data including the transaction bytes, input boxes, hints,
- * and secrets. It performs a complete setup for a new multi-signature transaction
+ * Creates and stores a new multi-signature transaction with associated data
+ * and hints. It performs a complete setup for a new multi-signature transaction
  * by coordinating several database operations.
  *
  * @param wallet - The wallet associated with this multi-signature transaction
  * @param tx - The reduced transaction to store
  * @param boxes - Array of input boxes used in the transaction
  * @param hints - 2D array of hint data organized by [inputIndex][signerIndex]
- * @param secrets - 2D array of secret strings organized by [inputIndex][signerIndex]
  * @param updateTime - Timestamp to set as the creation time
  * @returns The newly created multi-signature row, or undefined if creation failed
  */
@@ -162,7 +148,6 @@ const storeMultiSigRow = async (
   tx: wasm.ReducedTransaction,
   boxes: Array<wasm.ErgoBox>,
   hints: Array<Array<MultiSigDataHint>>,
-  secrets: Array<Array<string>>,
   updateTime: number,
 ) => {
   const row = await MultiStoreDbAction.getInstance().insertMultiSigRow(
@@ -178,7 +163,7 @@ const storeMultiSigRow = async (
       row,
       Buffer.from(tx.sigma_serialize_bytes()).toString(encoding),
     );
-    await updateMultiSigRow(row.id, hints, secrets, updateTime);
+    await updateMultiSigRow(row.id, hints, updateTime);
   }
   return row;
 };

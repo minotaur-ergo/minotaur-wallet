@@ -82,7 +82,7 @@ const verifyMyCommitments = (
       return (
         row.filter((item, itemIndex) => {
           if (
-            !MultiSigDataHint.deserialize(item).equals(
+            !MultiSigDataHint.deserialize(item, rowIndex, itemIndex).equals(
               oldCommitments[rowIndex][itemIndex],
             ) &&
             filteredMyPks[rowIndex][itemIndex] !== ''
@@ -171,12 +171,18 @@ const verifyTxInputs = (
 const verifyNotSigningNewTx = (
   hints: Array<Array<string>>,
 ): VerificationResponse => {
-  for (const hint of hints) {
-    for (const element of hint) {
+  for (const [inputIndex, hintRow] of hints.entries()) {
+    for (const [signerIndex, element] of hintRow.entries()) {
       // Check if the element is either empty or does not contain a proof
       if (element !== '') {
         try {
-          if (MultiSigDataHint.deserialize(element).hasProof()) {
+          if (
+            MultiSigDataHint.deserialize(
+              element,
+              inputIndex,
+              signerIndex,
+            ).hasProof()
+          ) {
             return {
               valid: false,
               message: 'Transaction already signing without your commitment',
@@ -377,7 +383,11 @@ const verifyHintsProof = (
       .filter((hint, index) => {
         if (!hint) return false;
         try {
-          const hintObject = MultiSigDataHint.deserialize(hint);
+          const hintObject = MultiSigDataHint.deserialize(
+            hint,
+            inputIndex,
+            index,
+          );
 
           // If there's no proof or it's simulated, we don't need to verify it
           if (

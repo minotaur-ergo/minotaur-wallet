@@ -1,66 +1,7 @@
 import { MultiSigDataHint } from '@/types/multi-sig/hint';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { StateWallet } from '@/store/reducer/wallet';
-import { MultiSigAddressHolder, MultiSigData } from '@/types/multi-sig';
-
-export const commit = async (
-  tx: wasm.ReducedTransaction,
-  wallet: StateWallet,
-  signer: StateWallet,
-  password: string,
-  boxes: Array<wasm.ErgoBox>,
-  data: MultiSigData,
-) => {
-  console.log(tx, wallet, signer, password, boxes, data);
-  // const prover = await getProver(signer, password, wallet.addresses);
-  // const myCommitments = await generateCommitments(prover, tx);
-  // const unsigned = tx.unsigned_tx();
-  // const known = await hintBagToArray(
-  //   wallet,
-  //   signer,
-  //   unsigned,
-  //   boxes,
-  //   myCommitments.public,
-  // );
-  // const own = await hintBagToArray(
-  //   wallet,
-  //   signer,
-  //   unsigned,
-  //   boxes,
-  //   myCommitments.private,
-  //   password,
-  // );
-  // const newCommitments = overridePublicCommitments(data.commitments, known);
-  // const newPrivateCommitments = overridePublicCommitments(data.secrets, own);
-  // if (newCommitments.changed || newPrivateCommitments.changed) {
-  //   const currentTime = Date.now();
-  //   const row = await storeMultiSigRow(
-  //     wallet,
-  //     tx,
-  //     boxes,
-  //     newCommitments.commitments,
-  //     newPrivateCommitments.commitments,
-  //     data.signed,
-  //     data.simulated,
-  //     currentTime,
-  //     data.partial,
-  //   );
-  //   return {
-  //     commitments: newCommitments.commitments,
-  //     secrets: newPrivateCommitments.commitments,
-  //     updateTime: currentTime,
-  //     rowId: row?.id,
-  //     changed: true,
-  //   };
-  // }
-  // return {
-  //   commitments: data.commitments,
-  //   secrets: data.secrets,
-  //   updateTime: -1,
-  //   rowId: -1,
-  //   changed: false,
-  // };
-};
+import { MultiSigAddressHolder } from '@/types/multi-sig';
 
 // const getInputPKs = (
 //   wallet: StateWallet,

@@ -1127,14 +1127,11 @@ class MultiStoreDbAction {
    *
    * @param row - The multi-signature transaction row to associate hints with
    * @param commitments - 2D array of hint data organized by [inputIndex][signerIndex]
-   * @param secrets - 2D array of secret strings organized by [inputIndex][signerIndex]
    */
   public insertMultiSigHints = async (
     row: MultiSignRow,
     commitments: Array<Array<MultiSigDataHint>>,
-    secrets: Array<Array<string>>,
   ) => {
-    console.log(row, commitments, secrets);
     await this.hintRepository
       .createQueryBuilder()
       .delete()
@@ -1153,12 +1150,7 @@ class MultiStoreDbAction {
             commit: hint.commit,
             proof: hint.proof,
             tx: row,
-            secret:
-              secrets.length > inputIndex &&
-              secrets[inputIndex].length > index &&
-              secrets[inputIndex][index].length > 0
-                ? secrets[inputIndex][index]
-                : '',
+            secret: hint.secret,
           });
         }
       }
@@ -1275,6 +1267,8 @@ class MultiStoreDbAction {
         );
         if (filtered) {
           return new MultiSigDataHint(
+            inputIndex,
+            signerIndex,
             filtered.commit,
             filtered.proof,
             filtered.secret || '',
@@ -1283,7 +1277,14 @@ class MultiStoreDbAction {
               : MultiSigDataHintType.SIMULATED,
           );
         } else {
-          return new MultiSigDataHint('', '', '', MultiSigDataHintType.REAL);
+          return new MultiSigDataHint(
+            inputIndex,
+            signerIndex,
+            '',
+            '',
+            '',
+            MultiSigDataHintType.REAL,
+          );
         }
       });
     });

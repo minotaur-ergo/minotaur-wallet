@@ -29,14 +29,8 @@ export interface MultiSigBriefRow {
   tokensOut: number;
 }
 
-export interface DetachedCommitments {
-  own: wasm.TransactionHintsBag;
-  known: wasm.TransactionHintsBag;
-}
-
 export interface CommitResult {
   hints: Array<Array<MultiSigDataHint>>;
-  secrets: Array<Array<string>>;
   updateTime: number;
   rowId?: number;
   changed: boolean;
