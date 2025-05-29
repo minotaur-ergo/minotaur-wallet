@@ -1139,18 +1139,18 @@ class MultiStoreDbAction {
       .execute();
     for (const [inputIndex, inputHint] of commitments.entries()) {
       for (const [index, hint] of inputHint.entries()) {
-        if (hint.commit) {
+        if (hint.Commit) {
           await this.hintRepository.insert({
             type:
-              hint.type === MultiSigDataHintType.REAL
+              hint.Type === MultiSigDataHintType.REAL
                 ? MultiSigHintType.Real
                 : MultiSigHintType.Simulated,
             idx: index,
             inpIdx: inputIndex,
-            commit: hint.commit,
-            proof: hint.proof,
+            commit: hint.Commit,
+            proof: hint.Proof,
             tx: row,
-            secret: hint.secret,
+            secret: hint.Secret,
           });
         }
       }
@@ -1269,9 +1269,9 @@ class MultiStoreDbAction {
           return new MultiSigDataHint(
             inputIndex,
             signerIndex,
-            filtered.commit,
-            filtered.proof,
-            filtered.secret || '',
+            Buffer.from(filtered.commit, 'hex'),
+            Buffer.from(filtered.proof || '', 'hex'),
+            Buffer.from(filtered.secret || '', 'hex'),
             filtered.type === MultiSigHintType.Real
               ? MultiSigDataHintType.REAL
               : MultiSigDataHintType.SIMULATED,
@@ -1280,9 +1280,9 @@ class MultiStoreDbAction {
           return new MultiSigDataHint(
             inputIndex,
             signerIndex,
-            '',
-            '',
-            '',
+            undefined,
+            undefined,
+            undefined,
             MultiSigDataHintType.REAL,
           );
         }

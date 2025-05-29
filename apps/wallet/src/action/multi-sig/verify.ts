@@ -8,7 +8,11 @@ import getChain from '@/utils/networks';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { Buffer } from 'buffer';
 import { deserialize } from '../box';
-import { fetchMultiSigRows } from './store';
+import {
+  fetchMultiSigRows,
+  storeMultiSigRow,
+  updateMultiSigRow,
+} from './store';
 import { StateWallet } from '@/store/reducer/wallet';
 
 interface VerificationResponse {
@@ -337,24 +341,40 @@ const verifyAndSaveData = async (
     (item) =>
       item.tx.unsigned_tx().id().to_str() == tx.unsigned_tx().id().to_str(),
   );
-  console.log(signer, txId, filteredRow);
-  // const verification = await (txId === undefined && filteredRow.length === 0
-  //   ? verifyNewTx(data, wallet, signer)
-  //   : verifyExistingTx(data, wallet, signer, filteredRow[0].hints, txId));
-  // if (!verification.valid) return verification;
-  // if (filteredRow.length > 0) {
-  //   const row = filteredRow[0];
-  //   await updateMultiSigRowNew(row.rowId, data.hints, row.secrets, Date.now());
-  // } else {
-  //   await storeMultiSigRowNew(
-  //     wallet,
-  //     tx,
-  //     data.boxes.map(deserialize),
-  //     data.hints,
-  //     [[]],
-  //     Date.now(),
-  //   );
-  // }
+  const verification = await (txId === undefined && filteredRow.length === 0
+    ? verifyNewTx(data, wallet, signer)
+    : verifyExistingTx(data, wallet, signer, filteredRow[0].hints, txId));
+  if (!verification.valid) return verification;
+  if (filteredRow.length > 0) {
+    const row = filteredRow[0];
+    const newHints = filteredRow[0].hints.map((row) =>
+      row.map((item) => item.clone()),
+    );
+    newHints.forEach((row, inputIndex) =>
+      row.forEach((item, signerIndex) =>
+        item.override(
+          MultiSigDataHint.deserialize(
+            data.hints[inputIndex][signerIndex],
+            inputIndex,
+            signerIndex,
+          ),
+        ),
+      ),
+    );
+    await updateMultiSigRow(row.rowId, newHints, Date.now());
+  } else {
+    await storeMultiSigRow(
+      wallet,
+      tx,
+      data.boxes.map(deserialize),
+      data.hints.map((row, inputIndex) =>
+        row.map((item, signerIndex) =>
+          MultiSigDataHint.deserialize(item, inputIndex, signerIndex),
+        ),
+      ),
+      Date.now(),
+    );
+  }
   return {
     valid: true,
     message: 'Updated Successfully',
@@ -392,7 +412,7 @@ const verifyHintsProof = (
           // If there's no proof or it's simulated, we don't need to verify it
           if (
             !hintObject.hasProof() ||
-            hintObject.type === MultiSigDataHintType.SIMULATED
+            hintObject.Type === MultiSigDataHintType.SIMULATED
           ) {
             return false;
           }

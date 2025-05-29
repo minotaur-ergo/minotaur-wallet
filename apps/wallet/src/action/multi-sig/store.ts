@@ -86,17 +86,17 @@ const fetchMultiSigBriefRow = async (
       );
       return {
         rowId: row.rowId,
-        signed: Math.min(
+        committed: Math.min(
           ...row.hints.map(
-            (hintRow) => hintRow.filter((hint) => hint.commit !== '').length,
+            (hintRow) => hintRow.filter((hint) => hint.Commit !== '').length,
           ),
         ),
-        committed: Math.min(
+        signed: Math.min(
           ...row.hints.map(
             (hintRow) =>
               hintRow.filter(
                 (hint) =>
-                  hint.proof !== '' && hint.type === MultiSigDataHintType.REAL,
+                  hint.Proof !== '' && hint.Type === MultiSigDataHintType.REAL,
               ).length,
           ),
         ),
