@@ -17,6 +17,26 @@ const arrayToProposition = (input: Array<string>): wasm.Propositions => {
   return output;
 };
 
+const generateHints = (
+  hints: Array<Array<MultiSigDataHint>>,
+  inputPks: Array<Array<string>>,
+  password?: string,
+) => {
+  const hintJson: TxHintBag = { secretHints: {}, publicHints: {} };
+  hints.forEach((hintRow, inputIndex) => {
+    hintJson.secretHints[`${inputIndex}`] = hintRow
+      .map((hint) => {
+        return hint.generateSecretHint(inputPks);
+      })
+      .flat();
+    hintJson.publicHints[`${inputIndex}`] = hintRow
+      .map((hint) => {
+        return hint.generatePublicHint(inputPks, password);
+      })
+      .flat();
+  });
+  return wasm.TransactionHintsBag.from_json(JSON.stringify(hintJson));
+};
 export const sign = async (
   wallet: StateWallet,
   signer: StateWallet,
@@ -29,31 +49,16 @@ export const sign = async (
   currentTime: number;
 }> => {
   const unsigned = tx.unsigned_tx();
-  const inputPKs = await getInputPks(wallet, signer, unsigned, boxes);
-  const hintJson: TxHintBag = { secretHints: {}, publicHints: {} };
-  hints.forEach((hintRow, inputIndex) => {
-    hintJson.secretHints[`${inputIndex}`] = hintRow
-      .map((hint) => {
-        return hint.generateSecretHint(inputPKs);
-      })
-      .flat();
-    hintJson.publicHints[`${inputIndex}`] = hintRow
-      .map((hint) => {
-        return hint.generatePublicHint(inputPKs);
-      })
-      .flat();
-  });
-  const txHintbag = wasm.TransactionHintsBag.from_json(
-    JSON.stringify(hintJson),
-  );
+  const inputPks = await getInputPks(wallet, signer, unsigned, boxes);
+  const txHintBag = generateHints(hints, inputPks, password);
   const prover = await getProver(signer, password);
-  const partialSigned = prover.sign_reduced_transaction_multi(tx, txHintbag);
+  const partialSigned = prover.sign_reduced_transaction_multi(tx, txHintBag);
   const signedPks = await getMyInputPks(wallet, signer, unsigned, boxes);
   const simulatedPks: Array<string> = hints
     .map((hintRow, inputIndex) => {
       return hintRow.map((hint, signerIndex) => {
         if (hint.Commit === '' || hint.Type === MultiSigDataHintType.SIMULATED)
-          return inputPKs[inputIndex][signerIndex];
+          return inputPks[inputIndex][signerIndex];
         return '';
       });
     })
@@ -83,4 +88,20 @@ export const sign = async (
     hints: updatedHints,
     currentTime,
   };
+};
+
+export const signCompleted = async (
+  wallet: StateWallet,
+  signer: StateWallet,
+  hints: Array<Array<MultiSigDataHint>>,
+  tx: wasm.ReducedTransaction,
+  boxes: Array<wasm.ErgoBox>,
+) => {
+  const unsigned = tx.unsigned_tx();
+  const inputPks = await getInputPks(wallet, signer, unsigned, boxes);
+  const txHintBag = generateHints(hints, inputPks);
+  const prover = wasm.Wallet.from_secrets(new wasm.SecretKeys());
+  const signed = prover.sign_reduced_transaction_multi(tx, txHintBag);
+  console.log(signed.to_json());
+  return signed;
 };

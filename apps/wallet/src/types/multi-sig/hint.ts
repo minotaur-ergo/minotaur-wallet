@@ -333,6 +333,7 @@ export class MultiSigDataHint {
 
   generatePublicHint = (
     inputPublicKeys: Array<Array<string>>,
+    password?: string,
   ): Array<TxSinglePublicHint> => {
     if (this.commit.length === 0) return [];
     const pkJson = {
@@ -349,7 +350,7 @@ export class MultiSigDataHint {
         position: `0-${this.publicKeyIndex}`,
       },
     ];
-    if (this.secret.length > 0) {
+    if (this.secret.length > 0 && password) {
       res.push({
         hint: 'cmtWithSecret',
         pubkey: { ...pkJson },

@@ -1,5 +1,6 @@
 import { commit } from '@/action/multi-sig/commit';
-import { sign } from '@/action/multi-sig/sign';
+import { sign, signCompleted } from '@/action/multi-sig/sign';
+import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { Button, Grid } from '@mui/material';
@@ -21,7 +22,7 @@ const MultiSigToolbar = () => {
   const data = useContext(TxDataContext);
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
-  // const submitContext = useContext(TxSubmitContext);
+  const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
   const getLabel = () => {
@@ -90,11 +91,18 @@ const MultiSigToolbar = () => {
   };
 
   const publishAction = async () => {
-    // if (context.data.partial) {
-    //   submitContext.submit(context.data.partial);
-    // } else {
-    //   console.error('Unknown error occurred');
-    // }
+    if (multiSigData.related && data.reduced) {
+      const tx = await signCompleted(
+        data.wallet,
+        multiSigData.related,
+        context.hints,
+        data.reduced,
+        data.boxes,
+      );
+      await submitContext.submit(tx);
+    } else {
+      console.error('Unknown error occurred');
+    }
   };
 
   const pasteAction = async () => {

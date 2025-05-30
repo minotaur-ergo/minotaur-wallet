@@ -291,10 +291,6 @@ const verifyExistingTx = async (
   const verifyAddress = verifyTxAddresses(tx, sharedData.hints, boxes, wallet);
   if (!verifyAddress.valid) return verifyAddress;
 
-  // Verify hints are not already being signed
-  const notSigning = verifyNotSigningNewTx(sharedData.hints);
-  if (!notSigning.valid) return notSigning;
-
   // Get public keys for inputs
   const unsigned = tx.unsigned_tx();
   const pks = await getInputPks(wallet, signer, unsigned, boxes);
