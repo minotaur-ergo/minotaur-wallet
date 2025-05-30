@@ -52,14 +52,24 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
           <Typography variant="body2" color="textSecondary" gutterBottom>
             Transaction Committed by
           </Typography>
-          <AddressActionList addresses={multiDataContext.committed} />
+          <AddressActionList
+            addresses={multiDataContext.actions.map((item) => ({
+              address: item.address,
+              completed: item.committed,
+            }))}
+          />
         </Box>
         {multiDataContext.state !== MultiSigStateEnum.COMMITMENT ? (
           <Box my={2}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Transaction Signed by
             </Typography>
-            <AddressActionList addresses={multiDataContext.signed} />
+            <AddressActionList
+              addresses={multiDataContext.actions.map((item) => ({
+                address: item.address,
+                completed: item.signed,
+              }))}
+            />
           </Box>
         ) : null}
         {needAction ? (

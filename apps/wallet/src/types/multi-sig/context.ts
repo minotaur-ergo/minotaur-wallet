@@ -1,6 +1,6 @@
 import { StateWallet } from '@/store/reducer/wallet';
 import {
-  AddressActionRow,
+  AddressCompletionState,
   MultiSigAddressHolder,
 } from '@/types/multi-sig/address';
 import { MultiSigData } from '@/types/multi-sig/data';
@@ -27,8 +27,7 @@ export interface MultiSigContextType {
 
 export interface MultiSigDataContextType {
   addresses: Array<MultiSigAddressHolder>;
-  committed: Array<AddressActionRow>;
-  signed: Array<AddressActionRow>;
+  actions: Array<AddressCompletionState>;
   state: MultiSigStateEnum;
   lastInState: boolean;
   myAction: MultiSigMyAction;

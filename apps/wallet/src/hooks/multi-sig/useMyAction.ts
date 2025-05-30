@@ -1,12 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from './useSignerWallet';
-import { AddressActionRow, MultiSigMyAction } from '@/types/multi-sig';
+import { AddressCompletionState, MultiSigMyAction } from '@/types/multi-sig';
 
-const useMyAction = (
-  committed: Array<AddressActionRow>,
-  signed: Array<AddressActionRow>,
-) => {
+const useMyAction = (actions: Array<AddressCompletionState>) => {
   const context = useContext(TxDataContext);
   const signer = useSignerWallet(context.wallet);
   const [result, setResult] = useState<MultiSigMyAction>({
@@ -15,19 +12,18 @@ const useMyAction = (
   });
   useEffect(() => {
     const isCommitted =
-      committed.filter(
+      actions.filter(
         (item) =>
-          item.address === signer?.addresses[0].address && item.completed,
+          item.address === signer?.addresses[0].address && item.committed,
       ).length > 0;
     const isSigned =
-      signed.filter(
-        (item) =>
-          item.address === signer?.addresses[0].address && item.completed,
+      actions.filter(
+        (item) => item.address === signer?.addresses[0].address && item.signed,
       ).length > 0;
     if (isCommitted !== result.committed || isSigned !== result.signed) {
       setResult({ committed: isCommitted, signed: isSigned });
     }
-  }, [committed, signed, result, signer]);
+  }, [actions, result, signer]);
   return result;
 };
 
