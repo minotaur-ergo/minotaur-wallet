@@ -379,8 +379,8 @@ export class MultiSigDataHint {
             : 'proofSimulated',
         pubkey: { ...pkJson },
         challenge: this.getChallenge().toString('hex'),
-        position: `0-${this.publicKeyIndex}`,
         proof: this.proof.toString('hex'),
+        position: `0-${this.publicKeyIndex}`,
       },
     ];
   };
