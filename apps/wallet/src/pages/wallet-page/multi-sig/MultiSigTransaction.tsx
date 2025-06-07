@@ -1,4 +1,6 @@
+import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
 import AppFrame from '@/layouts/AppFrame';
 import { StateWallet } from '@/store/reducer/wallet';
 import { useContext, useState } from 'react';
@@ -33,6 +35,7 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
     !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
+  useCompletedTx();
   if (txDataContext.tx) {
     return (
       <AppFrame
@@ -81,9 +84,9 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
               helperText="Please enter your mnemonics passphrase to send transaction."
             />
           ) : null
+        ) : txContext.signed ? (
+          <DisplaySignedTx tx={txContext.signed} />
         ) : (
-          // ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
-          //   <DisplaySignedTx tx={txContext.data.partial} />
           <ShareTransaction />
         )}
         <TransactionBoxes

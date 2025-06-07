@@ -24,11 +24,21 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   const [updateTime, setUpdateTime] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
+  const [signed, setSigned] = useState<wasm.Transaction>();
   const { txId } = useParams();
 
   const lastUpdateTime = useSelector(
     (config: GlobalStateType) => config.config.multiSigLoadedTime,
   );
+
+  const setSignedChanged = (newSigned: wasm.Transaction) => {
+    if (
+      signed === undefined ||
+      signed.id().to_str() !== newSigned.id().to_str()
+    ) {
+      setSigned(newSigned);
+    }
+  };
 
   const storeData = (data: MultiSigData, update: number) => {
     setHints(data);
@@ -57,6 +67,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
       }
     }
   }, [loading, tx, txId, props.wallet, updateTime, lastUpdateTime]);
+
   if (tx) {
     return (
       <MultiSigContext.Provider
@@ -67,6 +78,8 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
           rowId,
           setHints: storeData,
           setPassword,
+          signed,
+          setSigned: setSignedChanged,
         }}
       >
         <TxDataContext.Provider

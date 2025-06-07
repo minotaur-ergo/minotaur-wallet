@@ -17,7 +17,6 @@ const useActionAddresses = (
   const [result, setResult] = useState<Array<AddressCompletionState>>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    // console.log('useActionAddresses hook called');
     if (!loading && data.tx) {
       const newResult: Array<AddressCompletionState> = addresses.map(
         (item) => ({

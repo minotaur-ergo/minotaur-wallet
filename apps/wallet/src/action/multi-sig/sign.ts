@@ -115,11 +115,17 @@ export const sign = async (
       return res;
     });
   });
-  const currentTime = Date.now();
-  await storeMultiSigRow(wallet, tx, boxes, updatedHints, currentTime);
+  if (changed) {
+    const currentTime = Date.now();
+    await storeMultiSigRow(wallet, tx, boxes, updatedHints, currentTime);
+    return {
+      hints: updatedHints,
+      currentTime,
+    };
+  }
   return {
     hints: updatedHints,
-    currentTime,
+    currentTime: -1,
   };
 };
 

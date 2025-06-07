@@ -1,5 +1,5 @@
 import { commit } from '@/action/multi-sig/commit';
-import { sign, signCompleted } from '@/action/multi-sig/sign';
+import { sign } from '@/action/multi-sig/sign';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -91,15 +91,8 @@ const MultiSigToolbar = () => {
   };
 
   const publishAction = async () => {
-    if (multiSigData.related && data.reduced) {
-      const tx = await signCompleted(
-        data.wallet,
-        multiSigData.related,
-        context.hints,
-        data.reduced,
-        data.boxes,
-      );
-      await submitContext.submit(tx);
+    if (context.signed) {
+      await submitContext.submit(context.signed);
     } else {
       console.error('Unknown error occurred');
     }

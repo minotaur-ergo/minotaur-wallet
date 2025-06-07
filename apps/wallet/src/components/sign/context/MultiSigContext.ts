@@ -8,6 +8,7 @@ const MultiSigContext = createContext<MultiSigContextType>({
   password: '',
   setPassword: () => null,
   setHints: () => null,
+  setSigned: () => null,
 });
 
 export { MultiSigContext };

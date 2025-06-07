@@ -4,6 +4,7 @@ import {
   MultiSigAddressHolder,
 } from '@/types/multi-sig/address';
 import { MultiSigData } from '@/types/multi-sig/data';
+import { Transaction } from 'ergo-lib-wasm-browser';
 
 export interface MultiSigMyAction {
   committed: boolean;
@@ -23,6 +24,8 @@ export interface MultiSigContextType {
   password: string;
   setPassword: (password: string) => unknown;
   setHints: (hints: MultiSigData, updateTime: number) => unknown;
+  signed?: Transaction;
+  setSigned: (signed: Transaction) => unknown;
 }
 
 export interface MultiSigDataContextType {
