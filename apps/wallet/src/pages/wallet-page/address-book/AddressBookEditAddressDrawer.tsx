@@ -61,14 +61,14 @@ const AddressBookEditAddressDrawer = (
         <TextField
           label="Name"
           variant="standard"
-          value={props.name}
+          value={values.name}
           onChange={handleChangeValue('name')}
           inputProps={{ autoFocus: true }}
         />
         <TextField
           label="Address"
           variant="standard"
-          value={props.address}
+          value={values.address}
           onChange={handleChangeValue('address')}
           InputProps={{
             endAdornment: (
