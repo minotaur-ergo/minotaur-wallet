@@ -34,7 +34,6 @@ const AddressBookEditAddressDrawer = (
 
   const handleChangeValue =
     (fieldName: string) => (event: ChangeEvent<HTMLInputElement>) => {
-      console.log(fieldName, event.target.value, values);
       setValues((prevState) => ({
         ...prevState,
         [fieldName]: event.target.value,
