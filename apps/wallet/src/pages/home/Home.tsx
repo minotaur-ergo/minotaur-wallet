@@ -26,6 +26,8 @@ const Home = () => {
           navigate(getRoute(RouteMap.WalletHome, { id: activeWallet }), {
             replace: true,
           });
+        } else {
+          navigate(RouteMap.Wallets, { replace: true });
         }
       } else {
         WalletDbAction.getInstance()

@@ -44,6 +44,7 @@
     "@minotaur-ergo/icons": "^1.1.0",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.14",
+    "@noble/curves": "^1.9.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@rosen-clients/ergo-explorer": "^1.1.1",
     "@zxing/browser": "^0.1.5",

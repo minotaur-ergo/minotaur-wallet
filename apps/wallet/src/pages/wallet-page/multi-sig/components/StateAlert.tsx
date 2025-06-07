@@ -7,10 +7,9 @@ import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataConte
 const StateAlert = () => {
   const context = useContext(MultiSigContext);
   const dataContext = useContext(MultiSigDataContext);
-  const committed = dataContext.committed;
-  const signed = dataContext.signed;
-  const committedCount = committed.filter((item) => item.completed).length;
-  const signedCount = signed.filter((item) => item.completed).length;
+  const actions = dataContext.actions;
+  const committedCount = actions.filter((item) => item.committed).length;
+  const signedCount = actions.filter((item) => item.signed).length;
   const step: number =
     dataContext.state === MultiSigStateEnum.COMMITMENT
       ? committedCount

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import ListController from '@/components/list-controller/ListController';
-import { MultiSigBriefRow, MultiSigShareData } from '@/types/multi-sig';
+import { MultiSigBriefRow, MultiSigDataShare } from '@/types/multi-sig';
 import AppFrame from '@/layouts/AppFrame';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { GlobalStateType } from '@/store';
@@ -50,7 +50,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
 
   const processNewData = async (content: string) => {
     if (signer) {
-      const data = JSON.parse(content) as MultiSigShareData;
+      const data = JSON.parse(content) as MultiSigDataShare;
       const response = await verifyAndSaveData(data, props.wallet, signer);
       if (!response.valid) {
         message.insert(response.message, 'error');

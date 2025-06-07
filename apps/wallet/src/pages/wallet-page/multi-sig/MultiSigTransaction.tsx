@@ -1,4 +1,6 @@
+import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
 import AppFrame from '@/layouts/AppFrame';
 import { StateWallet } from '@/store/reducer/wallet';
 import { useContext, useState } from 'react';
@@ -16,7 +18,6 @@ import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
-import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;
@@ -29,11 +30,12 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   const needMyCommitment =
     multiDataContext.state === MultiSigStateEnum.COMMITMENT &&
-    multiDataContext.myAction.committed === false;
+    !multiDataContext.myAction.committed;
   const needMySign =
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
-    multiDataContext.myAction.signed === false;
+    !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
+  useCompletedTx();
   if (txDataContext.tx) {
     return (
       <AppFrame
@@ -53,14 +55,24 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
           <Typography variant="body2" color="textSecondary" gutterBottom>
             Transaction Committed by
           </Typography>
-          <AddressActionList addresses={multiDataContext.committed} />
+          <AddressActionList
+            addresses={multiDataContext.actions.map((item) => ({
+              address: item.address,
+              completed: item.committed,
+            }))}
+          />
         </Box>
         {multiDataContext.state !== MultiSigStateEnum.COMMITMENT ? (
           <Box my={2}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Transaction Signed by
             </Typography>
-            <AddressActionList addresses={multiDataContext.signed} />
+            <AddressActionList
+              addresses={multiDataContext.actions.map((item) => ({
+                address: item.address,
+                completed: item.signed,
+              }))}
+            />
           </Box>
         ) : null}
         {needAction ? (
@@ -72,8 +84,8 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
               helperText="Please enter your mnemonics passphrase to send transaction."
             />
           ) : null
-        ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
-          <DisplaySignedTx tx={txContext.data.partial} />
+        ) : txContext.signed ? (
+          <DisplaySignedTx tx={txContext.signed} />
         ) : (
           <ShareTransaction />
         )}

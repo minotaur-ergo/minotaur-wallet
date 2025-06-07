@@ -53,9 +53,11 @@ const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
           <Typography sx={{ flexGrow: 1, color: rowState.color }}>
             {rowState.title}
           </Typography>
-          <Typography>
-            {rowState.step} <small>/ {requiredSign}</small>
-          </Typography>
+          {rowState.step >= 0 ? (
+            <Typography>
+              {rowState.step} <small>/ {requiredSign}</small>
+            </Typography>
+          ) : undefined}
         </Box>
         {props.tokensIn > 0 || props.ergIn > 0n ? (
           <Typography variant="body2" color="textSecondary">

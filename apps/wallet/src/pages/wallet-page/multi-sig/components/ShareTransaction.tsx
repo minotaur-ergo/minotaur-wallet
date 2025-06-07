@@ -1,3 +1,4 @@
+import { MultiSigDataShare } from '@/types/multi-sig';
 import { Box, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
@@ -10,23 +11,13 @@ const ShareTransaction = () => {
   const context = useContext(MultiSigContext);
   const txData = useContext(TxDataContext);
   useEffect(() => {
-    const res = {
+    const res: MultiSigDataShare = {
       tx: txData.reduced
         ? Buffer.from(txData.reduced.sigma_serialize_bytes()).toString('base64')
         : '',
       boxes: txData.boxes.map(serialize),
-      commitments: context.data.commitments,
-      simulated: [] as Array<string>,
-      signed: [] as Array<string>,
-      partial: '',
+      hints: context.hints.map((row) => row.map((hint) => hint.serialize())),
     };
-    if (context.data.partial) {
-      res.partial = Buffer.from(
-        context.data.partial.sigma_serialize_bytes(),
-      ).toString('base64');
-      res.simulated = context.data.simulated;
-      res.signed = context.data.signed;
-    }
     const newData = JSON.stringify(res);
     if (data !== newData) {
       setData(newData);

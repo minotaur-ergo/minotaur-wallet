@@ -3,8 +3,7 @@ import { MultiSigDataContextType, MultiSigStateEnum } from '@/types/multi-sig';
 
 const MultiSigDataContext = createContext<MultiSigDataContextType>({
   addresses: [],
-  committed: [],
-  signed: [],
+  actions: [],
   state: MultiSigStateEnum.COMMITMENT,
   lastInState: false,
   myAction: { committed: false, signed: false },
