@@ -48,6 +48,15 @@ interface DAppPropsType {
   showNotification: (message: string, type: VariantType) => unknown;
 }
 
+interface TokenAmount {
+  [tokenId: string]: {
+    amount: bigint;
+    total: bigint;
+  };
+}
+
 export type { DAppPropsType };
 
 export type { DAppType };
+
+export type { TokenAmount };

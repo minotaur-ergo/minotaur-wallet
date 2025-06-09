@@ -1,3 +1,4 @@
+import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
 import { DAppType } from '@/types/dapps';
 import SigmaUsdReadMe from './sigma-usd/SigmaUsdReadMe';
 import * as wasm from 'ergo-lib-wasm-browser';
@@ -8,7 +9,7 @@ import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
 import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
 import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
 import BoxConsolidation from './box-consolidation/BoxConsolidation';
-import { BuildCircleTwoTone } from '@mui/icons-material';
+import { BuildCircleTwoTone, CardGiftcardTwoTone } from '@mui/icons-material';
 
 export const apps: Array<DAppType> = [
   {
@@ -47,5 +48,14 @@ export const apps: Array<DAppType> = [
     component: BoxConsolidation,
     color: 'success.main',
     icon: <BuildCircleTwoTone fontSize="large" />,
+  },
+  {
+    name: 'Air Drop',
+    description: 'AirDrop Erg or tokens to list of addresses',
+    id: 'airdrop',
+    networks: [wasm.NetworkPrefix.Mainnet, wasm.NetworkPrefix.Testnet],
+    component: AirDrop,
+    color: 'secondary.dark',
+    icon: <CardGiftcardTwoTone fontSize="large" />,
   },
 ];

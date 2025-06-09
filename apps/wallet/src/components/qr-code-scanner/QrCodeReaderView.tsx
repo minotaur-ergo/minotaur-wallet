@@ -24,7 +24,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     console.log('fail to scan qrcode');
   }, []);
 
-  const senDataToCallbacks = (data: string) => {
+  const sendDataToCallbacks = (data: string) => {
     callbacks.forEach((item) => item.resolve(data));
     setCallbacks([]);
     setOpen(false);
@@ -67,7 +67,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
           open={open}
           scanning={scanning}
           close={close}
-          callback={senDataToCallbacks}
+          callback={sendDataToCallbacks}
         />
       </div>
 

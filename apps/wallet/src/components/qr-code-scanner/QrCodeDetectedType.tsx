@@ -43,7 +43,10 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
           ? (selectedTypes[0].detect(props.scanned) ?? '')
           : '',
       );
-      if (selectedTypes.length == 0 && props.callback) {
+      if (
+        (selectedTypes.length == 0 || selectedTypes[0].render === undefined) &&
+        props.callback
+      ) {
         props.callback(props.scanned);
       }
       setChecked(props.scanned);

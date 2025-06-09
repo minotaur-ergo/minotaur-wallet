@@ -72,9 +72,17 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
             })
             .filter((item) => item.amount !== 0n);
         });
-      return [];
     },
-    getTokenAmount: async () => 0n,
+    getTokenAmount: async (tokenId: string = 'erg') => {
+      if (tokenId === 'erg') {
+        return BigInt(wallet.balance);
+      } else {
+        return BigInt(
+          wallet.tokens.find((item) => item.tokenId === tokenId)?.balance ??
+            '0',
+        );
+      }
+    },
     signAndSendTx: async (tx: UnsignedGeneratedTx) => {
       if (tx.tx instanceof wasm.ReducedTransaction) {
         txSign.setReducedTx(tx.tx);
