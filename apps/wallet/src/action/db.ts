@@ -801,14 +801,7 @@ class ConfigDbAction {
         pinType: Like(pinType),
       },
     });
-    return await this.repository
-      .createQueryBuilder()
-      .delete()
-      .where(
-        'id IN (:...ids)',
-        configs.map((item) => item.id),
-      )
-      .execute();
+    return this.repository.delete(configs.map((item) => item.id));
   };
 }
 
