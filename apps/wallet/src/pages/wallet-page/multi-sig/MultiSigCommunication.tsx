@@ -48,9 +48,8 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
     }
   }, [loading, loadedTime, lastChanged, props.wallet]);
 
-  const processNewData = async (content: string) => {
+  const processDataJson = async (data: MultiSigDataShare) => {
     if (signer) {
-      const data = JSON.parse(content) as MultiSigDataShare;
       const response = await verifyAndSaveData(data, props.wallet, signer);
       if (!response.valid) {
         message.insert(response.message, 'error');
@@ -74,16 +73,24 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
       .catch((reason: string) => console.log('scanning failed ', reason));
   };
 
+  const processNewData = async (content: string) => {
+    const contentJson = JSON.parse(content);
+    if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
+      await processDataJson(
+        JSON.parse(
+          contentJson[QrCodeTypeEnum.MultiSigRequest],
+        ) as MultiSigDataShare,
+      );
+    } else {
+      await processDataJson(contentJson as MultiSigDataShare);
+    }
+  };
+
   const handlePasteNewTransaction = async () => {
     setReading(true);
     try {
       const clipBoardContent = await readClipBoard();
-      const contentJson = JSON.parse(clipBoardContent);
-      if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
-        await processNewData(contentJson[QrCodeTypeEnum.MultiSigRequest]);
-      } else {
-        await processNewData(clipBoardContent);
-      }
+      await processNewData(clipBoardContent);
     } catch (e: unknown) {
       message.insert(`${(e as { message: unknown }).message}`, 'error');
     }

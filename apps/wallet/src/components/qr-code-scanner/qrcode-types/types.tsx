@@ -29,11 +29,6 @@ const QrCodeTypes: Array<QrCodeType> = [
     ),
     type: QrCodeTypeEnum.ColdSignTransaction,
   },
-  {
-    detect: (scanned: string) =>
-      detectPageFromJson(scanned, QrCodeTypeEnum.MultiSigRequest),
-    type: QrCodeTypeEnum.MultiSigRequest,
-  },
 ];
 
 export default QrCodeTypes;
