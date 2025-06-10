@@ -11,6 +11,7 @@ interface ErgAmountPropsType {
   setAmount: (newAmount: bigint) => unknown;
   total: bigint;
   tokenId: 'erg' | string;
+  setHasError?: (isValid: boolean) => void;
 }
 
 const TokenAmountInput = (props: ErgAmountPropsType) => {
@@ -23,12 +24,16 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
     bigInt: 0n,
     decimal: 0,
   });
+
   const [decimal, setDecimal] = useState({
     amount: 0,
     token: '',
     name: '',
   });
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!loading && props.tokenId !== decimal.token) {
       if (props.tokenId === 'erg') {
@@ -53,6 +58,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
       }
     }
   }, [loading, props.tokenId, props.network_type, decimal.token]);
+
   useEffect(() => {
     if (props.amount !== amount.bigInt || decimal.amount !== amount.decimal) {
       const usedDecimal = decimal.amount;
@@ -67,6 +73,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
       });
     }
   }, [props.amount, amount.bigInt, amount.decimal, decimal.amount]);
+
   const editAmount = (amount: string) => {
     try {
       const amountBigInt = numberWithDecimalToBigInt(amount, decimal.amount);
@@ -76,15 +83,26 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         decimal: decimal.amount,
       });
       props.setAmount(amountBigInt);
+
+      if (amountBigInt > props.total) {
+        setError('Amount exceeds available balance');
+        props.setHasError?.(false);
+      } else {
+        setError(null);
+        props.setHasError?.(true);
+      }
     } catch (e) {
       console.log(e);
+      props.setHasError?.(false);
     }
   };
+
   return (
     <TextField
       label="Amount"
       value={amount.value}
       onChange={(event) => editAmount(event.target.value)}
+      error={!!error}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -93,20 +111,22 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         ),
       }}
       helperText={
-        <Button
-          variant="text"
-          fullWidth={false}
-          sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
-          onClick={() => editAmount(tokenStr(props.total, decimal.amount))}
-        >
-          <Typography>
-            <TokenAmountDisplay
-              amount={props.total > 0n ? props.total : 0n}
-              decimal={decimal.amount}
-            />
-            {' ' + decimal.name} available
-          </Typography>
-        </Button>
+        error || (
+          <Button
+            variant="text"
+            fullWidth={false}
+            sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
+            onClick={() => editAmount(tokenStr(props.total, decimal.amount))}
+          >
+            <Typography>
+              <TokenAmountDisplay
+                amount={props.total > 0n ? props.total : 0n}
+                decimal={decimal.amount}
+              />
+              {' ' + decimal.name} available
+            </Typography>
+          </Button>
+        )
       }
     />
   );

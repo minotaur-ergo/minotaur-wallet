@@ -17,12 +17,23 @@ interface ReceiverFormPropsType {
 const ReceiverForm = (props: ReceiverFormPropsType) => {
   const generatorContext = useContext(txGenerateContext);
   const [addressError, setAddressError] = useState(true);
+  const [amountErrors, setAmountErrors] = useState<boolean[]>([]);
+  const [ergAmountError, setErgAmountError] = useState(false);
+
   const content = generatorContext.receivers[props.index];
+
+  const setAmountValidity = (index: number, isValid: boolean) => {
+    const newErrors = [...amountErrors];
+    newErrors[index] = !isValid;
+    setAmountErrors(newErrors);
+  };
+
   const remove = () => {
     const newReceiver = [...generatorContext.receivers];
     newReceiver.splice(props.index, 1);
     generatorContext.setReceivers(newReceiver);
   };
+
   const setTokenAmount = (index: number) => (value: bigint) => {
     const newTokens = [...content.tokens];
     newTokens[index] = { ...newTokens[index], amount: value };
@@ -49,8 +60,21 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
   };
 
   useEffect(() => {
-    props.setHasError(addressError || content.amount < MIN_BOX_VALUE);
-  });
+    const hasAnyError =
+      addressError ||
+      content.amount < MIN_BOX_VALUE ||
+      amountErrors.some((error) => error) ||
+      ergAmountError;
+
+    props.setHasError(hasAnyError);
+  }, [addressError, content.amount, amountErrors, ergAmountError, props]);
+
+  useEffect(() => {
+    if (content.tokens.length !== amountErrors.length) {
+      setAmountErrors(Array(content.tokens.length).fill(false));
+    }
+  }, [amountErrors.length, content.tokens.length]);
+
   const totalUsed = generatorContext.receivers
     .map((item) => item.amount)
     .reduce((a, b) => a + b, 0n);
@@ -85,6 +109,9 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
         }
         total={generatorContext.total - FEE - totalUsed + content.amount}
         tokenId="erg"
+        setHasError={(valid) => {
+          setErgAmountError(!valid);
+        }}
       />
       <TokenSelect index={props.index} wallet={props.wallet} />
       {content.tokens.map((token, index) => (
@@ -95,6 +122,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
           setAmount={setTokenAmount(index)}
           total={getTokenAmount(token.id)}
           tokenId={token.id}
+          setHasError={(valid) => setAmountValidity(index, valid)}
         />
       ))}
     </Stack>
