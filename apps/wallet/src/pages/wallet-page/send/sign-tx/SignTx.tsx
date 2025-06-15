@@ -1,6 +1,5 @@
-import { Box, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import React, { useContext, useEffect } from 'react';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
@@ -18,13 +17,66 @@ interface SignTxPropsType {
   setHasError: (hasError: boolean) => unknown;
 }
 
+const mapErrorToMessage = (err: unknown): string => {
+  if (!err) return 'An unknown error occurred.';
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes('insufficient funds')) return 'Your balance is too low.';
+    if (msg.includes('network'))
+      return 'Network error. Please try again later.';
+    if (msg.includes('timeout'))
+      return 'Request timed out. Check your internet connection.';
+    if (msg.includes('signature')) return 'Signing failed. Please try again.';
+    return err.message;
+  }
+  return JSON.stringify(err);
+};
+
 const SignTx = (props: SignTxPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const generatorContext = useContext(TxGenerateContext);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     generatorContext.setReady(true);
-  });
+  }, [generatorContext]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('Transaction Error:', {
+        error,
+        wallet: props.wallet.id,
+        status: txSignContext.status,
+        hasTx: !!txDataContext.tx,
+        receivers: generatorContext.receivers,
+        total: generatorContext.total,
+      });
+      props.setHasError(true);
+    } else {
+      props.setHasError(false);
+    }
+  }, [
+    error,
+    props.wallet.id,
+    txSignContext.status,
+    txDataContext.tx,
+    generatorContext.receivers,
+    generatorContext.total,
+    props,
+  ]);
+
+  // if (error) {
+  //   return (
+  //     <Box sx={{  height: '100%',display: 'flex',justifyContent: 'center', }}>
+  //       <Typography variant="body1" color="error">
+  //         {error}
+  //       </Typography>
+  //     </Box>
+  //   );
+  // }
+
   if (txDataContext.tx) {
     return (
       <TxSignStatusDisplay status={txSignContext.status}>
@@ -47,7 +99,17 @@ const SignTx = (props: SignTxPropsType) => {
           ) : (
             <SigningSwitch
               wallet={props.wallet}
-              setHasError={props.setHasError}
+              setHasError={(hasError) => {
+                if (hasError) {
+                  try {
+                    throw new Error('Signing failed');
+                  } catch (err) {
+                    const readable = mapErrorToMessage(err);
+                    console.error('Signing Error:', err);
+                    setError(readable);
+                  }
+                }
+              }}
             />
           )}
         </React.Fragment>
@@ -63,11 +125,21 @@ const SignTx = (props: SignTxPropsType) => {
         justifyContent: 'center',
       }}
     >
-      <StateMessage
-        title="Generating Transaction"
-        description="Please wait"
-        icon={<CircularProgress />}
-      />
+      {error ? (
+        <Box sx={{ p: 2 }}>
+          <StateMessage
+            title="Transaction Error"
+            description={error}
+            // icon={<Icon color="error" />}
+          />
+        </Box>
+      ) : (
+        <StateMessage
+          title="Generating Transaction"
+          description="Please wait"
+          icon={<CircularProgress />}
+        />
+      )}
     </Box>
   );
 };
