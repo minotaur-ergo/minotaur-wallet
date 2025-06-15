@@ -11,6 +11,7 @@ interface ErgAmountPropsType {
   setAmount: (newAmount: bigint) => unknown;
   total: bigint;
   tokenId: 'erg' | string;
+  availableLabel?: string;
   setHasError?: (isValid: boolean) => void;
 }
 
@@ -30,7 +31,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
     token: '',
     name: '',
   });
-
+  const availableLabel = props.availableLabel ?? 'available';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,17 +84,16 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         decimal: decimal.amount,
       });
       props.setAmount(amountBigInt);
-
       if (amountBigInt > props.total) {
         setError('Amount exceeds available balance');
-        props.setHasError?.(false);
+        props.setHasError?.(true);
       } else {
         setError(null);
-        props.setHasError?.(true);
+        props.setHasError?.(false);
       }
     } catch (e) {
       console.log(e);
-      props.setHasError?.(false);
+      props.setHasError?.(true);
     }
   };
 
@@ -123,7 +123,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
                 amount={props.total > 0n ? props.total : 0n}
                 decimal={decimal.amount}
               />
-              {' ' + decimal.name} available
+              {' ' + decimal.name} {availableLabel}
             </Typography>
           </Button>
         )

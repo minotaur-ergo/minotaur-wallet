@@ -46,8 +46,24 @@ interface DAppPropsType {
   getTokenAmount: (tokenId?: string) => Promise<bigint>;
   signAndSendTx: (tx: UnsignedGeneratedTx) => unknown;
   showNotification: (message: string, type: VariantType) => unknown;
+  createChangeBox: (
+    inputs: wasm.ErgoBoxes,
+    outputs: wasm.ErgoBoxCandidates,
+    fee: bigint,
+    height: number,
+  ) => Promise<Array<wasm.ErgoBoxCandidate>>;
+}
+
+interface TokenAmount {
+  [tokenId: string]: {
+    amount: bigint;
+    total: bigint;
+    hasError: boolean;
+  };
 }
 
 export type { DAppPropsType };
 
 export type { DAppType };
+
+export type { TokenAmount };

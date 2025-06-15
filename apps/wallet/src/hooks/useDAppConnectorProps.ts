@@ -1,11 +1,15 @@
 import { deserialize } from '@/action/box';
 import { AssetDbAction, BoxDbAction } from '@/action/db';
-import { selectBoxes } from '@/action/tx';
+import { generateChangeBox, selectBoxes } from '@/action/tx';
 import MessageContext from '@/components/app/messageContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import { StateWallet } from '@/store/reducer/wallet';
 import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
-import { boxArrayToBoxes, boxesToArrayBox } from '@/utils/convert';
+import {
+  boxArrayToBoxes,
+  boxCandidatesToArrayBoxCandidate,
+  boxesToArrayBox,
+} from '@/utils/convert';
 import { createEmptyArrayWithIndex, dottedText } from '@/utils/functions';
 import getChain from '@/utils/networks';
 import * as wasm from 'ergo-lib-wasm-browser';
@@ -72,9 +76,17 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
             })
             .filter((item) => item.amount !== 0n);
         });
-      return [];
     },
-    getTokenAmount: async () => 0n,
+    getTokenAmount: async (tokenId: string = 'erg') => {
+      if (tokenId === 'erg') {
+        return BigInt(wallet.balance);
+      } else {
+        return BigInt(
+          wallet.tokens.find((item) => item.tokenId === tokenId)?.balance ??
+            '0',
+        );
+      }
+    },
     signAndSendTx: async (tx: UnsignedGeneratedTx) => {
       if (tx.tx instanceof wasm.ReducedTransaction) {
         txSign.setReducedTx(tx.tx);
@@ -92,5 +104,15 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
       }
     },
     showNotification: message.insert,
+    createChangeBox: async (inputs, outputs, fee, height) => {
+      const candidate = generateChangeBox(
+        boxesToArrayBox(inputs),
+        boxCandidatesToArrayBoxCandidate(outputs),
+        fee,
+        wallet.addresses[0].address,
+        height,
+      );
+      return candidate ? [candidate] : [];
+    },
   };
 };

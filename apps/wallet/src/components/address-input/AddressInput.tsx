@@ -11,22 +11,29 @@ import { useContext, useEffect } from 'react';
 import { readClipBoard } from '@/utils/clipboard';
 import { isValidAddress } from '@/utils/functions';
 import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';
+import { NetworkPrefix } from 'ergo-lib-wasm-browser';
 
 interface AddressInputPropsType {
   address: string;
   setAddress: (address: string) => unknown;
   label: string;
   setHasError: (hasError: boolean) => unknown;
+  network: NetworkPrefix;
+  useAddressBook?: boolean;
+  suffix?: React.ReactElement;
+  showError?: boolean;
 }
+
 const AddressInput = (props: AddressInputPropsType) => {
   const drawer = useDrawer();
+  const useAddressBook = props.useAddressBook ?? true;
   const loadFromClipboard = () => {
     readClipBoard().then((data) => {
       props.setAddress(data);
     });
   };
   const qrcode = useContext(QrCodeContext);
-  const hasError = !isValidAddress(props.address);
+  const hasError = !isValidAddress(props.address, props.network);
   useEffect(() => {
     props.setHasError(!isValidAddress(props.address));
   });
@@ -38,6 +45,7 @@ const AddressInput = (props: AddressInputPropsType) => {
       })
       .catch((reason) => console.log(reason));
   };
+  const showError = props.showError ?? true;
   return (
     <React.Fragment>
       <TextField
@@ -47,9 +55,11 @@ const AddressInput = (props: AddressInputPropsType) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={drawer.handleOpen}>
-                <BookOutlined />
-              </IconButton>
+              {useAddressBook ? (
+                <IconButton onClick={drawer.handleOpen}>
+                  <BookOutlined />
+                </IconButton>
+              ) : null}
               <IconButton onClick={startScan}>
                 <QrCodeScannerIcon />
               </IconButton>
@@ -59,14 +69,17 @@ const AddressInput = (props: AddressInputPropsType) => {
             </InputAdornment>
           ),
         }}
-        helperText={hasError ? 'Invalid address' : ''}
+        error={hasError}
+        helperText={showError && hasError ? 'Invalid address' : ''}
       />
-      <AddressBookModal
-        open={drawer.open}
-        onClose={drawer.handleClose}
-        address={props.address}
-        onChange={(item) => props.setAddress(item.address)}
-      />
+      {useAddressBook ? (
+        <AddressBookModal
+          open={drawer.open}
+          onClose={drawer.handleClose}
+          address={props.address}
+          onChange={(item) => props.setAddress(item.address)}
+        />
+      ) : null}
     </React.Fragment>
   );
 };
