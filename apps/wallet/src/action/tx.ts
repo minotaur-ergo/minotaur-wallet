@@ -112,7 +112,7 @@ const generateCandidates = (height: number, receivers: Array<ReceiverType>) =>
     return builder.build();
   });
 
-const generateChangeBox = (
+export const generateChangeBox = (
   inputs: Array<wasm.ErgoBox>,
   outputs: Array<wasm.ErgoBoxCandidate>,
   fee: bigint,

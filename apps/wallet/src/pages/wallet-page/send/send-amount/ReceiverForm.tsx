@@ -1,3 +1,4 @@
+import getChain from '@/utils/networks';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import AddressInput from '@/components/address-input/AddressInput';
@@ -78,6 +79,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
   const totalUsed = generatorContext.receivers
     .map((item) => item.amount)
     .reduce((a, b) => a + b, 0n);
+  const chain = getChain(props.wallet.networkType);
   return (
     <Stack spacing={2}>
       <Box sx={{ px: 1, display: 'flex' }}>
@@ -98,6 +100,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
         setAddress={(value) =>
           generatorContext.edit(props.index, { address: value })
         }
+        network={chain.prefix}
         address={content.address}
         label="Receiver Address"
       />

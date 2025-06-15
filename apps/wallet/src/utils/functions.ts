@@ -63,9 +63,12 @@ const ergPriceUsd = (amount: bigint, erg_price: number) => {
   );
 };
 
-const isValidAddress = (address: string) => {
+const isValidAddress = (address: string, network?: wasm.NetworkPrefix) => {
   try {
-    wasm.Address.from_base58(address);
+    const wasmAddress = wasm.Address.from_base58(address);
+    if (network) {
+      return wasmAddress.address_type_prefix() === network;
+    }
     return true;
   } catch (exp) {
     return false;

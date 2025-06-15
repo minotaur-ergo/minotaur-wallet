@@ -44,6 +44,14 @@ export const boxesToArrayBox = (boxes: wasm.ErgoBoxes): Array<wasm.ErgoBox> => {
   );
 };
 
+export const boxCandidatesToArrayBoxCandidate = (
+  boxes: wasm.ErgoBoxCandidates,
+): Array<wasm.ErgoBoxCandidate> => {
+  return createEmptyArrayWithIndex(boxes.len()).map((index) =>
+    boxes.get(index),
+  );
+};
+
 export const boxArrayToBoxes = (boxes: Array<wasm.ErgoBox>): wasm.ErgoBoxes => {
   const res = wasm.ErgoBoxes.empty();
   boxes.forEach((box) => res.add(box));

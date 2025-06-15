@@ -1,11 +1,15 @@
 import { deserialize } from '@/action/box';
 import { AssetDbAction, BoxDbAction } from '@/action/db';
-import { selectBoxes } from '@/action/tx';
+import { generateChangeBox, selectBoxes } from '@/action/tx';
 import MessageContext from '@/components/app/messageContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import { StateWallet } from '@/store/reducer/wallet';
 import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
-import { boxArrayToBoxes, boxesToArrayBox } from '@/utils/convert';
+import {
+  boxArrayToBoxes,
+  boxCandidatesToArrayBoxCandidate,
+  boxesToArrayBox,
+} from '@/utils/convert';
 import { createEmptyArrayWithIndex, dottedText } from '@/utils/functions';
 import getChain from '@/utils/networks';
 import * as wasm from 'ergo-lib-wasm-browser';
@@ -100,5 +104,15 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
       }
     },
     showNotification: message.insert,
+    createChangeBox: async (inputs, outputs, fee, height) => {
+      const candidate = generateChangeBox(
+        boxesToArrayBox(inputs),
+        boxCandidatesToArrayBoxCandidate(outputs),
+        fee,
+        wallet.addresses[0].address,
+        height,
+      );
+      return candidate ? [candidate] : [];
+    },
   };
 };
