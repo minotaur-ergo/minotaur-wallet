@@ -19,6 +19,13 @@ const FillAmounts = (props: FillAmountsPropsType) => {
       [tokenId]: { ...oldValue[tokenId], amount },
     }));
   };
+
+  const setAmountError = (tokenId: string, hasError: boolean) => {
+    props.setAmounts((oldValue) => ({
+      ...oldValue,
+      [tokenId]: { ...oldValue[tokenId], hasError },
+    }));
+  };
   const getTotal = (tokenId: string) => {
     if (props.totalCalculator) {
       return props.totalCalculator(props.amounts[tokenId].total);
@@ -34,6 +41,7 @@ const FillAmounts = (props: FillAmountsPropsType) => {
         setAmount={(newAmount) => setAmount(row, newAmount)}
         total={getTotal(row)}
         tokenId={row}
+        setHasError={(hasError) => setAmountError(row, hasError)}
         availableLabel={props.availableLabel}
       />
     );

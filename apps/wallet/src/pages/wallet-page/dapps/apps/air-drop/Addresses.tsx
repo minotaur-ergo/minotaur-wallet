@@ -1,3 +1,4 @@
+import { readClipBoard } from '@/utils/clipboard';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
 import { Box, Button, IconButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -35,8 +36,19 @@ const Addresses = (props: AddressesPropsType) => {
   const addAddress = () => {
     props.setAddresses([...props.addresses, '']);
   };
-  const pasteAddresses = () => {
-    console.log('paste clicked');
+  const pasteAddresses = async () => {
+    try {
+      const clipBoardContent = await readClipBoard();
+      const pasteAddresses = clipBoardContent
+        .split('\n')
+        .map((item) => item.trim());
+      const oldAddresses = [...props.addresses].filter(
+        (item) => item.trim() !== '',
+      );
+      props.setAddresses([...oldAddresses, ...pasteAddresses]);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {

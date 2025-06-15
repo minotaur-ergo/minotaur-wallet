@@ -58,6 +58,7 @@ interface TokenAmount {
   [tokenId: string]: {
     amount: bigint;
     total: bigint;
+    hasError: boolean;
   };
 }
 

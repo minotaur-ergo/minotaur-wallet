@@ -24,8 +24,13 @@ const AirDrop = (props: DAppPropsType) => {
     ergAmount < totalErg &&
     ergAmount >= BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str())
   );
+  console.log(amounts);
+  const tokensError = Object.keys(amounts)
+    .map((item) => amounts[item].hasError)
+    .reduce((a, b) => a || b, false);
+  const error = ergError || tokensError || addressError;
   const airDropClick = async () => {
-    if (!acting && !ergError && !addressError) {
+    if (!acting && !error) {
       setActing(true);
       await airdrop(props, addresses, amounts, ergAmount);
       setActing(false);
@@ -67,10 +72,7 @@ const AirDrop = (props: DAppPropsType) => {
           />
         </React.Fragment>
       ) : undefined}
-      <Button
-        onClick={() => airDropClick().then(() => null)}
-        disabled={addressError || ergError}
-      >
+      <Button onClick={() => airDropClick().then(() => null)} disabled={error}>
         Air Drop
       </Button>
     </Stack>

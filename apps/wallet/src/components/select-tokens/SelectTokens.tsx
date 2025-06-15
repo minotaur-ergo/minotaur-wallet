@@ -29,7 +29,11 @@ const SelectTokens = (props: SelectTokensPropsType) => {
     const keys = typeof value === 'string' ? value.split(',') : value;
     const newAmounts: TokenAmount = {};
     keys.forEach((key) => {
-      newAmounts[key] = props.amounts[key] ?? { amount: 0n, total: 0n };
+      newAmounts[key] = props.amounts[key] ?? {
+        amount: 0n,
+        total: 0n,
+        hasError: true,
+      };
     });
     const searchKey = keys.length === 1 ? keys[0] : undefined;
     const foundToken = tokens.filter((token) => token.id === searchKey);

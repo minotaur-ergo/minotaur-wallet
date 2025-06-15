@@ -33,12 +33,14 @@ export const airdrop = async (
           height,
         );
         for (const tokenId of Object.keys(amounts)) {
-          builder.add_token(
-            wasm.TokenId.from_str(tokenId),
-            wasm.TokenAmount.from_i64(
-              wasm.I64.from_str(amounts[tokenId].amount.toString()),
-            ),
-          );
+          if (amounts[tokenId].amount > 0n) {
+            builder.add_token(
+              wasm.TokenId.from_str(tokenId),
+              wasm.TokenAmount.from_i64(
+                wasm.I64.from_str(amounts[tokenId].amount.toString()),
+              ),
+            );
+          }
         }
         candidates.add(builder.build());
       });

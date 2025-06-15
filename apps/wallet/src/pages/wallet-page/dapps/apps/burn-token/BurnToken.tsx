@@ -2,18 +2,11 @@ import FillAmounts from '@/components/select-tokens/FillAmounts';
 import SelectTokens from '@/components/select-tokens/SelectTokens';
 import { useEffect, useState } from 'react';
 import { Button, Stack } from '@mui/material';
-import { DAppPropsType } from '@/types/dapps';
+import { DAppPropsType, TokenAmount } from '@/types/dapps';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const fee = BigInt(1000000);
-
-interface TokenAmount {
-  [tokenId: string]: {
-    amount: bigint;
-    total: bigint;
-  };
-}
 
 const BurnToken = (props: DAppPropsType) => {
   const [amounts, setAmounts] = useState<TokenAmount>({});

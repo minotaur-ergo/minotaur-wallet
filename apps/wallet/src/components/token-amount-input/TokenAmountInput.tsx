@@ -84,17 +84,16 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         decimal: decimal.amount,
       });
       props.setAmount(amountBigInt);
-
       if (amountBigInt > props.total) {
         setError('Amount exceeds available balance');
-        props.setHasError?.(false);
+        props.setHasError?.(true);
       } else {
         setError(null);
-        props.setHasError?.(true);
+        props.setHasError?.(false);
       }
     } catch (e) {
       console.log(e);
-      props.setHasError?.(false);
+      props.setHasError?.(true);
     }
   };
 
