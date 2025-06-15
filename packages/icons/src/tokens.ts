@@ -372,6 +372,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'c0315e1b3511b5399b86d1e0418a85a5527bf3014d3526ffc85ca87500900fce',
     fileExtension: 'svg',
   },
+  '285776315233d73976a50e4d8121606e53cfd3c9ecf03dd455d72cfa0a762631': {
+    id: '285776315233d73976a50e4d8121606e53cfd3c9ecf03dd455d72cfa0a762631',
+    boxId: 'c929b6306228b868dd4b4b61057c4f719054c91ce0b7ee068581c87ed116e2e7',
+    decimals: 0,
+    description:
+      '{"title":"rosen bridge wrapped SOCKZ","originNetwork":"Cardano","originToken":"e13f55c16b8718edac43614146c00cadc45991af3a5355d0386a9f03.43727970746f536f636b7a","isNativeToken":false}',
+    emissionAmount: '1000000000',
+    height: 1499676,
+    name: 'rsSOCKZ',
+    networkType: 'Main Net',
+    txId: '6df8f17b2b9e269f9a1a434c2e687bbc0f9751d3775fecdd65b9c20d8ece1b79',
+    fileExtension: 'png',
+  },
   '2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f': {
     id: '2a51396e09ad9eca60b1bdafd365416beae155efce64fc3deb0d1b3580127b8f',
     boxId: 'f927dba6d616ef010d8f74c0375adaf758202d0a5927d24d09ccd8d9729d7e24',
