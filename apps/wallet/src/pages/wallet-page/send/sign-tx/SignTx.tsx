@@ -1,6 +1,5 @@
-import { Box, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import React, { useContext, useEffect } from 'react';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
@@ -16,15 +15,57 @@ interface SignTxPropsType {
   wallet: StateWallet;
   hideLoading?: boolean;
   setHasError: (hasError: boolean) => unknown;
+  displayError?: string | null;
+  clearError?: () => void;
 }
+
+const mapErrorToMessage = (err: unknown): string => {
+  if (!err) return 'An unknown error occurred.';
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes('insufficient')) return 'Your balance is too low.';
+    if (msg.includes('network')) return 'Network error. Try again later.';
+    if (msg.includes('timeout'))
+      return 'Request timed out. Check your connection.';
+    if (msg.includes('signature')) return 'Signing failed. Try again.';
+    return err.message;
+  }
+  return JSON.stringify(err);
+};
 
 const SignTx = (props: SignTxPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const generatorContext = useContext(TxGenerateContext);
+  const [localError, setLocalError] = useState<string | null>(null);
+
   useEffect(() => {
     generatorContext.setReady(true);
-  });
+  }, [generatorContext]);
+
+  useEffect(() => {
+    props.setHasError(
+      !!txSignContext.error || !!localError || !!props.displayError,
+    );
+  }, [txSignContext.error, localError, props.displayError, props]);
+
+  const handleSigningError = (err: unknown) => {
+    const readable = mapErrorToMessage(err);
+    console.error('Signing Error:', err);
+    setLocalError(readable);
+  };
+
+  useEffect(() => {
+    if (!props.displayError) {
+      setLocalError(null);
+    }
+  }, [props.displayError]);
+
+  const displayError =
+    props.displayError ||
+    (txSignContext.error ? mapErrorToMessage(txSignContext.error) : localError);
+
   if (txDataContext.tx) {
     return (
       <TxSignStatusDisplay status={txSignContext.status}>
@@ -34,8 +75,17 @@ const SignTx = (props: SignTxPropsType) => {
             boxes={txDataContext.boxes}
             wallet={props.wallet}
           />
+          {/* {displayError && (
+            <Box sx={{ p: 2 }}>
+              <StateMessage
+                title="Transaction Error"
+                description={displayError}
+                color="error"
+              />
+            </Box>
+          )} */}
           {txSignContext.signed ? (
-            <React.Fragment>
+            <>
               <Typography>
                 Please scan this code on your hot wallet to submit transaction
               </Typography>
@@ -43,17 +93,24 @@ const SignTx = (props: SignTxPropsType) => {
                 value={txSignContext.signed}
                 type={QrCodeTypeEnum.ColdSignTransaction}
               />
-            </React.Fragment>
+            </>
           ) : (
             <SigningSwitch
               wallet={props.wallet}
-              setHasError={props.setHasError}
+              setHasError={(hasError) => {
+                if (hasError) {
+                  handleSigningError(new Error('Signing failed'));
+                } else {
+                  setLocalError(null);
+                }
+              }}
             />
           )}
         </React.Fragment>
       </TxSignStatusDisplay>
     );
   }
+
   return props.hideLoading === true ? undefined : (
     <Box
       sx={{
@@ -63,11 +120,21 @@ const SignTx = (props: SignTxPropsType) => {
         justifyContent: 'center',
       }}
     >
-      <StateMessage
-        title="Generating Transaction"
-        description="Please wait"
-        icon={<CircularProgress />}
-      />
+      {displayError ? (
+        <Box sx={{ p: 2 }}>
+          <StateMessage
+            title="Transaction Error"
+            description={displayError}
+            color="error"
+          />
+        </Box>
+      ) : (
+        <StateMessage
+          title="Generating Transaction"
+          description="Please wait"
+          icon={<CircularProgress />}
+        />
+      )}
     </Box>
   );
 };

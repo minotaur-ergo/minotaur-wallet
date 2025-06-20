@@ -27,12 +27,54 @@ const WalletSend = (props: WalletSendPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const [displayBoxes, setDisplayBoxes] = useState(false);
-  const handleNext = () => {
-    if (step === STEPS_COUNTS) {
-      txSignContext.handle();
-    } else {
-      setStep(step + 1);
+  const [displayError, setDisplayError] = useState<string | null>(null);
+  const [isSigning, setIsSigning] = useState(false);
+
+  const mapErrorToMessage = (err: unknown): string => {
+    if (!err) return 'An unknown error occurred.';
+    if (typeof err === 'string') return err;
+    if (err instanceof Error) {
+      const msg = err.message.toLowerCase();
+      if (msg.includes('insufficient')) return 'Your balance is too low.';
+      if (msg.includes('network')) return 'Network error. Try again later.';
+      if (msg.includes('timeout'))
+        return 'Request timed out. Check your connection.';
+      if (msg.includes('signature')) return 'Signing failed. Try again.';
+      return err.message;
     }
+    return JSON.stringify(err);
+  };
+
+  const handleNext = async () => {
+    if (step === STEPS_COUNTS) {
+      try {
+        setIsSigning(true);
+        await txSignContext.handle();
+        setIsSigning(false);
+
+        if (txSignContext.error) {
+          const message = mapErrorToMessage(txSignContext.error);
+          txSignContext.setError(txSignContext.error);
+          setDisplayError(message);
+          setHasError(true);
+          return;
+        }
+
+        setDisplayError(null);
+        setHasError(false);
+      } catch (err) {
+        console.error('Signing Error:', err);
+        const message = mapErrorToMessage(err);
+        txSignContext.setError(err);
+        setDisplayError(message);
+        setHasError(true);
+        return;
+      }
+    }
+
+    setStep((prev) => prev + 1);
+    setDisplayError(null);
+    setHasError(false);
   };
 
   const handlePrev = () => {
@@ -75,7 +117,7 @@ const WalletSend = (props: WalletSendPropsType) => {
             )}
             <Grid item xs={step === 1 ? 12 : 6}>
               <Button
-                disabled={hasError}
+                disabled={hasError || isSigning}
                 onClick={handleNext}
                 endIcon={step === STEPS_COUNTS ? undefined : <NextIcon />}
               >
@@ -88,7 +130,12 @@ const WalletSend = (props: WalletSendPropsType) => {
     >
       <Stepper activeStep={step}>
         <SendAmount setHasError={handleSetHasError} wallet={props.wallet} />
-        <SignTx wallet={props.wallet} setHasError={handleSetHasError} />
+        <SignTx
+          wallet={props.wallet}
+          setHasError={handleSetHasError}
+          displayError={displayError}
+          clearError={() => setDisplayError(null)}
+        />
       </Stepper>
       <TransactionBoxes
         open={displayBoxes}

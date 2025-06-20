@@ -22,6 +22,8 @@ interface TxSignContextType {
   networkType: string;
   handle: () => unknown;
   signed: string;
+  error?: unknown | null;
+  setError: (err: unknown) => unknown;
 }
 
 const TxSignContext = createContext<TxSignContextType>({
@@ -33,6 +35,8 @@ const TxSignContext = createContext<TxSignContextType>({
   networkType: '',
   handle: () => null,
   signed: '',
+  error: null,
+  setError: () => null,
 });
 
 export default TxSignContext;

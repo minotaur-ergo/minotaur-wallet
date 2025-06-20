@@ -44,6 +44,7 @@ const TxSignContextHandlerInternal = (
   const [dataBoxes, setDataBoxes] = useState<Array<wasm.ErgoBox>>([]);
   const [password, setPassword] = useState('');
   const [signedStr, setSignedStr] = useState('');
+  const [error, setError] = useState<unknown | null>(null);
   const qrCodeContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
   const signer = useSignerWallet(props.wallet);
@@ -149,6 +150,8 @@ const TxSignContextHandlerInternal = (
         setPassword,
         setTx: setTransactionDetail,
         signed: signedStr,
+        error,
+        setError,
       }}
     >
       <TxDataContextHandler
