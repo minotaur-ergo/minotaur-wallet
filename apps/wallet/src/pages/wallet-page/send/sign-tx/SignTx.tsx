@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
@@ -22,9 +22,13 @@ const SignTx = (props: SignTxPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const generatorContext = useContext(TxGenerateContext);
+
+  const [localError, setLocalError] = useState<string | null>(null);
+
   useEffect(() => {
     generatorContext.setReady(true);
-  });
+  }, [generatorContext]);
+
   if (txDataContext.tx) {
     return (
       <TxSignStatusDisplay status={txSignContext.status}>
@@ -47,13 +51,48 @@ const SignTx = (props: SignTxPropsType) => {
           ) : (
             <SigningSwitch
               wallet={props.wallet}
-              setHasError={props.setHasError}
+              setHasError={(err: unknown) => {
+                props.setHasError(true);
+
+                if (typeof err === 'string') {
+                  if (err.includes('Wrong password')) {
+                    setLocalError('Incorrect password. Please try again.');
+                  } else if (err.includes('Network error')) {
+                    setLocalError(
+                      'Network error. Check your internet connection.',
+                    );
+                  } else {
+                    setLocalError(err);
+                  }
+                } else if (err instanceof Error) {
+                  setLocalError(err.message || 'An unknown error occurred.');
+                } else {
+                  setLocalError(String(err));
+                }
+              }}
             />
           )}
         </React.Fragment>
       </TxSignStatusDisplay>
     );
   }
+
+  const renderError = (message: string) => (
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      <StateMessage title="Transaction Signing Failed" description={message} />
+    </Box>
+  );
+  if (localError) {
+    return renderError(localError);
+  }
+
   return props.hideLoading === true ? undefined : (
     <Box
       sx={{
