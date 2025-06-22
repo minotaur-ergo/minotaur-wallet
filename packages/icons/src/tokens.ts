@@ -460,6 +460,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'ac8d179b8376d9f224c8c460213817dd0bb428b7a1154c6dfe5b43c893d25be9',
     fileExtension: 'png',
   },
+  '48132396ebd00831e603c73cf01e01f248dd1966d2cc976caf52ef76f7ac6e36': {
+    id: '48132396ebd00831e603c73cf01e01f248dd1966d2cc976caf52ef76f7ac6e36',
+    boxId: '55e49f8a8e25d9ec1bb8c7503665ae8f319d2221a4c4d8606fd8cebe6922825a',
+    decimals: 6,
+    description:
+      '{"title":"rosen bridge wrapped DOGE","originNetwork":"Doge","originToken":"doge","isNativeToken":true}',
+    emissionAmount: '149749206383000000',
+    height: 1550474,
+    name: 'rsDOGE',
+    networkType: 'Main Net',
+    txId: '7913df3cea95c360f6850f88aadb171cc51ab13bb10619ce79b56147f10b40e0',
+    fileExtension: 'svg',
+  },
   '4ba9550720bc6520c8d58b1e8d7615627b775440f8d642415df1581eacf6d68a': {
     id: '4ba9550720bc6520c8d58b1e8d7615627b775440f8d642415df1581eacf6d68a',
     boxId: 'a77bf8d1fb44719fc078588ce86ec9f024648a1210e6fa89de5d6dccf4c3eb59',
