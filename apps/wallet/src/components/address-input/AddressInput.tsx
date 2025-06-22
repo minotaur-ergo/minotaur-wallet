@@ -35,8 +35,8 @@ const AddressInput = (props: AddressInputPropsType) => {
   const qrcode = useContext(QrCodeContext);
   const hasError = !isValidAddress(props.address, props.network);
   useEffect(() => {
-    props.setHasError(!isValidAddress(props.address));
-  });
+    props.setHasError(!isValidAddress(props.address, props.network));
+  }, [props, props.address, hasError]);
   const startScan = () => {
     qrcode
       .start()
