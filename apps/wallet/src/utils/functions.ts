@@ -67,7 +67,7 @@ const isValidAddress = (address: string, network?: wasm.NetworkPrefix) => {
   try {
     const wasmAddress = wasm.Address.from_base58(address);
     if (network) {
-      return wasmAddress.address_type_prefix() === network;
+      return wasmAddress.to_base58(network) === address;
     }
     return true;
   } catch (exp) {

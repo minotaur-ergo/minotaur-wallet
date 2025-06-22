@@ -112,9 +112,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
         }
         total={generatorContext.total - FEE - totalUsed + content.amount}
         tokenId="erg"
-        setHasError={(valid) => {
-          setErgAmountError(!valid);
-        }}
+        setHasError={(hasError) => setErgAmountError(hasError)}
       />
       <TokenSelect index={props.index} wallet={props.wallet} />
       {content.tokens.map((token, index) => (
