@@ -5,7 +5,7 @@ import TxDisplay from '@/components/tx/TxDisplay';
 import useTransactionData from '@/hooks/useTransactionData';
 import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { CircularProgress, IconButton } from '@mui/material';
 import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
 import React, { useState } from 'react';

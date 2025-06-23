@@ -1,7 +1,7 @@
 import AppFrame from '@/layouts/AppFrame';
 import LocalSettings from './LocalSettings';
 import DangerousSettings from './DangerousSettings';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import GlobalSettings from './GlobalSettings';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import AppVersion from './AppVersion';

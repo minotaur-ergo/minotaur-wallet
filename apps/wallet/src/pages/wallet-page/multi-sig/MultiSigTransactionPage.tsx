@@ -1,5 +1,5 @@
 import MultiSigContextHandler from '@/components/sign/context/MultiSigContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import MultiSigTransaction from './MultiSigTransaction';
 import MultiSigDataContextHandler from '@/components/sign/context/MultiSigDataContextHandler';
 import TxSubmitContextHandler from '@/components/sign/context/TxSubmitContextHandler';

@@ -2,11 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import ListController from '@/components/list-controller/ListController';
-import { MultiSigBriefRow, MultiSigDataShare } from '@/types/multi-sig';
 import AppFrame from '@/layouts/AppFrame';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { GlobalStateType } from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
+import {
+  StateWallet,
+  MultiSigBriefRow,
+  MultiSigDataShare,
+} from '@minotaur-ergo/types';
 import MultiSigTransactionItem from './MultiSigTransactionItem';
 import { readClipBoard } from '@/utils/clipboard';
 import MessageContext from '@/components/app/messageContext';

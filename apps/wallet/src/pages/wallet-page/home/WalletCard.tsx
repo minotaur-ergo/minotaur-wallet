@@ -3,7 +3,7 @@ import { WalletTypeLabel } from '@/db/entities/Wallet';
 import { ergPriceUsd } from '@/utils/functions';
 import { GlobalStateType } from '@/store';
 import { useSelector } from 'react-redux';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import getChain from '@/utils/networks';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import { MAIN_NET_LABEL } from '@/utils/const';

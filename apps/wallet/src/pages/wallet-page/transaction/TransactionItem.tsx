@@ -1,5 +1,5 @@
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import {
   Box,
   Card,

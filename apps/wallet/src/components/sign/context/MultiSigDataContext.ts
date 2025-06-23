@@ -1,5 +1,8 @@
 import { createContext } from 'react';
-import { MultiSigDataContextType, MultiSigStateEnum } from '@/types/multi-sig';
+import {
+  MultiSigDataContextType,
+  MultiSigStateEnum,
+} from '@minotaur-ergo/types';
 
 const MultiSigDataContext = createContext<MultiSigDataContextType>({
   addresses: [],

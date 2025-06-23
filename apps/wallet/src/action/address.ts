@@ -1,7 +1,7 @@
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { WalletType } from '@/db/entities/Wallet';
-import { StateAddress, StateWallet } from '@/store/reducer/wallet';
+import { StateAddress, StateWallet } from '@minotaur-ergo/types';
 import { decrypt } from '@/utils/enc';
 import { bip32, int8Vlq, iterateIndexes, uInt8Vlq } from '@/utils/functions';
 import getChain from '@/utils/networks';

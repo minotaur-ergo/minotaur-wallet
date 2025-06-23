@@ -1,19 +1,22 @@
+import { MultiSigDataHintImlp } from '@/action/multi-sig/codec';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
-import { MultiSigDataShare } from '@/types/multi-sig';
-import { MultiSigDataHint, MultiSigDataHintType } from '@/types/multi-sig/hint';
+import {
+  MultiSigDataShare,
+  StateWallet,
+  MultiSigDataHint,
+  MultiSigDataHintType,
+} from '@minotaur-ergo/types';
 import { dottedText } from '@/utils/functions';
 import { getTxBoxes } from '../tx';
 import getChain from '@/utils/networks';
 
 import * as wasm from 'ergo-lib-wasm-browser';
-import { Buffer } from 'buffer';
 import { deserialize } from '../box';
 import {
   fetchMultiSigRows,
   storeMultiSigRow,
   updateMultiSigRow,
 } from './store';
-import { StateWallet } from '@/store/reducer/wallet';
 
 interface VerificationResponse {
   valid: boolean;
@@ -86,7 +89,7 @@ const verifyMyCommitments = (
       return (
         row.filter((item, itemIndex) => {
           if (
-            !MultiSigDataHint.deserialize(item, rowIndex, itemIndex).equals(
+            !MultiSigDataHintImlp.deserialize(item, rowIndex, itemIndex).equals(
               oldCommitments[rowIndex][itemIndex],
             ) &&
             filteredMyPks[rowIndex][itemIndex] !== ''
@@ -181,7 +184,7 @@ const verifyNotSigningNewTx = (
       if (element !== '') {
         try {
           if (
-            MultiSigDataHint.deserialize(
+            MultiSigDataHintImlp.deserialize(
               element,
               inputIndex,
               signerIndex,
@@ -349,7 +352,7 @@ const verifyAndSaveData = async (
     newHints.forEach((row, inputIndex) =>
       row.forEach((item, signerIndex) =>
         item.override(
-          MultiSigDataHint.deserialize(
+          MultiSigDataHintImlp.deserialize(
             data.hints[inputIndex][signerIndex],
             inputIndex,
             signerIndex,
@@ -365,7 +368,7 @@ const verifyAndSaveData = async (
       data.boxes.map(deserialize),
       data.hints.map((row, inputIndex) =>
         row.map((item, signerIndex) =>
-          MultiSigDataHint.deserialize(item, inputIndex, signerIndex),
+          MultiSigDataHintImlp.deserialize(item, inputIndex, signerIndex),
         ),
       ),
       Date.now(),
@@ -399,7 +402,7 @@ const verifyHintsProof = (
       .filter((hint, index) => {
         if (!hint) return false;
         try {
-          const hintObject = MultiSigDataHint.deserialize(
+          const hintObject = MultiSigDataHintImlp.deserialize(
             hint,
             inputIndex,
             index,

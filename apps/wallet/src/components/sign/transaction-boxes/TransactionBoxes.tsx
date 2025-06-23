@@ -6,7 +6,7 @@ import BoxItem from './BoxItem';
 import Drawer from '@mui/material/Drawer';
 import useTxBoxes from '@/hooks/useTxBoxes';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface TransactionBoxesPropsType {
   open: boolean;

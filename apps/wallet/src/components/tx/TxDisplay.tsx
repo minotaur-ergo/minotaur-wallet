@@ -3,7 +3,7 @@ import ErgAmount from '@/components/amounts-display/ErgAmount';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import useTxValues from '@/hooks/useTxValues';
 import TxAssetDetail from '@/pages/wallet-page/transaction/TxAssetDetail';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { getValueColor } from '@/utils/functions';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, Typography } from '@mui/material';

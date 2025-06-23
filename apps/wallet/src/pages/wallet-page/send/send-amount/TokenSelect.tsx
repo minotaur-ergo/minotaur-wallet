@@ -10,7 +10,7 @@ import { AssetDbAction } from '@/action/db';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import Asset from '@/db/entities/Asset';
 import { ReceiverTokenType } from '@/types/sign-modal';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

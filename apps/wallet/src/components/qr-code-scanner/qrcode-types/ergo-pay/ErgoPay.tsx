@@ -8,7 +8,7 @@ import useMessage from '@/hooks/ergo-pay/useMessage';
 import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
 import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { QrCodeScannedComponentPropsType } from '@/types/qrcode';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {

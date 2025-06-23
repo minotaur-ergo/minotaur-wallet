@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { newEmptyReceiver } from '../../../action/tx';
-import { ReceiverType } from '../../../types/sign-modal';
-import { StateWallet } from '../../../store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
+import { newEmptyReceiver } from '@/action/tx';
+import { ReceiverType } from '@/types/sign-modal';
 import TxGenerateContext from './TxGenerateContext';
 
 interface TxGenerateContextHandlerPropsType {

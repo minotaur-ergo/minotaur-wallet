@@ -3,7 +3,7 @@ import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { MultiSigStateEnum } from '@/types/multi-sig';
+import { MultiSigStateEnum } from '@minotaur-ergo/types';
 import { useContext, useEffect } from 'react';
 
 export const useCompletedTx = () => {

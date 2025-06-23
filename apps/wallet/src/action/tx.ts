@@ -3,7 +3,7 @@ import { ReceiverTokenType, ReceiverType } from '@/types/sign-modal';
 import { TotalSpent } from '@minotaur-ergo/types';
 import openInBrowser from '@/utils/browser';
 import { BoxDbAction } from './db';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import getChain from '@/utils/networks';
 import { deserialize } from './box';
 import { getProver } from './wallet';

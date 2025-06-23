@@ -5,7 +5,7 @@ import { QrCodeType } from '@/types/qrcode';
 import { useSelector } from 'react-redux';
 import { GlobalStateType } from '@/store';
 import TxSignContextHandler from '../sign/context/TxSignContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { SelectableWalletContext } from '../sign/context/SelectableWalletContext';
 
 interface QrCodeDetectedTypePropsType {

@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import HomeFrame from '@/layouts/HomeFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { apps } from './apps/dapps';
 import { RouteMap, getRoute } from '@/router/routerMap';
 import DAppsItemCard from '@/components/dapps-item-card/DAppsItemCard';

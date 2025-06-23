@@ -9,6 +9,10 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist"
   },
+  "dependencies": {
+    "react": "^18.3.1",
+    "notistack": "^3.0.1"
+  },
   "devDependencies": {
     "typescript": "^5.0.0"
   },

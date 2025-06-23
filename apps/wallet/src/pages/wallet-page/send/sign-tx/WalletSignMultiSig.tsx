@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import useReducedTx from '@/hooks/useReducedTx';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import { WalletType } from '@/db/entities/Wallet';
 import WalletSignReadonly from './WalletSignReadonly';

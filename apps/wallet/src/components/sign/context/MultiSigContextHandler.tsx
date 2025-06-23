@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchMultiSigRows } from '@/action/multi-sig/store';
 import { GlobalStateType } from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '@/types/multi-sig';
+import { MultiSigData } from '@minotaur-ergo/types';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;

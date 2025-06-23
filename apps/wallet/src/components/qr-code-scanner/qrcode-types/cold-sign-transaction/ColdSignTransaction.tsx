@@ -18,7 +18,7 @@ import TxSignValues from '@/pages/wallet-page/send/sign-tx/TxSignValues';
 import Loading from '@/components/state-message/Loading';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
 import useBoxes from '@/hooks/useBoxes';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
 

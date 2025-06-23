@@ -1,14 +1,9 @@
 import { setActiveWallet } from '@/store/reducer/config';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { WalletType } from '@/db/entities/Wallet';
+import { WalletType, StateAddress, StateWallet } from '@minotaur-ergo/types';
 import store from '@/store';
-import {
-  addedWallets,
-  invalidateWallets,
-  StateAddress,
-  StateWallet,
-} from '@/store/reducer/wallet';
+import { addedWallets, invalidateWallets } from '@/store/reducer/wallet';
 import { walletEntityToWalletState } from '@/utils/convert';
 import { decrypt, encrypt } from '@/utils/enc';
 import {

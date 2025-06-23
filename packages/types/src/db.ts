@@ -1,3 +1,9 @@
+enum WalletType {
+  ReadOnly = 'READ_ONLY',
+  Normal = 'NORMAL',
+  MultiSig = 'MULTI_SIG',
+}
+
 interface TokenInfo {
   id: string;
   boxId?: string;
@@ -35,3 +41,4 @@ interface ItemBoxInfos {
 }
 
 export type { ItemBoxInfos, TokenInfo, BoxInfo, TxInfo };
+export { WalletType };

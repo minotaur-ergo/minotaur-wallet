@@ -1,7 +1,7 @@
 import { PinDbAction, WalletDbAction } from '@/action/db';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import { GlobalStateType } from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { honeyPinType } from '@/utils/convert';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

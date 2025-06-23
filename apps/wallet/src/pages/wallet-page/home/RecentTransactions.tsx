@@ -6,7 +6,7 @@ import TransactionItem from '../transaction/TransactionItem';
 import Heading from '@/components/heading/Heading';
 import { getRoute, RouteMap } from '@/router/routerMap';
 import LoadingPage from '@/components/loading-page/LoadingPage';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface RecentTransactionsPropsType {
   wallet: StateWallet;

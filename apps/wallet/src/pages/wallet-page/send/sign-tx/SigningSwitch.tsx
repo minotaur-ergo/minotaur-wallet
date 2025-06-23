@@ -1,5 +1,5 @@
 import { WalletType } from '@/db/entities/Wallet';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import WalletSignMultiSig from './WalletSignMultiSig';
 import WalletSignNormal from './WalletSignNormal';
 import WalletSignReadonly from './WalletSignReadonly';

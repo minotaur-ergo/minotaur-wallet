@@ -3,7 +3,7 @@ import AddressItem from './AddressItem';
 import HomeFrame from '@/layouts/HomeFrame';
 import ListController from '@/components/list-controller/ListController';
 import NewAddress from './NewAddress';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface WalletAddressPropsType {
   wallet: StateWallet;

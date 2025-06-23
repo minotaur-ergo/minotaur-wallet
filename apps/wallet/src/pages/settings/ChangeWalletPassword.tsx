@@ -3,7 +3,7 @@ import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import PasswordField from '@/components/password-field/PasswordField';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { Button, Stack } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useContext, useEffect, useState } from 'react';

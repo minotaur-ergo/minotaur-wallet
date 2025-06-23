@@ -1,3 +1,4 @@
+import { MultiSigDataHintImlp } from '@/action/multi-sig/codec';
 import AddressValueInfo, {
   AddressValueType,
 } from '@/db/entities/AddressValueInfo';
@@ -16,8 +17,14 @@ import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet, { WalletType } from '@/db/entities/Wallet';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
-import { BoxInfo, TokenInfo, TxInfo, SpendDetail } from '@minotaur-ergo/types';
-import { MultiSigDataHint, MultiSigDataHintType } from '@/types/multi-sig/hint';
+import {
+  BoxInfo,
+  TokenInfo,
+  TxInfo,
+  SpendDetail,
+  MultiSigDataHint,
+  MultiSigDataHintType,
+} from '@minotaur-ergo/types';
 import { DEFAULT_ADDRESS_PREFIX, TX_CHUNK_SIZE } from '@/utils/const';
 import { createEmptyArray, sliceToChunksString } from '@/utils/functions';
 import { DataSource, Like, Repository } from 'typeorm';
@@ -1258,7 +1265,7 @@ class MultiStoreDbAction {
           (item) => item.idx === signerIndex && item.inpIdx === inputIndex,
         );
         if (filtered) {
-          return new MultiSigDataHint(
+          return new MultiSigDataHintImlp(
             inputIndex,
             signerIndex,
             Buffer.from(filtered.commit, 'hex'),
@@ -1269,7 +1276,7 @@ class MultiStoreDbAction {
               : MultiSigDataHintType.SIMULATED,
           );
         } else {
-          return new MultiSigDataHint(
+          return new MultiSigDataHintImlp(
             inputIndex,
             signerIndex,
             undefined,

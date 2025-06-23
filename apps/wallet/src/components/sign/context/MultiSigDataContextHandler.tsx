@@ -1,5 +1,5 @@
 import { MultiSigDataContext } from './MultiSigDataContext';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import useMultiSigAddressHolders from '@/hooks/multi-sig/useMultiSigAddressHolders';
 import useCommittedAddress from '@/hooks/multi-sig/useActionAddress';
 import { useMultiSigTxState } from '@/hooks/multi-sig/useMultiSigTxState';

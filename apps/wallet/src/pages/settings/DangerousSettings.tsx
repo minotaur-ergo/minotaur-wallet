@@ -9,7 +9,7 @@ import { WalletDbAction } from '@/action/db';
 import { useNavigate } from 'react-router-dom';
 import { getRoute, RouteMap } from '@/router/routerMap';
 import Confirm from '@/components/confirm/Confirm';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface DangerousSettingsPropsType {
   wallet: StateWallet;

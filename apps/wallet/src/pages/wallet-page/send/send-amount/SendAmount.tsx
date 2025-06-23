@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useContext, useEffect, useState } from 'react';
 import { newEmptyReceiver } from '@/action/tx';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { createEmptyArray } from '@/utils/functions';
 import ReceiverForm from './ReceiverForm';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';

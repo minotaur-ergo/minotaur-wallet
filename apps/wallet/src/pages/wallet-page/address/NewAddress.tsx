@@ -1,3 +1,4 @@
+import { StateWallet } from '@minotaur-ergo/types';
 import React, { useContext, useState } from 'react';
 import {
   IconButton,
@@ -11,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { deriveNewAddress } from '@/action/address';
 import MessageContext from '@/components/app/messageContext';
 
-import { invalidateAddresses, StateWallet } from '@/store/reducer/wallet';
+import { invalidateAddresses } from '@/store/reducer/wallet';
 import CircleButton from '@/components/circle-button/CircleButton';
 import ActionContainer from '@/components/action-container/ActionContainer';
 

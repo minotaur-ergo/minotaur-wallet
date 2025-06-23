@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 import { validatePassword } from '@/action/wallet';
 import PasswordField from '@/components/password-field/PasswordField';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface WalletSignNormalPropsType {
   wallet: StateWallet;

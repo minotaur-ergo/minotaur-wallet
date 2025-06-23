@@ -3,7 +3,7 @@ import {
   getWalletTransactionsTotal,
   WalletTransactionType,
 } from '@/action/transaction';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
 
 const useWalletTransaction = (wallet: StateWallet, limit: number) => {

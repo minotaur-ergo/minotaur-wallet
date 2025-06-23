@@ -2,7 +2,7 @@ import AssetRow from '@/components/asset-row/AssetRow';
 import { Box, Stack } from '@mui/material';
 import { ReceiverTokenType } from '@/types/sign-modal';
 import DisplayId from '../../display-id/DisplayId';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface BoxItemPropsType {
   networkType: string;

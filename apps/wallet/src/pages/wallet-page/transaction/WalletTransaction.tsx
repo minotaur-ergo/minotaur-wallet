@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, Stack } from '@mui/material';
 import TransactionItem from './TransactionItem';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
 interface TransactionPropsType {

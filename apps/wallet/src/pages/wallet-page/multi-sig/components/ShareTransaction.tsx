@@ -1,4 +1,4 @@
-import { MultiSigDataShare } from '@/types/multi-sig';
+import { MultiSigDataShare } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';

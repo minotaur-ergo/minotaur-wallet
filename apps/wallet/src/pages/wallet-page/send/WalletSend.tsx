@@ -10,7 +10,7 @@ import TxSignContext from '@/components/sign/context/TxSignContext';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
 import Stepper from '@/components/stepper/Stepper';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import SendAmount from './send-amount/SendAmount';
 import SignTx from './sign-tx/SignTx';
 import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';

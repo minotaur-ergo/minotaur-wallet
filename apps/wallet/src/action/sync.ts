@@ -1,10 +1,10 @@
 import Address from '@/db/entities/Address';
 import { AddressValueType } from '@/db/entities/AddressValueInfo';
 import store from '@/store';
-import { setBalances, StateWallet } from '@/store/reducer/wallet';
+import { setBalances } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
 import getChain from '@/utils/networks';
-import { AbstractNetwork } from '@minotaur-ergo/types';
+import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
 import {
   AddressDbAction,
   AddressValueDbAction,

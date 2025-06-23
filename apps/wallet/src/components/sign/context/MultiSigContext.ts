@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { MultiSigContextType } from '@/types/multi-sig';
+import { MultiSigContextType } from '@minotaur-ergo/types';
 
 const MultiSigContext = createContext<MultiSigContextType>({
   hints: [[]],

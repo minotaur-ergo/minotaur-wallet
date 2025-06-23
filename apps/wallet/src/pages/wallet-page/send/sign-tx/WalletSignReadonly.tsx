@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
 import StateMessage from '@/components/state-message/StateMessage';
 import { serialize } from '@/action/box';

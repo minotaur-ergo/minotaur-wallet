@@ -1,7 +1,6 @@
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
-import { StateAddress } from '@/store/reducer/wallet';
-import { ChainTypeInterface } from '@minotaur-ergo/types';
+import { ChainTypeInterface, StateAddress } from '@minotaur-ergo/types';
 import { Stars } from '@mui/icons-material';
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
 

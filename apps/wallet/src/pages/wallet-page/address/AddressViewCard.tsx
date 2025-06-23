@@ -8,8 +8,11 @@ import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
 import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
 import Heading from '@/components/heading/Heading';
 import ListController from '@/components/list-controller/ListController';
-import { StateAddress, TokenInfo } from '@/store/reducer/wallet';
-import { ChainTypeInterface } from '@minotaur-ergo/types';
+import {
+  ChainTypeInterface,
+  StateAddress,
+  TokenBalance,
+} from '@minotaur-ergo/types';
 
 interface AddressViewCardPropsType {
   address: StateAddress;
@@ -48,7 +51,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
             data={props.address.tokens}
             divider={false}
             emptyTitle={''}
-            render={(item: TokenInfo) => (
+            render={(item: TokenBalance) => (
               <AssetRow
                 id={item.tokenId}
                 networkType={props.chain.label}

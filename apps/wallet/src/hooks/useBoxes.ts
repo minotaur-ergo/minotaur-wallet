@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { fetchBoxesFromNetwork, getInternalBoxes } from '@/utils/ergopay';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { useSelector } from 'react-redux';
 import { GlobalStateType } from '@/store';
 import { createEmptyArrayWithIndex } from '@/utils/functions';

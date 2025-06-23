@@ -1,6 +1,6 @@
 import { WalletType } from '@/db/entities/Wallet';
 import HomeFrame from '@/layouts/HomeFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import MultiSigCommunicationButton from './MultiSigCommunicationButton';
 import RecentTransactions from './RecentTransactions';
 import WalletCard from './WalletCard';

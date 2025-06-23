@@ -9,7 +9,7 @@ import { WalletDbAction } from '@/action/db';
 import ActionButton from './ActionButton';
 import { VisibilityOutlined } from '@mui/icons-material';
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { WalletType } from '@/db/entities/Wallet';
 
 interface LocalSettingsPropsType {

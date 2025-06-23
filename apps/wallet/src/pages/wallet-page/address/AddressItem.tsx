@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Drawer } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { invalidateAddresses, StateAddress } from '@/store/reducer/wallet';
-import { ChainTypeInterface } from '@minotaur-ergo/types';
+import { invalidateAddresses } from '@/store/reducer/wallet';
+import { ChainTypeInterface, StateAddress } from '@minotaur-ergo/types';
 import AddressViewCard from './AddressViewCard';
 import AddressEditCard from './AddressEditCard';
 import { AddressDbAction } from '@/action/db';

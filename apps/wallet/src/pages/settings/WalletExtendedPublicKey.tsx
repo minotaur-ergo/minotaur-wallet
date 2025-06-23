@@ -12,7 +12,7 @@ import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardI
 import AppFrame from '@/layouts/AppFrame';
 import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
 import base58 from 'bs58';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
 interface WalletExtendedPublicKeyPropsType {

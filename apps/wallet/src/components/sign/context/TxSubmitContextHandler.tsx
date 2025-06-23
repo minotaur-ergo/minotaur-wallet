@@ -1,6 +1,6 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 import React, { useState } from 'react';
-import { StateWallet } from '../../../store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import getChain from '../../../utils/networks';
 import SuccessSend from '../success-send/SuccessSend';
 import TxSubmitContext from './TxSubmitContext';

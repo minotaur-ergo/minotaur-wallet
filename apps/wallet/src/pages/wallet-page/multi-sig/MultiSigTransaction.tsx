@@ -2,7 +2,7 @@ import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx'
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet, MultiSigStateEnum } from '@minotaur-ergo/types';
 import { useContext, useState } from 'react';
 import ActionMenu from './components/ActionMenu';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
@@ -12,7 +12,6 @@ import TxSignValues from '../send/sign-tx/TxSignValues';
 import { Box, Typography } from '@mui/material';
 import AddressActionList from './components/AddressActionList';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigStateEnum } from '@/types/multi-sig';
 import PasswordField from '@/components/password-field/PasswordField';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import MultiSigToolbar from './components/MultiSigToolbar';

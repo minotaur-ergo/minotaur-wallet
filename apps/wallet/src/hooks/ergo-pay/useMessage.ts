@@ -1,4 +1,4 @@
-import { StateAddress, StateWallet } from '@/store/reducer/wallet';
+import { StateAddress, StateWallet } from '@minotaur-ergo/types';
 import {
   ErgoPaySeverityEnum,
   MessageResponseType,

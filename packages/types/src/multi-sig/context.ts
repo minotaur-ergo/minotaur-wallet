@@ -1,9 +1,6 @@
-import { StateWallet } from '@/store/reducer/wallet';
-import {
-  AddressCompletionState,
-  MultiSigAddressHolder,
-} from '@/types/multi-sig/address';
-import { MultiSigData } from '@/types/multi-sig/data';
+import { StateWallet } from '../state';
+import { AddressCompletionState, MultiSigAddressHolder } from './address';
+import { MultiSigData } from './data';
 import { Transaction } from 'ergo-lib-wasm-browser';
 
 export interface MultiSigMyAction {

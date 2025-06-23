@@ -1,4 +1,4 @@
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import getChain from '@/utils/networks';
 import { useEffect, useState } from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';

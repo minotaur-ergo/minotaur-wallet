@@ -4,8 +4,8 @@ import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import {
   AddressCompletionState,
   MultiSigAddressHolder,
-} from '@/types/multi-sig';
-import { MultiSigDataHintType } from '@/types/multi-sig/hint';
+  MultiSigDataHintType,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { useContext, useEffect, useState } from 'react';
 

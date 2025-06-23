@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import AddressInput from '@/components/address-input/AddressInput';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { FEE, MIN_BOX_VALUE } from '@/utils/const';
 import TokenSelect from './TokenSelect';
 

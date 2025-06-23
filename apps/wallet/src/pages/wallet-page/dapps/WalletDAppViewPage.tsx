@@ -1,5 +1,5 @@
 import TxSignContextHandler from '@/components/sign/context/TxSignContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import WalletDAppView from './WalletDAppView';
 import TxGenerateContextHandler from '@/components/sign/context/TxGenerateContextHandler';
 interface WalletDAppViewPagePropsType {

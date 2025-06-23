@@ -4,7 +4,7 @@ import {
   InitializeAllPayload,
   StateAddress,
   StateWallet,
-} from '@/store/reducer/wallet';
+} from '@minotaur-ergo/types';
 import {
   addressEntityToAddressState,
   walletEntityToWalletState,

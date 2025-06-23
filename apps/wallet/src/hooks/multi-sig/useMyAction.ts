@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from './useSignerWallet';
-import { AddressCompletionState, MultiSigMyAction } from '@/types/multi-sig';
+import { AddressCompletionState, MultiSigMyAction } from '@minotaur-ergo/types';
 
 const useMyAction = (actions: Array<AddressCompletionState>) => {
   const context = useContext(TxDataContext);

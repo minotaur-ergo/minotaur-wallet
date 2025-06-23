@@ -1,6 +1,6 @@
 import { WalletType } from '@/db/entities/Wallet';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface SignButtonLabelPropsType {
   wallet: StateWallet;

@@ -1,6 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { AddressCompletionState, MultiSigStateEnum } from '@/types/multi-sig';
+import {
+  AddressCompletionState,
+  MultiSigStateEnum,
+} from '@minotaur-ergo/types';
 
 const useMultiSigTxState = (actions: Array<AddressCompletionState>) => {
   const context = useContext(MultiSigContext);

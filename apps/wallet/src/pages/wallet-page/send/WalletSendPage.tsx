@@ -1,6 +1,6 @@
 import TxGenerateContextHandler from '@/components/sign/context/TxGenerateContextHandler';
 import TxSignContextHandler from '@/components/sign/context/TxSignContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import TxGenerator from './TxGenerator';
 import WalletSend from './WalletSend';
 

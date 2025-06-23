@@ -1,5 +1,5 @@
 import { extractErgAndTokenSpent } from '@/action/tx';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';
 

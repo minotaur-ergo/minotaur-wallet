@@ -1,17 +1,14 @@
 import {
+  MultiSigDataHint,
   TxHintBag,
   TxSinglePublicHint,
   TxSingleSecretHint,
-} from '@/types/multi-sig/tx';
-import { secp256k1 } from '@noble/curves/secp256k1';
+  MultiSigDataHintType,
+} from '@minotaur-ergo/types';
+import { secp256k1 } from '@noble/curves/esm/secp256k1';
 import { Buffer } from 'buffer';
 
-export enum MultiSigDataHintType {
-  SIMULATED = 'simulated',
-  REAL = 'real',
-}
-
-export class MultiSigDataHint {
+export class MultiSigDataHintImlp extends MultiSigDataHint {
   constructor(
     protected inputIndex: number,
     protected publicKeyIndex: number,
@@ -19,7 +16,9 @@ export class MultiSigDataHint {
     protected proof = Buffer.from('', 'hex'),
     protected secret = Buffer.from('', 'hex'),
     protected type: MultiSigDataHintType = MultiSigDataHintType.REAL,
-  ) {}
+  ) {
+    super();
+  }
 
   public get Type() {
     return this.type;
@@ -43,7 +42,7 @@ export class MultiSigDataHint {
    * @returns A new MultiSigDataHint object with the same property values
    */
   clone = (): MultiSigDataHint => {
-    return new MultiSigDataHint(
+    return new MultiSigDataHintImlp(
       this.inputIndex,
       this.publicKeyIndex,
       this.commit,
@@ -52,19 +51,6 @@ export class MultiSigDataHint {
       this.type,
     );
   };
-
-  /**
-   * Checks equality between this hint and another MultiSigDataHint instance
-   *
-   * Comparison is based on the commit value and the type of the hint.
-   * Other properties such as proof and secret are not considered in the equality check.
-   *
-   * @param other - Another MultiSigDataHint instance to compare with
-   * @returns true if both hints have the same commit and type, false otherwise
-   */
-  equals = (other: MultiSigDataHint): boolean =>
-    this.commit.toString('hex') === other.commit.toString('hex') &&
-    this.type === other.type;
 
   /**
    * Converts the hint data to a base64-encoded string representation
@@ -134,7 +120,7 @@ export class MultiSigDataHint {
         ? MultiSigDataHintType.SIMULATED
         : MultiSigDataHintType.REAL;
 
-    return new MultiSigDataHint(
+    return new MultiSigDataHintImlp(
       inputIndex,
       signerIndex,
       commit,
@@ -325,10 +311,12 @@ export class MultiSigDataHint {
    * @param other - The MultiSigDataHint instance to copy values from
    */
   override = (other: MultiSigDataHint) => {
-    if (this.commit.length === 0) this.commit = other.commit;
-    if (this.proof.length === 0) this.proof = other.proof;
-    if (this.secret.length === 0) this.secret = other.secret;
-    if (this.type === MultiSigDataHintType.REAL) this.type = other.type;
+    if (this.commit.length === 0)
+      this.commit = Buffer.from(other.Commit, 'hex');
+    if (this.proof.length === 0) this.proof = Buffer.from(other.Proof, 'hex');
+    if (this.secret.length === 0)
+      this.secret = Buffer.from(other.Secret, 'hex');
+    if (this.type === MultiSigDataHintType.REAL) this.type = other.Type;
   };
 
   generatePublicHint = (

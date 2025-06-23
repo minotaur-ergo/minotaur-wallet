@@ -13,7 +13,7 @@ import MultiSigCommunication from './multi-sig/MultiSigCommunication';
 import MultiSigTransactionPage from './multi-sig/MultiSigTransactionPage';
 import WalletSendPage from './send/WalletSendPage';
 import WalletTransaction from './transaction/WalletTransaction';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import WalletSettings from '../settings/Settings';
 import WalletExtendedPublicKey from '../settings/WalletExtendedPublicKey';
 import WalletDAppViewPage from './dapps/WalletDAppViewPage';

@@ -10,7 +10,7 @@ import DAppDescription from './components/DappDescription';
 import LoadingPage from '@/components/loading-page/LoadingPage';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useDAppConnectorProps } from '@/hooks/useDAppConnectorProps';
-import { StateWallet } from '@/store/reducer/wallet';
+import { StateWallet } from '@minotaur-ergo/types';
 import PrevIcon from '@mui/icons-material/ArrowBackIos';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import SignTx from '../send/sign-tx/SignTx';

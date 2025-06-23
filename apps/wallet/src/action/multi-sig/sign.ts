@@ -1,9 +1,12 @@
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
-import { StateWallet } from '@/store/reducer/wallet';
-import { TxHintBag } from '@/types/multi-sig';
-import { MultiSigDataHint, MultiSigDataHintType } from '@/types/multi-sig/hint';
+import {
+  StateWallet,
+  TxHintBag,
+  MultiSigDataHint,
+  MultiSigDataHintType,
+} from '@minotaur-ergo/types';
 import { boxArrayToBoxes } from '@/utils/convert';
 import fakeContext from '@/utils/networks/fakeContext';
 import * as wasm from 'ergo-lib-wasm-browser';
