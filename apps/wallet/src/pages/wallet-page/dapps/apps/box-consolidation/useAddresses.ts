@@ -1,4 +1,4 @@
-import { DAppPropsType } from '@/types/dapps';
+import { DAppPropsType } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
 
 const useAddresses = (props: DAppPropsType) => {

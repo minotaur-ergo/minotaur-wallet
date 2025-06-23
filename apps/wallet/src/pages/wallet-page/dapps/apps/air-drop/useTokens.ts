@@ -2,7 +2,7 @@ import {
   IMPL_FEE,
   TX_FEE,
 } from '@/pages/wallet-page/dapps/apps/air-drop/params';
-import { AssetInfo, DAppPropsType } from '@/types/dapps';
+import { AssetInfo, DAppPropsType } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
 
 const useTokens = (props: DAppPropsType) => {

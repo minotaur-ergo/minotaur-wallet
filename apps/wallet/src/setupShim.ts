@@ -1,4 +1,4 @@
 import { Buffer } from 'buffer';
-import './types/window';
+import '@minotaur-ergo/types';
 
 window.Buffer = Buffer;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChainTypeInterface } from '@/utils/networks/interfaces';
+import { ChainTypeInterface } from './network';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { VariantType } from 'notistack';
 
@@ -62,8 +62,4 @@ interface TokenAmount {
   };
 }
 
-export type { DAppPropsType };
-
-export type { DAppType };
-
-export type { TokenAmount };
+export type { DAppPropsType, DAppType, TokenAmount };

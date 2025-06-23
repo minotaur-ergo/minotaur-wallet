@@ -4,7 +4,7 @@ import { generateChangeBox, selectBoxes } from '@/action/tx';
 import MessageContext from '@/components/app/messageContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import { StateWallet } from '@/store/reducer/wallet';
-import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
+import { DAppPropsType, UnsignedGeneratedTx } from '@minotaur-ergo/types';
 import {
   boxArrayToBoxes,
   boxCandidatesToArrayBoxCandidate,

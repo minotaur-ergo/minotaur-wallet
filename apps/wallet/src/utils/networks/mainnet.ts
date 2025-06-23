@@ -1,4 +1,4 @@
-import { ChainTypeInterface } from './interfaces';
+import { ChainTypeInterface } from '@minotaur-ergo/types';
 import { ErgoStateContext, NetworkPrefix } from 'ergo-lib-wasm-browser';
 import ErgoExplorerNetwork from './explorer';
 import { MAIN_NET_LABEL } from '../const';

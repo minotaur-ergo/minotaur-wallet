@@ -1,13 +1,11 @@
+import { TokenInfo, AbstractNetwork, BalanceInfo } from '@minotaur-ergo/types';
 import { serialize } from '@/action/box';
 import { AddressDbAction, BoxDbAction } from '@/action/db';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
 import * as wasm from 'ergo-lib-wasm-browser';
 import Address from '@/db/entities/Address';
-import { TokenInfo } from '@/types/db';
 import JSONBigInt from 'json-bigint';
 import { JsonBI } from '../json';
-import { AbstractNetwork } from './abstractNetwork';
-import { BalanceInfo } from './interfaces';
 
 const getBoxId = (box: { boxId: string } | { id: string }) => {
   if (Object.prototype.hasOwnProperty.call(box, 'boxId'))
@@ -135,8 +133,13 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     }
   };
 
-  syncBoxes = async (address: Address): Promise<boolean> => {
+  syncBoxes = async (addressStr: string): Promise<boolean> => {
     try {
+      const address =
+        await AddressDbAction.getInstance().getAddressByAddressString(
+          addressStr,
+        );
+      if (address === null) return false;
       const height = await this.getHeight();
       let addressHeight = address.process_height;
       let toHeight = height;

@@ -1,4 +1,4 @@
-import { DAppType } from '@/types/dapps';
+import { DAppType } from '@minotaur-ergo/types';
 import { Close, InfoOutlined } from '@mui/icons-material';
 import { Box, Drawer, IconButton, Typography } from '@mui/material';
 import React, { useState } from 'react';

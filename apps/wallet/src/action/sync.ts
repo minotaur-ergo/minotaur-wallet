@@ -4,7 +4,7 @@ import store from '@/store';
 import { setBalances, StateWallet } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
 import getChain from '@/utils/networks';
-import { AbstractNetwork } from '@/utils/networks/abstractNetwork';
+import { AbstractNetwork } from '@minotaur-ergo/types';
 import {
   AddressDbAction,
   AddressValueDbAction,
@@ -174,7 +174,7 @@ const syncWallet = async (wallet: StateWallet) => {
   await Promise.all(
     addresses.map(async (address) => {
       try {
-        if (await network.syncBoxes(address)) {
+        if (await network.syncBoxes(address.address)) {
           const verifyHeight = await network.getHeight();
           const dbAddresses =
             await AddressDbAction.getInstance().getAddressById(address.id);

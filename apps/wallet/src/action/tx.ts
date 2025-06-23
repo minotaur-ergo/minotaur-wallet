@@ -1,6 +1,6 @@
 import * as wasm from 'ergo-lib-wasm-browser';
 import { ReceiverTokenType, ReceiverType } from '@/types/sign-modal';
-import { TotalSpent } from '@/types/tx';
+import { TotalSpent } from '@minotaur-ergo/types';
 import openInBrowser from '@/utils/browser';
 import { BoxDbAction } from './db';
 import { StateWallet } from '@/store/reducer/wallet';

@@ -1,4 +1,4 @@
-import { TokenType } from '@/types/tx';
+import { TokenType } from '@minotaur-ergo/types';
 import { Stack, Typography } from '@mui/material';
 import React from 'react';
 import IssuedBurntTokenAmount from './IssuedBurntTokenAmount';

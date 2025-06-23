@@ -4,7 +4,7 @@ import ActionPanel from './ActionPanel';
 import Bank from '../Bank';
 import Oracle from '../Oracle';
 import { buyToken, sellToken } from '../utils';
-import { DAppPropsType } from '@/types/dapps';
+import { DAppPropsType } from '@minotaur-ergo/types';
 
 interface TabViewPropsType {
   price: bigint;

@@ -5,7 +5,7 @@ import Addresses from '@/pages/wallet-page/dapps/apps/air-drop/Addresses';
 import useTokens from '@/pages/wallet-page/dapps/apps/air-drop/useTokens';
 import React from 'react';
 import SelectTokens from '@/components/select-tokens/SelectTokens';
-import { DAppPropsType, TokenAmount } from '@/types/dapps';
+import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
 import { Button, Stack } from '@mui/material';
 import { useState } from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';

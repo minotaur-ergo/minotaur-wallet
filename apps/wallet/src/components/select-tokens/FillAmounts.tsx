@@ -1,6 +1,5 @@
 import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
-import { TokenAmount } from '@/types/dapps';
-import { ChainTypeInterface } from '@/utils/networks/interfaces';
+import { TokenAmount, ChainTypeInterface } from '@minotaur-ergo/types';
 import React from 'react';
 
 interface FillAmountsPropsType {

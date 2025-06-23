@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Bank from './Bank';
 import Oracle from './Oracle';
-import { ChainTypeInterface } from '@/utils/networks/interfaces';
+import { ChainTypeInterface } from '@minotaur-ergo/types';
 
 const useBoxes = (chain: ChainTypeInterface) => {
   const [loading, setLoading] = useState(false);

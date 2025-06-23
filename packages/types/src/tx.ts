@@ -1,3 +1,16 @@
+interface TokenSpent {
+  [tokenId: string]: bigint;
+}
+interface TotalSpent {
+  value: bigint;
+  tokens: TokenSpent;
+}
+
+interface TokenType {
+  tokenId: string;
+  amount: bigint;
+}
+
 enum BoxStatus {
   SPEND = 'spend',
   INVALID = 'invalid',
@@ -22,6 +35,6 @@ interface SpendDetail {
   index: number;
 }
 
-export type { BoxSpendDetail, SpendDetail };
-
 export { BoxStatus };
+
+export type { TotalSpent, TokenSpent, TokenType, BoxSpendDetail, SpendDetail };

@@ -3,7 +3,7 @@ import Boxes from './Boxes';
 import * as parameters from './parameters';
 import Bank from './Bank';
 import Oracle from './Oracle';
-import { DAppPropsType } from '@/types/dapps';
+import { DAppPropsType } from '@minotaur-ergo/types';
 import { boxesToArrayBox } from '@/utils/convert';
 import { createEmptyArrayWithIndex } from '@/utils/functions';
 

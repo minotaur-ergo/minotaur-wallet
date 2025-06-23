@@ -5,7 +5,7 @@ import Tab from '@mui/material/Tab';
 import SigmaUsdPanel from './tabs/SigmaUsdPanel';
 import SigmaRsvPanel from './tabs/SigmaRsvPanel';
 import useBoxes from './useBoxes';
-import { DAppPropsType } from '@/types/dapps';
+import { DAppPropsType } from '@minotaur-ergo/types';
 import LoadingPage from '@/components/loading-page/LoadingPage';
 
 const SigmaUSD = (props: DAppPropsType) => {

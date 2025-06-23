@@ -8,7 +8,7 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
+import { DAppPropsType, UnsignedGeneratedTx } from '@minotaur-ergo/types';
 import React, { useState } from 'react';
 import DisplayId from '@/components/display-id/DisplayId';
 import useAddresses from './useAddresses';

@@ -1,5 +1,5 @@
 import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
-import { DAppType } from '@/types/dapps';
+import { DAppType } from '@minotaur-ergo/types';
 import SigmaUsdReadMe from './sigma-usd/SigmaUsdReadMe';
 import * as wasm from 'ergo-lib-wasm-browser';
 import IssueToken from './issue-token/IssueToken';

@@ -1,4 +1,4 @@
-import { TokenType } from '@/types/tx';
+import { TokenType } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 import { useEffect, useState } from 'react';
 
