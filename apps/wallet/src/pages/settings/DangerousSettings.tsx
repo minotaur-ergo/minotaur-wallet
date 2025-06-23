@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, GlobalStateType } from '@minotaur-ergo/types';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { Box, Stack } from '@mui/material';
 
@@ -10,7 +10,6 @@ import { WalletDbAction } from '@/action/db';
 import Confirm from '@/components/confirm/Confirm';
 import Heading from '@/components/heading/Heading';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 
 import ActionButton from './ActionButton';
 

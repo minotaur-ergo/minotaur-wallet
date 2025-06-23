@@ -64,3 +64,29 @@ export interface WalletStateType {
   refresh: boolean;
   updatedWallets: Array<number>;
 }
+
+export type DisplayType = 'simple' | 'advanced';
+
+export interface PinConfig {
+  hasPin: boolean;
+  activePinType: string;
+  locked: boolean;
+  loaded: boolean;
+}
+
+export interface ConfigStateType {
+  display: DisplayType;
+  currency: string;
+  price: number;
+  priceLastWeek: number;
+  activeWallet?: number;
+  useActiveWallet: boolean;
+  multiSigLoadedTime: number;
+  loadedPinType: string;
+  pin: PinConfig;
+}
+
+export interface GlobalStateType {
+  wallet: WalletStateType;
+  config: ConfigStateType;
+}

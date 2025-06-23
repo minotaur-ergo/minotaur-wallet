@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
+
 import { syncWallet } from '@/action/sync';
-import store, { GlobalStateType } from '@/store';
+import store from '@/store';
 import {
   addUpdatedWallets,
   clearUpdatedWallets,

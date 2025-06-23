@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
 import { Button, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { PinDbAction } from '@/action/db';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import PasswordField from '@/components/password-field/PasswordField';
-import { GlobalStateType } from '@/store';
 import { getPinHash, honeyPinType } from '@/utils/convert';
 
 import AppFrame from '../../layouts/AppFrame';

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useParams } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, GlobalStateType } from '@minotaur-ergo/types';
 
 import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { WalletPageSuffix } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 
 import WalletSettings from '../settings/Settings';
 import WalletExtendedPublicKey from '../settings/WalletExtendedPublicKey';

@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
+
 import Splash from '@/components/splash/Splash';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
@@ -20,7 +22,6 @@ import AddSavedAddress from '@/pages/wallet-page/address-book/AddSavedAddress';
 import EnterPin from '@/pages/wallet-page/enter-pin/EnterPin';
 import WalletPage from '@/pages/wallet-page/WalletPage';
 import Wallets from '@/pages/wallets/Wallets';
-import { GlobalStateType } from '@/store';
 
 import { RouteMap } from './routerMap';
 

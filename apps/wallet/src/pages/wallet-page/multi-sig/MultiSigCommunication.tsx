@@ -7,6 +7,7 @@ import {
   MultiSigDataShare,
   StateWallet,
 } from '@minotaur-ergo/types';
+import { GlobalStateType } from '@minotaur-ergo/types';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { Fab } from '@mui/material';
 
@@ -20,7 +21,6 @@ import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import AppFrame from '@/layouts/AppFrame';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 import { QrCodeTypeEnum } from '@/types/qrcode';
 import { readClipBoard } from '@/utils/clipboard';
 

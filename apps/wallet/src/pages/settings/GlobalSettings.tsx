@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { DisplayType, GlobalStateType } from '@minotaur-ergo/types';
 import { Box, Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
@@ -11,9 +12,7 @@ import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import { ConfigType } from '@/db/entities/Config';
 import ActionButton from '@/pages/settings/ActionButton';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 import {
-  DisplayType,
   setActiveWallet,
   setCurrency,
   setDisplay,

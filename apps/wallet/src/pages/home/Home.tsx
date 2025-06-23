@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
+
 import { WalletDbAction } from '@/action/db';
 import LoadingPage from '@/components/loading-page/LoadingPage';
 import AppFrame from '@/layouts/AppFrame';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 
 const Home = () => {
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);

@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
+
 import {
   AddressDbAction,
   ConfigDbAction,
@@ -8,7 +10,6 @@ import {
 } from '@/action/db';
 import { getInitializeData } from '@/action/initialize';
 import { ConfigType } from '@/db/entities/Config';
-import { GlobalStateType } from '@/store';
 import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
 import {

@@ -1,25 +1,5 @@
+import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-
-export type DisplayType = 'simple' | 'advanced';
-
-export interface PinConfig {
-  hasPin: boolean;
-  activePinType: string;
-  locked: boolean;
-  loaded: boolean;
-}
-
-export interface ConfigStateType {
-  display: DisplayType;
-  currency: string;
-  price: number;
-  priceLastWeek: number;
-  activeWallet?: number;
-  useActiveWallet: boolean;
-  multiSigLoadedTime: number;
-  loadedPinType: string;
-  pin: PinConfig;
-}
 
 export const configInitialState: ConfigStateType = {
   currency: '',

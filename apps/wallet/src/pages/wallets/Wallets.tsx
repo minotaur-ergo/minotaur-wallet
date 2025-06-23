@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
-import AddIcon from '@mui/icons-material/Add';
+import { StateWallet, GlobalStateType } from '@minotaur-ergo/types';
+import { Add } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
 
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
@@ -12,7 +12,6 @@ import SubHeading from '@/components/heading/SubHeading';
 import HomeAction from '@/components/home-action/HomeAction';
 import AppFrame from '@/layouts/AppFrame';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { GlobalStateType } from '@/store';
 
 import TotalBalanceCard from './components/TotalBalanceCard';
 import WalletItem from './components/WalletItem';
@@ -43,7 +42,7 @@ const Wallets = () => {
             <IconButton
               onClick={() => navigate(getRoute(RouteMap.WalletAdd, {}))}
             >
-              <AddIcon />
+              <Add />
             </IconButton>
           </HomeAction>
         </React.Fragment>
