@@ -33,7 +33,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
   });
   const availableLabel = props.availableLabel ?? 'available';
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && props.tokenId !== decimal.token) {
@@ -84,16 +84,8 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         decimal: decimal.amount,
       });
       props.setAmount(amountBigInt);
-      if (amountBigInt > props.total) {
-        setError('Amount exceeds available balance');
-        props.setHasError?.(true);
-      } else {
-        setError(null);
-        props.setHasError?.(false);
-      }
     } catch (e) {
       console.log(e);
-      props.setHasError?.(true);
     }
   };
 
@@ -102,7 +94,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
       label="Amount"
       value={amount.value}
       onChange={(event) => editAmount(event.target.value)}
-      error={!!error}
+      // error={!!error}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -111,22 +103,20 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
         ),
       }}
       helperText={
-        error || (
-          <Button
-            variant="text"
-            fullWidth={false}
-            sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
-            onClick={() => editAmount(tokenStr(props.total, decimal.amount))}
-          >
-            <Typography>
-              <TokenAmountDisplay
-                amount={props.total > 0n ? props.total : 0n}
-                decimal={decimal.amount}
-              />
-              {' ' + decimal.name} {availableLabel}
-            </Typography>
-          </Button>
-        )
+        <Button
+          variant="text"
+          fullWidth={false}
+          sx={{ p: 0, minWidth: 'unset', color: 'info.dark' }}
+          onClick={() => editAmount(tokenStr(props.total, decimal.amount))}
+        >
+          <Typography>
+            <TokenAmountDisplay
+              amount={props.total > 0n ? props.total : 0n}
+              decimal={decimal.amount}
+            />
+            {' ' + decimal.name} {availableLabel}
+          </Typography>
+        </Button>
       }
     />
   );
