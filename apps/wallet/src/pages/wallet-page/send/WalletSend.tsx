@@ -27,9 +27,12 @@ const WalletSend = (props: WalletSendPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const [displayBoxes, setDisplayBoxes] = useState(false);
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step === STEPS_COUNTS) {
-      txSignContext.handle();
+      const success = await txSignContext.handle();
+      if (!success) {
+        setHasError(true);
+      }
     } else {
       setStep(step + 1);
     }

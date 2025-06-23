@@ -61,14 +61,31 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
   };
 
   useEffect(() => {
+    const totalUsed = generatorContext.receivers
+      .map((item) => item.amount)
+      .reduce((a, b) => a + b, 0n);
+
+    const totalAvailable = generatorContext.total;
+
+    const sendingTooMuch = totalUsed + FEE > totalAvailable;
+
     const hasAnyError =
       addressError ||
       content.amount < MIN_BOX_VALUE ||
       amountErrors.some((error) => error) ||
-      ergAmountError;
+      ergAmountError ||
+      sendingTooMuch;
 
     props.setHasError(hasAnyError);
-  }, [addressError, content.amount, amountErrors, ergAmountError, props]);
+  }, [
+    addressError,
+    content.amount,
+    amountErrors,
+    ergAmountError,
+    props,
+    generatorContext.receivers,
+    generatorContext.total,
+  ]);
 
   useEffect(() => {
     if (content.tokens.length !== amountErrors.length) {
