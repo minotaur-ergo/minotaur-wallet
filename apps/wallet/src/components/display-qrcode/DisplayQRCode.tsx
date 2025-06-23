@@ -1,5 +1,14 @@
-import ToggleIconButton from '@/components/toggle-icon-button/ToggleIconButton';
 import { useEffect, useState } from 'react';
+
+import {
+  ContentCopyOutlined,
+  DownloadOutlined,
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  PauseCircleOutline,
+  PlayCircleOutline,
+  ZoomIn,
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -11,18 +20,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import QRCodeSVG from './QrCodeSVG';
+
+import ToggleIconButton from '@/components/toggle-icon-button/ToggleIconButton';
 import { MAX_CHUNK_SIZE, QRCODE_MINIMUM_CHUNK_SIZE } from '@/utils/const';
-import {
-  ContentCopyOutlined,
-  DownloadOutlined,
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  PauseCircleOutline,
-  PlayCircleOutline,
-  ZoomIn,
-} from '@mui/icons-material';
+
 import CopyToClipboard from '../copy-to-clipboard/CopyToClipboard';
+import QRCodeSVG from './QrCodeSVG';
 
 interface DisplayQRCodePropsType {
   value: string;

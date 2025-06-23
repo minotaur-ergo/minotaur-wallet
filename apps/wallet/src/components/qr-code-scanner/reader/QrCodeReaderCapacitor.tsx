@@ -1,6 +1,5 @@
-import MessageContext from '@/components/app/messageContext';
-import { QrCodePropsType } from '@/types/qrcode';
-import { getCameraBoxBoundary } from '@/utils/qrcode';
+import { useContext, useEffect, useState } from 'react';
+
 import {
   BarcodeFormat,
   BarcodeScanner,
@@ -8,7 +7,10 @@ import {
 } from '@capacitor-mlkit/barcode-scanning';
 import { CameraswitchOutlined } from '@mui/icons-material';
 import { Fab } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+
+import MessageContext from '@/components/app/messageContext';
+import { QrCodePropsType } from '@/types/qrcode';
+import { getCameraBoxBoundary } from '@/utils/qrcode';
 
 const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
   const message = useContext(MessageContext);

@@ -1,8 +1,11 @@
-import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
-import { GlobalStateType } from '@/store';
 import { useSelector } from 'react-redux';
-import { ergPriceUsd } from '@/utils/functions';
+
+import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
+
+import { GlobalStateType } from '@/store';
 import { MAIN_NET_LABEL } from '@/utils/const';
+import { ergPriceUsd } from '@/utils/functions';
+
 import Rate from './Rate';
 
 const TotalBalanceCard = () => {

@@ -1,11 +1,13 @@
-import * as wasm from 'ergo-lib-wasm-browser';
-import Boxes from './Boxes';
-import * as parameters from './parameters';
-import Bank from './Bank';
-import Oracle from './Oracle';
 import { DAppPropsType } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { boxesToArrayBox } from '@/utils/convert';
 import { createEmptyArrayWithIndex } from '@/utils/functions';
+
+import Bank from './Bank';
+import Boxes from './Boxes';
+import Oracle from './Oracle';
+import * as parameters from './parameters';
 
 export const formatWithDecimals = (amount: bigint, decimals: number) => {
   if (decimals <= 0) return amount.toString();

@@ -6,7 +6,10 @@ const perPackage = (resolver) => (files) => {
     files.reduce((packages, file) => {
       let directory = path.dirname(file);
       while (directory && directory !== process.cwd()) {
-        if (fs.existsSync(path.join(directory, 'package.json'))) {
+        if (
+          fs.existsSync(path.join(directory, 'package.json')) &&
+          !directory.endsWith('apps/wallet/electron')
+        ) {
           packages.add(resolver(directory, file));
           break;
         }

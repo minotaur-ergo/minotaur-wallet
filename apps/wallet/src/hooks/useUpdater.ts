@@ -1,13 +1,14 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { syncWallet } from '@/action/sync';
+import store, { GlobalStateType } from '@/store';
 import {
   addUpdatedWallets,
   clearUpdatedWallets,
   forceRefresh,
 } from '@/store/reducer/wallet';
-import { useEffect, useState } from 'react';
-import { syncWallet } from '@/action/sync';
 import { REFRESH_INTERVAL } from '@/utils/const';
-import { useSelector } from 'react-redux';
-import store, { GlobalStateType } from '@/store';
 
 const useUpdater = () => {
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,8 @@
-import { Box } from '@mui/material';
-import StateMessage from './StateMessage';
 import { ReactElement } from 'react';
+
+import { Box } from '@mui/material';
+
+import StateMessage from './StateMessage';
 
 interface CenterMessagePropsType {
   title?: string;

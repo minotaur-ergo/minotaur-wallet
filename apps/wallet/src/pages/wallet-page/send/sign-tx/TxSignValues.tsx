@@ -1,12 +1,14 @@
-import AssetRow from '@/components/asset-row/AssetRow';
-import useTxValues from '@/hooks/useTxValues';
+import React from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
 import { Box, FormHelperText, Typography } from '@mui/material';
 import { ErgoBox } from 'ergo-lib-wasm-browser';
 import * as wasm from 'ergo-lib-wasm-browser';
-import React from 'react';
-import { StateWallet } from '@minotaur-ergo/types';
-import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
+
+import AssetRow from '@/components/asset-row/AssetRow';
 import UnBalancedTokensAmount from '@/components/token-amount/UnBalancedTokensAmount';
+import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
+import useTxValues from '@/hooks/useTxValues';
 
 interface WalletSignNormalPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;

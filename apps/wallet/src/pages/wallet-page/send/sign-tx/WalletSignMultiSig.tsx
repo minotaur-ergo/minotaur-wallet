@@ -1,9 +1,12 @@
-import { Box, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import useReducedTx from '@/hooks/useReducedTx';
+
 import { StateWallet } from '@minotaur-ergo/types';
-import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import { Box, Typography } from '@mui/material';
+
 import { WalletType } from '@/db/entities/Wallet';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import useReducedTx from '@/hooks/useReducedTx';
+
 import WalletSignReadonly from './WalletSignReadonly';
 
 interface WalletSignMultiSigPropsType {

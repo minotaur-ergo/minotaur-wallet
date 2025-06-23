@@ -1,12 +1,13 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import SigmaUsdPanel from './tabs/SigmaUsdPanel';
-import SigmaRsvPanel from './tabs/SigmaRsvPanel';
-import useBoxes from './useBoxes';
+
 import { DAppPropsType } from '@minotaur-ergo/types';
+import { Box, Tab, Tabs } from '@mui/material';
+
 import LoadingPage from '@/components/loading-page/LoadingPage';
+
+import SigmaRsvPanel from './tabs/SigmaRsvPanel';
+import SigmaUsdPanel from './tabs/SigmaUsdPanel';
+import useBoxes from './useBoxes';
 
 const SigmaUSD = (props: DAppPropsType) => {
   const [tab, setTab] = React.useState('usd');

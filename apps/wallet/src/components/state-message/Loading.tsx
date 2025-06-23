@@ -1,6 +1,8 @@
-import AppFrame from '@/layouts/AppFrame';
-import CenterMessage from './CenterMessage';
 import { CircularProgress } from '@mui/material';
+
+import AppFrame from '@/layouts/AppFrame';
+
+import CenterMessage from './CenterMessage';
 
 interface LoadingPropsType {
   title?: string;

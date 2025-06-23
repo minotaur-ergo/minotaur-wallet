@@ -1,9 +1,11 @@
-import Wallet from '@/db/entities/Wallet';
 import { StateAddress, StateWallet } from '@minotaur-ergo/types';
-import Address from '@/db/entities/Address';
-import { WALLET_FLAG_ENUM } from '@/utils/const';
 import { blake2bHex } from 'blakejs';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import Address from '@/db/entities/Address';
+import Wallet from '@/db/entities/Wallet';
+import { WALLET_FLAG_ENUM } from '@/utils/const';
+
 import { createEmptyArrayWithIndex } from './functions';
 
 export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({

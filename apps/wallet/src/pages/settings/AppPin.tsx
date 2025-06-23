@@ -1,3 +1,9 @@
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { Button, Stack } from '@mui/material';
+
 import { PinDbAction } from '@/action/db';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
@@ -5,11 +11,8 @@ import PasswordField from '@/components/password-field/PasswordField';
 import { GlobalStateType } from '@/store';
 import { setPinConfig } from '@/store/reducer/config';
 import { getPinHash } from '@/utils/convert';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+
 import AppFrame from '../../layouts/AppFrame';
-import { Button, Stack } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 const AppPin = () => {
   const [oldPinHash, setOldPinHash] = useState('');

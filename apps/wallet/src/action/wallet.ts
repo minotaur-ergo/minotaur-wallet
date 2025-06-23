@@ -1,8 +1,9 @@
-import { setActiveWallet } from '@/store/reducer/config';
+import { StateAddress, StateWallet, WalletType } from '@minotaur-ergo/types';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { WalletType, StateAddress, StateWallet } from '@minotaur-ergo/types';
+
 import store from '@/store';
+import { setActiveWallet } from '@/store/reducer/config';
 import { addedWallets, invalidateWallets } from '@/store/reducer/wallet';
 import { walletEntityToWalletState } from '@/utils/convert';
 import { decrypt, encrypt } from '@/utils/enc';
@@ -11,10 +12,11 @@ import {
   getBase58ExtendedPublicKey,
   isValidAddress,
 } from '@/utils/functions';
+
 import {
   RootPathWithoutIndex,
-  getWalletAddressSecret,
   addAllWalletAddresses,
+  getWalletAddressSecret,
 } from './address';
 import { AddressDbAction, MultiSigDbAction, WalletDbAction } from './db';
 

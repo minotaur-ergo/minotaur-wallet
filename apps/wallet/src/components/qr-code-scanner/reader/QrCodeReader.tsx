@@ -1,15 +1,18 @@
-import BackButton from '@/components/back-button/BackButton';
-import QrCodeReaderSwitch from '@/components/qr-code-scanner/reader/QRCodeReaderSwitch';
-import useChunks from '@/hooks/useChunks';
+import { useCallback, useEffect, useState } from 'react';
+
 import { CameraswitchOutlined } from '@mui/icons-material';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
-import ScanQrBox from './ScanQrBox';
-import CameraBox from './CameraBox';
+import { IconButton } from '@mui/material';
+
+import BackButton from '@/components/back-button/BackButton';
+import QrCodeReaderSwitch from '@/components/qr-code-scanner/reader/QRCodeReaderSwitch';
 import ScannedChunkStatus from '@/components/qr-code-scanner/reader/ScannedChunkStatus';
+import useChunks from '@/hooks/useChunks';
 import AppFrame from '@/layouts/AppFrame';
 import { readClipBoard } from '@/utils/clipboard';
-import { IconButton } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+
+import CameraBox from './CameraBox';
+import ScanQrBox from './ScanQrBox';
 
 interface QrCodeReaderPropsType {
   success: (scanned: string) => unknown;

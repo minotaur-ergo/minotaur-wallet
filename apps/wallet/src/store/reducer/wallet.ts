@@ -1,14 +1,15 @@
-import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
 import {
-  WalletStateType,
-  StateWallet,
-  StateAddress,
-  AddressBalanceMap,
   AddressBalance,
-  InitializeAllPayload,
+  AddressBalanceMap,
   AddressBalancePayload,
+  InitializeAllPayload,
+  StateAddress,
+  StateWallet,
+  WalletStateType,
 } from '@minotaur-ergo/types';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
+import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
 
 export const walletInitialState: WalletStateType = {
   wallets: [],

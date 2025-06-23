@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { WalletDbAction } from '@/action/db';
-import { GlobalStateType } from '@/store';
 import { useNavigate } from 'react-router-dom';
-import { getRoute, RouteMap } from '@/router/routerMap';
-import AppFrame from '@/layouts/AppFrame';
+
+import { WalletDbAction } from '@/action/db';
 import LoadingPage from '@/components/loading-page/LoadingPage';
+import AppFrame from '@/layouts/AppFrame';
+import { RouteMap, getRoute } from '@/router/routerMap';
+import { GlobalStateType } from '@/store';
 
 const Home = () => {
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);

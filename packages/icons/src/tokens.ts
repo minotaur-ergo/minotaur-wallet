@@ -787,7 +787,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'e6ddf7fdbfd60bb2acf0acad276281a34990c2a1c9221ad80fbed8d24b3a737d',
     fileExtension: 'svg',
   },
-  a01cb7b8ab08dec2e191b3ba58165a88a510d0f310dff5d81eb8e62e4ea6ab20: {
+  'a01cb7b8ab08dec2e191b3ba58165a88a510d0f310dff5d81eb8e62e4ea6ab20': {
     id: 'a01cb7b8ab08dec2e191b3ba58165a88a510d0f310dff5d81eb8e62e4ea6ab20',
     boxId: 'd74a4f5b43fd07a93e221e99fd0cb185d83a212e5559ce4605d068fbdbe99787',
     decimals: 6,
@@ -800,7 +800,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '6106213a79fd1f8b2d9e6e9874df19c123794113164825b7562273e340e6fa5f',
     fileExtension: 'svg',
   },
-  a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386: {
+  'a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386': {
     id: 'a50d95830f150f8ffb5da1a65e2313b1269807a855e30cd2f0b3fbaee0a47386',
     boxId: '36ff29af3bf1cb65667ea62e95ec849a5a7808affcfbec140d2648a98e12c3d6',
     decimals: 6,
@@ -813,7 +813,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '17b02d977a74ea757231a01e677aad99762323a4768156695d12f5a0df817c99',
     fileExtension: 'svg',
   },
-  a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26: {
+  'a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26': {
     id: 'a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26',
     boxId: 'c3126ffbecba90ef12aa78ab163b4eb9e47a6c001a7c44f35b39df7751453bfd',
     decimals: 4,
@@ -826,7 +826,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '2ec54f3a8589c094dfb82021eaa30af9e2a301a5ae6b732f74b06c3c3535505b',
     fileExtension: 'png',
   },
-  abe0a3c2f646dcd430aac9c29d80feee865bd8b5231edb545a41105d4c8e4985: {
+  'abe0a3c2f646dcd430aac9c29d80feee865bd8b5231edb545a41105d4c8e4985': {
     id: 'abe0a3c2f646dcd430aac9c29d80feee865bd8b5231edb545a41105d4c8e4985',
     boxId: '7add4cc89eef88ab62567c12253b8faff7717a64c09d6c307d606ce7afb86765',
     decimals: 4,
@@ -839,7 +839,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '603c16347ff01903a9b79e42bfec2f1a75adaea4db283ce0736ece8fc0335e04',
     fileExtension: 'png',
   },
-  b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0: {
+  'b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0': {
     id: 'b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0',
     boxId: '61afa81afcccd4fb66046ce84ab52a5ad6315f9febdb6b4352d8ae7ed706d083',
     decimals: 3,
@@ -851,7 +851,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a9a05661dbf3b164ac07f5b4801a2aed592f9ae4d6d242144ea21399468a71d1',
     fileExtension: 'png',
   },
-  b2bb4d99ffd6f73c06a4ca1fe9fadd1ad4a20b5b9052373e3cee5ddeb4534e27: {
+  'b2bb4d99ffd6f73c06a4ca1fe9fadd1ad4a20b5b9052373e3cee5ddeb4534e27': {
     id: 'b2bb4d99ffd6f73c06a4ca1fe9fadd1ad4a20b5b9052373e3cee5ddeb4534e27',
     boxId: 'd84b02c22a3c5d26a7b9378ac13e844653fd2889d5bf9db673eec19f6b9d38ee',
     decimals: 6,
@@ -864,7 +864,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'ef3c6e3dbd92568db0e6cabde45d247cab8d7985bf2f6f2edab3e7761aa1d515',
     fileExtension: 'svg',
   },
-  b780a9682ba1ea68eedfe3dd00169e414ea8968d96142ee95e2391d64df05c3d: {
+  'b780a9682ba1ea68eedfe3dd00169e414ea8968d96142ee95e2391d64df05c3d': {
     id: 'b780a9682ba1ea68eedfe3dd00169e414ea8968d96142ee95e2391d64df05c3d',
     boxId: 'b2373e2ff2fce6e2c143cb7a73672b4504cdbf59f598d23b265d142e46849fa1',
     decimals: 8,
@@ -877,7 +877,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a07d7090c01e2e0974ed3b06f191810c897ab8ebbfbd4494ec469c385df3ecee',
     fileExtension: 'svg',
   },
-  c0f315e4adcb1463ca27988cb1d61668a539a5dd516f996f1f576567fbb0b158: {
+  'c0f315e4adcb1463ca27988cb1d61668a539a5dd516f996f1f576567fbb0b158': {
     id: 'c0f315e4adcb1463ca27988cb1d61668a539a5dd516f996f1f576567fbb0b158',
     boxId: '22cdfb8e11795f3ff59f672809b61e3c2908cd5e81d72d027620ef42f7276e9e',
     decimals: 3,
@@ -889,7 +889,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '2a9cfef236ee9c119dec2774a69e1dbf2eba35d2949bd817a523ddba0c875c5a',
     fileExtension: 'png',
   },
-  c15a8e1ff8c60e1cd280d9c5b4daa0e92292da06919c2496c27374f9507da65d: {
+  'c15a8e1ff8c60e1cd280d9c5b4daa0e92292da06919c2496c27374f9507da65d': {
     id: 'c15a8e1ff8c60e1cd280d9c5b4daa0e92292da06919c2496c27374f9507da65d',
     boxId: 'cd35e739036ffa97e71f82a50960fa3b379ce9e1bde6e3e155e657282489acdb',
     decimals: 6,
@@ -902,7 +902,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '31ddf6439d16e7bb10d022b7c60d954748fa9fbb79f5bd9cbed996633570cb61',
     fileExtension: 'svg',
   },
-  ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675: {
+  'ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675': {
     id: 'ca0ed0092eaaa22b6bfcc407d221b3aaa5c8f643e843cb6aafff6af955947675',
     boxId: '045c76222dfdf2dbf033258d4b45ceeac755e0c0f2075ecc1d04795379cb2a3e',
     decimals: 4,
@@ -914,7 +914,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'c4da9daba88c0da1eabd62a408304cf0f1ed1dd5d901136ef44761c1f2e542a7',
     fileExtension: 'svg',
   },
-  cbd75cfe1a4f37f9a22eaee516300e36ea82017073036f07a09c1d2e10277cda: {
+  'cbd75cfe1a4f37f9a22eaee516300e36ea82017073036f07a09c1d2e10277cda': {
     id: 'cbd75cfe1a4f37f9a22eaee516300e36ea82017073036f07a09c1d2e10277cda',
     boxId: '7925962159b27b2ac0fc4ebdf3ff92e490fabc7b50d8084957f6b89dbe0e9f9d',
     decimals: 9,
@@ -927,7 +927,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '157a174168ee6beed1adee4ef5ef83175e2f57059d1d92a95d9d3d6c3c5588d4',
     fileExtension: 'svg',
   },
-  ccaac3de4098aa63de90c56973bb1bff7563e8c58594b2075dd04005dac13ae6: {
+  'ccaac3de4098aa63de90c56973bb1bff7563e8c58594b2075dd04005dac13ae6': {
     id: 'ccaac3de4098aa63de90c56973bb1bff7563e8c58594b2075dd04005dac13ae6',
     boxId: '6546badba720c2e2754a1a48c4ca6b86826ff54707cba3defd8fc00d602aa358',
     decimals: 4,
@@ -940,7 +940,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a7b7e44d9d217cae86d7962dc6c83090830c9d5b0bd02e9cf02c198b27fdf4d8',
     fileExtension: 'png',
   },
-  d1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334: {
+  'd1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334': {
     id: 'd1d2ae2ac0456aa43550dd4fda45e4f866d523be9170d3a3e4cab43a83926334',
     boxId: '3d31c8e0d8397c8c0c7a97564f4ee8f1efacf774ce72537a86ff0733b91e8595',
     decimals: 0,
@@ -952,7 +952,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a8edd7ff177d88e401f0b5236893e1d754573053b6bcd6d12985198a854b24c5',
     fileExtension: 'svg',
   },
-  d1dcfca3330bc884298c7111a9ef1e7b2970ab0c1d11bbcbacf31d319f0c2d55: {
+  'd1dcfca3330bc884298c7111a9ef1e7b2970ab0c1d11bbcbacf31d319f0c2d55': {
     id: 'd1dcfca3330bc884298c7111a9ef1e7b2970ab0c1d11bbcbacf31d319f0c2d55',
     boxId: 'd91843a0be1f51eee4d21884f0383c4534bb6be8fd3f4658d9c48db247361b45',
     decimals: 6,
@@ -965,7 +965,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '28336f1fec37ec3e5b2cbd239650131ffd6b944491fba47b8312753c86c24f22',
     fileExtension: 'png',
   },
-  d71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413: {
+  'd71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413': {
     id: 'd71693c49a84fbbecd4908c94813b46514b18b67a99952dc1e6e4791556de413',
     boxId: '057ef7fc690550e26d6eee2e37b0ed3164cb4a786c6becd32d8ce5d7f7fde141',
     decimals: 2,
@@ -977,7 +977,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'e0a0164ba457d2d4bc9db431f1579883977f3c11154616a585cce3b434587478',
     fileExtension: 'svg',
   },
-  da754307c5823cf39e098414919b3fac8821f4aa0c909fac474742942878dc1c: {
+  'da754307c5823cf39e098414919b3fac8821f4aa0c909fac474742942878dc1c': {
     id: 'da754307c5823cf39e098414919b3fac8821f4aa0c909fac474742942878dc1c',
     boxId: '45a0f2ca3beefc5343753a15f88ba22eb075d4773153d7d3496a9eb8e445fc9a',
     decimals: 6,
@@ -990,7 +990,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '5c1fdab49bebf8be44655f7045c4d4570dad4d9b21cea5b348a0c0d974c4fd30',
     fileExtension: 'svg',
   },
-  e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297: {
+  'e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297': {
     id: 'e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297',
     boxId: '62c47974afd271c8bd57e1d8526d3a3e7a7685c1f37d3add8a6870c5dfb2dd70',
     decimals: 6,
@@ -1003,7 +1003,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '1b9b482165b9aa6496212df93227c65f543fdbfdd729494c09dec5dc681657c7',
     fileExtension: 'svg',
   },
-  e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807: {
+  'e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807': {
     id: 'e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807',
     boxId: '83710fe470bf2f235e9a0e7b552550eef5552dbe8fe11228d46879155a333df8',
     decimals: 8,
@@ -1016,7 +1016,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a2b1973a9c530d4903d19c3b9c2413c9f8e52b7655c8a06c17572e5cbc232ab8',
     fileExtension: 'svg',
   },
-  e91cbc48016eb390f8f872aa2962772863e2e840708517d1ab85e57451f91bed: {
+  'e91cbc48016eb390f8f872aa2962772863e2e840708517d1ab85e57451f91bed': {
     id: 'e91cbc48016eb390f8f872aa2962772863e2e840708517d1ab85e57451f91bed',
     boxId: '2e2d2070848385c6c3158274849f538972967e56b3b511d793e6112d51f4392d',
     decimals: 0,
@@ -1029,7 +1029,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'fc71baf3512fdb582cd0415cbb505b000cd1affd1fa79962ab8e128a61bfe303',
     fileExtension: 'svg',
   },
-  eeb17283c641d1c74c1d44b1dee7509766350ec31ca954c420ddd788bff8f412: {
+  'eeb17283c641d1c74c1d44b1dee7509766350ec31ca954c420ddd788bff8f412': {
     id: 'eeb17283c641d1c74c1d44b1dee7509766350ec31ca954c420ddd788bff8f412',
     boxId: 'b8dd45198491f52803d24b62d00cbece7ac31a1a9fc173dddd870d88899fa277',
     decimals: 6,
@@ -1042,7 +1042,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'ecdbfb37f8983375615d7cf824edda03c50d58b8aebdbc7c783ec7ce6b8ec6a0',
     fileExtension: 'png',
   },
-  f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3: {
+  'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3': {
     id: 'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
     boxId: 'f45a9cb014b9beb9e92fe4e86d26577b45a3ec93f3a0e79634a549fe3708210d',
     decimals: 0,
@@ -1055,7 +1055,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '76ddff9906b4fb981c1f94811d5d6bcf7c6de0f3ead559c917729d765f672ad3',
     fileExtension: 'png',
   },
-  f31bfeaa68564b49775eface452f831d9f60b4567837bbeb909c6401e0a19485: {
+  'f31bfeaa68564b49775eface452f831d9f60b4567837bbeb909c6401e0a19485': {
     id: 'f31bfeaa68564b49775eface452f831d9f60b4567837bbeb909c6401e0a19485',
     boxId: '0e79fdae58878622605f352a164e9f93bf79fbdb5c2c2347f9fed9902701514f',
     decimals: 6,
@@ -1068,7 +1068,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '34755f4844cd889b0387b4204211028973234dcf1df6d60849dd38fdb727f629',
     fileExtension: 'svg',
   },
-  f35cc232da3e1d4fd0bf84da9908f6de5ed4f3d57a649629ffaf3fc0e858a3e5: {
+  'f35cc232da3e1d4fd0bf84da9908f6de5ed4f3d57a649629ffaf3fc0e858a3e5': {
     id: 'f35cc232da3e1d4fd0bf84da9908f6de5ed4f3d57a649629ffaf3fc0e858a3e5',
     boxId: '07ffe09a58d66c876d1be78936cd0e70bddb61c920f055e7bda98cb21b789709',
     decimals: 2,
@@ -1080,7 +1080,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '80ac12069e8d6cab0c9f67d44a666e9373b835c67c12c09ed45a852de21238ef',
     fileExtension: 'png',
   },
-  f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0: {
+  'f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0': {
     id: 'f93d64ff18035e39c46217b862fcc92d99fa66b36c58c1340186dd1ced08bef0',
     boxId: '54ff689a333ac3228db38e4a895bd493a4806987847bbfb52aaabe9c8c992e6e',
     decimals: 0,
@@ -1093,7 +1093,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '49b2d8fcb40843c24e0c0efce198b0a465592bb225d2057023d7e63c83bb3993',
     fileExtension: 'png',
   },
-  fa8fd58c4ad2203dace0d517226da72facf1421c6bae1935d591b526316a7af9: {
+  'fa8fd58c4ad2203dace0d517226da72facf1421c6bae1935d591b526316a7af9': {
     id: 'fa8fd58c4ad2203dace0d517226da72facf1421c6bae1935d591b526316a7af9',
     boxId: '62932b849b3184c140b2a9811b891df5114b52f51da36f597701959a745c9a8d',
     decimals: 6,
@@ -1106,7 +1106,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '8ad652841a9291eb39a73c7383734b91a3bc2ee8a82360bae06bd559a7857e27',
     fileExtension: 'svg',
   },
-  fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40: {
+  'fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40': {
     id: 'fbbaac7337d051c10fc3da0ccb864f4d32d40027551e1c3ea3ce361f39b91e40',
     boxId: '00ef11830d923c432b5a85ee78a151c717d65ef8a280d1e2e8afb32a7ca32ac1',
     decimals: 0,
@@ -1118,7 +1118,7 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '25d7420c44b90386bb314384f4873ffdaed63f1c6ded15ff595e65821aa33233',
     fileExtension: 'svg',
   },
-  fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b: {
+  'fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b': {
     id: 'fcfca7654fb0da57ecf9a3f489bcbeb1d43b56dce7e73b352f7bc6f2561d2a1b',
     boxId: '96c559f706c266da43d7524a29624970c9a33c6a64d6ecaab56f1030619575cf',
     decimals: 8,

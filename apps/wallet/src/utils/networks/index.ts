@@ -1,6 +1,7 @@
 import { ChainTypeInterface } from '@minotaur-ergo/types';
-import { TestnetChain } from './testnet';
+
 import { MainnetChain } from './mainnet';
+import { TestnetChain } from './testnet';
 
 const availableNetworks: Array<ChainTypeInterface> = [
   new TestnetChain(),

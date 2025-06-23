@@ -1,10 +1,12 @@
-import { WalletType } from '@/db/entities/Wallet';
-import HomeFrame from '@/layouts/HomeFrame';
 import { StateWallet } from '@minotaur-ergo/types';
+
+import { WalletType } from '@/db/entities/Wallet';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import HomeFrame from '@/layouts/HomeFrame';
+
 import MultiSigCommunicationButton from './MultiSigCommunicationButton';
 import RecentTransactions from './RecentTransactions';
 import WalletCard from './WalletCard';
-import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface WalletHomePropsType {
   wallet: StateWallet;

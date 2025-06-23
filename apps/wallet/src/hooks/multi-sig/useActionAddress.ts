@@ -1,13 +1,15 @@
-import { getTxBoxes } from '@/action/tx';
-import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import { useContext, useEffect, useState } from 'react';
+
 import {
   AddressCompletionState,
   MultiSigAddressHolder,
   MultiSigDataHintType,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { useContext, useEffect, useState } from 'react';
+
+import { getTxBoxes } from '@/action/tx';
+import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
 
 const useActionAddresses = (
   addresses: Array<MultiSigAddressHolder>,

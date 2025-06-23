@@ -1,8 +1,10 @@
+import React, { useCallback, useState } from 'react';
+
 import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
-import { QrCodeContext } from './QrCodeContext';
 import { QrCodeCallback } from '@/types/qrcode';
-import React, { useCallback, useState } from 'react';
+
+import { QrCodeContext } from './QrCodeContext';
 
 interface QrCodeReaderViewPropsType {
   children: React.ReactNode;

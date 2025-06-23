@@ -1,4 +1,4 @@
-import { Chip, Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 
 interface PropsType {
   mnemonic: string;

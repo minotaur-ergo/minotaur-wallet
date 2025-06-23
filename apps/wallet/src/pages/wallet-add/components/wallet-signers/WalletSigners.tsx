@@ -1,5 +1,6 @@
-import { Box, Typography, Slider } from '@mui/material';
 import { useEffect } from 'react';
+
+import { Box, Slider, Typography } from '@mui/material';
 
 interface WalletSignersPropsType {
   signers: number;

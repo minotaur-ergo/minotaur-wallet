@@ -1,8 +1,10 @@
-import useQrReader from '@/hooks/useQrReader';
-import { QrCodePropsType } from '@/types/qrcode';
+import React, { useState } from 'react';
+
 import { CameraswitchOutlined } from '@mui/icons-material';
 import { Fab } from '@mui/material';
-import React, { useState } from 'react';
+
+import useQrReader from '@/hooks/useQrReader';
+import { QrCodePropsType } from '@/types/qrcode';
 
 interface QrCodeReaderWebPropsType extends QrCodePropsType {
   closeQrCode: () => unknown;

@@ -1,22 +1,25 @@
-import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
-import AppFrame from '@/layouts/AppFrame';
-import { StateWallet, MultiSigStateEnum } from '@minotaur-ergo/types';
 import { useContext, useState } from 'react';
-import ActionMenu from './components/ActionMenu';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import LoadingPage from '@/components/loading-page/LoadingPage';
-import StateAlert from './components/StateAlert';
-import TxSignValues from '../send/sign-tx/TxSignValues';
+
+import { MultiSigStateEnum, StateWallet } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
-import AddressActionList from './components/AddressActionList';
-import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
+import LoadingPage from '@/components/loading-page/LoadingPage';
 import PasswordField from '@/components/password-field/PasswordField';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
+import AppFrame from '@/layouts/AppFrame';
+
+import TxSignValues from '../send/sign-tx/TxSignValues';
+import ActionMenu from './components/ActionMenu';
+import AddressActionList from './components/AddressActionList';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import StateAlert from './components/StateAlert';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;

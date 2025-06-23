@@ -1,13 +1,14 @@
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { Button, Stack, CircularProgress } from '@mui/material';
+
 import { changeWalletPassword, validatePassword } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import PasswordField from '@/components/password-field/PasswordField';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@minotaur-ergo/types';
-import { Button, Stack } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface ChangeWalletPasswordPropsType {
   wallet: StateWallet;

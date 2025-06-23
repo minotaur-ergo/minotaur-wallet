@@ -1,7 +1,9 @@
 import { StateWallet, TokenBalance } from '@minotaur-ergo/types';
-import AssetItem from './AssetItem';
-import HomeFrame from '@/layouts/HomeFrame';
+
 import ListController from '@/components/list-controller/ListController';
+import HomeFrame from '@/layouts/HomeFrame';
+
+import AssetItem from './AssetItem';
 
 interface WalletAssetPropsType {
   wallet: StateWallet;

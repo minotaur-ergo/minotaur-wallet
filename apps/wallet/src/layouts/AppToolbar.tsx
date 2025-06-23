@@ -1,16 +1,18 @@
 import { useMemo } from 'react';
-import { Box, Button, IconButton, SvgIcon, styled, Grid } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
-import WidgetsIcon from '@mui/icons-material/Widgets';
-import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
+import HomeIcon from '@mui/icons-material/Home';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import OutboxOutlinedIcon from '@mui/icons-material/OutboxOutlined';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getRoute, RouteMap } from '@/router/routerMap';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
+import { Box, Button, Grid, IconButton, SvgIcon, styled } from '@mui/material';
+
+import { RouteMap, getRoute } from '@/router/routerMap';
 
 const RootBox = styled(Box)(
   () => `
@@ -54,8 +56,8 @@ const ToolbarButton = ({ label, icon, activeIcon, path }: ButtonPropsType) => {
     <Button
       variant="text"
       sx={{
-        flexDirection: 'column',
-        fontSize: '0.7rem',
+        'flexDirection': 'column',
+        'fontSize': '0.7rem',
         '&:not(.active)': {
           color: '#727272',
         },
@@ -112,8 +114,8 @@ const AppToolbar = (props: AppToolbarPropsType) => {
           <IconButton
             size="large"
             sx={{
-              color: 'white',
-              bgcolor: 'primary.dark',
+              'color': 'white',
+              'bgcolor': 'primary.dark',
               '&:hover': { bgcolor: 'primary.dark' },
             }}
             onClick={() =>

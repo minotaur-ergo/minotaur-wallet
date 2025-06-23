@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import Wallet from '../Wallet';
 
 @Entity({ name: 'multi-sig-row' })

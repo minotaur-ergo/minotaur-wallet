@@ -1,16 +1,19 @@
-import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
-import DisplayInHoneyMode from '@/pages/settings/DisplayInHoneyMode';
-import { WALLET_FLAG_ENUM } from '@/utils/const';
-import { Box, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Heading from '@/components/heading/Heading';
-import SolitaryTextField from '@/components/solitary/SolitaryTextField';
-import { WalletDbAction } from '@/action/db';
-import ActionButton from './ActionButton';
-import { VisibilityOutlined } from '@mui/icons-material';
-import { getRoute, RouteMap } from '@/router/routerMap';
+
 import { StateWallet } from '@minotaur-ergo/types';
+import { VisibilityOutlined } from '@mui/icons-material';
+import { Box, Stack } from '@mui/material';
+
+import { WalletDbAction } from '@/action/db';
+import Heading from '@/components/heading/Heading';
+import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
+import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import { WalletType } from '@/db/entities/Wallet';
+import DisplayInHoneyMode from '@/pages/settings/DisplayInHoneyMode';
+import { RouteMap, getRoute } from '@/router/routerMap';
+import { WALLET_FLAG_ENUM } from '@/utils/const';
+
+import ActionButton from './ActionButton';
 
 interface LocalSettingsPropsType {
   wallet: StateWallet;

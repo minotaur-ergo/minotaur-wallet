@@ -1,12 +1,14 @@
-import { Stack } from '@mui/material';
-import WorkspacesOutlinedIcon from '@mui/icons-material/WorkspacesOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import SettingsBackupRestoreOutlinedIcon from '@mui/icons-material/SettingsBackupRestoreOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import WorkspacesOutlinedIcon from '@mui/icons-material/WorkspacesOutlined';
+import { Stack } from '@mui/material';
+
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import AppFrame from '@/layouts/AppFrame';
 import { RouteMap } from '@/router/routerMap';
+
 import ItemCard from './components/item-card/ItemCard';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
 const AddWallet = () => {
   return (

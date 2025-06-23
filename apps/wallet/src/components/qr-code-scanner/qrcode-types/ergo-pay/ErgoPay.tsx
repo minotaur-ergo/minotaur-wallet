@@ -1,15 +1,6 @@
-import BackButton from '@/components/back-button/BackButton';
-import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import TxSignContext from '@/components/sign/context/TxSignContext';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import StateMessage from '@/components/state-message/StateMessage';
-import useMessage from '@/hooks/ergo-pay/useMessage';
-import SvgIcon from '@/icons/SvgIcon';
-import AppFrame from '@/layouts/AppFrame';
-import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
+import React, { useContext, useState } from 'react';
+
 import { StateWallet } from '@minotaur-ergo/types';
-import { QrCodeScannedComponentPropsType } from '@/types/qrcode';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {
   Button,
@@ -21,7 +12,18 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import React, { useContext, useState } from 'react';
+
+import BackButton from '@/components/back-button/BackButton';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import TxSignContext from '@/components/sign/context/TxSignContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import StateMessage from '@/components/state-message/StateMessage';
+import useMessage from '@/hooks/ergo-pay/useMessage';
+import SvgIcon from '@/icons/SvgIcon';
+import AppFrame from '@/layouts/AppFrame';
+import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
+import { QrCodeScannedComponentPropsType } from '@/types/qrcode';
 
 const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
   const [wallet, setWallet] = useState<StateWallet | undefined>();

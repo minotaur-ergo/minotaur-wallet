@@ -1,3 +1,10 @@
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
+import { CircularProgress, IconButton } from '@mui/material';
+
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
 import StateMessage from '@/components/state-message/StateMessage';
@@ -5,11 +12,6 @@ import TxDisplay from '@/components/tx/TxDisplay';
 import useTransactionData from '@/hooks/useTransactionData';
 import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@minotaur-ergo/types';
-import { CircularProgress, IconButton } from '@mui/material';
-import InventoryIcon from '@mui/icons-material/Inventory2Outlined';
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 interface TransactionDetailsPropsType {
   wallet: StateWallet;

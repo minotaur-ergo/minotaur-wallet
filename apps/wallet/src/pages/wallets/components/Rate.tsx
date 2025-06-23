@@ -1,7 +1,9 @@
-import { GlobalStateType } from '@/store';
-import { Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { Typography } from '@mui/material';
+
+import { GlobalStateType } from '@/store';
 
 interface RatePropsType {
   totalErg: bigint;

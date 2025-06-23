@@ -1,5 +1,7 @@
-import { Button, TextField, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
+
+import { Button, TextField, Typography } from '@mui/material';
+
 import { formatWithDecimals } from '../utils';
 
 interface PurchasePanelPropsType {

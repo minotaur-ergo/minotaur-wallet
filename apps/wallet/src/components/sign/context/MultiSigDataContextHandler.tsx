@@ -1,11 +1,14 @@
-import { MultiSigDataContext } from './MultiSigDataContext';
+import { useState } from 'react';
+
 import { StateWallet } from '@minotaur-ergo/types';
-import useMultiSigAddressHolders from '@/hooks/multi-sig/useMultiSigAddressHolders';
+
 import useCommittedAddress from '@/hooks/multi-sig/useActionAddress';
+import useMultiSigAddressHolders from '@/hooks/multi-sig/useMultiSigAddressHolders';
 import { useMultiSigTxState } from '@/hooks/multi-sig/useMultiSigTxState';
 import useMyAction from '@/hooks/multi-sig/useMyAction';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { useState } from 'react';
+
+import { MultiSigDataContext } from './MultiSigDataContext';
 
 interface MultiSigDataContextHandlerPropsType {
   wallet: StateWallet;

@@ -1,18 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { Button, Grid } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { createWallet } from '@/action/wallet';
-import AppFrame from '@/layouts/AppFrame';
+import MessageContext from '@/components/app/messageContext';
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Stepper from '@/components/stepper/Stepper';
+import { WalletType } from '@/db/entities/Wallet';
+import AppFrame from '@/layouts/AppFrame';
+import { MAIN_NET_LABEL } from '@/utils/const';
+
+import AddressConfirm from '../components/address-confirm/AddressConfirm';
+import { MnemonicRestore } from '../components/mnemonic-restore/MnemonicRestore';
 import WalletName from '../components/wallet-name/WalletName';
 import WalletPassword from '../components/wallet-password/WalletPassword';
-import CircularProgress from '@mui/material/CircularProgress';
-import { WalletType } from '@/db/entities/Wallet';
-import MessageContext from '@/components/app/messageContext';
-import { MnemonicRestore } from '../components/mnemonic-restore/MnemonicRestore';
-import AddressConfirm from '../components/address-confirm/AddressConfirm';
-import { MAIN_NET_LABEL } from '@/utils/const';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
 type WalletValueKeys =
   | 'name'

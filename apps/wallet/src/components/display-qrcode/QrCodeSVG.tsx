@@ -1,5 +1,7 @@
-import { Box } from '@mui/material';
 import { QRCodeSVG as PackageQrCode } from 'qrcode.react';
+
+import { Box } from '@mui/material';
+
 import './QrCodeSVG.css';
 
 interface QrCodeSVGPropsType {

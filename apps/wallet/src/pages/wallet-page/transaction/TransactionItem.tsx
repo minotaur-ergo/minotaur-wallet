@@ -1,4 +1,5 @@
-import { getRoute, RouteMap } from '@/router/routerMap';
+import { useNavigate } from 'react-router-dom';
+
 import { StateWallet } from '@minotaur-ergo/types';
 import {
   Box,
@@ -8,10 +9,12 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+
 import { WalletTransactionType } from '@/action/transaction';
-import DisplayId from '@/components/display-id/DisplayId';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
-import { useNavigate } from 'react-router-dom';
+import DisplayId from '@/components/display-id/DisplayId';
+import { RouteMap, getRoute } from '@/router/routerMap';
+
 // import getChain from '@/utils/networks';
 // import openInBrowser from '@/utils/browser';
 

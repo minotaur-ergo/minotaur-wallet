@@ -1,6 +1,7 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { fileURLToPath } from 'url';
+
 try {
   const packagePath = fileURLToPath(
     import.meta.resolve('@minotaur-ergo/icons/dist'),

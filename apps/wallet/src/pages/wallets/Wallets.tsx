@@ -1,18 +1,21 @@
-import SubHeading from '@/components/heading/SubHeading';
-import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
-import Heading from '@/components/heading/Heading';
-import WalletItem from './components/WalletItem';
-import AppFrame from '@/layouts/AppFrame';
-import { GlobalStateType } from '@/store';
-import { useSelector } from 'react-redux';
-import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@minotaur-ergo/types';
-import TotalBalanceCard from './components/TotalBalanceCard';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import AddIcon from '@mui/icons-material/Add';
+import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
+
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import Heading from '@/components/heading/Heading';
+import SubHeading from '@/components/heading/SubHeading';
 import HomeAction from '@/components/home-action/HomeAction';
+import AppFrame from '@/layouts/AppFrame';
+import { RouteMap, getRoute } from '@/router/routerMap';
+import { GlobalStateType } from '@/store';
+
+import TotalBalanceCard from './components/TotalBalanceCard';
+import WalletItem from './components/WalletItem';
 
 const Wallets = () => {
   const navigate = useNavigate();

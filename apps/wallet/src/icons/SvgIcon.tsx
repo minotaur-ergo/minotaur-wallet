@@ -1,12 +1,14 @@
 import { CSSProperties, useMemo } from 'react';
+
 import { useTheme } from '@mui/material';
-import ErgoIcon from './ErgoIcon';
-import DocumentIcon from './DocumentIcon';
+
 import ApprovedIcon from './ApprovedIcon';
-import FolderIcon from './FolderIcon';
-import WarningIcon from './WarningIcon';
+import DocumentIcon from './DocumentIcon';
+import ErgoIcon from './ErgoIcon';
 import ErrorIcon from './ErrorIcon';
+import FolderIcon from './FolderIcon';
 import InfoIcon from './InfoIcon';
+import WarningIcon from './WarningIcon';
 
 interface SvgIconPropsType {
   icon: string;

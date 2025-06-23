@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import { MultiSigContextType } from '@minotaur-ergo/types';
 
 const MultiSigContext = createContext<MultiSigContextType>({

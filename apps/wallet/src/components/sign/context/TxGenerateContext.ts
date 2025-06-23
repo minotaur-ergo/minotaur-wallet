@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import { ReceiverType } from '../../../types/sign-modal';
 
 interface TxGenerateContextType {

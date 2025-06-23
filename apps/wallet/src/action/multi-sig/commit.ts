@@ -1,12 +1,13 @@
-import { storeMultiSigRow } from '@/action/multi-sig/store';
-import { getProver } from '@/action/wallet';
 import {
-  StateWallet,
   CommitResult,
   MultiSigData,
+  StateWallet,
   TxHintBag,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import { storeMultiSigRow } from '@/action/multi-sig/store';
+import { getProver } from '@/action/wallet';
 
 /**
  * Creates or updates commitments for a multi-signature transaction.

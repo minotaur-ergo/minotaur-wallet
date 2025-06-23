@@ -1,5 +1,6 @@
-import { DAppPropsType } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
+
+import { DAppPropsType } from '@minotaur-ergo/types';
 
 const useAddresses = (props: DAppPropsType) => {
   const [addresses, setAddresses] = useState<Array<string>>([]);

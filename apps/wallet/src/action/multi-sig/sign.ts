@@ -1,15 +1,16 @@
+import {
+  MultiSigDataHint,
+  MultiSigDataHintType,
+  StateWallet,
+  TxHintBag,
+} from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
-import {
-  StateWallet,
-  TxHintBag,
-  MultiSigDataHint,
-  MultiSigDataHintType,
-} from '@minotaur-ergo/types';
 import { boxArrayToBoxes } from '@/utils/convert';
 import fakeContext from '@/utils/networks/fakeContext';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 /**
  * Converts an array of public key strings to a Propositions object for Ergo transactions.

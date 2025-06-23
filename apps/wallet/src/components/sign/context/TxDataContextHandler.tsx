@@ -1,6 +1,8 @@
-import * as wasm from 'ergo-lib-wasm-browser';
 import React from 'react';
+
 import { StateWallet } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { TxDataContext } from './TxDataContext';
 
 interface TxDataContextHandlerPropsType {

@@ -1,14 +1,14 @@
 import {
   MultiSigDataHint,
+  MultiSigDataHintType,
   TxHintBag,
   TxSinglePublicHint,
   TxSingleSecretHint,
-  MultiSigDataHintType,
 } from '@minotaur-ergo/types';
 import { secp256k1 } from '@noble/curves/secp256k1';
 import { Buffer } from 'buffer';
 
-export class MultiSigDataHintImlp extends MultiSigDataHint {
+export class MultiSigDataHintImpl extends MultiSigDataHint {
   constructor(
     protected inputIndex: number,
     protected publicKeyIndex: number,
@@ -42,7 +42,7 @@ export class MultiSigDataHintImlp extends MultiSigDataHint {
    * @returns A new MultiSigDataHint object with the same property values
    */
   clone = (): MultiSigDataHint => {
-    return new MultiSigDataHintImlp(
+    return new MultiSigDataHintImpl(
       this.inputIndex,
       this.publicKeyIndex,
       this.commit,
@@ -120,7 +120,7 @@ export class MultiSigDataHintImlp extends MultiSigDataHint {
         ? MultiSigDataHintType.SIMULATED
         : MultiSigDataHintType.REAL;
 
-    return new MultiSigDataHintImlp(
+    return new MultiSigDataHintImpl(
       inputIndex,
       signerIndex,
       commit,

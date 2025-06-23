@@ -1,20 +1,22 @@
-import BackButton from '@/components/back-button/BackButton';
-import AppFrame from '@/layouts/AppFrame';
-import { Inventory } from '@mui/icons-material';
-import { Button, Grid, IconButton } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apps } from './apps/dapps';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import DAppDescription from './components/DappDescription';
-import LoadingPage from '@/components/loading-page/LoadingPage';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { useDAppConnectorProps } from '@/hooks/useDAppConnectorProps';
+
 import { StateWallet } from '@minotaur-ergo/types';
-import PrevIcon from '@mui/icons-material/ArrowBackIos';
-import TxSignContext from '@/components/sign/context/TxSignContext';
-import SignTx from '../send/sign-tx/SignTx';
+import { Inventory, ArrowBack } from '@mui/icons-material';
+import { Button, Grid, IconButton } from '@mui/material';
+
+import BackButton from '@/components/back-button/BackButton';
+import LoadingPage from '@/components/loading-page/LoadingPage';
 import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import TxSignContext from '@/components/sign/context/TxSignContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import { useDAppConnectorProps } from '@/hooks/useDAppConnectorProps';
+import AppFrame from '@/layouts/AppFrame';
+
+import SignTx from '../send/sign-tx/SignTx';
+import { apps } from './apps/dapps';
+import DAppDescription from './components/DappDescription';
 
 interface WalletDAppViewPropsType {
   wallet: StateWallet;
@@ -63,7 +65,7 @@ const WalletDAppView = (props: WalletDAppViewPropsType) => {
             <React.Fragment>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <Button onClick={closeTx} startIcon={<PrevIcon />}>
+                  <Button onClick={closeTx} startIcon={<ArrowBack />}>
                     Back
                   </Button>
                 </Grid>
@@ -85,7 +87,9 @@ const WalletDAppView = (props: WalletDAppViewPropsType) => {
           <SignTx setHasError={setHasError} wallet={props.wallet} />
         ) : undefined}
         <div
-          style={{ display: txDataContext.tx === undefined ? 'block' : 'none' }}
+          style={{
+            display: txDataContext.tx === undefined ? 'block' : 'none',
+          }}
         >
           <Component {...dappProps} />
         </div>

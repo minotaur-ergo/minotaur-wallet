@@ -1,11 +1,12 @@
+import { TotalSpent, StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
 import { ReceiverTokenType, ReceiverType } from '@/types/sign-modal';
-import { TotalSpent } from '@minotaur-ergo/types';
 import openInBrowser from '@/utils/browser';
-import { BoxDbAction } from './db';
-import { StateWallet } from '@minotaur-ergo/types';
 import getChain from '@/utils/networks';
+
 import { deserialize } from './box';
+import { BoxDbAction } from './db';
 import { getProver } from './wallet';
 
 const newEmptyReceiver = () => ({ address: '', amount: 0n, tokens: [] });

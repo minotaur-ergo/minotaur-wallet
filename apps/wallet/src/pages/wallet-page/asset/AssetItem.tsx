@@ -1,9 +1,12 @@
-import AssetRow from '@/components/asset-row/AssetRow';
 import { useState } from 'react';
+
 import { Card, CardActionArea, Drawer } from '@mui/material';
-import AssetItemDetail from './AssetItemDetail';
+
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
+import AssetRow from '@/components/asset-row/AssetRow';
 import useAssetDetail from '@/hooks/useAssetDetail';
+
+import AssetItemDetail from './AssetItemDetail';
 
 interface PropsType {
   amount: bigint;

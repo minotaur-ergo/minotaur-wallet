@@ -1,22 +1,25 @@
-import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
-import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { useEffect, useState } from 'react';
-import { GlobalStateType } from '@/store';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useParams } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+
+import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
+import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { WalletPageSuffix } from '@/router/routerMap';
+import { GlobalStateType } from '@/store';
+
+import WalletSettings from '../settings/Settings';
+import WalletExtendedPublicKey from '../settings/WalletExtendedPublicKey';
 import WalletAddress from './address/WalletAddress';
 import WalletAsset from './asset/WalletAsset';
 import WalletDApps from './dapps/WalletDApps';
+import WalletDAppViewPage from './dapps/WalletDAppViewPage';
 import WalletHome from './home/WalletHome';
 import MultiSigCommunication from './multi-sig/MultiSigCommunication';
 import MultiSigTransactionPage from './multi-sig/MultiSigTransactionPage';
 import WalletSendPage from './send/WalletSendPage';
 import WalletTransaction from './transaction/WalletTransaction';
-import { StateWallet } from '@minotaur-ergo/types';
-import WalletSettings from '../settings/Settings';
-import WalletExtendedPublicKey from '../settings/WalletExtendedPublicKey';
-import WalletDAppViewPage from './dapps/WalletDAppViewPage';
 
 const WalletPage = () => {
   const { id } = useParams();

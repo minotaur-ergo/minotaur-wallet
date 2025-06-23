@@ -1,12 +1,15 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import { useContext } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
+import Drawer from '@mui/material/Drawer';
+import * as wasm from 'ergo-lib-wasm-browser';
+
+import useTxBoxes from '@/hooks/useTxBoxes';
+
 import { TxDataContext } from '../context/TxDataContext';
 import BoxItem from './BoxItem';
-import Drawer from '@mui/material/Drawer';
-import useTxBoxes from '@/hooks/useTxBoxes';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { StateWallet } from '@minotaur-ergo/types';
 
 interface TransactionBoxesPropsType {
   open: boolean;

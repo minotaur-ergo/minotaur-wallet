@@ -1,18 +1,20 @@
+import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
+
 import Address from '@/db/entities/Address';
 import { AddressValueType } from '@/db/entities/AddressValueInfo';
 import store from '@/store';
 import { setBalances } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
+import { createEmptyArrayWithIndex } from '@/utils/functions';
 import getChain from '@/utils/networks';
-import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
+
+import { deserialize } from './box';
 import {
   AddressDbAction,
   AddressValueDbAction,
   AssetDbAction,
   BoxDbAction,
 } from './db';
-import { deserialize } from './box';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const syncInfo = async (network: AbstractNetwork, address: Address) => {
   const info = await network.getAddressInfo(address.address);

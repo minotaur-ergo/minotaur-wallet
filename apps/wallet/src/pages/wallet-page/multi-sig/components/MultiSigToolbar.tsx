@@ -1,21 +1,26 @@
+import React, { useContext } from 'react';
+
+import { MultiSigDataShare, MultiSigStateEnum } from '@minotaur-ergo/types';
+import {
+  ContentPasteOutlined,
+  ShareOutlined,
+  QrCodeScanner,
+} from '@mui/icons-material';
+import { Button, Grid } from '@mui/material';
+
 import { commit } from '@/action/multi-sig/commit';
 import { sign } from '@/action/multi-sig/sign';
-import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
-import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { Button, Grid } from '@mui/material';
-import React, { useContext } from 'react';
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
 import { validatePassword } from '@/action/wallet';
+import MessageContext from '@/components/app/messageContext';
+import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigDataShare, MultiSigStateEnum } from '@minotaur-ergo/types';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { readClipBoard } from '@/utils/clipboard';
-import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
-import { QrCodeTypeEnum } from '@/types/qrcode';
-import { verifyAndSaveData } from '@/action/multi-sig/verify';
-import MessageContext from '@/components/app/messageContext';
+import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import { QrCodeTypeEnum } from '@/types/qrcode';
+import { readClipBoard } from '@/utils/clipboard';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
@@ -191,7 +196,7 @@ const MultiSigToolbar = () => {
               <Button
                 variant="outlined"
                 onClick={startScanner}
-                startIcon={<QrCodeScannerIcon />}
+                startIcon={<QrCodeScanner />}
               >
                 Scan QrCode
               </Button>

@@ -1,7 +1,9 @@
-import { extractErgAndTokenSpent } from '@/action/tx';
-import { StateWallet } from '@minotaur-ergo/types';
 import { useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import { extractErgAndTokenSpent } from '@/action/tx';
 
 interface Values {
   total: bigint;

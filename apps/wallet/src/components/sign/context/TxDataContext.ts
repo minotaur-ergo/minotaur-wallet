@@ -1,6 +1,7 @@
+import { createContext } from 'react';
+
 import { StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { createContext } from 'react';
 
 interface TxDataContextType {
   reduced?: wasm.ReducedTransaction;

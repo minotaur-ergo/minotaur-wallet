@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   ErgoPayResponse,
   ErgoPaySeverityEnum,
@@ -5,7 +7,6 @@ import {
   MultiAddressSupportedEnum,
 } from '@/types/ergopay';
 import { getData, getDataMultiple } from '@/utils/ergopay';
-import { useEffect, useState } from 'react';
 
 const useErgoPayData = (
   url: string,

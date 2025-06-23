@@ -1,7 +1,8 @@
 import { WalletStateType } from '@minotaur-ergo/types';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+
 import config, { ConfigStateType } from './reducer/config';
 import wallet from './reducer/wallet';
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 const reducer = combineReducers({ wallet, config });
 

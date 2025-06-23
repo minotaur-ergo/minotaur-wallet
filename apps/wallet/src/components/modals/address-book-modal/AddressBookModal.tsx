@@ -1,6 +1,6 @@
-import { SavedAddressDbAction } from '@/action/db';
-import DisplayId from '@/components/display-id/DisplayId';
-import SavedAddress from '@/db/entities/SavedAddress';
+import { useEffect, useState } from 'react';
+
+import { CircleOutlined, RadioButtonChecked } from '@mui/icons-material';
 import {
   Box,
   Dialog,
@@ -9,8 +9,10 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { CircleOutlined, RadioButtonChecked } from '@mui/icons-material';
+
+import { SavedAddressDbAction } from '@/action/db';
+import DisplayId from '@/components/display-id/DisplayId';
+import SavedAddress from '@/db/entities/SavedAddress';
 
 interface AddressBookModalPropsType {
   open: boolean;

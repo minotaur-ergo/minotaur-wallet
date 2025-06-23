@@ -1,20 +1,21 @@
-import { StateWallet } from '@minotaur-ergo/types';
 import React, { useContext, useState } from 'react';
-import {
-  IconButton,
-  TextField,
-  Collapse,
-  CircularProgress,
-  InputAdornment,
-} from '@mui/material';
-import { Add, Check, Close } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-import { deriveNewAddress } from '@/action/address';
-import MessageContext from '@/components/app/messageContext';
 
-import { invalidateAddresses } from '@/store/reducer/wallet';
-import CircleButton from '@/components/circle-button/CircleButton';
+import { StateWallet } from '@minotaur-ergo/types';
+import { Add, Check, Close } from '@mui/icons-material';
+import {
+  CircularProgress,
+  Collapse,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
+
+import { deriveNewAddress } from '@/action/address';
 import ActionContainer from '@/components/action-container/ActionContainer';
+import MessageContext from '@/components/app/messageContext';
+import CircleButton from '@/components/circle-button/CircleButton';
+import { invalidateAddresses } from '@/store/reducer/wallet';
 
 interface NewAddressPropsType {
   wallet: StateWallet;

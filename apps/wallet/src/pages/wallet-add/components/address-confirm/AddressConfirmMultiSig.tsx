@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, Card, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+
+import { Box, Card, Typography } from '@mui/material';
+
 import { generateMultiSigAddressFromPublicKeys } from '@/action/address';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
-import { GlobalStateType } from '@/store';
 import DisplayId from '@/components/display-id/DisplayId';
+import { GlobalStateType } from '@/store';
 import { bip32, getBase58ExtendedPublicKey } from '@/utils/functions';
 import getChain from '@/utils/networks';
 

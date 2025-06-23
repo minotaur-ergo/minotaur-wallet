@@ -1,6 +1,7 @@
+import { DAppPropsType } from '@minotaur-ergo/types';
+
 import Bank from '../Bank';
 import Oracle from '../Oracle';
-import { DAppPropsType } from '@minotaur-ergo/types';
 import TabView from './TabView';
 
 interface SigmaRsvPanelPropsType {

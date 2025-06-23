@@ -1,12 +1,14 @@
-import useWalletTransaction from '@/hooks/useWalletTransaction';
-import { Box, Stack } from '@mui/material';
-import StateMessage from '@/components/state-message/StateMessage';
-import SvgIcon from '@/icons/SvgIcon';
-import TransactionItem from '../transaction/TransactionItem';
-import Heading from '@/components/heading/Heading';
-import { getRoute, RouteMap } from '@/router/routerMap';
-import LoadingPage from '@/components/loading-page/LoadingPage';
 import { StateWallet } from '@minotaur-ergo/types';
+import { Box, Stack } from '@mui/material';
+
+import Heading from '@/components/heading/Heading';
+import LoadingPage from '@/components/loading-page/LoadingPage';
+import StateMessage from '@/components/state-message/StateMessage';
+import useWalletTransaction from '@/hooks/useWalletTransaction';
+import SvgIcon from '@/icons/SvgIcon';
+import { RouteMap, getRoute } from '@/router/routerMap';
+
+import TransactionItem from '../transaction/TransactionItem';
 
 interface RecentTransactionsPropsType {
   wallet: StateWallet;

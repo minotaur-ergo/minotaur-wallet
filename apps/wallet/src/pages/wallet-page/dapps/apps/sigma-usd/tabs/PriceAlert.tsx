@@ -1,4 +1,5 @@
 import { Alert, Typography } from '@mui/material';
+
 import { formatWithDecimals } from '../utils';
 
 interface PriceAlertPropsType {

@@ -1,4 +1,5 @@
-import { Box, styled, Typography, useTheme } from '@mui/material';
+import { Box, Typography, styled, useTheme } from '@mui/material';
+
 import MinotaurLogo from '../../components/splash/MinotaurLogo';
 
 const SplashBox = styled(Box)(

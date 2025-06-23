@@ -1,10 +1,11 @@
+import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import {
   IMPL_ADDRESS,
   IMPL_FEE,
   TX_FEE,
 } from '@/pages/wallet-page/dapps/apps/air-drop/params';
-import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 export const airdrop = async (
   props: DAppPropsType,

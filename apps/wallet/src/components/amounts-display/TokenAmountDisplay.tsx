@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { commaSeparate } from '@/utils/convert';
 import { createEmptyArray } from '@/utils/functions';
-import React from 'react';
 
 interface TokenAmountDisplayPropsType {
   amount: bigint;

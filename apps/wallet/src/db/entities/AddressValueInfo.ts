@@ -1,7 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import BigIntValueTransformer from './Transformer';
-import Address from './Address';
 import { Unique } from 'typeorm';
+
+import Address from './Address';
+import BigIntValueTransformer from './Transformer';
 
 enum AddressValueType {
   Confirmed = 'CONFIRMED',

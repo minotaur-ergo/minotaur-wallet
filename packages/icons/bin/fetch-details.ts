@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { writeFileSync, readdirSync } from 'fs';
+
 const exec = async () => {
   // reading all tokens
   const tokenDir = './src/icons/';

@@ -1,13 +1,15 @@
-import store from '@/store';
-import { setMultiSigLoadedTime } from '@/store/reducer/config';
 import {
-  StateWallet,
   MultiSigBriefRow,
-  MultiSigDataRow,
   MultiSigDataHint,
   MultiSigDataHintType,
+  MultiSigDataRow,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import store from '@/store';
+import { setMultiSigLoadedTime } from '@/store/reducer/config';
+
 import { deserialize, serialize } from '../box';
 import { MultiSigDbAction, MultiStoreDbAction } from '../db';
 import { extractErgAndTokenSpent } from '../tx';

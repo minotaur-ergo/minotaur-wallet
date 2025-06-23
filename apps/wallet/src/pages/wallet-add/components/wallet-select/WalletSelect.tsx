@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import {
   FormControl,
   InputLabel,
@@ -5,7 +7,7 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+
 import { WalletType } from '@/db/entities/Wallet';
 import { GlobalStateType } from '@/store';
 

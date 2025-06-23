@@ -1,19 +1,24 @@
-import { Inventory2Outlined } from '@mui/icons-material';
-import PrevIcon from '@mui/icons-material/ArrowBackIos';
-import NextIcon from '@mui/icons-material/ArrowForwardIos';
-import { Button, Grid, IconButton } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import {
+  Inventory2Outlined,
+  ArrowBackIos,
+  ArrowForwardIos,
+} from '@mui/icons-material';
+import { Button, Grid, IconButton } from '@mui/material';
+
 import BackButton from '@/components/back-button/BackButton';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
 import Stepper from '@/components/stepper/Stepper';
 import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@minotaur-ergo/types';
+
 import SendAmount from './send-amount/SendAmount';
 import SignTx from './sign-tx/SignTx';
-import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 
 interface WalletSendPropsType {
   wallet: StateWallet;
@@ -68,7 +73,7 @@ const WalletSend = (props: WalletSendPropsType) => {
           <Grid container spacing={2}>
             {step === 1 ? null : (
               <Grid item xs={6}>
-                <Button onClick={handlePrev} startIcon={<PrevIcon />}>
+                <Button onClick={handlePrev} startIcon={<ArrowBackIos />}>
                   Back
                 </Button>
               </Grid>
@@ -77,7 +82,9 @@ const WalletSend = (props: WalletSendPropsType) => {
               <Button
                 disabled={hasError}
                 onClick={handleNext}
-                endIcon={step === STEPS_COUNTS ? undefined : <NextIcon />}
+                endIcon={
+                  step === STEPS_COUNTS ? undefined : <ArrowForwardIos />
+                }
               >
                 {getNextLabel()}
               </Button>

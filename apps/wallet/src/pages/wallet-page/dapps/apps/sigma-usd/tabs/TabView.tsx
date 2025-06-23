@@ -1,10 +1,11 @@
+import { DAppPropsType } from '@minotaur-ergo/types';
 import { Box, Divider } from '@mui/material';
-import PriceAlert from './PriceAlert';
-import ActionPanel from './ActionPanel';
+
 import Bank from '../Bank';
 import Oracle from '../Oracle';
 import { buyToken, sellToken } from '../utils';
-import { DAppPropsType } from '@minotaur-ergo/types';
+import ActionPanel from './ActionPanel';
+import PriceAlert from './PriceAlert';
 
 interface TabViewPropsType {
   price: bigint;

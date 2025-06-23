@@ -1,5 +1,6 @@
 import initSqlJs from 'sql.js/dist/sql-wasm';
 import { DataSource } from 'typeorm';
+
 import entities from '@/db/entities';
 import migration from '@/db/migration';
 

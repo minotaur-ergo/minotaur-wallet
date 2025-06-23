@@ -7,12 +7,12 @@ import {
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
 import {
-  app,
   BrowserWindow,
   Menu,
   MenuItem,
-  nativeImage,
   Tray,
+  app,
+  nativeImage,
   session,
 } from 'electron';
 import electronIsDev from 'electron-is-dev';

@@ -1,18 +1,20 @@
-import { WalletDbAction } from '@/action/db';
-import AddressCopyable from '@/components/address-copyable/AddressCopyable';
-import AssetRow from '@/components/asset-row/AssetRow';
-import CloseIcon from '@mui/icons-material/Close';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import React from 'react';
-import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
-import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
-import Heading from '@/components/heading/Heading';
-import ListController from '@/components/list-controller/ListController';
+
 import {
   ChainTypeInterface,
   StateAddress,
   TokenBalance,
 } from '@minotaur-ergo/types';
+import CloseIcon from '@mui/icons-material/Close';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
+
+import { WalletDbAction } from '@/action/db';
+import AddressCopyable from '@/components/address-copyable/AddressCopyable';
+import AssetRow from '@/components/asset-row/AssetRow';
+import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
+import Heading from '@/components/heading/Heading';
+import ListController from '@/components/list-controller/ListController';
 
 interface AddressViewCardPropsType {
   address: StateAddress;

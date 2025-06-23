@@ -1,17 +1,20 @@
-import * as wasm from 'ergo-lib-wasm-browser';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { multiSigStoreNewTx } from '@/action/multi-sig/store';
 import { signNormalWalletReducedTx, signNormalWalletTx } from '@/action/tx';
+import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { WalletType } from '@/db/entities/Wallet';
-import { StateWallet } from '@minotaur-ergo/types';
+import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import { RouteMap, getRoute } from '@/router/routerMap';
+
 import TxDataContextHandler from './TxDataContextHandler';
 import TxSignContext, { StatusEnum } from './TxSignContext';
-import { RouteMap, getRoute } from '@/router/routerMap';
-import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from './TxSubmitContext';
 import TxSubmitContextHandler from './TxSubmitContextHandler';
-import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 
 interface TxSignContextHandlerInternalPropsType {
   wallet: StateWallet;

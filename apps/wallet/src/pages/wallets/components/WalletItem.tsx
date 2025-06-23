@@ -1,3 +1,7 @@
+import { MouseEvent } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import { Star, StarBorder } from '@mui/icons-material';
 import {
   Box,
@@ -7,18 +11,16 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
-import SvgIcon from '@/icons/SvgIcon';
-import { ergPriceUsd } from '@/utils/functions';
-import { WalletType, WalletTypeLabel } from '@/db/entities/Wallet';
-import { RouteMap, getRoute } from '@/router/routerMap';
-import { useNavigate } from 'react-router-dom';
+
 import { ConfigDbAction, WalletDbAction } from '@/action/db';
-import { ConfigType } from '@/db/entities/Config';
-import { GlobalStateType } from '@/store';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import { ConfigType } from '@/db/entities/Config';
+import { WalletType, WalletTypeLabel } from '@/db/entities/Wallet';
+import SvgIcon from '@/icons/SvgIcon';
+import { RouteMap, getRoute } from '@/router/routerMap';
+import { GlobalStateType } from '@/store';
 import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@/utils/const';
-import { MouseEvent } from 'react';
+import { ergPriceUsd } from '@/utils/functions';
 
 interface PropsType {
   id: string;

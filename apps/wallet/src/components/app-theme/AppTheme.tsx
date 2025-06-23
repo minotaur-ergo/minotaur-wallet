@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
+
 import createTheme from '@mui/material/styles/createTheme';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
 
 interface PropsType {
   children?: ReactNode;
@@ -77,8 +78,8 @@ const theme = createTheme({
           padding: '0.25rem 0.5rem',
         },
         outlined: {
-          backgroundColor: '#eaeaea80',
-          border: 0,
+          'backgroundColor': '#eaeaea80',
+          'border': 0,
           '&:focus': {
             backgroundColor: '#eaeaea',
             border: 0,
@@ -111,8 +112,8 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          backgroundColor: INPUT_BG_COLOR,
-          borderRadius: BORDER_RADIUS,
+          'backgroundColor': INPUT_BG_COLOR,
+          'borderRadius': BORDER_RADIUS,
           '&.Mui-focused': {
             backgroundColor: '#fff',
           },
@@ -128,8 +129,8 @@ const theme = createTheme({
           backgroundColor: INPUT_BG_COLOR,
         },
         grouped: {
-          border: 0,
-          margin: 4,
+          'border': 0,
+          'margin': 4,
           '&:not(:first-of-type)': {
             borderRadius: BORDER_RADIUS,
           },

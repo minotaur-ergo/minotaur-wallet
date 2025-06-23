@@ -1,10 +1,12 @@
+import { useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+
 import {
+  WalletTransactionType,
   getWalletTransactions,
   getWalletTransactionsTotal,
-  WalletTransactionType,
 } from '@/action/transaction';
-import { StateWallet } from '@minotaur-ergo/types';
-import { useEffect, useState } from 'react';
 
 const useWalletTransaction = (wallet: StateWallet, limit: number) => {
   const [transactions, setTransactions] = useState<

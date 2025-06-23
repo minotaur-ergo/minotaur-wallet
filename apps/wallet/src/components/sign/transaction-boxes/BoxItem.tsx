@@ -1,8 +1,10 @@
-import AssetRow from '@/components/asset-row/AssetRow';
-import { Box, Stack } from '@mui/material';
-import { ReceiverTokenType } from '@/types/sign-modal';
-import DisplayId from '../../display-id/DisplayId';
 import { StateWallet } from '@minotaur-ergo/types';
+import { Box, Stack } from '@mui/material';
+
+import AssetRow from '@/components/asset-row/AssetRow';
+import { ReceiverTokenType } from '@/types/sign-modal';
+
+import DisplayId from '../../display-id/DisplayId';
 
 interface BoxItemPropsType {
   networkType: string;

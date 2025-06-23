@@ -1,5 +1,6 @@
 import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
 import { DataSource } from 'typeorm';
+
 import entities from '@/db/entities';
 import migration from '@/db/migration';
 

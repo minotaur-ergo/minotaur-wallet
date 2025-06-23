@@ -1,16 +1,18 @@
-import AssetRow from '@/components/asset-row/AssetRow';
 import { useContext, useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
 import { SelectChangeEvent } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+
 import { AssetDbAction } from '@/action/db';
+import AssetRow from '@/components/asset-row/AssetRow';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import Asset from '@/db/entities/Asset';
 import { ReceiverTokenType } from '@/types/sign-modal';
-import { StateWallet } from '@minotaur-ergo/types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { DisplayType } from '@/store/reducer/config';
+
 import { GlobalStateType } from '@/store';
+import { DisplayType } from '@/store/reducer/config';
 
 interface InSimpleModePropsType {
   children?: React.ReactNode;

@@ -1,7 +1,8 @@
-import React, { Fragment, ChangeEvent } from 'react';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
+import React, { ChangeEvent, Fragment } from 'react';
+
 import { Switch } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
 
 interface SolitarySwitchFieldPropsType {
   value: boolean;

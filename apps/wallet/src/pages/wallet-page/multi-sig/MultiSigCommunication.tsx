@@ -1,27 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
-import ListController from '@/components/list-controller/ListController';
-import AppFrame from '@/layouts/AppFrame';
-import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
-import { GlobalStateType } from '@/store';
+import { useNavigate } from 'react-router-dom';
+
 import {
-  StateWallet,
   MultiSigBriefRow,
   MultiSigDataShare,
+  StateWallet,
 } from '@minotaur-ergo/types';
-import MultiSigTransactionItem from './MultiSigTransactionItem';
-import { readClipBoard } from '@/utils/clipboard';
-import MessageContext from '@/components/app/messageContext';
-import { useNavigate } from 'react-router-dom';
-import { RouteMap, getRoute } from '@/router/routerMap';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { Fab } from '@mui/material';
-import FabStack from '@/components/fab-stack/FabStack';
-import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
-import { QrCodeTypeEnum } from '@/types/qrcode';
+
+import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import MessageContext from '@/components/app/messageContext';
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import FabStack from '@/components/fab-stack/FabStack';
+import ListController from '@/components/list-controller/ListController';
+import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import AppFrame from '@/layouts/AppFrame';
+import { RouteMap, getRoute } from '@/router/routerMap';
+import { GlobalStateType } from '@/store';
+import { QrCodeTypeEnum } from '@/types/qrcode';
+import { readClipBoard } from '@/utils/clipboard';
+
+import MultiSigTransactionItem from './MultiSigTransactionItem';
 
 interface MultiSigCommunicationPropsType {
   wallet: StateWallet;
