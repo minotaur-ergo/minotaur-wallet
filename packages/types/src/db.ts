@@ -1,10 +1,10 @@
-enum WalletType {
+export enum WalletType {
   ReadOnly = 'READ_ONLY',
   Normal = 'NORMAL',
   MultiSig = 'MULTI_SIG',
 }
 
-interface TokenInfo {
+export interface TokenInfo {
   id: string;
   boxId?: string;
   name?: string;
@@ -15,14 +15,14 @@ interface TokenInfo {
   txId?: string;
 }
 
-interface BoxCreateInfo {
+export interface BoxCreateInfo {
   index: number;
   height: number;
   tx: string;
   timestamp: number;
 }
 
-interface BoxInfo {
+export interface BoxInfo {
   address: string;
   boxId: string;
   create: BoxCreateInfo;
@@ -30,15 +30,20 @@ interface BoxInfo {
   serialized: string;
 }
 
-interface TxInfo {
+export interface TxInfo {
   height: number;
   timestamp: number;
 }
 
-interface ItemBoxInfos {
+export interface ItemBoxInfos {
   items: Array<BoxInfo>;
   total: number;
 }
 
-export type { ItemBoxInfos, TokenInfo, BoxInfo, TxInfo };
-export { WalletType };
+export interface WalletTransactionType {
+  txId: string;
+  date: Date;
+  ergIn: bigint;
+  ergOut: bigint;
+  tokens: Map<string, bigint>;
+}

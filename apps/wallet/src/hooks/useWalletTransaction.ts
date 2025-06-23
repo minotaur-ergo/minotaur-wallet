@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, WalletTransactionType } from '@minotaur-ergo/types';
 
 import {
-  WalletTransactionType,
   getWalletTransactions,
   getWalletTransactionsTotal,
 } from '@/action/transaction';
