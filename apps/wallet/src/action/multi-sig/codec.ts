@@ -5,7 +5,7 @@ import {
   TxSingleSecretHint,
   MultiSigDataHintType,
 } from '@minotaur-ergo/types';
-import { secp256k1 } from '@noble/curves/esm/secp256k1';
+import { secp256k1 } from '@noble/curves/secp256k1';
 import { Buffer } from 'buffer';
 
 export class MultiSigDataHintImlp extends MultiSigDataHint {

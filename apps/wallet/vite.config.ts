@@ -7,7 +7,7 @@ import mkcert from 'vite-plugin-mkcert';
 // https://vitejs.dev/config/
 
 export default defineConfig({
-  server: { https: true }, // Not needed for Vite 5+
+  server: { https: {} }, // Not needed for Vite 5+
   build: {
     minify: false,
     target: 'es2022',
