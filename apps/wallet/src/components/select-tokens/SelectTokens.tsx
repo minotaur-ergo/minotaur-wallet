@@ -1,7 +1,10 @@
-import AssetRow from '@/components/asset-row/AssetRow';
-import { ChainTypeInterface } from '@/utils/networks/interfaces';
-import Checkbox from '@mui/material/Checkbox';
 import React, { useEffect, useState } from 'react';
+
+import {
+  AssetInfo,
+  ChainTypeInterface,
+  TokenAmount,
+} from '@minotaur-ergo/types';
 import {
   FormControl,
   InputLabel,
@@ -9,7 +12,9 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { AssetInfo, TokenAmount } from '@/types/dapps';
+import Checkbox from '@mui/material/Checkbox';
+
+import AssetRow from '@/components/asset-row/AssetRow';
 
 interface SelectTokensPropsType {
   amounts: TokenAmount;

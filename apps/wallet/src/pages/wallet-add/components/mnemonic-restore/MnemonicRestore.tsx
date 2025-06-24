@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import {
   Autocomplete,
   Box,
@@ -7,9 +8,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import MnemonicView from '../mnemonic-view/MnemonicView';
 import { getDefaultWordlist, mnemonicToSeedSync, wordlists } from 'bip39';
+
 import MnemonicPassphrase from '../mnemonic-passphrase/MnemonicPassphrase';
+import MnemonicView from '../mnemonic-view/MnemonicView';
 
 const words = wordlists[getDefaultWordlist()];
 

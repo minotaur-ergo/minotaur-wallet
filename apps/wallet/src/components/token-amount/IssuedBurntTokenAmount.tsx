@@ -1,5 +1,6 @@
-import AssetRow from '@/components/asset-row/AssetRow';
 import { Box } from '@mui/material';
+
+import AssetRow from '@/components/asset-row/AssetRow';
 
 interface issuedBurntTokenAmountPropsType {
   tokenId: 'erg' | string;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
+
 import { App } from '@capacitor/app';
 
 const handleBackButton = (navigate: NavigateFunction) => {

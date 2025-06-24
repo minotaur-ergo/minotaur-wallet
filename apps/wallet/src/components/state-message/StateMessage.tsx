@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+
 import { Box, Typography, TypographyProps } from '@mui/material';
 
 interface StateMessagePropsType {

@@ -1,5 +1,6 @@
 import { createContext } from 'react';
-import { ReceiverType } from '../../../types/sign-modal';
+
+import { ReceiverType } from '@minotaur-ergo/types';
 
 interface TxGenerateContextType {
   ready: boolean;

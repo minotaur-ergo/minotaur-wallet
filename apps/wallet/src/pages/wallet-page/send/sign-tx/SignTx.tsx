@@ -1,16 +1,18 @@
+import React, { useContext, useEffect } from 'react';
+
+import { QrCodeTypeEnum, StateWallet } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useContext, useEffect } from 'react';
+
+import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import StateMessage from '@/components/state-message/StateMessage';
-import { StateWallet } from '@/store/reducer/wallet';
+import TxSignStatusDisplay from '@/components/tx-signing-status/TxSignStatusDisplay';
+
 import SigningSwitch from './SigningSwitch';
 import TxSignValues from './TxSignValues';
-import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
-import { QrCodeTypeEnum } from '@/types/qrcode';
-import TxSignStatusDisplay from '@/components/tx-signing-status/TxSignStatusDisplay';
 
 interface SignTxPropsType {
   wallet: StateWallet;

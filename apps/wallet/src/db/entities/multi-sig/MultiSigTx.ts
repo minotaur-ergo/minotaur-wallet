@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import MultiSigRow from './MultiSigRow';
 
 @Entity({ name: 'multi-sig-tx' })

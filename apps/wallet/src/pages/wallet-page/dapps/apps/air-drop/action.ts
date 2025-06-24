@@ -1,10 +1,11 @@
+import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import {
   IMPL_ADDRESS,
   IMPL_FEE,
   TX_FEE,
 } from '@/pages/wallet-page/dapps/apps/air-drop/params';
-import { DAppPropsType, TokenAmount } from '@/types/dapps';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 export const airdrop = async (
   props: DAppPropsType,
@@ -17,8 +18,8 @@ export const airdrop = async (
     const height = await props.chain.getNetwork().getHeight();
     const airdrops = BigInt(addresses.length);
     const selectedTokens = Object.entries(amounts).map((item) => ({
-      id: item[0],
-      amount: item[1].amount * airdrops,
+      tokenId: item[0],
+      balance: item[1].amount * airdrops,
     }));
     const coveringBox = await props.getCoveringForErgAndToken(
       ergAmount * airdrops + TX_FEE + IMPL_FEE,

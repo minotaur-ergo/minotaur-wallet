@@ -1,8 +1,11 @@
+import React, { useCallback, useState } from 'react';
+
+import { QrCodeCallback } from '@minotaur-ergo/types';
+
 import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
+
 import { QrCodeContext } from './QrCodeContext';
-import { QrCodeCallback } from '@/types/qrcode';
-import React, { useCallback, useState } from 'react';
 
 interface QrCodeReaderViewPropsType {
   children: React.ReactNode;

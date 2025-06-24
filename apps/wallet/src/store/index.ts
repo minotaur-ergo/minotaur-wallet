@@ -1,16 +1,16 @@
-import config, { ConfigStateType } from './reducer/config';
-import wallet, { WalletStateType } from './reducer/wallet';
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { GlobalStateType } from '@minotaur-ergo/types';
+import {
+  combineReducers,
+  configureStore,
+  EnhancedStore,
+  Reducer,
+} from '@reduxjs/toolkit';
 
-const reducer = combineReducers({ wallet, config });
+import config from './reducer/config';
+import wallet from './reducer/wallet';
 
-const store = configureStore({ reducer });
+const reducer: Reducer<GlobalStateType> = combineReducers({ wallet, config });
+
+const store: EnhancedStore<GlobalStateType> = configureStore({ reducer });
 
 export default store;
-
-interface GlobalStateType {
-  wallet: WalletStateType;
-  config: ConfigStateType;
-}
-
-export type { ConfigStateType, WalletStateType, GlobalStateType };

@@ -1,9 +1,15 @@
+import {
+  MultiSigBriefRow,
+  MultiSigDataHint,
+  MultiSigDataRow,
+  MultiSigHintType,
+  StateWallet,
+} from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import store from '@/store';
 import { setMultiSigLoadedTime } from '@/store/reducer/config';
-import { StateWallet } from '@/store/reducer/wallet';
-import { MultiSigBriefRow, MultiSigDataRow } from '@/types/multi-sig';
-import { MultiSigDataHint, MultiSigDataHintType } from '@/types/multi-sig/hint';
-import * as wasm from 'ergo-lib-wasm-browser';
+
 import { deserialize, serialize } from '../box';
 import { MultiSigDbAction, MultiStoreDbAction } from '../db';
 import { extractErgAndTokenSpent } from '../tx';
@@ -96,7 +102,7 @@ const fetchMultiSigBriefRow = async (
             (hintRow) =>
               hintRow.filter(
                 (hint) =>
-                  hint.Proof !== '' && hint.Type === MultiSigDataHintType.REAL,
+                  hint.Proof !== '' && hint.Type === MultiSigHintType.Real,
               ).length,
           ),
         ),

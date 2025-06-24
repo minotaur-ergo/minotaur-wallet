@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { DataSource } from 'typeorm';
+import React, { useContext, useEffect, useState } from 'react';
+
 import { Capacitor } from '@capacitor/core';
+import { DataSource } from 'typeorm';
+
+import { initializeAction } from '@/action/db';
+
+import MessageContext from '../app/messageContext';
 import Splash from '../splash/Splash';
 import connectCapacitor from './connector/capacitor';
 import connectSqlJs from './connector/sqljs';
-import MessageContext from '../app/messageContext';
-import { initializeAction } from '@/action/db';
 
 let dataSource: DataSource;
 

@@ -1,11 +1,14 @@
-import getChain from '@/utils/networks';
-import { Box, Button, Stack, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { Box, Button, Stack, Typography } from '@mui/material';
+
 import AddressInput from '@/components/address-input/AddressInput';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
-import { StateWallet } from '@/store/reducer/wallet';
 import { FEE, MIN_BOX_VALUE } from '@/utils/const';
+import getChain from '@/utils/networks';
+
 import TokenSelect from './TokenSelect';
 
 interface ReceiverFormPropsType {
@@ -37,7 +40,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
 
   const setTokenAmount = (index: number) => (value: bigint) => {
     const newTokens = [...content.tokens];
-    newTokens[index] = { ...newTokens[index], amount: value };
+    newTokens[index] = { ...newTokens[index], balance: value };
     generatorContext.edit(props.index, { tokens: newTokens });
   };
 
@@ -47,8 +50,8 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
         index === props.index
           ? 0n
           : receiver.tokens
-              .filter((token) => token.id === tokenId)
-              .reduce((a, b) => a + b.amount, 0n),
+              .filter((token) => token.tokenId === tokenId)
+              .reduce((a, b) => a + b.balance, 0n),
       )
       .reduce((a, b) => a + b, 0n);
     return (generatorContext.tokens[tokenId] || 0n) - usedToken;
@@ -117,12 +120,12 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
       <TokenSelect index={props.index} wallet={props.wallet} />
       {content.tokens.map((token, index) => (
         <TokenAmountInput
-          key={token.id}
+          key={token.tokenId}
           network_type={props.wallet.networkType}
-          amount={token.amount}
+          amount={token.balance}
           setAmount={setTokenAmount(index)}
-          total={getTokenAmount(token.id)}
-          tokenId={token.id}
+          total={getTokenAmount(token.tokenId)}
+          tokenId={token.tokenId}
           setHasError={(valid) => setAmountValidity(index, valid)}
         />
       ))}

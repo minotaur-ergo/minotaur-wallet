@@ -1,7 +1,9 @@
 import React from 'react';
-import { SnackbarProvider, enqueueSnackbar, VariantType } from 'notistack';
-import MessageContext from './messageContext';
+
+import { enqueueSnackbar, SnackbarProvider, VariantType } from 'notistack';
+
 import CloseAction from './CloseAction';
+import MessageContext from './messageContext';
 
 interface MessageHandlerPropsType {
   children?: React.ReactNode;

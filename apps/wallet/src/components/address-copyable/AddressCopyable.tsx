@@ -1,6 +1,7 @@
-import CopyToClipboard from '@/components/copy-to-clipboard/CopyToClipboard';
 import { ContentCopy } from '@mui/icons-material';
 import { Alert, Box, CardActionArea, Typography } from '@mui/material';
+
+import CopyToClipboard from '@/components/copy-to-clipboard/CopyToClipboard';
 
 interface PropsType {
   address: string;

@@ -1,8 +1,10 @@
-import { QrCodeType, QrCodeTypeEnum } from '@/types/qrcode';
-import ErgoPay from './ergo-pay/ErgoPay';
+import { QrCodeType, QrCodeTypeEnum } from '@minotaur-ergo/types';
+
 import { detectPageFromJson } from '@/utils/qrcode';
-import ColdSigningRequest from './cold-signing-request/ColdSignignRequest';
+
 import ColdSignTransaction from './cold-sign-transaction/ColdSignTransaction';
+import ColdSigningRequest from './cold-signing-request/ColdSignignRequest';
+import ErgoPay from './ergo-pay/ErgoPay';
 
 const QrCodeTypes: Array<QrCodeType> = [
   {

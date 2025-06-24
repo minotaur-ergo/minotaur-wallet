@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+
 import { Box, Card, Typography } from '@mui/material';
+
 import { deriveAddressFromMnemonic } from '@/action/address';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
-import getChain from '@/utils/networks';
 import DisplayId from '@/components/display-id/DisplayId';
+import getChain from '@/utils/networks';
 
 interface AddressConfirmPropsType {
   mnemonic: string;

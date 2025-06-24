@@ -1,10 +1,12 @@
-import { MultiSigDataShare } from '@/types/multi-sig';
-import { Box, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
+
+import { MultiSigDataShare } from '@minotaur-ergo/types';
+import { Box, Typography } from '@mui/material';
+
 import { serialize } from '@/action/box';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
+import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
 
 const ShareTransaction = () => {
   const [data, setData] = useState('');

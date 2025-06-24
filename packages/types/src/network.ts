@@ -1,9 +1,15 @@
+import { TokenInfo } from './db';
 import * as wasm from 'ergo-lib-wasm-browser';
-import Address from '@/db/entities/Address';
-import { TokenInfo } from '@/types/db';
-import { BalanceInfo } from './interfaces';
 
-export abstract class AbstractNetwork {
+interface BalanceInfo {
+  nanoErgs: bigint;
+  tokens: Array<{
+    id: string;
+    amount: bigint;
+  }>;
+}
+
+abstract class AbstractNetwork {
   abstract getHeight: () => Promise<number>;
 
   abstract getAddressTransactionCount: (address: string) => Promise<number>;
@@ -18,7 +24,7 @@ export abstract class AbstractNetwork {
 
   abstract getBoxById: (boxId: string) => Promise<wasm.ErgoBox | undefined>;
 
-  abstract syncBoxes: (address: Address) => Promise<boolean>;
+  abstract syncBoxes: (address: string) => Promise<boolean>;
 
   abstract getTransaction: (txId: string) => Promise<{
     tx?: wasm.Transaction;
@@ -34,3 +40,14 @@ export abstract class AbstractNetwork {
 
   abstract trackMempool: (box: wasm.ErgoBox) => Promise<wasm.ErgoBox>;
 }
+
+interface ChainTypeInterface {
+  readonly prefix: wasm.NetworkPrefix;
+  readonly label: string;
+
+  getNetwork: () => AbstractNetwork;
+  getExplorerFront: () => string;
+  fakeContext: () => wasm.ErgoStateContext;
+}
+
+export { ChainTypeInterface, BalanceInfo, AbstractNetwork, TokenInfo };

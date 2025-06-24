@@ -1,13 +1,16 @@
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { GlobalStateType } from '@minotaur-ergo/types';
+
+import { syncWallet } from '@/action/sync';
+import store from '@/store';
 import {
   addUpdatedWallets,
   clearUpdatedWallets,
   forceRefresh,
 } from '@/store/reducer/wallet';
-import { useEffect, useState } from 'react';
-import { syncWallet } from '@/action/sync';
 import { REFRESH_INTERVAL } from '@/utils/const';
-import { useSelector } from 'react-redux';
-import store, { GlobalStateType } from '@/store';
 
 const useUpdater = () => {
   const [loading, setLoading] = useState(true);

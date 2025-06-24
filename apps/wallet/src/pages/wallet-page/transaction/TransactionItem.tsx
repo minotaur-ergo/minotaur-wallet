@@ -1,5 +1,6 @@
-import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@/store/reducer/wallet';
+import { useNavigate } from 'react-router-dom';
+
+import { StateWallet, WalletTransactionType } from '@minotaur-ergo/types';
 import {
   Box,
   Card,
@@ -8,12 +9,10 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { WalletTransactionType } from '@/action/transaction';
-import DisplayId from '@/components/display-id/DisplayId';
+
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
-import { useNavigate } from 'react-router-dom';
-// import getChain from '@/utils/networks';
-// import openInBrowser from '@/utils/browser';
+import DisplayId from '@/components/display-id/DisplayId';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface TransactionItemPropsType {
   tx: WalletTransactionType;

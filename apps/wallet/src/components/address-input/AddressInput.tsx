@@ -1,17 +1,20 @@
-import AddressBookModal from '@/components/modals/address-book-modal/AddressBookModal';
-import useDrawer from '@/hooks/useDrawer';
 import React from 'react';
+import { useContext, useEffect } from 'react';
+
 import { BookOutlined } from '@mui/icons-material';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import TextField from '@/components/text-field/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import { useContext, useEffect } from 'react';
+import { NetworkPrefix } from 'ergo-lib-wasm-browser';
+
+import AddressBookModal from '@/components/modals/address-book-modal/AddressBookModal';
+import TextField from '@/components/text-field/TextField';
+import useDrawer from '@/hooks/useDrawer';
 import { readClipBoard } from '@/utils/clipboard';
 import { isValidAddress } from '@/utils/functions';
+
 import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';
-import { NetworkPrefix } from 'ergo-lib-wasm-browser';
 
 interface AddressInputPropsType {
   address: string;

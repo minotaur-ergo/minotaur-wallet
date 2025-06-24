@@ -1,12 +1,13 @@
-import LoadingPage from '@/components/loading-page/LoadingPage';
 import { useEffect, useState } from 'react';
-import QrCodeTypes from './qrcode-types/types';
-import { QrCodeType } from '@/types/qrcode';
 import { useSelector } from 'react-redux';
-import { GlobalStateType } from '@/store';
-import TxSignContextHandler from '../sign/context/TxSignContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
+
+import { GlobalStateType, QrCodeType, StateWallet } from '@minotaur-ergo/types';
+
+import LoadingPage from '@/components/loading-page/LoadingPage';
+
 import { SelectableWalletContext } from '../sign/context/SelectableWalletContext';
+import TxSignContextHandler from '../sign/context/TxSignContextHandler';
+import QrCodeTypes from './qrcode-types/types';
 
 interface QrCodeDetectedTypePropsType {
   scanned: string;

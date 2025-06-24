@@ -1,13 +1,17 @@
 import React from 'react';
-import AppHoneyPin from '@/pages/settings/AppHoneyPin';
-import AppPin from '@/pages/settings/AppPin';
-import EnterPin from '@/pages/wallet-page/enter-pin/EnterPin';
-import { GlobalStateType } from '@/store';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
+
+import { GlobalStateType } from '@minotaur-ergo/types';
+
+import Splash from '@/components/splash/Splash';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
 import useUpdater from '@/hooks/useUpdater';
+import Home from '@/pages/home/Home';
+import AppHoneyPin from '@/pages/settings/AppHoneyPin';
+import AppPin from '@/pages/settings/AppPin';
+import Settings from '@/pages/settings/Settings';
 import WalletAddMultiSig from '@/pages/wallet-add/multi-sig-wallet/WalletAddMultiSig';
 import WalletAddNew from '@/pages/wallet-add/new-wallet/WalletAddNew';
 import WalletReadOnly from '@/pages/wallet-add/read-only-wallet/WalletReadOnly';
@@ -15,12 +19,11 @@ import WalletRestore from '@/pages/wallet-add/restore-wallet/WalletRestore';
 import WalletAdd from '@/pages/wallet-add/WalletAdd';
 import AddressBook from '@/pages/wallet-page/address-book/AddressBook';
 import AddSavedAddress from '@/pages/wallet-page/address-book/AddSavedAddress';
-import { RouteMap } from './routerMap';
-import Wallets from '@/pages/wallets/Wallets';
-import Home from '@/pages/home/Home';
-import Splash from '@/components/splash/Splash';
+import EnterPin from '@/pages/wallet-page/enter-pin/EnterPin';
 import WalletPage from '@/pages/wallet-page/WalletPage';
-import Settings from '@/pages/settings/Settings';
+import Wallets from '@/pages/wallets/Wallets';
+
+import { RouteMap } from './routerMap';
 
 const AppRouter = () => {
   const { initialized } = useInitConfig();

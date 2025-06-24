@@ -1,8 +1,10 @@
+import { StateWallet } from '@minotaur-ergo/types';
+
 import MultiSigContextHandler from '@/components/sign/context/MultiSigContextHandler';
-import { StateWallet } from '@/store/reducer/wallet';
-import MultiSigTransaction from './MultiSigTransaction';
 import MultiSigDataContextHandler from '@/components/sign/context/MultiSigDataContextHandler';
 import TxSubmitContextHandler from '@/components/sign/context/TxSubmitContextHandler';
+
+import MultiSigTransaction from './MultiSigTransaction';
 
 interface MultiSigTransactionPagePropsType {
   wallet: StateWallet;

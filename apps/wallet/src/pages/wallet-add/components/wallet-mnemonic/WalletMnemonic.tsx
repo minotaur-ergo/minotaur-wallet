@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Box, Slider, Typography, Alert, AlertTitle } from '@mui/material';
+
+import { Alert, AlertTitle, Box, Slider, Typography } from '@mui/material';
+
 import InAdvancedMode from '@/components/display-view/InAdvancedMode';
+
 import MnemonicPassphrase from '../mnemonic-passphrase/MnemonicPassphrase';
 import MnemonicView from '../mnemonic-view/MnemonicView';
 

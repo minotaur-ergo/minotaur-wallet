@@ -4,11 +4,13 @@ import {
   InitializeAllPayload,
   StateAddress,
   StateWallet,
-} from '@/store/reducer/wallet';
+} from '@minotaur-ergo/types';
+
 import {
   addressEntityToAddressState,
   walletEntityToWalletState,
 } from '@/utils/convert';
+
 import { AddressDbAction, AddressValueDbAction, WalletDbAction } from './db';
 
 const getInitializeData = async (): Promise<InitializeAllPayload> => {

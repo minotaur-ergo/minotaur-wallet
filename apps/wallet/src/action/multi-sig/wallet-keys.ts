@@ -1,7 +1,9 @@
+import { StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { StateWallet } from '@/store/reducer/wallet';
+
 import { bip32, createEmptyArrayWithIndex } from '@/utils/functions';
 import getChain from '@/utils/networks';
+
 import { MultiSigDbAction } from '../db';
 
 const getInputMap = async (

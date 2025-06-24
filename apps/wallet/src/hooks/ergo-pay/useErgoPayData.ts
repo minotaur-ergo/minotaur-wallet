@@ -1,11 +1,13 @@
+import { useEffect, useState } from 'react';
+
 import {
   ErgoPayResponse,
   ErgoPaySeverityEnum,
   LoadedErgoPayResponse,
   MultiAddressSupportedEnum,
-} from '@/types/ergopay';
+} from '@minotaur-ergo/types';
+
 import { getData, getDataMultiple } from '@/utils/ergopay';
-import { useEffect, useState } from 'react';
 
 const useErgoPayData = (
   url: string,

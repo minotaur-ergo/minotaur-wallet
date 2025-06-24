@@ -1,10 +1,18 @@
+import { useContext } from 'react';
+
+import {
+  DAppPropsType,
+  StateWallet,
+  TokenBalanceBigInt,
+  UnsignedGeneratedTx,
+} from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { deserialize } from '@/action/box';
 import { AssetDbAction, BoxDbAction } from '@/action/db';
 import { generateChangeBox, selectBoxes } from '@/action/tx';
 import MessageContext from '@/components/app/messageContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import { StateWallet } from '@/store/reducer/wallet';
-import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
 import {
   boxArrayToBoxes,
   boxCandidatesToArrayBoxCandidate,
@@ -12,14 +20,12 @@ import {
 } from '@/utils/convert';
 import { createEmptyArrayWithIndex, dottedText } from '@/utils/functions';
 import getChain from '@/utils/networks';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { useContext } from 'react';
 
 const selectBoxesDApps =
   (wallet: StateWallet) =>
   async (
     amount: bigint,
-    tokens: Array<{ id: string; amount: bigint }>,
+    tokens: Array<TokenBalanceBigInt>,
     address?: string,
   ) => {
     const addressIds = wallet.addresses

@@ -1,7 +1,9 @@
-import { StateWallet, TokenInfo } from '@/store/reducer/wallet';
-import AssetItem from './AssetItem';
-import HomeFrame from '@/layouts/HomeFrame';
+import { StateWallet, TokenBalance } from '@minotaur-ergo/types';
+
 import ListController from '@/components/list-controller/ListController';
+import HomeFrame from '@/layouts/HomeFrame';
+
+import AssetItem from './AssetItem';
 
 interface WalletAssetPropsType {
   wallet: StateWallet;
@@ -10,7 +12,7 @@ interface WalletAssetPropsType {
 const WalletAsset = (props: WalletAssetPropsType) => {
   return (
     <HomeFrame id={props.wallet.id} title={props.wallet.name}>
-      <ListController<TokenInfo>
+      <ListController<TokenBalance>
         loading={false}
         error={false}
         data={props.wallet.tokens}

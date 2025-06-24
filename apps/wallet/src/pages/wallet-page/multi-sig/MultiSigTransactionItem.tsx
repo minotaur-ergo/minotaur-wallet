@@ -1,9 +1,11 @@
-import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
+
+import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@/store/reducer/wallet';
-import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 
 interface MultiSigTransactionItemPropsType {
   wallet: StateWallet;

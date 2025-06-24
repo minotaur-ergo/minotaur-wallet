@@ -1,5 +1,6 @@
-import BackButton from '@/components/back-button/BackButton';
-import AppFrame from '@/layouts/AppFrame';
+import React, { useContext, useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {
   Button,
@@ -10,17 +11,18 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
 import * as wasm from 'ergo-lib-wasm-browser';
-import CenterMessage from '@/components/state-message/CenterMessage';
-import SvgIcon from '@/icons/SvgIcon';
-import TxSignValues from '@/pages/wallet-page/send/sign-tx/TxSignValues';
-import Loading from '@/components/state-message/Loading';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import useBoxes from '@/hooks/useBoxes';
-import { StateWallet } from '@/store/reducer/wallet';
-import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
+
+import BackButton from '@/components/back-button/BackButton';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
+import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import CenterMessage from '@/components/state-message/CenterMessage';
+import Loading from '@/components/state-message/Loading';
+import useBoxes from '@/hooks/useBoxes';
+import SvgIcon from '@/icons/SvgIcon';
+import AppFrame from '@/layouts/AppFrame';
+import TxSignValues from '@/pages/wallet-page/send/sign-tx/TxSignValues';
 
 interface ColdSignTransactionPropsType {
   scanned: string;

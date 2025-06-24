@@ -1,5 +1,6 @@
-import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 import { MutableRefObject, useEffect, useRef } from 'react';
+
+import { BrowserQRCodeReader, IScannerControls } from '@zxing/browser';
 
 const useQrReader = (
   scannedCallback: (scanned: string) => unknown,

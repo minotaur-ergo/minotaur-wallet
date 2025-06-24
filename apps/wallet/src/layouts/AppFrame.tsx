@@ -1,4 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
+
 import { Box, styled, Typography, useTheme } from '@mui/material';
 
 const AppBox = styled(Box)(

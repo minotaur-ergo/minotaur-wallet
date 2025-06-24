@@ -1,8 +1,10 @@
 import React from 'react';
-import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
-import DisplayProperty from '@/components/display-property/DisplayProperty';
+import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
+
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
+import DisplayProperty from '@/components/display-property/DisplayProperty';
 
 interface AssetItemDetailPropsType {
   name?: string;

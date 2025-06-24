@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
+
+import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
+import { Button, Stack } from '@mui/material';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import FillAmounts from '@/components/select-tokens/FillAmounts';
 import SelectTokens from '@/components/select-tokens/SelectTokens';
-import { useEffect, useState } from 'react';
-import { Button, Stack } from '@mui/material';
-import { DAppPropsType, TokenAmount } from '@/types/dapps';
-import * as wasm from 'ergo-lib-wasm-browser';
 import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const fee = BigInt(1000000);
@@ -19,8 +21,8 @@ const BurnToken = (props: DAppPropsType) => {
       const address = await props.getDefaultAddress();
       const height = await props.chain.getNetwork().getHeight();
       const selectedTokens = Object.entries(amounts).map((item) => ({
-        id: item[0],
-        amount: item[1].amount,
+        tokenId: item[0],
+        balance: item[1].amount,
       }));
       const coveringBox = await props.getCoveringForErgAndToken(
         fee,
@@ -30,7 +32,7 @@ const BurnToken = (props: DAppPropsType) => {
         const boxes = coveringBox.boxes;
         const remainingTokens: { [id: string]: bigint } = {};
         selectedTokens.forEach(
-          (item) => (remainingTokens[item.id] = -item.amount),
+          (item) => (remainingTokens[item.tokenId] = -item.balance),
         );
         const totalErg: bigint =
           createEmptyArrayWithIndex(boxes.len())
@@ -84,9 +86,9 @@ const BurnToken = (props: DAppPropsType) => {
         selectedTokens.forEach((item) => {
           burnToken.add(
             new wasm.Token(
-              wasm.TokenId.from_str(item.id),
+              wasm.TokenId.from_str(item.tokenId),
               wasm.TokenAmount.from_i64(
-                wasm.I64.from_str(item.amount.toString()),
+                wasm.I64.from_str(item.balance.toString()),
               ),
             ),
           );

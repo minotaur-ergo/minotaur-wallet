@@ -1,15 +1,20 @@
-import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
-import { DAppType } from '@/types/dapps';
-import SigmaUsdReadMe from './sigma-usd/SigmaUsdReadMe';
+import { DAppType } from '@minotaur-ergo/types';
+import {
+  BalanceTwoTone,
+  BuildCircleTwoTone,
+  CardGiftcardTwoTone,
+  LocalFireDepartmentTwoTone,
+  TokenTwoTone,
+} from '@mui/icons-material';
 import * as wasm from 'ergo-lib-wasm-browser';
-import IssueToken from './issue-token/IssueToken';
-import BurnToken from './burn-token/BurnToken';
-import SigmaUSD from './sigma-usd/SigmaUSD';
-import TokenTwoToneIcon from '@mui/icons-material/TokenTwoTone';
-import BalanceTwoToneIcon from '@mui/icons-material/BalanceTwoTone';
-import LocalFireDepartmentTwoToneIcon from '@mui/icons-material/LocalFireDepartmentTwoTone';
+
+import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
+
 import BoxConsolidation from './box-consolidation/BoxConsolidation';
-import { BuildCircleTwoTone, CardGiftcardTwoTone } from '@mui/icons-material';
+import BurnToken from './burn-token/BurnToken';
+import IssueToken from './issue-token/IssueToken';
+import SigmaUSD from './sigma-usd/SigmaUSD';
+import SigmaUsdReadMe from './sigma-usd/SigmaUsdReadMe';
 
 export const apps: Array<DAppType> = [
   {
@@ -19,7 +24,7 @@ export const apps: Array<DAppType> = [
     networks: [wasm.NetworkPrefix.Mainnet, wasm.NetworkPrefix.Testnet],
     component: IssueToken,
     color: 'primary.main',
-    icon: <TokenTwoToneIcon fontSize="large" />,
+    icon: <TokenTwoTone fontSize="large" />,
   },
   {
     name: 'Burn Token',
@@ -28,7 +33,7 @@ export const apps: Array<DAppType> = [
     networks: [wasm.NetworkPrefix.Mainnet, wasm.NetworkPrefix.Testnet],
     component: BurnToken,
     color: 'error.main',
-    icon: <LocalFireDepartmentTwoToneIcon fontSize="large" />,
+    icon: <LocalFireDepartmentTwoTone fontSize="large" />,
   },
   {
     name: 'SigmaUSD',
@@ -38,7 +43,7 @@ export const apps: Array<DAppType> = [
     networks: [wasm.NetworkPrefix.Mainnet],
     component: SigmaUSD,
     color: 'secondary.main',
-    icon: <BalanceTwoToneIcon fontSize="large" />,
+    icon: <BalanceTwoTone fontSize="large" />,
   },
   {
     name: 'Box Consolidation',

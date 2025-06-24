@@ -1,10 +1,12 @@
+import { useContext, useEffect } from 'react';
+
+import { MultiSigStateEnum } from '@minotaur-ergo/types';
+
 import { signCompleted } from '@/action/multi-sig/sign';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { MultiSigStateEnum } from '@/types/multi-sig';
-import { useContext, useEffect } from 'react';
 
 export const useCompletedTx = () => {
   const context = useContext(MultiSigContext);

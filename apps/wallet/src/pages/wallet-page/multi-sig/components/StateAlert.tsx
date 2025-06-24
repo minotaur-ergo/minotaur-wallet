@@ -1,8 +1,10 @@
-import { Alert, AlertColor, AlertTitle } from '@mui/material';
 import { useContext } from 'react';
+
+import { Alert, AlertColor, AlertTitle } from '@mui/material';
+
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { MultiSigStateEnum } from '@/hooks/multi-sig/useMultiSigTxState';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { MultiSigStateEnum } from '@/hooks/multi-sig/useMultiSigTxState';
 
 const StateAlert = () => {
   const context = useContext(MultiSigContext);

@@ -1,19 +1,23 @@
-import { StateAddress, StateWallet } from '@/store/reducer/wallet';
+import { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import {
   ErgoPaySeverityEnum,
+  GlobalStateType,
   MessageResponseType,
   MultiAddressSupportedEnum,
-} from '@/types/ergopay';
-import { useContext, useEffect, useState } from 'react';
+  StateAddress,
+  StateWallet,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import useMultiAddressSupported from './useMultiAddressSupported';
-import useErgoPayData from './useErgoPayData';
+
+import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
+import TxSignContext from '@/components/sign/context/TxSignContext';
 import { fetchBoxesFromNetwork, getInternalBoxes } from '@/utils/ergopay';
 import { createEmptyArrayWithIndex } from '@/utils/functions';
-import { useSelector } from 'react-redux';
-import { GlobalStateType } from '@/store';
-import TxSignContext from '@/components/sign/context/TxSignContext';
-import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
+
+import useErgoPayData from './useErgoPayData';
+import useMultiAddressSupported from './useMultiAddressSupported';
 
 const getErgoPaySeverity = (severity?: ErgoPaySeverityEnum) => {
   switch (severity) {

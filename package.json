@@ -14,13 +14,16 @@
     "prepare": "husky install",
     "release": "npm run release --workspaces",
     "type-check": "npm run type-check --workspaces",
-    "version": "npx changeset version && npm i"
+    "version": "npx changeset version && npm i",
+    "prettify": "npm run prettify --workspaces"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@rosen-bridge/changeset-formatter": "^0.1.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
+    "depcheck": "^1.4.7",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.4",

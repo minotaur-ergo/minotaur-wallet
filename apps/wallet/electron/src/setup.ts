@@ -1,7 +1,7 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
 import {
-  CapElectronEventEmitter,
   CapacitorSplashScreen,
+  CapElectronEventEmitter,
   setupCapacitorElectronPlugins,
 } from '@capacitor-community/electron';
 import chokidar from 'chokidar';
@@ -12,8 +12,8 @@ import {
   Menu,
   MenuItem,
   nativeImage,
-  Tray,
   session,
+  Tray,
 } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import electronServe from 'electron-serve';

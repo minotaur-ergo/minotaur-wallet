@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { ipcRenderer, contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { EventEmitter } from 'events';
 
 ////////////////////////////////////////////////////////

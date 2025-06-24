@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+
 import { Capacitor } from '@capacitor/core';
 import { SafeArea } from 'capacitor-plugin-safe-area';
-import createStyle from './safe-area-style';
+
+import AppRouter from '@/router/AppRouter';
+import BackButtonHandler from '@/router/BackButtonHandler';
+import store from '@/store';
+
 import AppTheme from '../app-theme/AppTheme';
 import Database from '../database/Database';
-import MessageHandler from './MessageHandler';
-import { MemoryRouter } from 'react-router-dom';
-import AppRouter from '@/router/AppRouter';
-import store from '@/store';
-import { Provider } from 'react-redux';
-import BackButtonHandler from '@/router/BackButtonHandler';
 import QrCodeReaderView from '../qr-code-scanner/QrCodeReaderView';
+import MessageHandler from './MessageHandler';
+import createStyle from './safe-area-style';
 
 const MinotaurApp = () => {
   const [style, setStyle] = useState('');

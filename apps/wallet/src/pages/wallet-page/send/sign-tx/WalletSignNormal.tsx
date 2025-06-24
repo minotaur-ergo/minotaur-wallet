@@ -1,9 +1,11 @@
-import { Box } from '@mui/material';
 import { useContext, useEffect } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { Box } from '@mui/material';
+
 import { validatePassword } from '@/action/wallet';
 import PasswordField from '@/components/password-field/PasswordField';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import { StateWallet } from '@/store/reducer/wallet';
 
 interface WalletSignNormalPropsType {
   wallet: StateWallet;

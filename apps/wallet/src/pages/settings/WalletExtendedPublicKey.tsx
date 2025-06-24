@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
 import {
   Alert,
   Box,
@@ -8,12 +10,12 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
-import AppFrame from '@/layouts/AppFrame';
-import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
 import base58 from 'bs58';
-import { StateWallet } from '@/store/reducer/wallet';
+
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
+import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
+import AppFrame from '@/layouts/AppFrame';
 
 interface WalletExtendedPublicKeyPropsType {
   wallet: StateWallet;

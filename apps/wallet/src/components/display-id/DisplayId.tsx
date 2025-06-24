@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { Box, Typography, TypographyProps } from '@mui/material';
-import { dottedText } from '@/utils/functions';
+
 import useAddressName from '@/hooks/useAddressName';
+import { dottedText } from '@/utils/functions';
 
 interface DisplayIdPropsType extends TypographyProps {
   id: string | undefined;

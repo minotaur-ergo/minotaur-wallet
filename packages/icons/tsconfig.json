@@ -17,8 +17,5 @@
     "composite": true,
     "rootDir": "./src/"
   },
-  "include": ["src/**/*.ts"],
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["src/**/*.ts"]
 }

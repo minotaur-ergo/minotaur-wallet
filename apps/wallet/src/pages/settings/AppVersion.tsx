@@ -1,6 +1,7 @@
-import MinotaurLogo from '@/components/splash/MinotaurLogo';
 import { Box, Typography } from '@mui/material';
+
 import { version } from '@/../package.json';
+import MinotaurLogo from '@/components/splash/MinotaurLogo';
 
 const AppVersion = () => {
   return (

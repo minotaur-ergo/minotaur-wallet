@@ -1,6 +1,8 @@
-import { TokenType } from '@/types/tx';
-import { Stack, Typography } from '@mui/material';
 import React from 'react';
+
+import { TokenType } from '@minotaur-ergo/types';
+import { Stack, Typography } from '@mui/material';
+
 import IssuedBurntTokenAmount from './IssuedBurntTokenAmount';
 
 interface UnBalancedTokensAmountPropsType {

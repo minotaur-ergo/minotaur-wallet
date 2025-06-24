@@ -30,6 +30,7 @@
   "include": ["src"],
   "references": [
     { "path": "./tsconfig.node.json" },
-    { "path": "../../packages/icons" }
+    { "path": "../../packages/icons" },
+    { "path": "../../packages/types" }
   ]
 }

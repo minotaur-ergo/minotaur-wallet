@@ -1,7 +1,9 @@
-import { Typography } from '@mui/material';
 import React from 'react';
-import getColor from './getColor';
+
 import { CheckCircleOutline, WarningAmberRounded } from '@mui/icons-material';
+import { Typography } from '@mui/material';
+
+import getColor from './getColor';
 
 interface ConsolidateIndicatorPropsType {
   consolidate: boolean;

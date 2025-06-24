@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
+
+import { AssetInfo, DAppPropsType } from '@minotaur-ergo/types';
+
 import {
   IMPL_FEE,
   TX_FEE,
 } from '@/pages/wallet-page/dapps/apps/air-drop/params';
-import { AssetInfo, DAppPropsType } from '@/types/dapps';
-import { useEffect, useState } from 'react';
 
 const useTokens = (props: DAppPropsType) => {
   const [totalErg, setTotalErg] = useState(0n);

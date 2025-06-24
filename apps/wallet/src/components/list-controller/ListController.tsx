@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react';
+
 import { Divider, Stack } from '@mui/material';
+
 import SvgIcon from '@/icons/SvgIcon';
-import CenterMessage from '../state-message/CenterMessage';
+
 import LoadingPage from '../loading-page/LoadingPage';
+import CenterMessage from '../state-message/CenterMessage';
 
 interface ListControllerPropsType<T> {
   loading: boolean;

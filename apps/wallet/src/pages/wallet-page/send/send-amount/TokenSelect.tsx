@@ -1,16 +1,17 @@
-import AssetRow from '@/components/asset-row/AssetRow';
 import { useContext, useEffect, useState } from 'react';
+
+import { StateWallet, TokenBalanceBigInt } from '@minotaur-ergo/types';
 import { SelectChangeEvent } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+
 import { AssetDbAction } from '@/action/db';
+import AssetRow from '@/components/asset-row/AssetRow';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import Asset from '@/db/entities/Asset';
-import { ReceiverTokenType } from '@/types/sign-modal';
-import { StateWallet } from '@/store/reducer/wallet';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -56,18 +57,18 @@ const TokenSelect = (props: TokenSelectPropsType) => {
   const handleSelectToken = (event: SelectChangeEvent<Array<string>>) => {
     const value = event.target.value;
     const selected = typeof value === 'string' ? value.split(',') : value;
-    const newTokens: Array<ReceiverTokenType> = content.tokens.filter((item) =>
-      selected.includes(item.id),
+    const newTokens: Array<TokenBalanceBigInt> = content.tokens.filter((item) =>
+      selected.includes(item.tokenId),
     );
-    const oldSelectedIds = newTokens.map((item) => item.id);
+    const oldSelectedIds = newTokens.map((item) => item.tokenId);
     selected
       .filter((item) => !oldSelectedIds.includes(item))
-      .forEach((item) => newTokens.push({ id: item, amount: 0n }));
+      .forEach((item) => newTokens.push({ tokenId: item, balance: 0n }));
     generatorContext.edit(props.index, { tokens: newTokens });
   };
 
   useEffect(() => {
-    const sorted = content.tokens.map((item) => item.id).sort();
+    const sorted = content.tokens.map((item) => item.tokenId).sort();
     if (JSON.stringify(sorted) !== JSON.stringify(selected)) {
       setSelected(sorted);
     }

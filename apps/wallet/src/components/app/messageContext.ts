@@ -1,5 +1,6 @@
-import { VariantType } from 'notistack';
 import { createContext } from 'react';
+
+import { VariantType } from 'notistack';
 
 interface MessageContextType {
   insert: (message: string, variant: VariantType) => unknown;

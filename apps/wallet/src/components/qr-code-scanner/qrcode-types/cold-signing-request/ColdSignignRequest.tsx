@@ -1,23 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react';
-import LoadingPage from '@/components/loading-page/LoadingPage';
-import { ColdSigningRequestData } from '@/types/qrcode';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { deserialize } from '@/action/box';
-import TxSignContext from '@/components/sign/context/TxSignContext';
-import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
 import { useSelector } from 'react-redux';
-import { GlobalStateType } from '@/store';
-import AppFrame from '@/layouts/AppFrame';
-import BackButton from '@/components/back-button/BackButton';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { Button, IconButton } from '@mui/material';
+
+import { ColdSigningRequestData, GlobalStateType } from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
+import { Button, IconButton } from '@mui/material';
+import * as wasm from 'ergo-lib-wasm-browser';
+
+import { deserialize } from '@/action/box';
+import BackButton from '@/components/back-button/BackButton';
+import LoadingPage from '@/components/loading-page/LoadingPage';
+import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
-import getChain from '@/utils/networks';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import TxSignContext from '@/components/sign/context/TxSignContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
 import CenterMessage from '@/components/state-message/CenterMessage';
 import SvgIcon from '@/icons/SvgIcon';
-import SignButtonLabel from '@/components/sign-button-label/SignButtonLabel';
+import AppFrame from '@/layouts/AppFrame';
+import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
+import getChain from '@/utils/networks';
 
 interface ColdSigningRequestPropsType {
   scanned: string;

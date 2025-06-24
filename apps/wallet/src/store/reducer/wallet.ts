@@ -1,71 +1,15 @@
-import { WalletType } from '@/db/entities/Wallet';
-import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
+import {
+  AddressBalance,
+  AddressBalanceMap,
+  AddressBalancePayload,
+  InitializeAllPayload,
+  StateAddress,
+  StateWallet,
+  WalletStateType,
+} from '@minotaur-ergo/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface TokenInfo {
-  tokenId: string;
-  balance: string;
-}
-
-export interface StateWallet {
-  id: number;
-  name: string;
-  networkType: string;
-  seed: string;
-  xPub: string;
-  type: WalletType;
-  requiredSign: number;
-  version: number;
-  balance: string;
-  tokens: Array<TokenInfo>;
-  addresses: Array<StateAddress>;
-  flags: Array<string>;
-  archived: boolean;
-  favorite: boolean;
-}
-
-export interface StateAddress {
-  id: number;
-  name: string;
-  address: string;
-  path: string;
-  idx: number;
-  balance: string;
-  walletId: number;
-  proceedHeight: number;
-  tokens: Array<TokenInfo>;
-  isDefault: boolean;
-}
-
-export interface AddressBalance {
-  amount: string;
-  tokens: Array<TokenInfo>;
-}
-
-export interface AddressBalancePayload {
-  address: string;
-  balance: AddressBalance;
-}
-
-export type AddressBalanceMap = { [address: string]: AddressBalance };
-
-export interface InitializeAllPayload {
-  wallets: Array<StateWallet>;
-  addresses: Array<StateAddress>;
-  balances: AddressBalanceMap;
-}
-
-export interface WalletStateType {
-  wallets: Array<StateWallet>;
-  addresses: Array<StateAddress>;
-  balances: { [address: string]: AddressBalance };
-  loadedWalletPinType: string;
-  walletsValid: boolean;
-  addressesValid: boolean;
-  initialized: boolean;
-  refresh: boolean;
-  updatedWallets: Array<number>;
-}
+import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
 
 export const walletInitialState: WalletStateType = {
   wallets: [],

@@ -1,12 +1,16 @@
+import {
+  MultiSigDataHint,
+  MultiSigHintType,
+  StateWallet,
+  TxHintBag,
+} from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
-import { StateWallet } from '@/store/reducer/wallet';
-import { TxHintBag } from '@/types/multi-sig';
-import { MultiSigDataHint, MultiSigDataHintType } from '@/types/multi-sig/hint';
 import { boxArrayToBoxes } from '@/utils/convert';
 import fakeContext from '@/utils/networks/fakeContext';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 /**
  * Converts an array of public key strings to a Propositions object for Ergo transactions.
@@ -90,7 +94,7 @@ export const sign = async (
   const simulatedPks: Array<string> = hints
     .map((hintRow, inputIndex) => {
       return hintRow.map((hint, signerIndex) => {
-        if (hint.Commit === '' || hint.Type === MultiSigDataHintType.SIMULATED)
+        if (hint.Commit === '' || hint.Type === MultiSigHintType.Simulated)
           return inputPks[inputIndex][signerIndex];
         return '';
       });

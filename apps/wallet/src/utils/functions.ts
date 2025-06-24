@@ -1,10 +1,12 @@
-import { commaSeparate } from '@/utils/convert';
-import * as ecc from 'tiny-secp256k1';
+import { BoxContent } from '@minotaur-ergo/types';
 import { BIP32Factory } from 'bip32';
 import base58 from 'bs58';
 import * as wasm from 'ergo-lib-wasm-browser';
+import * as ecc from 'tiny-secp256k1';
+
 import { getBoxTokens } from '@/action/tx';
-import { BoxContent } from '@/types/sign-modal';
+import { commaSeparate } from '@/utils/convert';
+
 import getChain from './networks';
 
 const bip32 = BIP32Factory(ecc);

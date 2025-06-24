@@ -1,13 +1,15 @@
-import { getTxBoxes } from '@/action/tx';
-import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import { useContext, useEffect, useState } from 'react';
+
 import {
   AddressCompletionState,
   MultiSigAddressHolder,
-} from '@/types/multi-sig';
-import { MultiSigDataHintType } from '@/types/multi-sig/hint';
+  MultiSigHintType,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { useContext, useEffect, useState } from 'react';
+
+import { getTxBoxes } from '@/action/tx';
+import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
 
 const useActionAddresses = (
   addresses: Array<MultiSigAddressHolder>,
@@ -45,14 +47,11 @@ const useActionAddresses = (
             const hint = context.hints[boxIndex][sortedIndex];
             if (
               hint.Commit === '' ||
-              hint.Type === MultiSigDataHintType.SIMULATED
+              hint.Type === MultiSigHintType.Simulated
             ) {
               committed = false;
             }
-            if (
-              hint.Proof === '' ||
-              hint.Type === MultiSigDataHintType.SIMULATED
-            ) {
+            if (hint.Proof === '' || hint.Type === MultiSigHintType.Simulated) {
               signed = false;
             }
           }

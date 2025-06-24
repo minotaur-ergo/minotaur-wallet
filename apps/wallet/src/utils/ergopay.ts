@@ -1,11 +1,16 @@
-import { ErgoPayResponse, InternalBoxLoadedData } from '@/types/ergopay';
-import { ADDRESS_PLACE_HOLDER } from './const';
+import { CapacitorHttp } from '@capacitor/core';
+import {
+  ErgoPayResponse,
+  InternalBoxLoadedData,
+  StateWallet,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
 import { BoxDbAction } from '@/action/db';
-import { StateWallet } from '@/store/reducer/wallet';
+
+import { ADDRESS_PLACE_HOLDER } from './const';
 import { createEmptyArray } from './functions';
 import getChain from './networks';
-import { CapacitorHttp } from '@capacitor/core';
 
 const getUrl = (url: string, address: string) => {
   if (url.startsWith('ergopay://localhost')) {

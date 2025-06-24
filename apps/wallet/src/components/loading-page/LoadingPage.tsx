@@ -1,4 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
+
 import StateMessage from '../state-message/StateMessage';
 
 interface LoadingPagePropsType {

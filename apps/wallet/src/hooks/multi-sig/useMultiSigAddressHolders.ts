@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react';
+
+import { MultiSigAddressHolder, StateWallet } from '@minotaur-ergo/types';
+
 import { deriveAddressFromXPub } from '@/action/address';
 import { MultiSigDbAction } from '@/action/db';
-import { StateWallet } from '@/store/reducer/wallet';
-import { MultiSigAddressHolder } from '@/types/multi-sig';
 import { bip32, createEmptyArrayWithIndex } from '@/utils/functions';
 import getChain from '@/utils/networks';
-import { useEffect, useState } from 'react';
 
 const useMultiSigAddressHolders = (
   loadingWallet: StateWallet,

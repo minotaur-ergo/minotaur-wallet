@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+
+import { DAppPropsType, UnsignedGeneratedTx } from '@minotaur-ergo/types';
 import {
   Button,
   Divider,
@@ -8,18 +11,18 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { DAppPropsType, UnsignedGeneratedTx } from '@/types/dapps';
-import React, { useState } from 'react';
-import DisplayId from '@/components/display-id/DisplayId';
-import useAddresses from './useAddresses';
-import useAddressBoxes from './useAddressBoxes';
-import UnspentBoxesCount from './UnspentBoxesCount';
-import OldestBoxAge from './OldestBoxAge';
-import getColor from './getColor';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { CONSOLIDATE_FEE, IMPLEMENTOR, TRANSACTION_FEE } from './parameters';
-import { boxesToArrayBox } from '@/utils/convert';
+
+import DisplayId from '@/components/display-id/DisplayId';
 import LoadingPage from '@/components/loading-page/LoadingPage';
+import { boxesToArrayBox } from '@/utils/convert';
+
+import getColor from './getColor';
+import OldestBoxAge from './OldestBoxAge';
+import { CONSOLIDATE_FEE, IMPLEMENTOR, TRANSACTION_FEE } from './parameters';
+import UnspentBoxesCount from './UnspentBoxesCount';
+import useAddressBoxes from './useAddressBoxes';
+import useAddresses from './useAddresses';
 
 const BoxConsolidation = (props: DAppPropsType) => {
   const addresses = useAddresses(props);

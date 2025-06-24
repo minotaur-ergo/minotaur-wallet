@@ -1,9 +1,11 @@
-import * as wasm from 'ergo-lib-wasm-browser';
 import { useEffect, useState } from 'react';
-import StateMessage from '../state-message/StateMessage';
+
+import { QrCodeTypeEnum } from '@minotaur-ergo/types';
 import { CircularProgress } from '@mui/material';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import DisplayQRCode from '../display-qrcode/DisplayQRCode';
-import { QrCodeTypeEnum } from '@/types/qrcode';
+import StateMessage from '../state-message/StateMessage';
 
 interface DisplaySignedTxPropsType {
   tx?: wasm.Transaction;
