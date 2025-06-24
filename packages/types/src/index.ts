@@ -6,3 +6,4 @@ export * from './state';
 export * from './tx';
 export * from './window';
 export * from './ergopay';
+export * from './qrcode';

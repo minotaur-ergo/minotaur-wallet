@@ -1,6 +1,10 @@
 import React, { useContext } from 'react';
 
-import { MultiSigDataShare, MultiSigStateEnum } from '@minotaur-ergo/types';
+import {
+  MultiSigDataShare,
+  MultiSigStateEnum,
+  QrCodeTypeEnum,
+} from '@minotaur-ergo/types';
 import {
   ContentPasteOutlined,
   ShareOutlined,
@@ -19,7 +23,6 @@ import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataConte
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { QrCodeTypeEnum } from '@/types/qrcode';
 import { readClipBoard } from '@/utils/clipboard';
 
 const MultiSigToolbar = () => {

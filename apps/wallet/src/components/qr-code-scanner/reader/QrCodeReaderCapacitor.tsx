@@ -5,11 +5,11 @@ import {
   BarcodeScanner,
   LensFacing,
 } from '@capacitor-mlkit/barcode-scanning';
+import { QrCodePropsType } from '@minotaur-ergo/types';
 import { CameraswitchOutlined } from '@mui/icons-material';
 import { Fab } from '@mui/material';
 
 import MessageContext from '@/components/app/messageContext';
-import { QrCodePropsType } from '@/types/qrcode';
 import { getCameraBoxBoundary } from '@/utils/qrcode';
 
 const QrCodeReaderCapacitor = (props: QrCodePropsType) => {

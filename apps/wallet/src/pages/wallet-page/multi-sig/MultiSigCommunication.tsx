@@ -6,6 +6,7 @@ import {
   MultiSigBriefRow,
   MultiSigDataShare,
   StateWallet,
+  QrCodeTypeEnum,
 } from '@minotaur-ergo/types';
 import { GlobalStateType } from '@minotaur-ergo/types';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
@@ -21,7 +22,6 @@ import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import AppFrame from '@/layouts/AppFrame';
 import { RouteMap, getRoute } from '@/router/routerMap';
-import { QrCodeTypeEnum } from '@/types/qrcode';
 import { readClipBoard } from '@/utils/clipboard';
 
 import MultiSigTransactionItem from './MultiSigTransactionItem';

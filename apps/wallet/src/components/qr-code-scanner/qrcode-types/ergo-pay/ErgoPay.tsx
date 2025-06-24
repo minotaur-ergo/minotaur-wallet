@@ -1,6 +1,9 @@
 import React, { useContext, useState } from 'react';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import {
+  StateWallet,
+  QrCodeScannedComponentPropsType,
+} from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {
   Button,
@@ -23,7 +26,6 @@ import useMessage from '@/hooks/ergo-pay/useMessage';
 import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
 import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
-import { QrCodeScannedComponentPropsType } from '@/types/qrcode';
 
 const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
   const [wallet, setWallet] = useState<StateWallet | undefined>();

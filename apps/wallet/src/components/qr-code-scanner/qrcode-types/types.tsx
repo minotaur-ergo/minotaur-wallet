@@ -1,4 +1,5 @@
-import { QrCodeType, QrCodeTypeEnum } from '@/types/qrcode';
+import { QrCodeType, QrCodeTypeEnum } from '@minotaur-ergo/types';
+
 import { detectPageFromJson } from '@/utils/qrcode';
 
 import ColdSignTransaction from './cold-sign-transaction/ColdSignTransaction';

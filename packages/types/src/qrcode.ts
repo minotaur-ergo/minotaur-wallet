@@ -20,7 +20,7 @@ export interface QrCodeScannedComponentPropsType {
   close: () => unknown;
 }
 
-export const enum QrCodeTypeEnum {
+export enum QrCodeTypeEnum {
   ColdSignRequest = 'CSR',
   ColdSignTransaction = 'CSTX',
   ErgoPay = 'ergopay',

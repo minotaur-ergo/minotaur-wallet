@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, QrCodeTypeEnum } from '@minotaur-ergo/types';
 import { CircularProgress, Box, Typography } from '@mui/material';
 
 import { serialize } from '@/action/box';
@@ -8,7 +8,6 @@ import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import StateMessage from '@/components/state-message/StateMessage';
 import useReducedTx from '@/hooks/useReducedTx';
-import { QrCodeTypeEnum } from '@/types/qrcode';
 
 interface WalletSignReadonlyPropsType {
   wallet: StateWallet;

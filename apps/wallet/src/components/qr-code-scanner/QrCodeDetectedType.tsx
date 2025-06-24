@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { GlobalStateType, StateWallet, QrCodeType } from '@minotaur-ergo/types';
 
 import LoadingPage from '@/components/loading-page/LoadingPage';
-import { QrCodeType } from '@/types/qrcode';
 
 import { SelectableWalletContext } from '../sign/context/SelectableWalletContext';
 import TxSignContextHandler from '../sign/context/TxSignContextHandler';

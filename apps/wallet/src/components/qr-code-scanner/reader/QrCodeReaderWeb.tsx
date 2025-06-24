@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
+import { QrCodePropsType } from '@minotaur-ergo/types';
 import { CameraswitchOutlined } from '@mui/icons-material';
 import { Fab } from '@mui/material';
 
 import useQrReader from '@/hooks/useQrReader';
-import { QrCodePropsType } from '@/types/qrcode';
 
 interface QrCodeReaderWebPropsType extends QrCodePropsType {
   closeQrCode: () => unknown;
