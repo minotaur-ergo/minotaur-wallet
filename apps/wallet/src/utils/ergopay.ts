@@ -1,9 +1,12 @@
 import { CapacitorHttp } from '@capacitor/core';
-import { StateWallet } from '@minotaur-ergo/types';
+import {
+  StateWallet,
+  ErgoPayResponse,
+  InternalBoxLoadedData,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { BoxDbAction } from '@/action/db';
-import { ErgoPayResponse, InternalBoxLoadedData } from '@/types/ergopay';
 
 import { ADDRESS_PLACE_HOLDER } from './const';
 import { createEmptyArray } from './functions';

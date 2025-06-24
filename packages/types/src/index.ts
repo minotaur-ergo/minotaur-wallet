@@ -5,3 +5,4 @@ export * from './network';
 export * from './state';
 export * from './tx';
 export * from './window';
+export * from './ergopay';

@@ -1,5 +1,6 @@
-import { StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import { StateWallet } from './state';
 
 enum MultiAddressSupportedEnum {
   NOT_NEEDED = 'Not Needed',

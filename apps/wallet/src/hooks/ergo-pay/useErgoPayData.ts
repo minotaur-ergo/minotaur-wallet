@@ -5,7 +5,8 @@ import {
   ErgoPaySeverityEnum,
   LoadedErgoPayResponse,
   MultiAddressSupportedEnum,
-} from '@/types/ergopay';
+} from '@minotaur-ergo/types';
+
 import { getData, getDataMultiple } from '@/utils/ergopay';
 
 const useErgoPayData = (
