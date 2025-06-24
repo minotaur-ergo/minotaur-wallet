@@ -1,9 +1,4 @@
-import { WalletType } from './db';
-
-export interface TokenBalance {
-  tokenId: string;
-  balance: string;
-}
+import { WalletType, TokenBalance } from './db';
 
 export interface StateWallet {
   id: number;

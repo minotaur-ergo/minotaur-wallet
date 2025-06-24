@@ -1,9 +1,39 @@
 import React from 'react';
 
+import * as wasm from 'ergo-lib-wasm-browser';
+
 export enum WalletType {
   ReadOnly = 'READ_ONLY',
   Normal = 'NORMAL',
   MultiSig = 'MULTI_SIG',
+}
+
+export interface TokenBalance {
+  tokenId: string;
+  balance: string;
+}
+
+export interface TokenBalanceBigInt {
+  tokenId: string;
+  balance: bigint;
+}
+
+export enum RegisterKeys {
+  R4 = 4,
+  R5 = 5,
+  R6 = 6,
+  R7 = 7,
+  R8 = 8,
+  R9 = 9,
+}
+
+export interface ReceiverType {
+  address: string;
+  amount: bigint;
+  tokens: TokenBalanceBigInt[];
+  registers?: {
+    [register in RegisterKeys]: wasm.Constant;
+  };
 }
 
 export interface TokenInfo {
@@ -65,4 +95,10 @@ export interface TransactionValues {
   total: bigint;
   txId: string;
   tokens: { [tokenId: string]: bigint };
+}
+
+export interface BoxContent {
+  address: string;
+  amount: bigint;
+  tokens: Array<TokenBalanceBigInt>;
 }

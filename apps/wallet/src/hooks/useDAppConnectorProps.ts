@@ -4,6 +4,7 @@ import {
   StateWallet,
   DAppPropsType,
   UnsignedGeneratedTx,
+  TokenBalanceBigInt,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -24,7 +25,7 @@ const selectBoxesDApps =
   (wallet: StateWallet) =>
   async (
     amount: bigint,
-    tokens: Array<{ id: string; amount: bigint }>,
+    tokens: Array<TokenBalanceBigInt>,
     address?: string,
   ) => {
     const addressIds = wallet.addresses

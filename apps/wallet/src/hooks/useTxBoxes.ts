@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, BoxContent } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
-import { BoxContent } from '@/types/sign-modal';
 import { boxesToContent, createEmptyArrayWithIndex } from '@/utils/functions';
 
 const useTxBoxes = (

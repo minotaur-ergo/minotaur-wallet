@@ -89,7 +89,7 @@ export const sellToken = async (
 
   const boxes = await props.getCoveringForErgAndToken(
     parameters.MIN_BOX_VALUE,
-    [{ id: sellTokenId, amount }],
+    [{ tokenId: sellTokenId, balance: amount }],
   );
   if (!boxes.covered) {
     throw Error('Insufficient token');

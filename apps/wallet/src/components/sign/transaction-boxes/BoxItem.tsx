@@ -1,8 +1,7 @@
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, TokenBalanceBigInt } from '@minotaur-ergo/types';
 import { Box, Stack } from '@mui/material';
 
 import AssetRow from '@/components/asset-row/AssetRow';
-import { ReceiverTokenType } from '@/types/sign-modal';
 
 import DisplayId from '../../display-id/DisplayId';
 
@@ -10,7 +9,7 @@ interface BoxItemPropsType {
   networkType: string;
   amount: bigint;
   address: string;
-  tokens: Array<ReceiverTokenType>;
+  tokens: Array<TokenBalanceBigInt>;
   wallet?: StateWallet;
 }
 
@@ -37,9 +36,9 @@ const BoxItem = (props: BoxItemPropsType) => {
         <AssetRow id="" amount={props.amount} networkType={props.networkType} />
         {props.tokens.map((token) => (
           <AssetRow
-            key={token.id}
-            id={token.id}
-            amount={token.amount}
+            key={token.tokenId}
+            id={token.tokenId}
+            amount={token.balance}
             networkType={props.networkType}
           />
         ))}

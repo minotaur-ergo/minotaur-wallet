@@ -1,7 +1,10 @@
 import React from 'react';
-import { ChainTypeInterface } from './network';
+
 import * as wasm from 'ergo-lib-wasm-browser';
 import { VariantType } from 'notistack';
+
+import { TokenBalanceBigInt } from './db';
+import { ChainTypeInterface } from './network';
 
 interface DAppType {
   name: string;
@@ -39,7 +42,7 @@ interface DAppPropsType {
   getAssets: () => Promise<Array<AssetInfo>>;
   getCoveringForErgAndToken: (
     amount: bigint,
-    tokens: Array<{ id: string; amount: bigint }>,
+    tokens: Array<TokenBalanceBigInt>,
     address?: string,
   ) => Promise<CoveringResult>;
   chain: ChainTypeInterface;
