@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { WalletType } from '@minotaur-ergo/types';
 import { Button, Grid } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -8,7 +9,6 @@ import { createWallet } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Stepper from '@/components/stepper/Stepper';
-import { WalletType } from '@/db/entities/Wallet';
 import AppFrame from '@/layouts/AppFrame';
 import { MAIN_NET_LABEL } from '@/utils/const';
 

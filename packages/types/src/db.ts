@@ -1,3 +1,5 @@
+import React from 'react';
+
 export enum WalletType {
   ReadOnly = 'READ_ONLY',
   Normal = 'NORMAL',
@@ -46,4 +48,21 @@ export interface WalletTransactionType {
   ergIn: bigint;
   ergOut: bigint;
   tokens: Map<string, bigint>;
+}
+
+export interface AssetDetailType {
+  name: string;
+  logoPath?: string;
+  logo?: React.ReactElement;
+  description: string;
+  decimal: number;
+  emissionAmount: bigint;
+  txId: string;
+  tokenId: string;
+}
+
+export interface TransactionValues {
+  total: bigint;
+  txId: string;
+  tokens: { [tokenId: string]: bigint };
 }

@@ -1,7 +1,7 @@
 import {
   MultiSigBriefRow,
   MultiSigDataHint,
-  MultiSigDataHintType,
+  MultiSigHintType,
   MultiSigDataRow,
   StateWallet,
 } from '@minotaur-ergo/types';
@@ -102,7 +102,7 @@ const fetchMultiSigBriefRow = async (
             (hintRow) =>
               hintRow.filter(
                 (hint) =>
-                  hint.Proof !== '' && hint.Type === MultiSigDataHintType.REAL,
+                  hint.Proof !== '' && hint.Type === MultiSigHintType.Real,
               ).length,
           ),
         ),

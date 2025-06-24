@@ -1,10 +1,12 @@
 import {
   BoxInfo,
   MultiSigDataHint,
-  MultiSigDataHintType,
+  MultiSigHintType,
   SpendDetail,
   TokenInfo,
   TxInfo,
+  ConfigType,
+  WalletType,
 } from '@minotaur-ergo/types';
 import { DataSource, Like, Repository } from 'typeorm';
 
@@ -14,17 +16,15 @@ import AddressValueInfo, {
 } from '@/db/entities/AddressValueInfo';
 import Asset from '@/db/entities/Asset';
 import Box from '@/db/entities/Box';
-import Config, { ConfigType } from '@/db/entities/Config';
-import MultiSigHint, {
-  MultiSigHintType,
-} from '@/db/entities/multi-sig/MultiSigHint';
+import Config from '@/db/entities/Config';
+import MultiSigHint from '@/db/entities/multi-sig/MultiSigHint';
 import MultiSignInput from '@/db/entities/multi-sig/MultiSigInput';
 import MultiSignRow from '@/db/entities/multi-sig/MultiSigRow';
 import MultiSignTx from '@/db/entities/multi-sig/MultiSigTx';
 import MultiSigKey from '@/db/entities/MultiSigKey';
 import Pin from '@/db/entities/Pin';
 import SavedAddress from '@/db/entities/SavedAddress';
-import Wallet, { WalletType } from '@/db/entities/Wallet';
+import Wallet from '@/db/entities/Wallet';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
 import { DEFAULT_ADDRESS_PREFIX, TX_CHUNK_SIZE } from '@/utils/const';
@@ -1142,10 +1142,7 @@ class MultiStoreDbAction {
       for (const [index, hint] of inputHint.entries()) {
         if (hint.Commit) {
           await this.hintRepository.insert({
-            type:
-              hint.Type === MultiSigDataHintType.REAL
-                ? MultiSigHintType.Real
-                : MultiSigHintType.Simulated,
+            type: hint.Type,
             idx: index,
             inpIdx: inputIndex,
             commit: hint.Commit,
@@ -1273,9 +1270,7 @@ class MultiStoreDbAction {
             Buffer.from(filtered.commit, 'hex'),
             Buffer.from(filtered.proof || '', 'hex'),
             Buffer.from(filtered.secret || '', 'hex'),
-            filtered.type === MultiSigHintType.Real
-              ? MultiSigDataHintType.REAL
-              : MultiSigDataHintType.SIMULATED,
+            filtered.type,
           );
         } else {
           return new MultiSigDataHintImpl(
@@ -1284,7 +1279,7 @@ class MultiStoreDbAction {
             undefined,
             undefined,
             undefined,
-            MultiSigDataHintType.REAL,
+            MultiSigHintType.Real,
           );
         }
       });

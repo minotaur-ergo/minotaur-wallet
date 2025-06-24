@@ -1,6 +1,6 @@
 import {
   MultiSigDataHint,
-  MultiSigDataHintType,
+  MultiSigHintType,
   MultiSigDataShare,
   StateWallet,
 } from '@minotaur-ergo/types';
@@ -412,7 +412,7 @@ const verifyHintsProof = (
           // If there's no proof or it's simulated, we don't need to verify it
           if (
             !hintObject.hasProof() ||
-            hintObject.Type === MultiSigDataHintType.SIMULATED
+            hintObject.Type === MultiSigHintType.Simulated
           ) {
             return false;
           }

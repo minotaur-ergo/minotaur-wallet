@@ -2,14 +2,13 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { DisplayType, GlobalStateType } from '@minotaur-ergo/types';
+import { DisplayType, GlobalStateType, ConfigType } from '@minotaur-ergo/types';
 import { Box, Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
 import Heading from '@/components/heading/Heading';
 import SolitarySelectField from '@/components/solitary/SolitarySelectField';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
-import { ConfigType } from '@/db/entities/Config';
 import ActionButton from '@/pages/settings/ActionButton';
 import { RouteMap, getRoute } from '@/router/routerMap';
 import {

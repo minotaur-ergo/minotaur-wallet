@@ -1,11 +1,7 @@
+import { MultiSigHintType } from '@minotaur-ergo/types';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import MultiSigRow from './MultiSigRow';
-
-enum MultiSigHintType {
-  Real = 'REAL',
-  Simulated = 'SIMULATED',
-}
 
 @Entity({ name: 'multi-sig-hint' })
 class MultiSigHint {

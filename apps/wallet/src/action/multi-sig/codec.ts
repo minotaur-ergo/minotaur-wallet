@@ -1,6 +1,6 @@
 import {
   MultiSigDataHint,
-  MultiSigDataHintType,
+  MultiSigHintType,
   TxHintBag,
   TxSinglePublicHint,
   TxSingleSecretHint,
@@ -15,7 +15,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
     protected commit = Buffer.from('', 'hex'),
     protected proof = Buffer.from('', 'hex'),
     protected secret = Buffer.from('', 'hex'),
-    protected type: MultiSigDataHintType = MultiSigDataHintType.REAL,
+    protected type: MultiSigHintType = MultiSigHintType.Real,
   ) {
     super();
   }
@@ -69,7 +69,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
     // If there's no proof, return only the commit
     if (!this.hasProof()) return this.commit.toString('base64');
 
-    const isSimulated = this.type === MultiSigDataHintType.SIMULATED;
+    const isSimulated = this.type === MultiSigHintType.Simulated;
 
     // Calculate buffer size based on what we're including
     const bufferSize = 33 + 56 + (isSimulated ? 1 : 0); // commit + proof + (type indicator only for SIMULATED)
@@ -117,8 +117,8 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
         : Buffer.from('');
     const type =
       bytes.length > 33 + 56 && bytes[33 + 56] === 1
-        ? MultiSigDataHintType.SIMULATED
-        : MultiSigDataHintType.REAL;
+        ? MultiSigHintType.Simulated
+        : MultiSigHintType.Real;
 
     return new MultiSigDataHintImpl(
       inputIndex,
@@ -173,7 +173,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
    * @returns true if the proof is valid, false otherwise
    */
   verify = (publicKeyHex: string): boolean => {
-    if (!this.hasProof() || this.type === MultiSigDataHintType.SIMULATED) {
+    if (!this.hasProof() || this.type === MultiSigHintType.Simulated) {
       return false;
     }
 
@@ -262,8 +262,8 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
         this.proof = Buffer.from(proof, 'hex');
         changed = true;
       }
-      if (isSimulated && this.type === MultiSigDataHintType.REAL) {
-        this.type = MultiSigDataHintType.SIMULATED;
+      if (isSimulated && this.type === MultiSigHintType.Real) {
+        this.type = MultiSigHintType.Simulated;
         changed = true;
       }
     }
@@ -316,7 +316,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
     if (this.proof.length === 0) this.proof = Buffer.from(other.Proof, 'hex');
     if (this.secret.length === 0)
       this.secret = Buffer.from(other.Secret, 'hex');
-    if (this.type === MultiSigDataHintType.REAL) this.type = other.Type;
+    if (this.type === MultiSigHintType.Real) this.type = other.Type;
   };
 
   generatePublicHint = (
@@ -330,8 +330,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
     };
     const res: Array<TxSinglePublicHint> = [
       {
-        hint:
-          this.type === MultiSigDataHintType.REAL ? 'cmtReal' : 'cmtSimulated',
+        hint: this.type === MultiSigHintType.Real ? 'cmtReal' : 'cmtSimulated',
         pubkey: { ...pkJson },
         type: 'dlog',
         a: this.commit.toString('hex'),
@@ -362,9 +361,7 @@ export class MultiSigDataHintImpl extends MultiSigDataHint {
     return [
       {
         hint:
-          this.type === MultiSigDataHintType.REAL
-            ? 'proofReal'
-            : 'proofSimulated',
+          this.type === MultiSigHintType.Real ? 'proofReal' : 'proofSimulated',
         pubkey: { ...pkJson },
         challenge: this.getChallenge().toString('hex'),
         proof: this.proof.toString('hex'),

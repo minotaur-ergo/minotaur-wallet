@@ -65,6 +65,13 @@ export interface WalletStateType {
   updatedWallets: Array<number>;
 }
 
+export enum ConfigType {
+  DisplayMode = 'DISPLAY_DETAIL',
+  Currency = 'CURRENCY',
+  ActiveWallet = 'ACTIVE_WALLET',
+  useActiveWallet = 'USE_ACTIVE_WALLET',
+}
+
 export type DisplayType = 'simple' | 'advanced';
 
 export interface PinConfig {

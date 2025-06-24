@@ -1,22 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, TransactionValues } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { extractErgAndTokenSpent } from '@/action/tx';
-
-interface Values {
-  total: bigint;
-  txId: string;
-  tokens: { [tokenId: string]: bigint };
-}
 
 const useTxValues = (
   tx: wasm.Transaction | wasm.UnsignedTransaction | undefined,
   boxes: Array<wasm.ErgoBox>,
   wallet: StateWallet,
 ) => {
-  const [txValues, setTxValues] = useState<Values>({
+  const [txValues, setTxValues] = useState<TransactionValues>({
     total: 0n,
     txId: '',
     tokens: {},

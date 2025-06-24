@@ -1,12 +1,12 @@
 import { TxHintBag, TxSinglePublicHint, TxSingleSecretHint } from './tx';
 
-export enum MultiSigDataHintType {
-  SIMULATED = 'simulated',
-  REAL = 'real',
+export enum MultiSigHintType {
+  Simulated = 'SIMULATED',
+  Real = 'REAL',
 }
 
 export abstract class MultiSigDataHint {
-  abstract get Type(): MultiSigDataHintType;
+  abstract get Type(): MultiSigHintType;
 
   abstract get Commit(): string;
 

@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import {
   AddressCompletionState,
   MultiSigAddressHolder,
-  MultiSigDataHintType,
+  MultiSigHintType,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -47,14 +47,11 @@ const useActionAddresses = (
             const hint = context.hints[boxIndex][sortedIndex];
             if (
               hint.Commit === '' ||
-              hint.Type === MultiSigDataHintType.SIMULATED
+              hint.Type === MultiSigHintType.Simulated
             ) {
               committed = false;
             }
-            if (
-              hint.Proof === '' ||
-              hint.Type === MultiSigDataHintType.SIMULATED
-            ) {
+            if (hint.Proof === '' || hint.Type === MultiSigHintType.Simulated) {
               signed = false;
             }
           }

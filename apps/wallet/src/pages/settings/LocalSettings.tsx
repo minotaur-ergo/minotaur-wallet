@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { StateWallet, WalletType } from '@minotaur-ergo/types';
 import { VisibilityOutlined } from '@mui/icons-material';
 import { Box, Stack } from '@mui/material';
 
@@ -8,7 +8,6 @@ import { WalletDbAction } from '@/action/db';
 import Heading from '@/components/heading/Heading';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import SolitaryTextField from '@/components/solitary/SolitaryTextField';
-import { WalletType } from '@/db/entities/Wallet';
 import DisplayInHoneyMode from '@/pages/settings/DisplayInHoneyMode';
 import { RouteMap, getRoute } from '@/router/routerMap';
 import { WALLET_FLAG_ENUM } from '@/utils/const';

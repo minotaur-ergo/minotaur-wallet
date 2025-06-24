@@ -1,21 +1,12 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
 
 import { tokens } from '@minotaur-ergo/icons';
+import { AssetDetailType } from '@minotaur-ergo/types';
 
 import { AssetDbAction } from '@/action/db';
 
 const useAssetDetail = (assetId: string, networkType: string) => {
-  const [details, setDetails] = useState<{
-    name: string;
-    logoPath?: string;
-    logo?: React.ReactElement;
-    description: string;
-    decimal: number;
-    emissionAmount: bigint;
-    txId: string;
-    tokenId: string;
-  }>({
+  const [details, setDetails] = useState<AssetDetailType>({
     name: '',
     decimal: 0,
     description: '',

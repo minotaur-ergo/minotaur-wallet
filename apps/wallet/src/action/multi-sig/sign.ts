@@ -1,6 +1,6 @@
 import {
   MultiSigDataHint,
-  MultiSigDataHintType,
+  MultiSigHintType,
   StateWallet,
   TxHintBag,
 } from '@minotaur-ergo/types';
@@ -94,7 +94,7 @@ export const sign = async (
   const simulatedPks: Array<string> = hints
     .map((hintRow, inputIndex) => {
       return hintRow.map((hint, signerIndex) => {
-        if (hint.Commit === '' || hint.Type === MultiSigDataHintType.SIMULATED)
+        if (hint.Commit === '' || hint.Type === MultiSigHintType.Simulated)
           return inputPks[inputIndex][signerIndex];
         return '';
       });

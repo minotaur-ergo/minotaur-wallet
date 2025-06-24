@@ -1,10 +1,5 @@
+import { WalletType } from '@minotaur-ergo/types';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-enum WalletType {
-  ReadOnly = 'READ_ONLY',
-  Normal = 'NORMAL',
-  MultiSig = 'MULTI_SIG',
-}
 
 const WalletTypeLabel = {
   [WalletType.ReadOnly]: 'Read only Wallet',
@@ -47,4 +42,4 @@ class Wallet {
 
 export default Wallet;
 
-export { WalletType, WalletTypeLabel };
+export { WalletTypeLabel };
