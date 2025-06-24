@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
@@ -11,32 +11,7 @@ import TxSignValues from './TxSignValues';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
 import { QrCodeTypeEnum } from '@/types/qrcode';
 import TxSignStatusDisplay from '@/components/tx-signing-status/TxSignStatusDisplay';
-
-interface SignErrorType {
-  detect: (error: unknown) => boolean;
-  render: (error: unknown) => React.ReactNode;
-  type: string;
-}
-
-const SignErrorTypes: SignErrorType[] = [
-  {
-    detect: (error) =>
-      typeof error === 'string' && error.includes('insufficient funds'),
-    render: () => <div> Insufficient funds. Please check your balance.</div>,
-    type: 'InsufficientFunds',
-  },
-  {
-    detect: (error) =>
-      typeof error === 'string' && error.includes('network error'),
-    render: () => <div> Network error. Please try again later.</div>,
-    type: 'NetworkError',
-  },
-  {
-    detect: (error) => typeof error === 'string' && error.includes('timeout'),
-    render: () => <div> Request timed out. Try again.</div>,
-    type: 'TimeoutError',
-  },
-];
+import { SignErrorTypes } from './SignErrorTypes';
 
 interface SignTxPropsType {
   wallet: StateWallet;
@@ -49,11 +24,41 @@ const SignTx = (props: SignTxPropsType) => {
   const txDataContext = useContext(TxDataContext);
   const generatorContext = useContext(TxGenerateContext);
 
-  const [localError, setLocalError] = useState<unknown | null>(null);
+  const signError = txSignContext.error || generatorContext.error;
 
   useEffect(() => {
     generatorContext.setReady(true);
   }, [generatorContext]);
+
+  useEffect(() => {
+    if (signError) {
+      props.setHasError(true);
+    }
+  }, [props, signError]);
+
+  if (signError) {
+    const matched = SignErrorTypes.find((type) => type.detect(signError));
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+      >
+        <StateMessage
+          color="error"
+          title="Transaction Error"
+          description={
+            matched
+              ? matched.render(signError)
+              : `Unknown Error: ${String(signError)}`
+          }
+        />
+      </Box>
+    );
+  }
 
   if (txDataContext.tx) {
     return (
@@ -77,38 +82,12 @@ const SignTx = (props: SignTxPropsType) => {
           ) : (
             <SigningSwitch
               wallet={props.wallet}
-              setHasError={(err: unknown) => {
-                props.setHasError(true);
-                setLocalError(err);
-              }}
+              setHasError={props.setHasError}
             />
           )}
         </>
       </TxSignStatusDisplay>
     );
-  }
-
-  const renderError = (error: unknown) => {
-    const matched = SignErrorTypes.find((e) => e.detect(error));
-    return (
-      <Box
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
-      >
-        <StateMessage
-          title="Transaction Signing Failed"
-          description={matched ? String(matched.render(error)) : String(error)}
-        />
-      </Box>
-    );
-  };
-
-  if (localError) {
-    return renderError(localError);
   }
 
   return props.hideLoading === true ? undefined : (

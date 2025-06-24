@@ -10,6 +10,8 @@ const enum StatusEnum {
 }
 
 interface TxSignContextType {
+  error: unknown;
+  setError: (error: unknown) => void;
   password: string;
   status: StatusEnum;
   setPassword: (newPassword: string) => unknown;
@@ -33,6 +35,8 @@ const TxSignContext = createContext<TxSignContextType>({
   networkType: '',
   handle: () => null,
   signed: '',
+  error: null,
+  setError: () => null,
 });
 
 export default TxSignContext;

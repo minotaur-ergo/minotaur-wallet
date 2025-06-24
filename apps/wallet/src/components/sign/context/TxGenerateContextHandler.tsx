@@ -10,6 +10,7 @@ interface TxGenerateContextHandlerPropsType {
 }
 
 const TxGenerateContextHandler = (props: TxGenerateContextHandlerPropsType) => {
+  const [error, setError] = useState<unknown>(null);
   const [receivers, setReceivers] = useState<Array<ReceiverType>>([
     newEmptyReceiver(),
   ]);
@@ -43,7 +44,7 @@ const TxGenerateContextHandler = (props: TxGenerateContextHandlerPropsType) => {
       setTokens(tokens);
       setUpdatedAddress(JSON.stringify(selectedAddresses));
     }
-  }, [updatedAddress, selectedAddresses, props.wallet.addresses]); // getAddress must not used as dependency
+  }, [updatedAddress, selectedAddresses, props.wallet.addresses]);
 
   const updateReady = (newReady: boolean) => {
     if (ready !== newReady) setReady(newReady);
@@ -60,6 +61,8 @@ const TxGenerateContextHandler = (props: TxGenerateContextHandlerPropsType) => {
         receivers,
         setReceivers,
         selectedAddresses,
+        error,
+        setError,
       }}
     >
       {props.children}

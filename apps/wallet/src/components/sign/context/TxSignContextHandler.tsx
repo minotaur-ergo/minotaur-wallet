@@ -36,6 +36,7 @@ const TxSignContextHandlerInternal = (
   props: TxSignContextHandlerInternalPropsType,
 ) => {
   const navigate = useNavigate();
+  const [error, setError] = useState<unknown>(undefined);
   const [tx, setTx] = useState<wasm.UnsignedTransaction | undefined>();
   const [reduced, setReducedTx] = useState<
     wasm.ReducedTransaction | undefined
@@ -67,36 +68,50 @@ const TxSignContextHandlerInternal = (
     }
   };
 
-  const handleNormalReducedTx = () => {
+  const handleNormalReducedTx = async () => {
     if (reduced) {
-      return signNormalWalletReducedTx(props.wallet, password, reduced).then(
-        (signed) => {
-          if (props.denySubmit) {
-            setSignedStr(
-              JSON.stringify({
-                signedTx: Buffer.from(signed.sigma_serialize_bytes()).toString(
-                  'base64',
-                ),
-              }),
-            );
-          } else {
-            submitContext.submit(signed);
-          }
-        },
-      );
+      try {
+        const signed = await signNormalWalletReducedTx(
+          props.wallet,
+          password,
+          reduced,
+        );
+        if (props.denySubmit) {
+          setSignedStr(
+            JSON.stringify({
+              signedTx: Buffer.from(signed.sigma_serialize_bytes()).toString(
+                'base64',
+              ),
+            }),
+          );
+        } else {
+          submitContext.submit(signed);
+        }
+        setError(null);
+      } catch (err) {
+        setError(err);
+        props.setStatus(StatusEnum.ERROR);
+      }
     }
   };
 
-  const handleNormalTx = () => {
+  const handleNormalTx = async () => {
     if (tx) {
-      props.setStatus(StatusEnum.SIGNING);
-      return signNormalWalletTx(
-        props.wallet,
-        password,
-        tx,
-        boxes,
-        dataBoxes,
-      ).then(submitContext.submit);
+      try {
+        props.setStatus(StatusEnum.SIGNING);
+        const signed = await signNormalWalletTx(
+          props.wallet,
+          password,
+          tx,
+          boxes,
+          dataBoxes,
+        );
+        submitContext.submit(signed);
+        setError(null);
+      } catch (err) {
+        setError(err);
+        props.setStatus(StatusEnum.ERROR);
+      }
     }
   };
 
@@ -149,6 +164,8 @@ const TxSignContextHandlerInternal = (
         setPassword,
         setTx: setTransactionDetail,
         signed: signedStr,
+        error,
+        setError,
       }}
     >
       <TxDataContextHandler

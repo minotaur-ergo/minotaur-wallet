@@ -32,12 +32,13 @@ const TxGenerator = (props: TxGeneratorPropsType) => {
             signerContext.setTx(res.tx, res.boxes, []);
             setProceed(newProceed);
             setLoading(false);
+            generatorContext.setError(null);
           })
           .catch((e) => {
-            console.log(e);
             signerContext.setTx(undefined, [], []);
             setProceed(newProceed);
             setLoading(false);
+            generatorContext.setError(e);
           });
       }
     }
@@ -49,6 +50,7 @@ const TxGenerator = (props: TxGeneratorPropsType) => {
     props.wallet,
     signerContext,
     generatorContext.ready,
+    generatorContext,
   ]);
   return null;
 };
