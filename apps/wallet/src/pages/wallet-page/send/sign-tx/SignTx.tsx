@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import { StateWallet, QrCodeTypeEnum } from '@minotaur-ergo/types';
+import { QrCodeTypeEnum, StateWallet } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { StateWallet, GlobalStateType } from '@minotaur-ergo/types';
+import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';

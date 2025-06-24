@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StateWallet, ReceiverType } from '@minotaur-ergo/types';
+import { ReceiverType, StateWallet } from '@minotaur-ergo/types';
 
 import { newEmptyReceiver } from '@/action/tx';
 

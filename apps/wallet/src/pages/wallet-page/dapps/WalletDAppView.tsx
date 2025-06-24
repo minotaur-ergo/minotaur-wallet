@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { StateWallet } from '@minotaur-ergo/types';
-import { Inventory, ArrowBack } from '@mui/icons-material';
+import { ArrowBack, Inventory } from '@mui/icons-material';
 import { Button, Grid, IconButton } from '@mui/material';
 
 import BackButton from '@/components/back-button/BackButton';

@@ -1,8 +1,8 @@
 import { CapacitorHttp } from '@capacitor/core';
 import {
-  StateWallet,
   ErgoPayResponse,
   InternalBoxLoadedData,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 

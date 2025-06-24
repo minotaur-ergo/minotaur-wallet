@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet, GlobalStateType } from '@minotaur-ergo/types';
+import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 import { Add } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
 
@@ -11,7 +11,7 @@ import Heading from '@/components/heading/Heading';
 import SubHeading from '@/components/heading/SubHeading';
 import HomeAction from '@/components/home-action/HomeAction';
 import AppFrame from '@/layouts/AppFrame';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 import TotalBalanceCard from './components/TotalBalanceCard';
 import WalletItem from './components/WalletItem';

@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  GlobalStateType,
-  StateAddress,
-  StateWallet,
   ErgoPaySeverityEnum,
+  GlobalStateType,
   MessageResponseType,
   MultiAddressSupportedEnum,
+  StateAddress,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 

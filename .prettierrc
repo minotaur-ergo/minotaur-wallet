@@ -10,6 +10,6 @@
     "[\"decorators\", { \"decoratorsBeforeExport\": true }]"
   ],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": false,
+  "importOrderSortSpecifiers": true,
   "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

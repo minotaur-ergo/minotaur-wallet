@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { StateWallet } from '@minotaur-ergo/types';
 import {
-  Inventory2Outlined,
   ArrowBackIos,
   ArrowForwardIos,
+  Inventory2Outlined,
 } from '@mui/icons-material';
 import { Button, Grid, IconButton } from '@mui/material';
 

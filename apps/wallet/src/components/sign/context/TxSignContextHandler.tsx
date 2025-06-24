@@ -8,7 +8,7 @@ import { multiSigStoreNewTx } from '@/action/multi-sig/store';
 import { signNormalWalletReducedTx, signNormalWalletTx } from '@/action/tx';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 import TxDataContextHandler from './TxDataContextHandler';
 import TxSignContext, { StatusEnum } from './TxSignContext';

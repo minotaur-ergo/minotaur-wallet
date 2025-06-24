@@ -1,8 +1,8 @@
 import {
   MultiSigBriefRow,
   MultiSigDataHint,
-  MultiSigHintType,
   MultiSigDataRow,
+  MultiSigHintType,
   StateWallet,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { StateWallet } from '@minotaur-ergo/types';
-import { Button, Stack, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Stack } from '@mui/material';
 
 import { changeWalletPassword, validatePassword } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';

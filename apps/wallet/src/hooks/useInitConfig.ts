@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { GlobalStateType, ConfigType } from '@minotaur-ergo/types';
+import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
 
 import {
   AddressDbAction,

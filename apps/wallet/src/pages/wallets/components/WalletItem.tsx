@@ -2,7 +2,7 @@ import { MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, ConfigType, WalletType } from '@minotaur-ergo/types';
+import { ConfigType, GlobalStateType, WalletType } from '@minotaur-ergo/types';
 import { Star, StarBorder } from '@mui/icons-material';
 import {
   Box,
@@ -17,7 +17,7 @@ import { ConfigDbAction, WalletDbAction } from '@/action/db';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import SvgIcon from '@/icons/SvgIcon';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@/utils/const';
 import { ergPriceUsd } from '@/utils/functions';
 

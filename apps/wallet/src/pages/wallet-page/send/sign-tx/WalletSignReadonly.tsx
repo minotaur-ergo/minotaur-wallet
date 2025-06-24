@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { StateWallet, QrCodeTypeEnum } from '@minotaur-ergo/types';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { QrCodeTypeEnum, StateWallet } from '@minotaur-ergo/types';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { serialize } from '@/action/box';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';

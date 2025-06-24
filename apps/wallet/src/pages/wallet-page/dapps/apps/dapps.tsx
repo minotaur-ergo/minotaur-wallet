@@ -1,10 +1,10 @@
 import { DAppType } from '@minotaur-ergo/types';
 import {
-  TokenTwoTone,
-  LocalFireDepartmentTwoTone,
+  BalanceTwoTone,
   BuildCircleTwoTone,
   CardGiftcardTwoTone,
-  BalanceTwoTone,
+  LocalFireDepartmentTwoTone,
+  TokenTwoTone,
 } from '@mui/icons-material';
 import * as wasm from 'ergo-lib-wasm-browser';
 

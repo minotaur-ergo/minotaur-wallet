@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SnackbarProvider, VariantType, enqueueSnackbar } from 'notistack';
+import { enqueueSnackbar, SnackbarProvider, VariantType } from 'notistack';
 
 import CloseAction from './CloseAction';
 import MessageContext from './messageContext';

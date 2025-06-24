@@ -5,7 +5,7 @@ import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface MultiSigTransactionItemPropsType {
   wallet: StateWallet;

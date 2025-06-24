@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { StateWallet, BoxContent } from '@minotaur-ergo/types';
+import { BoxContent, StateWallet } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { boxesToContent, createEmptyArrayWithIndex } from '@/utils/functions';

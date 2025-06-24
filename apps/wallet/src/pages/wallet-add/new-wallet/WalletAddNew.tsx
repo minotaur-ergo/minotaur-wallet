@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { WalletType } from '@minotaur-ergo/types';
-import { CircularProgress, Button, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import * as bip39 from 'bip39';
 
 import { createWallet } from '@/action/wallet';

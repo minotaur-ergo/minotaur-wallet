@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import { Box, Button, Typography } from '@mui/material';
 
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface MultiSigCommunicationButtonPropsType {
   walletId: number;

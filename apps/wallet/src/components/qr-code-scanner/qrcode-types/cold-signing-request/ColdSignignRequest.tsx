@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType, ColdSigningRequestData } from '@minotaur-ergo/types';
+import { ColdSigningRequestData, GlobalStateType } from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
 import { Button, IconButton } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';

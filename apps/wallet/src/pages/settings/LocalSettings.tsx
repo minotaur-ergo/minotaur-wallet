@@ -9,7 +9,7 @@ import Heading from '@/components/heading/Heading';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import DisplayInHoneyMode from '@/pages/settings/DisplayInHoneyMode';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import { WALLET_FLAG_ENUM } from '@/utils/const';
 
 import ActionButton from './ActionButton';

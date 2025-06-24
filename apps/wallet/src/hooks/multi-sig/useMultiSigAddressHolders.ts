@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { StateWallet, MultiSigAddressHolder } from '@minotaur-ergo/types';
+import { MultiSigAddressHolder, StateWallet } from '@minotaur-ergo/types';
 
 import { deriveAddressFromXPub } from '@/action/address';
 import { MultiSigDbAction } from '@/action/db';

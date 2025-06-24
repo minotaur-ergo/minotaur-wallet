@@ -7,7 +7,7 @@ import { GlobalStateType } from '@minotaur-ergo/types';
 import { WalletDbAction } from '@/action/db';
 import LoadingPage from '@/components/loading-page/LoadingPage';
 import AppFrame from '@/layouts/AppFrame';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 const Home = () => {
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);

@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 
 import DAppsItemCard from '@/components/dapps-item-card/DAppsItemCard';
 import HomeFrame from '@/layouts/HomeFrame';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import getChain from '@/utils/networks';
 
 import { apps } from './apps/dapps';

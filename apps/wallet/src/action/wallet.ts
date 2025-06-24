@@ -14,9 +14,9 @@ import {
 } from '@/utils/functions';
 
 import {
-  RootPathWithoutIndex,
   addAllWalletAddresses,
   getWalletAddressSecret,
+  RootPathWithoutIndex,
 } from './address';
 import { AddressDbAction, MultiSigDbAction, WalletDbAction } from './db';
 

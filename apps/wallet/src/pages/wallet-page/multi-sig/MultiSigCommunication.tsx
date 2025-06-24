@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   MultiSigBriefRow,
   MultiSigDataShare,
-  StateWallet,
   QrCodeTypeEnum,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import { GlobalStateType } from '@minotaur-ergo/types';
 import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
@@ -21,7 +21,7 @@ import ListController from '@/components/list-controller/ListController';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import AppFrame from '@/layouts/AppFrame';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import { readClipBoard } from '@/utils/clipboard';
 
 import MultiSigTransactionItem from './MultiSigTransactionItem';

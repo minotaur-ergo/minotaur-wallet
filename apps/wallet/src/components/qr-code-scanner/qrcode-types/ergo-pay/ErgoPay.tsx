@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 
 import {
-  StateWallet,
   QrCodeScannedComponentPropsType,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {

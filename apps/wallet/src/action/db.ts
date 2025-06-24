@@ -1,11 +1,11 @@
 import {
   BoxInfo,
+  ConfigType,
   MultiSigDataHint,
   MultiSigHintType,
   SpendDetail,
   TokenInfo,
   TxInfo,
-  ConfigType,
   WalletType,
 } from '@minotaur-ergo/types';
 import { DataSource, Like, Repository } from 'typeorm';

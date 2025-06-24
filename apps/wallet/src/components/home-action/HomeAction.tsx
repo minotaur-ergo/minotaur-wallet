@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 import { downloadDb } from '@/utils/browser';
 
 import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';

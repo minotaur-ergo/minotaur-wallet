@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
-  StateWallet,
-  MultiSigData,
   GlobalStateType,
+  MultiSigData,
+  StateWallet,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 

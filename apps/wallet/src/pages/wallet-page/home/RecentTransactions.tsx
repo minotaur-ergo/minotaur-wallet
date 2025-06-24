@@ -6,7 +6,7 @@ import LoadingPage from '@/components/loading-page/LoadingPage';
 import StateMessage from '@/components/state-message/StateMessage';
 import useWalletTransaction from '@/hooks/useWalletTransaction';
 import SvgIcon from '@/icons/SvgIcon';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 import TransactionItem from '../transaction/TransactionItem';
 

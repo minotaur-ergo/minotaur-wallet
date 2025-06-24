@@ -7,8 +7,8 @@ import {
 } from '@minotaur-ergo/types';
 import {
   ContentPasteOutlined,
-  ShareOutlined,
   QrCodeScanner,
+  ShareOutlined,
 } from '@mui/icons-material';
 import { Button, Grid } from '@mui/material';
 

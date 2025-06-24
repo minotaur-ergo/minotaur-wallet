@@ -1,5 +1,5 @@
 import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const configInitialState: ConfigStateType = {
   currency: '',

@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 
 import {
-  StateWallet,
   DAppPropsType,
-  UnsignedGeneratedTx,
+  StateWallet,
   TokenBalanceBigInt,
+  UnsignedGeneratedTx,
 } from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
 

@@ -5,7 +5,7 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import { IconButton } from '@mui/material';
 
 import HomeAction from '@/components/home-action/HomeAction';
-import { RouteMap, getRoute } from '@/router/routerMap';
+import { getRoute, RouteMap } from '@/router/routerMap';
 
 import AppFrame from './AppFrame';
 import AppToolbar from './AppToolbar';
