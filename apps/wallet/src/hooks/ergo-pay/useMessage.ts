@@ -9,12 +9,12 @@ import {
   StateAddress,
   StateWallet,
 } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
 import { fetchBoxesFromNetwork, getInternalBoxes } from '@/utils/ergopay';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 import useErgoPayData from './useErgoPayData';
 import useMultiAddressSupported from './useMultiAddressSupported';

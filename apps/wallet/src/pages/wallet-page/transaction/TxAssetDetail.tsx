@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { getValueColor } from '@minotaur-ergo/utils';
 import {
   Avatar,
   ListItem,
@@ -13,7 +14,6 @@ import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay'
 import DisplayId from '@/components/display-id/DisplayId';
 import useAssetDetail from '@/hooks/useAssetDetail';
 import AssetItemDetail from '@/pages/wallet-page/asset/AssetItemDetail';
-import { getValueColor } from '@/utils/functions';
 
 interface TxAssetDetailPropsType {
   id: string;

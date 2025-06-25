@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { createEmptyArray } from '@minotaur-ergo/utils';
 import { Stack } from '@mui/material';
-
-import { createEmptyArray } from '@/utils/functions';
 
 import AddressOrXPub from '../address-or-xpub/AddressOrXPub';
 import WalletSelect from '../wallet-select/WalletSelect';

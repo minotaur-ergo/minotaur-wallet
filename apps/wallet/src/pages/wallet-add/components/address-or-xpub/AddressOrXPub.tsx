@@ -1,11 +1,14 @@
 import { useContext, useEffect } from 'react';
 
+import {
+  getBase58ExtendedPublicKey,
+  isValidAddress,
+} from '@minotaur-ergo/utils';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { IconButton, InputAdornment } from '@mui/material';
 
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TextField from '@/components/text-field/TextField';
-import { getBase58ExtendedPublicKey, isValidAddress } from '@/utils/functions';
 
 interface AddressOrXPubPropsType {
   value: string;

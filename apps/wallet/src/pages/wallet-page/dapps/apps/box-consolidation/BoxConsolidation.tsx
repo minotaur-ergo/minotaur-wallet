@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { DAppPropsType, UnsignedGeneratedTx } from '@minotaur-ergo/types';
+import { boxesToArrayBox } from '@minotaur-ergo/utils';
 import {
   Button,
   Divider,
@@ -15,7 +16,6 @@ import * as wasm from 'ergo-lib-wasm-browser';
 
 import DisplayId from '@/components/display-id/DisplayId';
 import LoadingPage from '@/components/loading-page/LoadingPage';
-import { boxesToArrayBox } from '@/utils/convert';
 
 import getColor from './getColor';
 import OldestBoxAge from './OldestBoxAge';

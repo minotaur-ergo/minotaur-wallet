@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { tokenStr } from '@minotaur-ergo/utils';
 import { Box, Typography } from '@mui/material';
 
 import { AssetDbAction } from '@/action/db';
 import DisplayId from '@/components/display-id/DisplayId';
-import { tokenStr } from '@/utils/functions';
 
 interface AddressTokenPropsType {
   id: string;

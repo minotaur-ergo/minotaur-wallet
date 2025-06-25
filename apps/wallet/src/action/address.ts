@@ -1,10 +1,14 @@
 import { StateAddress, StateWallet, WalletType } from '@minotaur-ergo/types';
+import {
+  bip32,
+  decrypt,
+  getChain,
+  int8Vlq,
+  iterateIndexes,
+  uInt8Vlq,
+} from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
-
-import { decrypt } from '@/utils/enc';
-import { bip32, int8Vlq, iterateIndexes, uInt8Vlq } from '@/utils/functions';
-import getChain from '@/utils/networks';
 
 import { AddressDbAction, MultiSigDbAction } from './db';
 

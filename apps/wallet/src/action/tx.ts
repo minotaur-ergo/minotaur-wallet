@@ -4,10 +4,10 @@ import {
   TokenBalanceBigInt,
   TotalSpent,
 } from '@minotaur-ergo/types';
+import { getBoxTokens, getChain } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import openInBrowser from '@/utils/browser';
-import getChain from '@/utils/networks';
 
 import { deserialize } from './box';
 import { BoxDbAction } from './db';
@@ -24,20 +24,6 @@ const receiverTokensToDict = (tokens: Array<TokenBalanceBigInt>) => {
       res[token.tokenId] += token.balance;
     }
   });
-  return res;
-};
-
-const getBoxTokens = (
-  box: wasm.ErgoBox | wasm.ErgoBoxCandidate,
-): Array<TokenBalanceBigInt> => {
-  const res: Array<TokenBalanceBigInt> = [];
-  const tokens = box.tokens();
-  for (let index = 0; index < tokens.len(); index++) {
-    const token = tokens.get(index);
-    const tokenId = token.id().to_str();
-    const amount = BigInt(token.amount().as_i64().to_str());
-    res.push({ tokenId: tokenId, balance: amount });
-  }
   return res;
 };
 

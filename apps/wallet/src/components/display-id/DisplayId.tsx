@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { dottedText } from '@minotaur-ergo/utils';
 import { Box, Typography, TypographyProps } from '@mui/material';
 
 import useAddressName from '@/hooks/useAddressName';
-import { dottedText } from '@/utils/functions';
 
 interface DisplayIdPropsType extends TypographyProps {
   id: string | undefined;

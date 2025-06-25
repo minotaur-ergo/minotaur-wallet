@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
+import { getValueColor } from '@minotaur-ergo/utils';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, Typography } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
@@ -10,7 +11,6 @@ import ErgAmount from '@/components/amounts-display/ErgAmount';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import useTxValues from '@/hooks/useTxValues';
 import TxAssetDetail from '@/pages/wallet-page/transaction/TxAssetDetail';
-import { getValueColor } from '@/utils/functions';
 
 interface TxDisplayPropsType {
   wallet: StateWallet;

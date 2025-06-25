@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { honeyPinType } from '@minotaur-ergo/utils';
 
 import { PinDbAction, WalletDbAction } from '@/action/db';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
-import { honeyPinType } from '@/utils/convert';
 
 interface DisplayInHoneyModePropsType {
   wallet: StateWallet;

@@ -2,8 +2,8 @@ import { ChainTypeInterface } from '@minotaur-ergo/types';
 import { ErgoStateContext, NetworkPrefix } from 'ergo-lib-wasm-browser';
 
 import { MAIN_NET_LABEL } from '../const';
+import { fakeContext } from './context';
 import ErgoExplorerNetwork from './explorer';
-import fakeContext from './fakeContext';
 
 class MainnetChain implements ChainTypeInterface {
   readonly label = MAIN_NET_LABEL;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { createEmptyArray } from '@/utils/functions';
+import { createEmptyArray } from '@minotaur-ergo/utils';
 
 const useChunks = (scanned: string) => {
   const [chunks, setChunks] = useState<Array<string>>([]);

@@ -1,4 +1,11 @@
 import { StateAddress, StateWallet, WalletType } from '@minotaur-ergo/types';
+import {
+  bip32,
+  decrypt,
+  encrypt,
+  getBase58ExtendedPublicKey,
+  isValidAddress,
+} from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -6,12 +13,6 @@ import store from '@/store';
 import { setActiveWallet } from '@/store/reducer/config';
 import { addedWallets, invalidateWallets } from '@/store/reducer/wallet';
 import { walletEntityToWalletState } from '@/utils/convert';
-import { decrypt, encrypt } from '@/utils/enc';
-import {
-  bip32,
-  getBase58ExtendedPublicKey,
-  isValidAddress,
-} from '@/utils/functions';
 
 import {
   addAllWalletAddresses,

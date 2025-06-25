@@ -4,13 +4,12 @@ import {
   InternalBoxLoadedData,
   StateWallet,
 } from '@minotaur-ergo/types';
+import { createEmptyArray, getChain } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { BoxDbAction } from '@/action/db';
 
 import { ADDRESS_PLACE_HOLDER } from './const';
-import { createEmptyArray } from './functions';
-import getChain from './networks';
 
 const getUrl = (url: string, address: string) => {
   if (url.startsWith('ergopay://localhost')) {

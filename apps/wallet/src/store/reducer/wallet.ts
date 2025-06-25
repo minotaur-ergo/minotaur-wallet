@@ -7,9 +7,8 @@ import {
   StateWallet,
   WalletStateType,
 } from '@minotaur-ergo/types';
+import { DEFAULT_ADDRESS_PREFIX } from '@minotaur-ergo/utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { DEFAULT_ADDRESS_PREFIX } from '@/utils/const';
 
 export const walletInitialState: WalletStateType = {
   wallets: [],

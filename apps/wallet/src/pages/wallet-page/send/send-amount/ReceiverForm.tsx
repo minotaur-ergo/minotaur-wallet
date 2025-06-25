@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 import AddressInput from '@/components/address-input/AddressInput';
 import txGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
 import { FEE, MIN_BOX_VALUE } from '@/utils/const';
-import getChain from '@/utils/networks';
 
 import TokenSelect from './TokenSelect';
 

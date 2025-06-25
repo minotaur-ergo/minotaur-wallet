@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { fetchBoxesFromNetwork, getInternalBoxes } from '@/utils/ergopay';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const useBoxes = (
   tx: wasm.Transaction | wasm.UnsignedTransaction | undefined,

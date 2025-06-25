@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { ConfigType, GlobalStateType, WalletType } from '@minotaur-ergo/types';
+import {
+  ergPriceUsd,
+  MAIN_NET_LABEL,
+  WALLET_FLAG_ENUM,
+} from '@minotaur-ergo/utils';
 import { Star, StarBorder } from '@mui/icons-material';
 import {
   Box,
@@ -18,8 +23,6 @@ import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import SvgIcon from '@/icons/SvgIcon';
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@/utils/const';
-import { ergPriceUsd } from '@/utils/functions';
 
 interface PropsType {
   id: string;

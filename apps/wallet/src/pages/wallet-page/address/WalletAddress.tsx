@@ -1,8 +1,8 @@
 import { StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 
 import ListController from '@/components/list-controller/ListController';
 import HomeFrame from '@/layouts/HomeFrame';
-import getChain from '@/utils/networks';
 
 import AddressItem from './AddressItem';
 import NewAddress from './NewAddress';

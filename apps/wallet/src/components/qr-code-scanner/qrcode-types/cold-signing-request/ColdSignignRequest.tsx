@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ColdSigningRequestData, GlobalStateType } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import { Inventory2Outlined } from '@mui/icons-material';
 import { Button, IconButton } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
@@ -18,7 +19,6 @@ import CenterMessage from '@/components/state-message/CenterMessage';
 import SvgIcon from '@/icons/SvgIcon';
 import AppFrame from '@/layouts/AppFrame';
 import SignTx from '@/pages/wallet-page/send/sign-tx/SignTx';
-import getChain from '@/utils/networks';
 
 interface ColdSigningRequestPropsType {
   scanned: string;
