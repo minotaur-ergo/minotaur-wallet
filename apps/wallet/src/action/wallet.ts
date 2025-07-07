@@ -1,4 +1,9 @@
-import { StateAddress, StateWallet, WalletType } from '@minotaur-ergo/types';
+import {
+  DerivedWalletAddress,
+  StateAddress,
+  StateWallet,
+  WalletType,
+} from '@minotaur-ergo/types';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
 
@@ -32,6 +37,22 @@ const validatePassword = (seed: string, password: string) => {
   }
 };
 
+const validateAddresses = async (addresses: Array<{ address: string }>) => {
+  for (const addr of addresses) {
+    const existing =
+      await AddressDbAction.getInstance().getAddressByAddressString(
+        addr.address,
+      );
+
+    if (existing) {
+      const walletName = existing.wallet?.name || 'Unknown Wallet';
+      throw new Error(
+        `Address already exists: ${addr.address} in (Wallet: ${walletName})`,
+      );
+    }
+  }
+};
+
 const createWallet = async (
   name: string,
   type: WalletType,
@@ -58,19 +79,7 @@ const createWallet = async (
     network_type,
   );
 
-  for (const addr of addresses) {
-    const existing =
-      await AddressDbAction.getInstance().getAddressByAddressString(
-        addr.address,
-      );
-
-    if (existing) {
-      const walletName = existing.wallet?.name || 'Unknown Wallet';
-      throw new Error(
-        `Address already exists: ${addr.address} in (Wallet: ${walletName})`,
-      );
-    }
-  }
+  await validateAddresses(addresses);
 
   const storedSeed = encryptionPassword
     ? encrypt(seed, encryptionPassword)
@@ -122,6 +131,23 @@ const createReadOnlyWallet = async (
   network_type: string,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
+
+  const addresses: DerivedWalletAddress[] = extended_public_key
+    ? await findWalletAddresses(
+        (index: number) =>
+          deriveNormalWalletAddress(
+            0,
+            extended_public_key,
+            network_type,
+            index,
+          ),
+        network_type,
+      )
+    : address
+      ? [{ address, path: '', index: 0 }]
+      : [];
+  await validateAddresses(addresses);
+
   const walletEntity = await WalletDbAction.getInstance().createWallet(
     name,
     WalletType.ReadOnly,
@@ -136,20 +162,10 @@ const createReadOnlyWallet = async (
     pinType,
     false,
   );
-  if (extended_public_key) {
-    const walletState = walletEntityToWalletState(walletEntity);
-    console.log(walletState);
-    // const derivedAddresses = await findWalletAddresses(walletState);
-    // await addWalletAddresses(walletState, derivedAddresses);
-  } else {
-    await AddressDbAction.getInstance().saveAddress(
-      walletEntity.id,
-      'Main Address',
-      address,
-      '--',
-      0,
-    );
-  }
+
+  const walletState = walletEntityToWalletState(walletEntity);
+  await addWalletAddresses(walletState, addresses);
+
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: walletEntity.id }));
 };
