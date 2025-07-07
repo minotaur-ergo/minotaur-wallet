@@ -116,18 +116,20 @@ const deriveAddressFromXPub = (
 };
 
 const deriveNormalWalletAddress = async (
-  wallet: StateWallet,
+  walletId: number,
+  xPub: string,
+  networkType: string,
   index?: number,
 ) => {
-  if (!wallet.xPub) {
+  if (!xPub) {
     throw Error('Wallet can not have more addresses');
   }
   const usedIndex =
     index === undefined
-      ? (await AddressDbAction.getInstance().getLastAddressIndex(wallet.id)) + 1
+      ? (await AddressDbAction.getInstance().getLastAddressIndex(walletId)) + 1
       : index;
-  const chain = getChain(wallet.networkType);
-  return deriveAddressFromXPub(wallet.xPub, chain.prefix, usedIndex);
+  const chain = getChain(networkType);
+  return deriveAddressFromXPub(xPub, chain.prefix, usedIndex);
 };
 
 const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
@@ -136,19 +138,25 @@ const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
       return deriveMultiSigWalletAddress(wallet, index);
     case WalletType.Normal:
     case WalletType.ReadOnly:
-      return deriveNormalWalletAddress(wallet, index);
+      return deriveNormalWalletAddress(
+        wallet.id,
+        wallet.networkType,
+        wallet.xPub,
+        index,
+      );
   }
   throw Error('invalid wallet type');
 };
 
 const findWalletAddresses = async (
-  wallet: StateWallet,
-): Promise<DerivedWalletAddress[]> => {
+  derive: (index: number) => Promise<{ address: string; path: string }>,
+  networkType: string,
+) => {
   const addresses: DerivedWalletAddress[] = [];
 
-  const chain = getChain(wallet.networkType);
+  const chain = getChain(networkType);
   const network = chain.getNetwork();
-  const firstAddress = await deriveWalletAddress(wallet, 0);
+  const firstAddress = await derive(0);
   addresses.push({
     address: firstAddress.address,
     path: firstAddress.path,
@@ -157,7 +165,7 @@ const findWalletAddresses = async (
 
   let index = 1;
   for (;;) {
-    const addressObject = await deriveWalletAddress(wallet, index);
+    const addressObject = await derive(index);
     const txCount = await network.getAddressTransactionCount(
       addressObject.address,
     );
@@ -165,7 +173,7 @@ const findWalletAddresses = async (
       addresses.push({
         address: addressObject.address,
         path: addressObject.path,
-        index: index,
+        index,
       });
     } else {
       break;
@@ -251,6 +259,8 @@ const deriveAddressFromMnemonic = async (
 export {
   deriveNewAddress,
   deriveAddressFromMnemonic,
+  deriveNormalWalletAddress,
+  deriveMultiSigWalletAddress,
   generateMultiSigAddressFromPublicKeys,
   findWalletAddresses,
   addWalletAddresses,

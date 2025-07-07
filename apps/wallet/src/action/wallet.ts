@@ -15,6 +15,8 @@ import {
 
 import {
   addWalletAddresses,
+  deriveMultiSigWalletAddress,
+  deriveNormalWalletAddress,
   findWalletAddresses,
   getWalletAddressSecret,
   RootPathWithoutIndex,
@@ -45,22 +47,16 @@ const createWallet = async (
     .derivePath(RootPathWithoutIndex)
     .neutered();
 
-  const addresses = await findWalletAddresses({
-    networkType: network_type,
-    xPub: extended_public_key.toBase58(),
-    requiredSign: 1,
-    id: 0,
-    name: '',
-    seed: '',
-    type: WalletType.ReadOnly,
-    version: 0,
-    balance: '',
-    tokens: [],
-    addresses: [],
-    flags: [],
-    archived: false,
-    favorite: false,
-  });
+  const addresses = await findWalletAddresses(
+    (index: number) =>
+      deriveNormalWalletAddress(
+        0,
+        extended_public_key.toBase58(),
+        network_type,
+        index,
+      ),
+    network_type,
+  );
 
   for (const addr of addresses) {
     const existing =
@@ -142,8 +138,9 @@ const createReadOnlyWallet = async (
   );
   if (extended_public_key) {
     const walletState = walletEntityToWalletState(walletEntity);
-    const derivedAddresses = await findWalletAddresses(walletState);
-    await addWalletAddresses(walletState, derivedAddresses);
+    console.log(walletState);
+    // const derivedAddresses = await findWalletAddresses(walletState);
+    // await addWalletAddresses(walletState, derivedAddresses);
   } else {
     await AddressDbAction.getInstance().saveAddress(
       walletEntity.id,
@@ -200,7 +197,10 @@ const createMultiSigWallet = async (
       }
     }
     const walletState = walletEntityToWalletState(createdWallet);
-    const derivedAddresses = await findWalletAddresses(walletState);
+    const derivedAddresses = await findWalletAddresses(
+      (index: number) => deriveMultiSigWalletAddress(walletState, index),
+      walletState.networkType,
+    );
     await addWalletAddresses(walletState, derivedAddresses);
     store.dispatch(addedWallets());
     store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
