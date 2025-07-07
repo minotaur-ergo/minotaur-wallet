@@ -14,7 +14,8 @@ import {
 } from '@/utils/functions';
 
 import {
-  addAllWalletAddresses,
+  addWalletAddresses,
+  findWalletAddresses,
   getWalletAddressSecret,
   RootPathWithoutIndex,
 } from './address';
@@ -43,6 +44,38 @@ const createWallet = async (
   const extended_public_key = master
     .derivePath(RootPathWithoutIndex)
     .neutered();
+
+  const addresses = await findWalletAddresses({
+    networkType: network_type,
+    xPub: extended_public_key.toBase58(),
+    requiredSign: 1,
+    id: 0,
+    name: '',
+    seed: '',
+    type: WalletType.ReadOnly,
+    version: 0,
+    balance: '',
+    tokens: [],
+    addresses: [],
+    flags: [],
+    archived: false,
+    favorite: false,
+  });
+
+  for (const addr of addresses) {
+    const existing =
+      await AddressDbAction.getInstance().getAddressByAddressString(
+        addr.address,
+      );
+
+    if (existing) {
+      const walletName = existing.wallet?.name || 'Unknown Wallet';
+      throw new Error(
+        `Address already exists: ${addr.address} in (Wallet: ${walletName})`,
+      );
+    }
+  }
+
   const storedSeed = encryptionPassword
     ? encrypt(seed, encryptionPassword)
     : seed.toString('hex');
@@ -59,7 +92,8 @@ const createWallet = async (
     encryptedMnemonic,
   );
   await WalletDbAction.getInstance().setFlagOnWallet(wallet.id, pinType, false);
-  await addAllWalletAddresses(walletEntityToWalletState(wallet));
+  const stateWallet = walletEntityToWalletState(wallet);
+  await addWalletAddresses(stateWallet, addresses);
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
 };
@@ -106,9 +140,10 @@ const createReadOnlyWallet = async (
     pinType,
     false,
   );
-
   if (extended_public_key) {
-    await addAllWalletAddresses(walletEntityToWalletState(walletEntity));
+    const walletState = walletEntityToWalletState(walletEntity);
+    const derivedAddresses = await findWalletAddresses(walletState);
+    await addWalletAddresses(walletState, derivedAddresses);
   } else {
     await AddressDbAction.getInstance().saveAddress(
       walletEntity.id,
@@ -164,7 +199,9 @@ const createMultiSigWallet = async (
         throw Error('unreachable');
       }
     }
-    await addAllWalletAddresses(walletEntityToWalletState(createdWallet));
+    const walletState = walletEntityToWalletState(createdWallet);
+    const derivedAddresses = await findWalletAddresses(walletState);
+    await addWalletAddresses(walletState, derivedAddresses);
     store.dispatch(addedWallets());
     store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
   }
