@@ -296,7 +296,10 @@ class AddressDbAction {
   };
 
   getAddressByAddressString = async (address: string) => {
-    return await this.repository.findOneBy({ address: address });
+    return await this.repository.findOne({
+      where: { address: address },
+      relations: ['wallet'],
+    });
   };
 
   saveAddress = async (
