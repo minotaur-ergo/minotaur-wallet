@@ -12,6 +12,7 @@ interface TxGenerateContextHandlerPropsType {
 }
 
 const TxGenerateContextHandler = (props: TxGenerateContextHandlerPropsType) => {
+  const [error, setError] = useState<string | null>(null);
   const [receivers, setReceivers] = useState<Array<ReceiverType>>([
     newEmptyReceiver(),
   ]);
@@ -62,6 +63,8 @@ const TxGenerateContextHandler = (props: TxGenerateContextHandlerPropsType) => {
         receivers,
         setReceivers,
         selectedAddresses,
+        error,
+        setError,
       }}
     >
       {props.children}

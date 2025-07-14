@@ -1,4 +1,4 @@
-import { WalletType, TokenBalance } from './db';
+import { TokenBalance, WalletType } from './db';
 
 export interface StateWallet {
   id: number;
@@ -28,6 +28,12 @@ export interface StateAddress {
   proceedHeight: number;
   tokens: Array<TokenBalance>;
   isDefault: boolean;
+}
+
+export interface DerivedWalletAddress {
+  address: string;
+  path: string;
+  index: number;
 }
 
 export interface AddressBalance {

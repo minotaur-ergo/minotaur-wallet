@@ -12,6 +12,8 @@ interface TxGenerateContextType {
   setReceivers: (newReceivers: Array<ReceiverType>) => unknown;
   edit: (index: number, value: Partial<ReceiverType>) => unknown;
   setSelectedAddresses: (newAddresses: Array<string> | 'all') => unknown;
+  error: string | null;
+  setError: (error: string | null) => void;
 }
 
 const TxGenerateContext = createContext<TxGenerateContextType>({
@@ -24,6 +26,8 @@ const TxGenerateContext = createContext<TxGenerateContextType>({
   setSelectedAddresses: () => null,
   setReady: () => null,
   edit: () => null,
+  error: null,
+  setError: () => null,
 });
 
 export default TxGenerateContext;

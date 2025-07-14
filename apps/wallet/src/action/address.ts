@@ -1,4 +1,9 @@
-import { StateAddress, StateWallet, WalletType } from '@minotaur-ergo/types';
+import {
+  DerivedWalletAddress,
+  StateAddress,
+  StateWallet,
+  WalletType,
+} from '@minotaur-ergo/types';
 import {
   bip32,
   decrypt,
@@ -115,18 +120,20 @@ const deriveAddressFromXPub = (
 };
 
 const deriveNormalWalletAddress = async (
-  wallet: StateWallet,
+  walletId: number,
+  xPub: string,
+  networkType: string,
   index?: number,
 ) => {
-  if (!wallet.xPub) {
+  if (!xPub) {
     throw Error('Wallet can not have more addresses');
   }
   const usedIndex =
     index === undefined
-      ? (await AddressDbAction.getInstance().getLastAddressIndex(wallet.id)) + 1
+      ? (await AddressDbAction.getInstance().getLastAddressIndex(walletId)) + 1
       : index;
-  const chain = getChain(wallet.networkType);
-  return deriveAddressFromXPub(wallet.xPub, chain.prefix, usedIndex);
+  const chain = getChain(networkType);
+  return deriveAddressFromXPub(xPub, chain.prefix, usedIndex);
 };
 
 const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
@@ -135,44 +142,70 @@ const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
       return deriveMultiSigWalletAddress(wallet, index);
     case WalletType.Normal:
     case WalletType.ReadOnly:
-      return deriveNormalWalletAddress(wallet, index);
+      return deriveNormalWalletAddress(
+        wallet.id,
+        wallet.networkType,
+        wallet.xPub,
+        index,
+      );
   }
   throw Error('invalid wallet type');
 };
 
-const addAllWalletAddresses = async (wallet: StateWallet) => {
-  const chain = getChain(wallet.networkType);
+const findWalletAddresses = async (
+  derive: (index: number) => Promise<{ address: string; path: string }>,
+  networkType: string,
+) => {
+  const addresses: DerivedWalletAddress[] = [];
+
+  const chain = getChain(networkType);
   const network = chain.getNetwork();
-  const firstAddress = await deriveWalletAddress(wallet, 0);
-  await AddressDbAction.getInstance().saveAddress(
-    wallet.id,
-    'Main Address',
-    firstAddress.address,
-    firstAddress.path,
-    0,
-  );
-  try {
-    let index = 1;
-    for (;;) {
-      const addressObject = await deriveWalletAddress(wallet, index);
-      const txCount = await network.getAddressTransactionCount(
-        addressObject.address,
-      );
-      if (txCount > 0) {
-        await AddressDbAction.getInstance().saveAddress(
-          wallet.id,
-          `Derived Address ${index}`,
-          addressObject.address,
-          addressObject.path,
-          index,
-        );
-      } else {
-        break;
-      }
-      index++;
+  const firstAddress = await derive(0);
+  addresses.push({
+    address: firstAddress.address,
+    path: firstAddress.path,
+    index: 0,
+  });
+
+  let index = 1;
+  for (;;) {
+    const addressObject = await derive(index);
+    const txCount = await network.getAddressTransactionCount(
+      addressObject.address,
+    );
+    if (txCount > 0) {
+      addresses.push({
+        address: addressObject.address,
+        path: addressObject.path,
+        index,
+      });
+    } else {
+      break;
     }
-  } catch (e) {
-    console.error(e);
+    index++;
+  }
+
+  return addresses;
+};
+
+const addWalletAddresses = async (
+  wallet: StateWallet,
+  addresses: DerivedWalletAddress[],
+) => {
+  try {
+    for (const addr of addresses) {
+      const name = await getNewAddressName('', addr.index);
+      await AddressDbAction.getInstance().saveAddress(
+        wallet.id,
+        name,
+        addr.address,
+        addr.path,
+        addr.index,
+      );
+    }
+  } catch (err) {
+    console.error(err);
+    throw new Error('Failed to insert wallet addresses.');
   }
 };
 
@@ -230,8 +263,11 @@ const deriveAddressFromMnemonic = async (
 export {
   deriveNewAddress,
   deriveAddressFromMnemonic,
+  deriveNormalWalletAddress,
+  deriveMultiSigWalletAddress,
   generateMultiSigAddressFromPublicKeys,
-  addAllWalletAddresses,
+  findWalletAddresses,
+  addWalletAddresses,
   deriveAddressFromXPub,
   RootPathWithoutIndex,
   getWalletAddressSecret,

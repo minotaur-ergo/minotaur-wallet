@@ -31,10 +31,13 @@ export const tokenPriceUsd = (
     (amount * erg_price_cent) /
     BigInt('1' + '0'.repeat(decimals))
   ).toString();
+  const total_cent_with_leading_zeros = '00' + total_cent;
   return (
     commaSeparate(total_cent.substring(0, total_cent.length - 2) || '0') +
     '.' +
-    total_cent.substring(total_cent.length - 2)
+    total_cent_with_leading_zeros.substring(
+      total_cent_with_leading_zeros.length - 2,
+    )
   );
 };
 
@@ -43,7 +46,7 @@ export const ergPriceUsd = (amount: bigint, erg_price: number) =>
 
 export const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   if (amount === '') return 0n;
-  const regex = new RegExp(`^\\d+(\\.\\d{0,${decimal}})?$`);
+  const regex = new RegExp(`^\\d+(\\.\\d+)?$`);
   if (!regex.test(amount)) {
     throw Error('Invalid number in format');
   }
