@@ -16,6 +16,7 @@ export const dottedText = (text: string, paddingSize: number) => {
 };
 
 export const sliceToChunksString = (arr: string, chunkSize: number) => {
+  if (chunkSize <= 0) return [];
   const res: Array<string> = [];
   for (let i = 0; i < arr.length; i += chunkSize) {
     const chunk = arr.slice(i, i + chunkSize);

@@ -11,7 +11,7 @@
     "clean": "rm -rf dist",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage"
+    "coverage": "vitest --coverage"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
