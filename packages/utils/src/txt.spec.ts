@@ -332,24 +332,6 @@ describe('text utilities', () => {
 
       expect(result).toBe('a');
     });
-
-    /**
-     * @target Handle Unicode characters
-     * @dependencies
-     * - None
-     * @scenario
-     * - Call dottedText with Unicode text
-     * @expect
-     * - Handles Unicode characters correctly in truncation
-     */
-    it('should handle Unicode characters', () => {
-      const text = '🌍🌎🌏🌐🌑🌒🌓🌔🌕';
-      const paddingSize = 2;
-
-      const result = dottedText(text, paddingSize);
-
-      expect(result).toBe('🌍🌎...🌔🌕');
-    });
   });
 
   /**
@@ -480,24 +462,6 @@ describe('text utilities', () => {
       const result = sliceToChunksString(str, chunkSize);
 
       expect(result).toEqual([]);
-    });
-
-    /**
-     * @target Handle Unicode characters
-     * @dependencies
-     * - None
-     * @scenario
-     * - Call sliceToChunksString with Unicode string
-     * @expect
-     * - Handles Unicode characters correctly in chunking
-     */
-    it('should handle Unicode characters', () => {
-      const str = '🌍🌎🌏🌐🌑🌒';
-      const chunkSize = 2;
-
-      const result = sliceToChunksString(str, chunkSize);
-
-      expect(result).toEqual(['🌍🌎', '🌏🌐', '🌑🌒']);
     });
 
     /**

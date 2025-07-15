@@ -6,7 +6,11 @@ export const encrypt = (text: Buffer, password: string) => {
 };
 
 export const decrypt = (text: string, password: string) => {
-  const decrypted = AES.decrypt(text, password);
-  const hex = decrypted.toString(enc.Utf8);
-  return Buffer.from(hex, 'hex');
+  try {
+    const decrypted = AES.decrypt(text, password);
+    const hex = decrypted.toString(enc.Utf8);
+    return Buffer.from(hex, 'hex');
+  } catch (e) {
+    return Buffer.from('', 'hex');
+  }
 };

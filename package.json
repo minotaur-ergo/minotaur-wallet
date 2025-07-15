@@ -16,7 +16,8 @@
     "type-check": "npm run type-check --workspaces",
     "version": "npx changeset version && npm i",
     "prettify": "npm run prettify --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "coverage": "npm run coverage --workspaces"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
