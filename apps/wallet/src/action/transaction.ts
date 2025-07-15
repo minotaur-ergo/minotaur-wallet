@@ -1,6 +1,5 @@
 import { WalletTransactionType } from '@minotaur-ergo/types';
-
-import { createEmptyArrayWithIndex } from '@/utils/functions';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
 
 import { deserialize } from './box';
 import { AddressDbAction, BoxDbAction } from './db';

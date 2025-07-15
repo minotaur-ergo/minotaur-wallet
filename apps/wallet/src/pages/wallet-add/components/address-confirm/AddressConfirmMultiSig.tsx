@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
+import {
+  bip32,
+  getBase58ExtendedPublicKey,
+  getChain,
+} from '@minotaur-ergo/utils';
 import { Box, Card, Typography } from '@mui/material';
 
 import { generateMultiSigAddressFromPublicKeys } from '@/action/address';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import DisplayId from '@/components/display-id/DisplayId';
-import { bip32, getBase58ExtendedPublicKey } from '@/utils/functions';
-import getChain from '@/utils/networks';
 
 interface AddressConfirmMultiSigPropsType {
   xPubs: Array<string>;

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
-
-import getChain from '@/utils/networks';
 
 const useTransactionData = (txId: string, wallet: StateWallet) => {
   const [loadedTx, setLoadedTx] = useState<string>('');

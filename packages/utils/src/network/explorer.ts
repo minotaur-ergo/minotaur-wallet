@@ -1,13 +1,16 @@
-import { AbstractNetwork, BalanceInfo, TokenInfo } from '@minotaur-ergo/types';
+import {
+  AbstractNetwork,
+  BalanceInfo,
+  BoxInfo,
+  SpendDetail,
+  TokenInfo,
+} from '@minotaur-ergo/types';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
 import * as wasm from 'ergo-lib-wasm-browser';
 import JSONBigInt from 'json-bigint';
 
-import { serialize } from '@/action/box';
-import { AddressDbAction, BoxDbAction } from '@/action/db';
-import Address from '@/db/entities/Address';
-
 import { JsonBI } from '../json';
+import { serializeBox } from '../wasm';
 
 const getBoxId = (box: { boxId: string } | { id: string }) => {
   if (Object.prototype.hasOwnProperty.call(box, 'boxId'))
@@ -95,11 +98,12 @@ class ErgoExplorerNetwork extends AbstractNetwork {
 
   protected processTransactionInput = async (
     tx: V1.TransactionInfo | V1.TransactionInfo1,
-    address: Address,
+    address: string,
+    spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
   ) => {
     for (const input of tx.inputs ?? []) {
-      if (input.address === address.address) {
-        await BoxDbAction.getInstance().spendBox(getBoxId(input), {
+      if (input.address === address) {
+        await spendBox(getBoxId(input), {
           height: tx.inclusionHeight,
           timestamp: parseInt(tx.timestamp.toString()),
           tx: tx.id,
@@ -111,51 +115,46 @@ class ErgoExplorerNetwork extends AbstractNetwork {
 
   protected processTransactionOutput = async (
     tx: V1.TransactionInfo | V1.TransactionInfo1,
-    address: Address,
+    address: string,
+    insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
   ) => {
     for (const output of tx.outputs ?? []) {
-      if (output.address === address.address) {
-        await BoxDbAction.getInstance().insertOrUpdateBox(
-          {
-            address: output.address,
-            boxId: getBoxId(output),
-            create: {
-              index: output.index,
-              tx: tx.id,
-              height: tx.inclusionHeight,
-              timestamp: parseInt(tx.timestamp.toString()),
-            },
-            serialized: serialize(
-              wasm.ErgoBox.from_json(JsonBI.stringify(output)),
-            ),
+      if (output.address === address) {
+        await insertOrUpdateBox({
+          address: output.address,
+          boxId: getBoxId(output),
+          create: {
+            index: output.index,
+            tx: tx.id,
+            height: tx.inclusionHeight,
+            timestamp: parseInt(tx.timestamp.toString()),
           },
-          address,
-        );
+          serialized: serializeBox(
+            wasm.ErgoBox.from_json(JsonBI.stringify(output)),
+          ),
+        });
       }
     }
   };
 
-  syncBoxes = async (addressStr: string): Promise<boolean> => {
+  syncBoxes = async (
+    address: string,
+    addressHeight: number,
+    updateAddressHeight: (height: number) => Promise<unknown>,
+    insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
+    spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
+  ): Promise<boolean> => {
     try {
-      const address =
-        await AddressDbAction.getInstance().getAddressByAddressString(
-          addressStr,
-        );
-      if (address === null) return false;
       const height = await this.getHeight();
-      let addressHeight = address.process_height;
       let toHeight = height;
       const proceedToHeight = async (proceedHeight: number) => {
-        await AddressDbAction.getInstance().updateAddressHeight(
-          address.id,
-          proceedHeight,
-        );
+        await updateAddressHeight(proceedHeight);
         addressHeight = proceedHeight;
         toHeight = height;
       };
       while (addressHeight < height) {
         let chunk = await this.client.v1.getApiV1AddressesP1Transactions(
-          address.address,
+          address,
           {
             limit: 1,
             offset: 0,
@@ -178,17 +177,21 @@ class ErgoExplorerNetwork extends AbstractNetwork {
               header.items[0].id,
             );
             for (const tx of block.block.blockTransactions ?? []) {
-              await this.processTransactionOutput(tx, address);
+              await this.processTransactionOutput(
+                tx,
+                address,
+                insertOrUpdateBox,
+              );
             }
             for (const tx of block.block.blockTransactions ?? []) {
-              await this.processTransactionInput(tx, address);
+              await this.processTransactionInput(tx, address, spendBox);
             }
             await proceedToHeight(toHeight);
           }
         } else {
           if (chunk.total > 1) {
             chunk = await this.client.v1.getApiV1AddressesP1Transactions(
-              address.address,
+              address,
               {
                 limit: ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
                 offset: 0,
@@ -198,10 +201,10 @@ class ErgoExplorerNetwork extends AbstractNetwork {
             );
           }
           for (const tx of chunk.items ?? []) {
-            await this.processTransactionOutput(tx, address);
+            await this.processTransactionOutput(tx, address, insertOrUpdateBox);
           }
           for (const tx of chunk.items ?? []) {
-            await this.processTransactionInput(tx, address);
+            await this.processTransactionInput(tx, address, spendBox);
           }
           await proceedToHeight(toHeight);
         }

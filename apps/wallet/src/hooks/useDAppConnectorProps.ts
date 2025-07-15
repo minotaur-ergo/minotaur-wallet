@@ -6,6 +6,14 @@ import {
   TokenBalanceBigInt,
   UnsignedGeneratedTx,
 } from '@minotaur-ergo/types';
+import {
+  boxArrayToBoxes,
+  boxCandidatesToArrayBoxCandidate,
+  boxesToArrayBox,
+  createEmptyArrayWithIndex,
+  dottedText,
+  getChain,
+} from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { deserialize } from '@/action/box';
@@ -13,13 +21,6 @@ import { AssetDbAction, BoxDbAction } from '@/action/db';
 import { generateChangeBox, selectBoxes } from '@/action/tx';
 import MessageContext from '@/components/app/messageContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import {
-  boxArrayToBoxes,
-  boxCandidatesToArrayBoxCandidate,
-  boxesToArrayBox,
-} from '@/utils/convert';
-import { createEmptyArrayWithIndex, dottedText } from '@/utils/functions';
-import getChain from '@/utils/networks';
 
 const selectBoxesDApps =
   (wallet: StateWallet) =>

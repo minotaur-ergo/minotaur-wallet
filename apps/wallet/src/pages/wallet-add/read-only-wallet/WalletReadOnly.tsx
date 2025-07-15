@@ -1,6 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import {
+  getBase58ExtendedPublicKey,
+  MAIN_NET_LABEL,
+} from '@minotaur-ergo/utils';
 import { Button, Grid, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -9,8 +13,6 @@ import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Stepper from '@/components/stepper/Stepper';
 import AppFrame from '@/layouts/AppFrame';
-import { MAIN_NET_LABEL } from '@/utils/const';
-import { getBase58ExtendedPublicKey } from '@/utils/functions';
 
 import AddressOrXPub from '../components/address-or-xpub/AddressOrXPub';
 import WalletName from '../components/wallet-name/WalletName';

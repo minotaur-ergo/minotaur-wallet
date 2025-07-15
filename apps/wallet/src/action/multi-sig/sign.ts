@@ -4,13 +4,12 @@ import {
   StateWallet,
   TxHintBag,
 } from '@minotaur-ergo/types';
+import { boxArrayToBoxes, fakeContext } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
-import { boxArrayToBoxes } from '@/utils/convert';
-import fakeContext from '@/utils/networks/fakeContext';
 
 /**
  * Converts an array of public key strings to a Propositions object for Ergo transactions.

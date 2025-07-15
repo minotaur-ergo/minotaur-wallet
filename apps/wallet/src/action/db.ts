@@ -8,6 +8,11 @@ import {
   TxInfo,
   WalletType,
 } from '@minotaur-ergo/types';
+import {
+  createEmptyArray,
+  DEFAULT_ADDRESS_PREFIX,
+  sliceToChunksString,
+} from '@minotaur-ergo/utils';
 import { DataSource, Like, Repository } from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
@@ -27,8 +32,7 @@ import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet from '@/db/entities/Wallet';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
-import { DEFAULT_ADDRESS_PREFIX, TX_CHUNK_SIZE } from '@/utils/const';
-import { createEmptyArray, sliceToChunksString } from '@/utils/functions';
+import { TX_CHUNK_SIZE } from '@/utils/const';
 
 import Address from '../db/entities/Address';
 

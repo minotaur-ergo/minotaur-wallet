@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { DAppPropsType } from '@minotaur-ergo/types';
-
-import { boxesToArrayBox } from '@/utils/convert';
+import { boxesToArrayBox } from '@minotaur-ergo/utils';
 
 const useAddressBoxes = (
   addresses: Array<string>,

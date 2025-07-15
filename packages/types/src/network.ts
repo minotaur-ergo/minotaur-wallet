@@ -1,5 +1,7 @@
-import { TokenInfo } from './db';
 import * as wasm from 'ergo-lib-wasm-browser';
+
+import { BoxInfo, TokenInfo } from './db';
+import { SpendDetail } from './tx';
 
 interface BalanceInfo {
   nanoErgs: bigint;
@@ -24,7 +26,13 @@ abstract class AbstractNetwork {
 
   abstract getBoxById: (boxId: string) => Promise<wasm.ErgoBox | undefined>;
 
-  abstract syncBoxes: (address: string) => Promise<boolean>;
+  abstract syncBoxes: (
+    address: string,
+    addressHeight: number,
+    updateAddressHeight: (height: number) => Promise<unknown>,
+    insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
+    spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
+  ) => Promise<boolean>;
 
   abstract getTransaction: (txId: string) => Promise<{
     tx?: wasm.Transaction;

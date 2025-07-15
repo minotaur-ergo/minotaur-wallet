@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { DAppPropsType } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
 import { Button, Stack } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import TextField from '@/components/text-field/TextField';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const encodeString = (msg: string): Uint8Array => {
   return Uint8Array.from(Buffer.from(msg));

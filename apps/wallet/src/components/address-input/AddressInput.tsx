@@ -1,6 +1,7 @@
 import React from 'react';
 import { useContext, useEffect } from 'react';
 
+import { isValidAddress } from '@minotaur-ergo/utils';
 import { BookOutlined } from '@mui/icons-material';
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -12,7 +13,6 @@ import AddressBookModal from '@/components/modals/address-book-modal/AddressBook
 import TextField from '@/components/text-field/TextField';
 import useDrawer from '@/hooks/useDrawer';
 import { readClipBoard } from '@/utils/clipboard';
-import { isValidAddress } from '@/utils/functions';
 
 import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';
 

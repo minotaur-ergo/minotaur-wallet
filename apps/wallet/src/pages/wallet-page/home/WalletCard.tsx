@@ -1,13 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { ergPriceUsd, getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
-import { MAIN_NET_LABEL } from '@/utils/const';
-import { ergPriceUsd } from '@/utils/functions';
-import getChain from '@/utils/networks';
 
 interface WalletCardPropsType {
   wallet: StateWallet;

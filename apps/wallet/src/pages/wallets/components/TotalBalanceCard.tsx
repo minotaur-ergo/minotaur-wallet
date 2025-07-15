@@ -1,10 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
+import { ergPriceUsd, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
-
-import { MAIN_NET_LABEL } from '@/utils/const';
-import { ergPriceUsd } from '@/utils/functions';
 
 import Rate from './Rate';
 

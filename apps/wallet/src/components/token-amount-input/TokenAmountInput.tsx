@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { numberWithDecimalToBigInt, tokenStr } from '@minotaur-ergo/utils';
 import { Button, TextField, Typography } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { AssetDbAction } from '@/action/db';
-import { numberWithDecimalToBigInt, tokenStr } from '@/utils/functions';
 
 import TokenAmountDisplay from '../amounts-display/TokenAmountDisplay';
 
