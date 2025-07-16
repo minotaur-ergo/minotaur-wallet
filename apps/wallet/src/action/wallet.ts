@@ -4,7 +4,9 @@ import {
   StateWallet,
   WalletType,
 } from '@minotaur-ergo/types';
+import { BIP32Interface } from 'bip32';
 import { mnemonicToSeedSync } from 'bip39';
+import bs58check from 'bs58check';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import store from '@/store';
@@ -68,6 +70,70 @@ const createWallet = async (
     .derivePath(RootPathWithoutIndex)
     .neutered();
 
+  const storedSeed = encryptionPassword
+    ? encrypt(seed, encryptionPassword)
+    : seed.toString('hex');
+  const encryptedMnemonic = encryptionPassword
+    ? encrypt(Buffer.from(mnemonic, 'utf-8'), encryptionPassword)
+    : '';
+
+  const wallets = await WalletDbAction.getInstance().getWallets();
+  const readonlyWallets = wallets.filter(
+    (wallet) =>
+      wallet.type === WalletType.ReadOnly &&
+      wallet.network_type === network_type,
+  );
+
+  // function areXpubsEqual(xpubA: BIP32Interface | string, xpubBBase58: string): boolean {
+  //   try {
+  //     const xpubAString = typeof xpubA === 'string' ? xpubA : xpubA.toBase58();
+  //     const bytesA = bs58check.decode(xpubAString).slice(13, 78);
+  //     const bytesB = bs58check.decode(xpubBBase58).slice(13, 78);
+  //     if (bytesA.length !== bytesB.length) return false;
+  //     for (let i = 0; i < bytesA.length; i++) {
+  //       if (bytesA[i] !== bytesB[i]) return false;
+  //     }
+  //     return true;
+  //   } catch {
+  //     return false;
+  //   }
+  // }
+  function areXpubsEqual(xpubA: BIP32Interface, xpubB: string): boolean {
+    try {
+      const xpubAString = xpubA.toBase58();
+      const bytesA = bs58check.decode(xpubAString).slice(13, 78);
+      const bytesB = bs58check.decode(xpubB).slice(13, 78);
+      if (bytesA.length !== bytesB.length) return false;
+      for (let i = 0; i < bytesA.length; i++) {
+        if (bytesA[i] !== bytesB[i]) return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  const matchingReadOnlyWallet = readonlyWallets.find((wallet) =>
+    areXpubsEqual(extended_public_key, wallet.extended_public_key),
+  );
+
+  if (matchingReadOnlyWallet) {
+    await WalletDbAction.getInstance().updateWallet(matchingReadOnlyWallet.id, {
+      name,
+      type: WalletType.Normal,
+      seed: storedSeed,
+      encrypted_mnemonic: encryptedMnemonic,
+    });
+    console.log('wallet updated');
+
+    store.dispatch(addedWallets());
+    store.dispatch(
+      setActiveWallet({ activeWallet: matchingReadOnlyWallet.id }),
+    );
+    console.log('UI updated');
+    return;
+  }
+
   const addresses = await findWalletAddresses(
     (index: number) =>
       deriveNormalWalletAddress(
@@ -81,12 +147,6 @@ const createWallet = async (
 
   await validateAddresses(addresses);
 
-  const storedSeed = encryptionPassword
-    ? encrypt(seed, encryptionPassword)
-    : seed.toString('hex');
-  const encryptedMnemonic = encryptionPassword
-    ? encrypt(Buffer.from(mnemonic, 'utf-8'), encryptionPassword)
-    : '';
   const wallet = await WalletDbAction.getInstance().createWallet(
     name,
     type,

@@ -5,10 +5,12 @@ import { WalletType } from '@minotaur-ergo/types';
 import { Button, Grid } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { WalletDbAction } from '@/action/db';
 import { createWallet } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Stepper from '@/components/stepper/Stepper';
+import Wallet from '@/db/entities/Wallet';
 import AppFrame from '@/layouts/AppFrame';
 import { MAIN_NET_LABEL } from '@/utils/const';
 
@@ -30,6 +32,10 @@ const WalletRestore = () => {
   const [step, setStep] = useState(1);
   const [hasError, setHasError] = useState(true);
   const [restoring, setRestoring] = useState(false);
+  const [readonlyWalletFound, setReadonlyWalletFound] = useState<Wallet | null>(
+    null,
+  );
+  const [convertReadonly, setConvertReadonly] = useState(false);
   const [values, setValues] = useState({
     name: '',
     network: MAIN_NET_LABEL,
@@ -39,23 +45,36 @@ const WalletRestore = () => {
   });
   const STEPS_COUNTS = 4;
 
-  const restore = () => {
-    if (!restoring) {
-      setRestoring(true);
-      createWallet(
+  const restore = async () => {
+    if (restoring) return;
+    setRestoring(true);
+
+    try {
+      if (readonlyWalletFound && convertReadonly) {
+        await WalletDbAction.getInstance().updateWallet(
+          readonlyWalletFound.id,
+          {
+            type: WalletType.Normal,
+            seed: values.mnemonic,
+            encrypted_mnemonic: values.mnemonicPassphrase,
+          },
+        );
+        setHasError(true);
+        navigate(-2);
+        return;
+      }
+
+      await createWallet(
         values.name,
         WalletType.Normal,
         values.mnemonic,
         values.mnemonicPassphrase,
         values.network,
         values.password,
-      )
-        .then(() => {
-          navigate(-2);
-        })
-        .catch((exp) => {
-          context.insert(exp, 'error');
-        });
+      );
+      navigate(-2);
+    } catch (exp) {
+      context.insert(exp instanceof Error ? exp.message : String(exp), 'error');
     }
   };
 
@@ -121,6 +140,8 @@ const WalletRestore = () => {
           setMnemonicPassphrase={(mnemonicPassphrase) =>
             setParam('mnemonicPassphrase', mnemonicPassphrase)
           }
+          setReadonlyWalletFound={setReadonlyWalletFound}
+          setConvertReadonly={setConvertReadonly}
         />
         <AddressConfirm
           mnemonic={values.mnemonic}

@@ -104,6 +104,23 @@ class WalletDbAction {
     return res;
   };
 
+  updateWallet = async (
+    walletId: number,
+    changes: Partial<{
+      name: string;
+      type: WalletType;
+      seed: string;
+      encrypted_mnemonic: string;
+    }>,
+  ) => {
+    await this.walletRepository
+      .createQueryBuilder()
+      .update()
+      .set(changes)
+      .where('id=:id', { id: walletId })
+      .execute();
+  };
+
   setWalletName = async (walletId: number, newName: string) => {
     await this.walletRepository
       .createQueryBuilder()
