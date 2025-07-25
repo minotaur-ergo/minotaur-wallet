@@ -1,5 +1,35 @@
 # minotaur-wallet
 
+## 3.0.0
+
+### Major Changes
+
+- Update multi-sig communication data format
+
+### Minor Changes
+
+- Extract utils package
+- Move types to new package
+- AirDrop dapp added
+- add `createChangeBox` to all dapps
+
+### Patch Changes
+
+- Fix scanning qrcode for multi-sig transaction
+- Fix address validation and amount validation
+- Ensure amount be lower or equal than maximum available sigUSD/sigRSV
+- Fix address book element modification bug
+- Implement error feedback for failed transaction generation
+- Validate addresses before inserting a new wallet
+- Fix a bug which cause all wallet disappeared when new wallet restored
+- Validate the available amounts of Erg and tokens before transaction
+- Fix delete wallet bug
+- Ensure implementorFee min value ≥ wasm.BoxValue.SAFE_USER_MIN
+- Updated dependencies
+  - @minotaur-ergo/utils@1.1.0
+  - @minotaur-ergo/icons@1.2.0
+  - @minotaur-ergo/types@1.1.0
+
 ## 2.5.0
 
 ### Minor Changes
