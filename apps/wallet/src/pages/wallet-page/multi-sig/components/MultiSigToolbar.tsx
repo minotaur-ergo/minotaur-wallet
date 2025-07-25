@@ -84,9 +84,13 @@ const MultiSigToolbar = () => {
 
   const processNewData = async (newContent: string) => {
     if (signer) {
-      const clipBoardData = JSON.parse(newContent) as MultiSigDataShare;
+      const arrivedData = JSON.parse(newContent);
+      const processData =
+        QrCodeTypeEnum.MultiSigRequest in arrivedData
+          ? JSON.parse(arrivedData[QrCodeTypeEnum.MultiSigRequest])
+          : arrivedData;
       const verification = await verifyAndSaveData(
-        clipBoardData as MultiSigDataShare,
+        processData as MultiSigDataShare,
         data.wallet,
         signer,
         data.tx?.id().to_str(),
@@ -108,13 +112,7 @@ const MultiSigToolbar = () => {
 
   const pasteAction = async () => {
     try {
-      const clipBoardContent = await readClipBoard();
-      const contentJson = JSON.parse(clipBoardContent);
-      if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
-        await processNewData(contentJson[QrCodeTypeEnum.MultiSigRequest]);
-      } else {
-        await processNewData(clipBoardContent);
-      }
+      await processNewData(await readClipBoard());
     } catch (e) {
       console.log(e);
     }

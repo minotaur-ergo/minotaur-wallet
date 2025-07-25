@@ -144,8 +144,8 @@ const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
     case WalletType.ReadOnly:
       return deriveNormalWalletAddress(
         wallet.id,
-        wallet.networkType,
         wallet.xPub,
+        wallet.networkType,
         index,
       );
   }

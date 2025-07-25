@@ -46,7 +46,7 @@ export const ergPriceUsd = (amount: bigint, erg_price: number) =>
 
 export const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   if (amount === '') return 0n;
-  const regex = new RegExp(`^\\d+(\\.\\d+)?$`);
+  const regex = new RegExp(`^\\d+(\\.\\d*)?$`);
   if (!regex.test(amount)) {
     throw Error('Invalid number in format');
   }

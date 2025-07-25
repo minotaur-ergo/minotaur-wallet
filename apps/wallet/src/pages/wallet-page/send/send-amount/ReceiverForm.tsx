@@ -26,9 +26,9 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
 
   const content = generatorContext.receivers[props.index];
 
-  const setAmountValidity = (index: number, isValid: boolean) => {
+  const setAmountHasError = (index: number, hasError: boolean) => {
     const newErrors = [...amountErrors];
-    newErrors[index] = !isValid;
+    newErrors[index] = hasError;
     setAmountErrors(newErrors);
   };
 
@@ -126,7 +126,7 @@ const ReceiverForm = (props: ReceiverFormPropsType) => {
           setAmount={setTokenAmount(index)}
           total={getTokenAmount(token.tokenId)}
           tokenId={token.tokenId}
-          setHasError={(valid) => setAmountValidity(index, valid)}
+          setHasError={(valid) => setAmountHasError(index, valid)}
         />
       ))}
     </Stack>
