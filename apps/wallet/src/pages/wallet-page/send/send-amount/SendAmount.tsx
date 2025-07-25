@@ -1,3 +1,7 @@
+import { useContext, useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { createEmptyArray } from '@minotaur-ergo/utils';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
@@ -10,13 +14,12 @@ import {
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import { useContext, useEffect, useState } from 'react';
+
 import { newEmptyReceiver } from '@/action/tx';
-import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
-import { StateWallet } from '@/store/reducer/wallet';
-import { createEmptyArray } from '@/utils/functions';
-import ReceiverForm from './ReceiverForm';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
+
+import ReceiverForm from './ReceiverForm';
 
 interface SendAmountPropsType {
   wallet: StateWallet;

@@ -1,4 +1,5 @@
 import * as wasm from 'ergo-lib-wasm-browser';
+
 import * as parameters from './parameters';
 
 class Boxes {

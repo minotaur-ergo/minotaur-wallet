@@ -1,35 +1,18 @@
-import AssetRow from '@/components/asset-row/AssetRow';
-import Checkbox from '@mui/material/Checkbox';
 import { useEffect, useState } from 'react';
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-} from '@mui/material';
-import { AssetInfo, DAppPropsType } from '@/types/dapps';
-import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
+
+import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
+import { Button, Stack } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
+
+import FillAmounts from '@/components/select-tokens/FillAmounts';
+import SelectTokens from '@/components/select-tokens/SelectTokens';
 
 const fee = BigInt(1000000);
 
-interface TokenAmount {
-  [tokenId: string]: {
-    amount: bigint;
-    total: bigint;
-  };
-}
-
 const BurnToken = (props: DAppPropsType) => {
   const [amounts, setAmounts] = useState<TokenAmount>({});
-  const [name, setName] = useState('');
   const [selectedTokenIds, setSelectedTokenIds] = useState<Array<string>>([]);
-  const [tokens, setTokens] = useState<Array<AssetInfo>>([]);
-  const [loaded, setLoaded] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const [burning, setBurning] = useState(false);
   const burnToken = async () => {
@@ -38,8 +21,8 @@ const BurnToken = (props: DAppPropsType) => {
       const address = await props.getDefaultAddress();
       const height = await props.chain.getNetwork().getHeight();
       const selectedTokens = Object.entries(amounts).map((item) => ({
-        id: item[0],
-        amount: item[1].amount,
+        tokenId: item[0],
+        balance: item[1].amount,
       }));
       const coveringBox = await props.getCoveringForErgAndToken(
         fee,
@@ -49,7 +32,7 @@ const BurnToken = (props: DAppPropsType) => {
         const boxes = coveringBox.boxes;
         const remainingTokens: { [id: string]: bigint } = {};
         selectedTokens.forEach(
-          (item) => (remainingTokens[item.id] = -item.amount),
+          (item) => (remainingTokens[item.tokenId] = -item.balance),
         );
         const totalErg: bigint =
           createEmptyArrayWithIndex(boxes.len())
@@ -103,9 +86,9 @@ const BurnToken = (props: DAppPropsType) => {
         selectedTokens.forEach((item) => {
           burnToken.add(
             new wasm.Token(
-              wasm.TokenId.from_str(item.id),
+              wasm.TokenId.from_str(item.tokenId),
               wasm.TokenAmount.from_i64(
-                wasm.I64.from_str(item.amount.toString()),
+                wasm.I64.from_str(item.balance.toString()),
               ),
             ),
           );
@@ -118,44 +101,6 @@ const BurnToken = (props: DAppPropsType) => {
       setBurning(false);
     }
   };
-  const selectToken = (event: SelectChangeEvent<Array<string>>) => {
-    const value = event.target.value;
-    const keys = typeof value === 'string' ? value.split(',') : value;
-    const newAmounts: TokenAmount = {};
-    keys.forEach((key) => {
-      newAmounts[key] = amounts[key] ?? { amount: 0n, total: 0n };
-    });
-    const searchKey = keys.length === 1 ? keys[0] : undefined;
-    const foundToken = tokens.filter((token) => token.id === searchKey);
-    const name =
-      foundToken.length > 0
-        ? foundToken[0].name
-        : searchKey
-          ? searchKey.substring(0, 5) + '...'
-          : null;
-    tokens.forEach((token) => {
-      if (keys.includes(token.id)) {
-        newAmounts[token.id].total = token.amount;
-      }
-    });
-    setName(name ? name : keys.length > 1 ? 'Multiple Tokens' : '');
-    setSelectedTokenIds(keys);
-    setAmounts(newAmounts);
-  };
-  const setAmount = (tokenId: string, amount: bigint) => {
-    setAmounts((oldValue) => ({
-      ...oldValue,
-      [tokenId]: { ...oldValue[tokenId], amount },
-    }));
-  };
-  useEffect(() => {
-    if (!loaded) {
-      props.getAssets().then((tokens) => {
-        setLoaded(true);
-        setTokens(tokens);
-      });
-    }
-  });
   useEffect(() => {
     let total = 0n;
     let isAmountsValid = true;
@@ -170,41 +115,20 @@ const BurnToken = (props: DAppPropsType) => {
   }, [amounts, isValid]);
   return (
     <Stack spacing={2}>
-      <FormControl>
-        <InputLabel id="selected-token-to-burn">Token</InputLabel>
-        <Select
-          value={selectedTokenIds}
-          label="Token"
-          multiple
-          onChange={selectToken}
-          renderValue={() => `${name}`}
-          labelId="selected-token-to-burn"
-        >
-          {tokens.map((item) => (
-            <MenuItem key={item.id} value={item.id}>
-              <Checkbox checked={selectedTokenIds.includes(item.id)} />
-              <AssetRow
-                id={item.id}
-                amount=""
-                networkType={props.chain.label}
-                width={'calc(100% - 44px)'}
-              />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {selectedTokenIds.map((row) => {
-        return (
-          <TokenAmountInput
-            key={row}
-            network_type={props.chain.label}
-            amount={amounts[row].amount}
-            setAmount={(newAmount) => setAmount(row, newAmount)}
-            total={amounts[row].total}
-            tokenId={row}
-          />
-        );
-      })}
+      <SelectTokens
+        amounts={amounts}
+        setAmounts={setAmounts}
+        tokenIds={selectedTokenIds}
+        setTokenIds={setSelectedTokenIds}
+        getAssets={props.getAssets}
+        chain={props.chain}
+      />
+      <FillAmounts
+        amounts={amounts}
+        setAmounts={setAmounts}
+        tokenIds={selectedTokenIds}
+        chain={props.chain}
+      />
       <Button disabled={!isValid} onClick={burnToken}>
         Burn Token
       </Button>

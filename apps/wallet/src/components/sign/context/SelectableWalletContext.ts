@@ -1,5 +1,6 @@
 import { createContext } from 'react';
-import { StateWallet } from '../../../store/reducer/wallet';
+
+import { StateWallet } from '@minotaur-ergo/types';
 
 interface SelectableWalletContextType {
   setWallet: (wallet: StateWallet) => unknown;

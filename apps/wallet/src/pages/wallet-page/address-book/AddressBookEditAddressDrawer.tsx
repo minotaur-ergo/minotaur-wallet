@@ -1,9 +1,16 @@
-import { QrCodeScanner } from '@mui/icons-material';
-import { IconButton, Stack, TextField, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import InputAdornment from '@mui/material/InputAdornment';
 import { ChangeEvent, useContext, useState } from 'react';
+
+import { QrCodeScanner } from '@mui/icons-material';
+import {
+  Button,
+  Drawer,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
+
 import { SavedAddressDbAction } from '@/action/db';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 
@@ -61,14 +68,14 @@ const AddressBookEditAddressDrawer = (
         <TextField
           label="Name"
           variant="standard"
-          value={props.name}
+          value={values.name}
           onChange={handleChangeValue('name')}
           inputProps={{ autoFocus: true }}
         />
         <TextField
           label="Address"
           variant="standard"
-          value={props.address}
+          value={values.address}
           onChange={handleChangeValue('address')}
           InputProps={{
             endAdornment: (

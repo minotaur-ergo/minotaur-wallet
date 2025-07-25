@@ -1,7 +1,8 @@
+import { useContext, useEffect, useState } from 'react';
+
 import { getReduced } from '@/action/tx';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import { useContext, useEffect, useState } from 'react';
 
 const useReducedTx = () => {
   const txDataContext = useContext(TxDataContext);

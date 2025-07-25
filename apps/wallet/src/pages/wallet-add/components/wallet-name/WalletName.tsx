@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
+
+import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
 import {
   Box,
   TextField,
-  ToggleButtonGroup,
   ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@/utils/const';
 
 interface WalletNamePropsType {
   name: string;

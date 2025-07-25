@@ -1,5 +1,6 @@
-import { useTheme } from '@mui/material';
 import { CSSProperties } from 'react';
+
+import { useTheme } from '@mui/material';
 
 interface PropsType {
   style?: CSSProperties;

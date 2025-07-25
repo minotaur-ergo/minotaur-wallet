@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+
 import { MultiSigDbAction } from '@/action/db';
 import store from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
 
 const useSignerWallet = (wallet: StateWallet) => {
   const [result, setResult] = useState<StateWallet>();

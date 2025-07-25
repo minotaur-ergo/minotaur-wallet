@@ -1,22 +1,25 @@
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import AppFrame from '@/layouts/AppFrame';
-import { StateWallet } from '@/store/reducer/wallet';
 import { useContext, useState } from 'react';
-import ActionMenu from './components/ActionMenu';
-import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
-import LoadingPage from '@/components/loading-page/LoadingPage';
-import StateAlert from './components/StateAlert';
-import TxSignValues from '../send/sign-tx/TxSignValues';
+
+import { MultiSigStateEnum, StateWallet } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
-import AddressActionList from './components/AddressActionList';
-import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigStateEnum } from '@/types/multi-sig';
-import PasswordField from '@/components/password-field/PasswordField';
-import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import MultiSigToolbar from './components/MultiSigToolbar';
-import ShareTransaction from './components/ShareTransaction';
+
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
+import LoadingPage from '@/components/loading-page/LoadingPage';
+import PasswordField from '@/components/password-field/PasswordField';
+import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+import TransactionBoxes from '@/components/sign/transaction-boxes/TransactionBoxes';
+import { useCompletedTx } from '@/hooks/multi-sig/useCompletedTx';
+import AppFrame from '@/layouts/AppFrame';
+
+import TxSignValues from '../send/sign-tx/TxSignValues';
+import ActionMenu from './components/ActionMenu';
+import AddressActionList from './components/AddressActionList';
+import MultiSigToolbar from './components/MultiSigToolbar';
+import ShareTransaction from './components/ShareTransaction';
+import StateAlert from './components/StateAlert';
 
 interface MultiSigTransactionPropsType {
   wallet: StateWallet;
@@ -29,11 +32,12 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   const needMyCommitment =
     multiDataContext.state === MultiSigStateEnum.COMMITMENT &&
-    multiDataContext.myAction.committed === false;
+    !multiDataContext.myAction.committed;
   const needMySign =
     multiDataContext.state === MultiSigStateEnum.SIGNING &&
-    multiDataContext.myAction.signed === false;
+    !multiDataContext.myAction.signed;
   const needAction = needMyCommitment || needMySign;
+  useCompletedTx();
   if (txDataContext.tx) {
     return (
       <AppFrame
@@ -53,14 +57,24 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
           <Typography variant="body2" color="textSecondary" gutterBottom>
             Transaction Committed by
           </Typography>
-          <AddressActionList addresses={multiDataContext.committed} />
+          <AddressActionList
+            addresses={multiDataContext.actions.map((item) => ({
+              address: item.address,
+              completed: item.committed,
+            }))}
+          />
         </Box>
         {multiDataContext.state !== MultiSigStateEnum.COMMITMENT ? (
           <Box my={2}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Transaction Signed by
             </Typography>
-            <AddressActionList addresses={multiDataContext.signed} />
+            <AddressActionList
+              addresses={multiDataContext.actions.map((item) => ({
+                address: item.address,
+                completed: item.signed,
+              }))}
+            />
           </Box>
         ) : null}
         {needAction ? (
@@ -72,8 +86,8 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
               helperText="Please enter your mnemonics passphrase to send transaction."
             />
           ) : null
-        ) : multiDataContext.state === MultiSigStateEnum.COMPLETED ? (
-          <DisplaySignedTx tx={txContext.data.partial} />
+        ) : txContext.signed ? (
+          <DisplaySignedTx tx={txContext.signed} />
         ) : (
           <ShareTransaction />
         )}

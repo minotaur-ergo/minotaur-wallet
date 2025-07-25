@@ -1,7 +1,8 @@
+import { Avatar, Box, Typography } from '@mui/material';
+
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
 import DisplayId from '@/components/display-id/DisplayId';
 import useAssetDetail from '@/hooks/useAssetDetail';
-import { Avatar, Box, Typography } from '@mui/material';
 
 interface AssetRowPropsType {
   id: string;

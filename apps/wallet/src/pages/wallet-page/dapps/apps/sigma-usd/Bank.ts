@@ -1,6 +1,7 @@
 import * as wasm from 'ergo-lib-wasm-browser';
-import * as parameters from './parameters';
+
 import Oracle from './Oracle';
+import * as parameters from './parameters';
 
 const reserveRatio = (
   base_reserves: bigint,

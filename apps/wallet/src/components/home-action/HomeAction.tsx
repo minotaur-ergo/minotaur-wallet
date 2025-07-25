@@ -1,3 +1,7 @@
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Capacitor } from '@capacitor/core';
 import {
   ContactsOutlined,
   Download,
@@ -6,12 +10,11 @@ import {
   SettingsOutlined,
 } from '@mui/icons-material';
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import React, { useContext, useState } from 'react';
-import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';
-import { useNavigate } from 'react-router-dom';
-import { RouteMap, getRoute } from '@/router/routerMap';
-import { Capacitor } from '@capacitor/core';
+
+import { getRoute, RouteMap } from '@/router/routerMap';
 import { downloadDb } from '@/utils/browser';
+
+import { QrCodeContext } from '../qr-code-scanner/QrCodeContext';
 
 interface HomeActionPropsType {
   id?: number;

@@ -1,8 +1,11 @@
+import React, { useCallback, useState } from 'react';
+
+import { QrCodeCallback } from '@minotaur-ergo/types';
+
 import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
+
 import { QrCodeContext } from './QrCodeContext';
-import { QrCodeCallback } from '@/types/qrcode';
-import React, { useCallback, useState } from 'react';
 
 interface QrCodeReaderViewPropsType {
   children: React.ReactNode;
@@ -24,7 +27,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     console.log('fail to scan qrcode');
   }, []);
 
-  const senDataToCallbacks = (data: string) => {
+  const sendDataToCallbacks = (data: string) => {
     callbacks.forEach((item) => item.resolve(data));
     setCallbacks([]);
     setOpen(false);
@@ -67,7 +70,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
           open={open}
           scanning={scanning}
           close={close}
-          callback={senDataToCallbacks}
+          callback={sendDataToCallbacks}
         />
       </div>
 

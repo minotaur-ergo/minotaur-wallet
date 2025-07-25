@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Address from './Address';
 import { Unique } from 'typeorm/browser';
+
+import Address from './Address';
 
 @Entity({ name: 'box' })
 @Unique('box_id_for_address', ['address', 'box_id'])

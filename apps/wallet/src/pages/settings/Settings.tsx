@@ -1,10 +1,12 @@
-import AppFrame from '@/layouts/AppFrame';
-import LocalSettings from './LocalSettings';
-import DangerousSettings from './DangerousSettings';
-import { StateWallet } from '@/store/reducer/wallet';
-import GlobalSettings from './GlobalSettings';
+import { StateWallet } from '@minotaur-ergo/types';
+
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import AppFrame from '@/layouts/AppFrame';
+
 import AppVersion from './AppVersion';
+import DangerousSettings from './DangerousSettings';
+import GlobalSettings from './GlobalSettings';
+import LocalSettings from './LocalSettings';
 
 interface WalletSettingsPropsType {
   wallet?: StateWallet;

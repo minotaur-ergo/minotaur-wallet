@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { JsonBI } from '@minotaur-ergo/utils';
+
 import { generateTx } from '@/action/tx';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';
-import { StateWallet } from '@/store/reducer/wallet';
 import { FEE } from '@/utils/const';
-import { JsonBI } from '@/utils/json';
 
 interface TxGeneratorPropsType {
   wallet: StateWallet;
@@ -22,6 +24,7 @@ const TxGenerator = (props: TxGeneratorPropsType) => {
       });
       if (proceed !== newProceed) {
         setLoading(true);
+        generatorContext.setError(null);
         signerContext.setTx(undefined, [], []);
         const usedAddresses =
           generatorContext.selectedAddresses === 'all'
@@ -32,12 +35,14 @@ const TxGenerator = (props: TxGeneratorPropsType) => {
             signerContext.setTx(res.tx, res.boxes, []);
             setProceed(newProceed);
             setLoading(false);
+            generatorContext.setError(null);
           })
           .catch((e) => {
             console.log(e);
             signerContext.setTx(undefined, [], []);
             setProceed(newProceed);
             setLoading(false);
+            generatorContext.setError(String(e));
           });
       }
     }
@@ -49,6 +54,7 @@ const TxGenerator = (props: TxGeneratorPropsType) => {
     props.wallet,
     signerContext,
     generatorContext.ready,
+    generatorContext,
   ]);
   return null;
 };

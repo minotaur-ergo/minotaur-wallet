@@ -1,18 +1,19 @@
-import { Button, Grid } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { createEmptyArray, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { Button, CircularProgress, Grid } from '@mui/material';
+
 import { createMultiSigWallet } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Stepper from '@/components/stepper/Stepper';
 import AppFrame from '@/layouts/AppFrame';
-import { MAIN_NET_LABEL } from '@/utils/const';
-import { createEmptyArray } from '@/utils/functions';
+
 import AddressConfirmMultiSig from '../components/address-confirm/AddressConfirmMultiSig';
 import WalletName from '../components/wallet-name/WalletName';
 import WalletSigners from '../components/wallet-signers/WalletSigners';
 import XPubSelect from '../components/xpub-select/XPubSelect';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 
 type WalletValueKeysString = 'name' | 'walletId' | 'network';
 

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Card, Chip, Container, Grid, Box } from '@mui/material';
+
+import { Box, Card, Chip, Container, Grid } from '@mui/material';
+
 import CustomChip from './CustomChip';
 
 interface ConfirmMnemonicPropsType {

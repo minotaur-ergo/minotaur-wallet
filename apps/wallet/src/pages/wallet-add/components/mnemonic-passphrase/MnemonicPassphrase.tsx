@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import PasswordField from '@/components/password-field/PasswordField';
-import InAdvancedMode from '@/components/display-view/InAdvancedMode';
+
 import { FormControlLabel, Switch } from '@mui/material';
+
+import InAdvancedMode from '@/components/display-view/InAdvancedMode';
+import PasswordField from '@/components/password-field/PasswordField';
 
 interface MnemonicPassPhrasePropsType {
   setPassword: (newPassword: string) => unknown;

@@ -1,17 +1,17 @@
-import Wallet from './Wallet';
+import MultiSigHint from '@/db/entities/multi-sig/MultiSigHint';
+
 import Address from './Address';
-import Asset from './Asset';
-import Config from './Config';
-import MultiSigKey from './MultiSigKey';
-import MultiSignRow from './multi-sig/MultiSignRow';
-import MultiSignTx from './multi-sig/MultiSignTx';
-import MultiSignInput from './multi-sig/MultiSignInput';
-import MultiCommitment from './multi-sig/MultiCommitment';
-import MultiSigner from './multi-sig/MultiSigner';
 import AddressValueInfo from './AddressValueInfo';
-import SavedAddress from './SavedAddress';
+import Asset from './Asset';
 import Box from './Box';
+import Config from './Config';
+import MultiSigInput from './multi-sig/MultiSigInput';
+import MultiSigRow from './multi-sig/MultiSigRow';
+import MultiSigTx from './multi-sig/MultiSigTx';
+import MultiSigKey from './MultiSigKey';
 import Pin from './Pin';
+import SavedAddress from './SavedAddress';
+import Wallet from './Wallet';
 
 const Entities = [
   Wallet,
@@ -20,11 +20,10 @@ const Entities = [
   Box,
   Asset,
   Config,
-  MultiSignRow,
-  MultiSignTx,
-  MultiSignInput,
-  MultiCommitment,
-  MultiSigner,
+  MultiSigRow,
+  MultiSigTx,
+  MultiSigInput,
+  MultiSigHint,
   AddressValueInfo,
   SavedAddress,
   Pin,

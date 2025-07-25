@@ -1,19 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Grid } from '@mui/material';
+
+import { WalletType } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { Button, CircularProgress, Grid } from '@mui/material';
 import * as bip39 from 'bip39';
+
 import { createWallet } from '@/action/wallet';
-import AppFrame from '@/layouts/AppFrame';
-import Stepper from '@/components/stepper/Stepper';
-import WalletName from '../components/wallet-name/WalletName';
-import WalletMnemonic from '../components/wallet-mnemonic/WalletMnemonic';
-import ConfirmMnemonic from '../components/mnemonic-confirm/ConfirmMnemonic';
-import WalletPassword from '../components/wallet-password/WalletPassword';
-import CircularProgress from '@mui/material/CircularProgress';
-import { WalletType } from '@/db/entities/Wallet';
 import MessageContext from '@/components/app/messageContext';
-import { MAIN_NET_LABEL } from '@/utils/const';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import Stepper from '@/components/stepper/Stepper';
+import AppFrame from '@/layouts/AppFrame';
+
+import ConfirmMnemonic from '../components/mnemonic-confirm/ConfirmMnemonic';
+import WalletMnemonic from '../components/wallet-mnemonic/WalletMnemonic';
+import WalletName from '../components/wallet-name/WalletName';
+import WalletPassword from '../components/wallet-password/WalletPassword';
 
 type WalletValueKeys =
   | 'name'

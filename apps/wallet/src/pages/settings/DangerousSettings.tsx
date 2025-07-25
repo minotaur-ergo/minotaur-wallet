@@ -1,15 +1,17 @@
-import { GlobalStateType } from '@/store';
 import { useState } from 'react';
-import { Box, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
-import ActionButton from './ActionButton';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import Heading from '@/components/heading/Heading';
-import { WalletDbAction } from '@/action/db';
 import { useNavigate } from 'react-router-dom';
-import { getRoute, RouteMap } from '@/router/routerMap';
+
+import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { Box, Stack } from '@mui/material';
+
+import { WalletDbAction } from '@/action/db';
 import Confirm from '@/components/confirm/Confirm';
-import { StateWallet } from '@/store/reducer/wallet';
+import Heading from '@/components/heading/Heading';
+import { getRoute, RouteMap } from '@/router/routerMap';
+
+import ActionButton from './ActionButton';
 
 interface DangerousSettingsPropsType {
   wallet: StateWallet;

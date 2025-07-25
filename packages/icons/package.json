@@ -1,6 +1,6 @@
 {
   "name": "@minotaur-ergo/icons",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Asset Icons and details for minotaur wallet",
   "repository": "https://github.com/minotaur-ergo/minotaur",
   "license": "GPL-3.0",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.17.10",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "axios": "1.8.3"
   }
 }

@@ -1,4 +1,5 @@
 import { ContentCopy } from '@mui/icons-material';
+
 import CopyToClipboard from './CopyToClipboard';
 
 interface CopyToClipboardIconPropsType {

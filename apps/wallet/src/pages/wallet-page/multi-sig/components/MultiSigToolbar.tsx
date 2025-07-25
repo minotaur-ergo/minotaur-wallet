@@ -1,20 +1,29 @@
-import { ContentPasteOutlined, ShareOutlined } from '@mui/icons-material';
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { Button, Grid } from '@mui/material';
 import React, { useContext } from 'react';
+
+import {
+  MultiSigDataShare,
+  MultiSigStateEnum,
+  QrCodeTypeEnum,
+} from '@minotaur-ergo/types';
+import {
+  ContentPasteOutlined,
+  QrCodeScanner,
+  ShareOutlined,
+} from '@mui/icons-material';
+import { Button, Grid } from '@mui/material';
+
+import { commit } from '@/action/multi-sig/commit';
+import { sign } from '@/action/multi-sig/sign';
+import { verifyAndSaveData } from '@/action/multi-sig/verify';
 import { validatePassword } from '@/action/wallet';
+import MessageContext from '@/components/app/messageContext';
+import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
-import { MultiSigShareData, MultiSigStateEnum } from '@/types/multi-sig';
-import { commit, sign } from '@/action/multi-sig/signing';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { readClipBoard } from '@/utils/clipboard';
-import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
-import { QrCodeTypeEnum } from '@/types/qrcode';
-import { verifyAndSaveData } from '@/action/multi-sig/verify';
-import MessageContext from '@/components/app/messageContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import { readClipBoard } from '@/utils/clipboard';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
@@ -39,7 +48,7 @@ const MultiSigToolbar = () => {
     if (
       data.reduced &&
       multiSigData.related &&
-      multiSigData.myAction.committed === false
+      !multiSigData.myAction.committed
     ) {
       return commit(
         data.reduced,
@@ -47,19 +56,10 @@ const MultiSigToolbar = () => {
         multiSigData.related,
         context.password,
         data.boxes,
-        context.data,
+        context.hints,
       ).then((res) => {
         if (res.changed) {
-          context.setData(
-            {
-              commitments: res.commitments,
-              secrets: res.secrets,
-              signed: context.data.signed,
-              simulated: context.data.simulated,
-              partial: context.data.partial,
-            },
-            res.updateTime,
-          );
+          context.setHints(res.hints, res.updateTime);
           multiSigData.setNeedPassword(false);
         }
         return null;
@@ -72,36 +72,25 @@ const MultiSigToolbar = () => {
       sign(
         data.wallet,
         multiSigData.related,
-        context.data.simulated,
-        context.data.commitments,
-        context.data.secrets,
-        multiSigData.committed,
-        multiSigData.signed,
-        multiSigData.addresses,
+        context.hints,
         data.reduced,
         data.boxes,
         context.password,
-        context.data.partial,
       ).then((res) => {
-        context.setData(
-          {
-            commitments: context.data.commitments,
-            secrets: context.data.secrets,
-            signed: res.signed,
-            simulated: res.simulated,
-            partial: res.partial,
-          },
-          res.currentTime,
-        );
+        context.setHints(res.hints, res.currentTime);
       });
     }
   };
 
   const processNewData = async (newContent: string) => {
     if (signer) {
-      const clipBoardData = JSON.parse(newContent) as MultiSigShareData;
+      const arrivedData = JSON.parse(newContent);
+      const processData =
+        QrCodeTypeEnum.MultiSigRequest in arrivedData
+          ? JSON.parse(arrivedData[QrCodeTypeEnum.MultiSigRequest])
+          : arrivedData;
       const verification = await verifyAndSaveData(
-        clipBoardData,
+        processData as MultiSigDataShare,
         data.wallet,
         signer,
         data.tx?.id().to_str(),
@@ -114,8 +103,8 @@ const MultiSigToolbar = () => {
   };
 
   const publishAction = async () => {
-    if (context.data.partial) {
-      submitContext.submit(context.data.partial);
+    if (context.signed) {
+      await submitContext.submit(context.signed);
     } else {
       console.error('Unknown error occurred');
     }
@@ -123,13 +112,7 @@ const MultiSigToolbar = () => {
 
   const pasteAction = async () => {
     try {
-      const clipBoardContent = await readClipBoard();
-      const contentJson = JSON.parse(clipBoardContent);
-      if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
-        await processNewData(contentJson[QrCodeTypeEnum.MultiSigRequest]);
-      } else {
-        await processNewData(clipBoardContent);
-      }
+      await processNewData(await readClipBoard());
     } catch (e) {
       console.log(e);
     }
@@ -214,7 +197,7 @@ const MultiSigToolbar = () => {
               <Button
                 variant="outlined"
                 onClick={startScanner}
-                startIcon={<QrCodeScannerIcon />}
+                startIcon={<QrCodeScanner />}
               >
                 Scan QrCode
               </Button>

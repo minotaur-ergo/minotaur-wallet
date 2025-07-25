@@ -1,7 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import Wallet from './Wallet';
 
-@Entity({ name: 'multi_sig_key' })
+@Entity({ name: 'multi-sig-key' })
 class MultiSigKey {
   @PrimaryGeneratedColumn()
   id = 0;

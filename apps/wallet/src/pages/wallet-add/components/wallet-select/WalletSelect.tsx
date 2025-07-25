@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { GlobalStateType, WalletType } from '@minotaur-ergo/types';
 import {
   FormControl,
   InputLabel,
@@ -5,9 +8,6 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { WalletType } from '@/db/entities/Wallet';
-import { GlobalStateType } from '@/store';
 
 interface WalletSelectPropsType {
   label: string;

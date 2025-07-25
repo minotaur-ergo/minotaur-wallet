@@ -1,0 +1,23 @@
+{
+  "name": "@minotaur-ergo/types",
+  "version": "1.1.0",
+  "description": "Shared TypeScript types for Minotaur wallet",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "notistack": "^3.0.1",
+    "ergo-lib-wasm-browser": "0.26.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}

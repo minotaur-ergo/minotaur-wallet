@@ -1,24 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
-import ListController from '@/components/list-controller/ListController';
-import { MultiSigBriefRow, MultiSigShareData } from '@/types/multi-sig';
-import AppFrame from '@/layouts/AppFrame';
-import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
-import { GlobalStateType } from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
-import MultiSigTransactionItem from './MultiSigTransactionItem';
-import { readClipBoard } from '@/utils/clipboard';
-import MessageContext from '@/components/app/messageContext';
 import { useNavigate } from 'react-router-dom';
-import { RouteMap, getRoute } from '@/router/routerMap';
-import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+
+import {
+  MultiSigBriefRow,
+  MultiSigDataShare,
+  QrCodeTypeEnum,
+  StateWallet,
+} from '@minotaur-ergo/types';
+import { GlobalStateType } from '@minotaur-ergo/types';
+import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
 import { Fab } from '@mui/material';
-import FabStack from '@/components/fab-stack/FabStack';
-import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
-import { QrCodeTypeEnum } from '@/types/qrcode';
+
+import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import { verifyAndSaveData } from '@/action/multi-sig/verify';
+import MessageContext from '@/components/app/messageContext';
+import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import FabStack from '@/components/fab-stack/FabStack';
+import ListController from '@/components/list-controller/ListController';
+import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
+import AppFrame from '@/layouts/AppFrame';
+import { getRoute, RouteMap } from '@/router/routerMap';
+import { readClipBoard } from '@/utils/clipboard';
+
+import MultiSigTransactionItem from './MultiSigTransactionItem';
 
 interface MultiSigCommunicationPropsType {
   wallet: StateWallet;
@@ -48,9 +54,8 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
     }
   }, [loading, loadedTime, lastChanged, props.wallet]);
 
-  const processNewData = async (content: string) => {
+  const processDataJson = async (data: MultiSigDataShare) => {
     if (signer) {
-      const data = JSON.parse(content) as MultiSigShareData;
       const response = await verifyAndSaveData(data, props.wallet, signer);
       if (!response.valid) {
         message.insert(response.message, 'error');
@@ -74,16 +79,24 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
       .catch((reason: string) => console.log('scanning failed ', reason));
   };
 
+  const processNewData = async (content: string) => {
+    const contentJson = JSON.parse(content);
+    if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
+      await processDataJson(
+        JSON.parse(
+          contentJson[QrCodeTypeEnum.MultiSigRequest],
+        ) as MultiSigDataShare,
+      );
+    } else {
+      await processDataJson(contentJson as MultiSigDataShare);
+    }
+  };
+
   const handlePasteNewTransaction = async () => {
     setReading(true);
     try {
       const clipBoardContent = await readClipBoard();
-      const contentJson = JSON.parse(clipBoardContent);
-      if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
-        await processNewData(contentJson[QrCodeTypeEnum.MultiSigRequest]);
-      } else {
-        await processNewData(clipBoardContent);
-      }
+      await processNewData(clipBoardContent);
     } catch (e: unknown) {
       message.insert(`${(e as { message: unknown }).message}`, 'error');
     }

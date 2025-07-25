@@ -1,6 +1,6 @@
-import { commaSeparate } from '@/utils/convert';
-import { createEmptyArray } from '@/utils/functions';
 import React from 'react';
+
+import { commaSeparate, createEmptyArray } from '@minotaur-ergo/utils';
 
 interface TokenAmountDisplayPropsType {
   amount: bigint;

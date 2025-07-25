@@ -1,16 +1,21 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import {
+  getBase58ExtendedPublicKey,
+  MAIN_NET_LABEL,
+} from '@minotaur-ergo/utils';
 import { Button, Grid, Typography } from '@mui/material';
-import { createReadOnlyWallet } from '@/action/wallet';
-import AppFrame from '@/layouts/AppFrame';
-import Stepper from '@/components/stepper/Stepper';
-import WalletName from '../components/wallet-name/WalletName';
 import CircularProgress from '@mui/material/CircularProgress';
+
+import { createReadOnlyWallet } from '@/action/wallet';
 import MessageContext from '@/components/app/messageContext';
-import { MAIN_NET_LABEL } from '@/utils/const';
-import AddressOrXPub from '../components/address-or-xpub/AddressOrXPub';
-import { getBase58ExtendedPublicKey } from '@/utils/functions';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
+import Stepper from '@/components/stepper/Stepper';
+import AppFrame from '@/layouts/AppFrame';
+
+import AddressOrXPub from '../components/address-or-xpub/AddressOrXPub';
+import WalletName from '../components/wallet-name/WalletName';
 
 type WalletValueKeys = 'name' | 'network' | 'public';
 

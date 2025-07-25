@@ -1,14 +1,8 @@
-import { createEmptyArrayWithIndex } from '@/utils/functions';
+import { WalletTransactionType } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
+
 import { deserialize } from './box';
 import { AddressDbAction, BoxDbAction } from './db';
-
-interface WalletTransactionType {
-  txId: string;
-  date: Date;
-  ergIn: bigint;
-  ergOut: bigint;
-  tokens: Map<string, bigint>;
-}
 
 const getWalletTransactionsTotal = async (
   walletId: number,
@@ -70,5 +64,3 @@ const getWalletTransactions = async (
 };
 
 export { getWalletTransactions, getWalletTransactionsTotal };
-
-export type { WalletTransactionType };

@@ -1,14 +1,19 @@
-import * as wasm from 'ergo-lib-wasm-browser';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+
+import {
+  GlobalStateType,
+  MultiSigData,
+  StateWallet,
+} from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
+
 import { fetchMultiSigRows } from '@/action/multi-sig/store';
-import { GlobalStateType } from '@/store';
-import { StateWallet } from '@/store/reducer/wallet';
+
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
 import { TxDataContext } from './TxDataContext';
-import { MultiSigData } from '../../../types/multi-sig';
 
 interface MultiSigContextHandlerPropsType {
   wallet: StateWallet;
@@ -17,26 +22,31 @@ interface MultiSigContextHandlerPropsType {
 
 const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   const [tx, setTx] = useState<wasm.ReducedTransaction>();
-  const [data, setData] = useState<MultiSigData>({
-    commitments: [[]],
-    secrets: [[]],
-    signed: [],
-    simulated: [],
-  });
+  const [hints, setHints] = useState<MultiSigData>([[]]);
   const [rowId, setRowId] = useState(-1);
   const [boxes, setBoxes] = useState<Array<wasm.ErgoBox>>([]);
   const [dataBoxes, setDataBoxes] = useState<Array<wasm.ErgoBox>>([]);
   const [updateTime, setUpdateTime] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
+  const [signed, setSigned] = useState<wasm.Transaction>();
   const { txId } = useParams();
 
   const lastUpdateTime = useSelector(
     (config: GlobalStateType) => config.config.multiSigLoadedTime,
   );
 
+  const setSignedChanged = (newSigned: wasm.Transaction) => {
+    if (
+      signed === undefined ||
+      signed.id().to_str() !== newSigned.id().to_str()
+    ) {
+      setSigned(newSigned);
+    }
+  };
+
   const storeData = (data: MultiSigData, update: number) => {
-    setData(data);
+    setHints(data);
     setUpdateTime(update);
   };
 
@@ -55,29 +65,26 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
             setDataBoxes(row.dataBoxes);
             setRowId(row.rowId);
             setUpdateTime(Date.now());
-            setData({
-              commitments: row.commitments,
-              secrets: row.secrets,
-              signed: row.signed,
-              simulated: row.simulated,
-              partial: row.partial,
-            });
+            setHints(row.hints);
           }
           setLoading(false);
         });
       }
     }
   }, [loading, tx, txId, props.wallet, updateTime, lastUpdateTime]);
+
   if (tx) {
     return (
       <MultiSigContext.Provider
         value={{
-          data: data,
+          hints,
           password,
           requiredSign: props.wallet.requiredSign,
           rowId,
-          setData: storeData,
+          setHints: storeData,
           setPassword,
+          signed,
+          setSigned: setSignedChanged,
         }}
       >
         <TxDataContext.Provider

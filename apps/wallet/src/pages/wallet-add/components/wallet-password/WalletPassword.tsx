@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+
 import { Box, Typography } from '@mui/material';
+
 import PasswordField from '@/components/password-field/PasswordField';
 
 interface WalletPasswordPropsType {

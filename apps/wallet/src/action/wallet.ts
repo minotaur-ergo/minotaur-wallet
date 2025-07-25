@@ -1,25 +1,31 @@
-import { setActiveWallet } from '@/store/reducer/config';
-import { mnemonicToSeedSync } from 'bip39';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { WalletType } from '@/db/entities/Wallet';
-import store from '@/store';
 import {
-  addedWallets,
-  invalidateWallets,
+  DerivedWalletAddress,
   StateAddress,
   StateWallet,
-} from '@/store/reducer/wallet';
-import { walletEntityToWalletState } from '@/utils/convert';
-import { decrypt, encrypt } from '@/utils/enc';
+  WalletType,
+} from '@minotaur-ergo/types';
 import {
   bip32,
+  decrypt,
+  encrypt,
   getBase58ExtendedPublicKey,
   isValidAddress,
-} from '@/utils/functions';
+} from '@minotaur-ergo/utils';
+import { mnemonicToSeedSync } from 'bip39';
+import * as wasm from 'ergo-lib-wasm-browser';
+
+import store from '@/store';
+import { setActiveWallet } from '@/store/reducer/config';
+import { addedWallets, invalidateWallets } from '@/store/reducer/wallet';
+import { walletEntityToWalletState } from '@/utils/convert';
+
 import {
-  RootPathWithoutIndex,
+  addWalletAddresses,
+  deriveMultiSigWalletAddress,
+  deriveNormalWalletAddress,
+  findWalletAddresses,
   getWalletAddressSecret,
-  addAllWalletAddresses,
+  RootPathWithoutIndex,
 } from './address';
 import { AddressDbAction, MultiSigDbAction, WalletDbAction } from './db';
 
@@ -29,6 +35,22 @@ const validatePassword = (seed: string, password: string) => {
     return res.length > 0;
   } catch (e) {
     return false;
+  }
+};
+
+const validateAddresses = async (addresses: Array<{ address: string }>) => {
+  for (const addr of addresses) {
+    const existing =
+      await AddressDbAction.getInstance().getAddressByAddressString(
+        addr.address,
+      );
+
+    if (existing) {
+      const walletName = existing.wallet?.name || 'Unknown Wallet';
+      throw new Error(
+        `Address already exists: ${addr.address} in (Wallet: ${walletName})`,
+      );
+    }
   }
 };
 
@@ -46,6 +68,20 @@ const createWallet = async (
   const extended_public_key = master
     .derivePath(RootPathWithoutIndex)
     .neutered();
+
+  const addresses = await findWalletAddresses(
+    (index: number) =>
+      deriveNormalWalletAddress(
+        0,
+        extended_public_key.toBase58(),
+        network_type,
+        index,
+      ),
+    network_type,
+  );
+
+  await validateAddresses(addresses);
+
   const storedSeed = encryptionPassword
     ? encrypt(seed, encryptionPassword)
     : seed.toString('hex');
@@ -62,7 +98,8 @@ const createWallet = async (
     encryptedMnemonic,
   );
   await WalletDbAction.getInstance().setFlagOnWallet(wallet.id, pinType, false);
-  await addAllWalletAddresses(walletEntityToWalletState(wallet));
+  const stateWallet = walletEntityToWalletState(wallet);
+  await addWalletAddresses(stateWallet, addresses);
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
 };
@@ -95,6 +132,25 @@ const createReadOnlyWallet = async (
   network_type: string,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
+  let addresses: DerivedWalletAddress[] = [];
+
+  if (extended_public_key) {
+    addresses = await findWalletAddresses(
+      (index: number) =>
+        deriveNormalWalletAddress(0, extended_public_key, network_type, index),
+      network_type,
+    );
+  } else if (address) {
+    addresses = [
+      {
+        address,
+        path: '',
+        index: 0,
+      },
+    ];
+  }
+  await validateAddresses(addresses);
+
   const walletEntity = await WalletDbAction.getInstance().createWallet(
     name,
     WalletType.ReadOnly,
@@ -110,17 +166,9 @@ const createReadOnlyWallet = async (
     false,
   );
 
-  if (extended_public_key) {
-    await addAllWalletAddresses(walletEntityToWalletState(walletEntity));
-  } else {
-    await AddressDbAction.getInstance().saveAddress(
-      walletEntity.id,
-      'Main Address',
-      address,
-      '--',
-      0,
-    );
-  }
+  const walletState = walletEntityToWalletState(walletEntity);
+  await addWalletAddresses(walletState, addresses);
+
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: walletEntity.id }));
 };
@@ -167,7 +215,12 @@ const createMultiSigWallet = async (
         throw Error('unreachable');
       }
     }
-    await addAllWalletAddresses(walletEntityToWalletState(createdWallet));
+    const walletState = walletEntityToWalletState(createdWallet);
+    const derivedAddresses = await findWalletAddresses(
+      (index: number) => deriveMultiSigWalletAddress(walletState, index),
+      walletState.networkType,
+    );
+    await addWalletAddresses(walletState, derivedAddresses);
     store.dispatch(addedWallets());
     store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
   }

@@ -1,4 +1,5 @@
 import React, { ReactElement, useMemo } from 'react';
+
 import { Box, Typography } from '@mui/material';
 
 interface DisplayPropertyPropsType {

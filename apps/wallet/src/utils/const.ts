@@ -8,9 +8,6 @@ export const CONFIRMATION_HEIGHT = 720;
 
 export const MAX_BLOCK_LENGTH = 100;
 
-export const MAIN_NET_LABEL = 'Main Net';
-export const TEST_NET_LABEL = 'Test Net';
-
 export const FEE = 1100000n;
 
 export const MIN_BOX_VALUE = 1000000n;
@@ -25,13 +22,3 @@ export const SIGN_ACTION = 'sign';
 export const PUBLISH_ACTION = 'publish';
 
 export const ADDRESS_PLACE_HOLDER = '#P2PK_ADDRESS#';
-
-export const WALLET_FAVORITE_FLAG = 'favorite';
-export const WALLET_ARCHIVE_FLAG = 'archive';
-
-export const DEFAULT_ADDRESS_PREFIX = 'default_';
-
-export const enum WALLET_FLAG_ENUM {
-  FAVORITE = WALLET_FAVORITE_FLAG,
-  ARCHIVE = WALLET_ARCHIVE_FLAG,
-}

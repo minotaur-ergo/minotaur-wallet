@@ -1,5 +1,6 @@
-import * as wasm from 'ergo-lib-wasm-browser';
 import { createContext } from 'react';
+
+import * as wasm from 'ergo-lib-wasm-browser';
 
 const enum StatusEnum {
   WAITING,

@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Box, IconButton, Typography } from '@mui/material';
 
 export interface ActionButtonPropsType {
   label: string;

@@ -1,8 +1,9 @@
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Divider, IconButton, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
+
 import { openTxInBrowser } from '../../../action/tx';
 import SvgIcon from '../../../icons/SvgIcon';
-import { Box, Divider, IconButton, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import DisplayId from '../../display-id/DisplayId';
 import StateMessage from '../../state-message/StateMessage';
 

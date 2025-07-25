@@ -1,10 +1,8 @@
-import Wallet from '@/db/entities/Wallet';
-import { StateAddress, StateWallet } from '@/store/reducer/wallet';
+import { StateAddress, StateWallet } from '@minotaur-ergo/types';
+import { WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
+
 import Address from '@/db/entities/Address';
-import { WALLET_FLAG_ENUM } from '@/utils/const';
-import { blake2bHex } from 'blakejs';
-import * as wasm from 'ergo-lib-wasm-browser';
-import { createEmptyArrayWithIndex } from './functions';
+import Wallet from '@/db/entities/Wallet';
 
 export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({
   id: wallet.id,
@@ -37,30 +35,3 @@ export const addressEntityToAddressState = (
   id: address.id,
   isDefault: false,
 });
-
-export const boxesToArrayBox = (boxes: wasm.ErgoBoxes): Array<wasm.ErgoBox> => {
-  return createEmptyArrayWithIndex(boxes.len()).map((index) =>
-    boxes.get(index),
-  );
-};
-
-export const boxArrayToBoxes = (boxes: Array<wasm.ErgoBox>): wasm.ErgoBoxes => {
-  const res = wasm.ErgoBoxes.empty();
-  boxes.forEach((box) => res.add(box));
-  return res;
-};
-
-export const commaSeparate = (amount: string, fromEnd: boolean = true) => {
-  const processingAmount = fromEnd
-    ? amount.split('').reverse().join('')
-    : amount;
-  const chunks = processingAmount.match(/.{1,3}/g);
-  const res = (chunks ?? []).join(',');
-  return fromEnd ? res.split('').reverse().join('') : res;
-};
-
-export const getPinHash = (pin: string) => {
-  return blake2bHex(pin, undefined, 32);
-};
-
-export const honeyPinType = (pinType: string) => `${pinType}[honey]`;

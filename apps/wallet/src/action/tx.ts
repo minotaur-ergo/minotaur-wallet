@@ -1,44 +1,35 @@
+import {
+  ReceiverType,
+  StateWallet,
+  TokenBalanceBigInt,
+  TotalSpent,
+} from '@minotaur-ergo/types';
+import { getBoxTokens, getChain } from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { ReceiverTokenType, ReceiverType } from '@/types/sign-modal';
-import { TotalSpent } from '@/types/tx';
+
 import openInBrowser from '@/utils/browser';
-import { BoxDbAction } from './db';
-import { StateWallet } from '@/store/reducer/wallet';
-import getChain from '@/utils/networks';
+
 import { deserialize } from './box';
+import { BoxDbAction } from './db';
 import { getProver } from './wallet';
 
 const newEmptyReceiver = () => ({ address: '', amount: 0n, tokens: [] });
 
-const receiverTokensToDict = (tokens: Array<ReceiverTokenType>) => {
+const receiverTokensToDict = (tokens: Array<TokenBalanceBigInt>) => {
   const res: { [tokenId: string]: bigint } = {};
   tokens.forEach((token) => {
-    if (Object.keys(res).indexOf(token.id) === -1) {
-      res[token.id] = token.amount;
+    if (Object.keys(res).indexOf(token.tokenId) === -1) {
+      res[token.tokenId] = token.balance;
     } else {
-      res[token.id] += token.amount;
+      res[token.tokenId] += token.balance;
     }
   });
   return res;
 };
 
-const getBoxTokens = (
-  box: wasm.ErgoBox | wasm.ErgoBoxCandidate,
-): Array<ReceiverTokenType> => {
-  const res: Array<ReceiverTokenType> = [];
-  const tokens = box.tokens();
-  for (let index = 0; index < tokens.len(); index++) {
-    const token = tokens.get(index);
-    const tokenId = token.id().to_str();
-    const amount = BigInt(token.amount().as_i64().to_str());
-    res.push({ id: tokenId, amount });
-  }
-  return res;
-};
-
 const selectBoxes = async (
   amount: bigint,
-  tokens: Array<ReceiverTokenType>,
+  tokens: Array<TokenBalanceBigInt>,
   addresses: Array<number>,
 ) => {
   const minBoxValue = -BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str());
@@ -47,10 +38,10 @@ const selectBoxes = async (
   const selectBox = (box: wasm.ErgoBox) => {
     result.push(box);
     getBoxTokens(box).forEach((token) => {
-      if (Object.keys(requiredTokens).indexOf(token.id) !== -1) {
-        requiredTokens[token.id] -= token.amount;
-        if (requiredTokens[token.id] <= 0n) {
-          delete requiredTokens[token.id];
+      if (Object.keys(requiredTokens).indexOf(token.tokenId) !== -1) {
+        requiredTokens[token.tokenId] -= token.balance;
+        if (requiredTokens[token.tokenId] <= 0n) {
+          delete requiredTokens[token.tokenId];
         }
       }
     });
@@ -66,7 +57,7 @@ const selectBoxes = async (
     } else {
       const boxTokens = getBoxTokens(box);
       for (const token of boxTokens) {
-        if (Object.keys(requiredTokens).indexOf(token.id) !== -1) {
+        if (Object.keys(requiredTokens).indexOf(token.tokenId) !== -1) {
           selectBox(box);
         }
       }
@@ -97,10 +88,12 @@ const generateCandidates = (height: number, receivers: Array<ReceiverType>) =>
       height,
     );
     receiver.tokens.forEach((token) => {
-      if (token.amount > 0) {
+      if (token.balance > 0n) {
         builder.add_token(
-          wasm.TokenId.from_str(token.id),
-          wasm.TokenAmount.from_i64(wasm.I64.from_str(token.amount.toString())),
+          wasm.TokenId.from_str(token.tokenId),
+          wasm.TokenAmount.from_i64(
+            wasm.I64.from_str(token.balance.toString()),
+          ),
         );
       }
     });
@@ -112,7 +105,7 @@ const generateCandidates = (height: number, receivers: Array<ReceiverType>) =>
     return builder.build();
   });
 
-const generateChangeBox = (
+export const generateChangeBox = (
   inputs: Array<wasm.ErgoBox>,
   outputs: Array<wasm.ErgoBoxCandidate>,
   fee: bigint,
@@ -133,10 +126,10 @@ const generateChangeBox = (
   );
   outputs.forEach((output) => {
     getBoxTokens(output).forEach((token) => {
-      if (Object.keys(tokens).indexOf(token.id) !== -1) {
-        tokens[token.id] -= token.amount;
-        if (tokens[token.id] <= 0n) {
-          delete tokens[token.id];
+      if (Object.keys(tokens).indexOf(token.tokenId) !== -1) {
+        tokens[token.tokenId] -= token.balance;
+        if (tokens[token.tokenId] <= 0n) {
+          delete tokens[token.tokenId];
         }
       }
     });
@@ -241,7 +234,7 @@ const extractErgAndTokenSpent = (
     );
   };
   let totalErg = 0n;
-  let tokens: Array<ReceiverTokenType> = [];
+  let tokens: Array<TokenBalanceBigInt> = [];
   const inputs = tx.inputs();
   for (let index = 0; index < inputs.len(); index++) {
     const boxId = inputs.get(index).box_id().to_str();
@@ -267,8 +260,8 @@ const extractErgAndTokenSpent = (
       tokens = [
         ...tokens,
         ...getBoxTokens(box).map((item) => ({
-          id: item.id,
-          amount: -item.amount,
+          tokenId: item.tokenId,
+          balance: -item.balance,
         })),
       ];
     }
@@ -339,4 +332,4 @@ export {
   selectBoxes,
 };
 
-export type { ReceiverType, ReceiverTokenType };
+export type { ReceiverType };

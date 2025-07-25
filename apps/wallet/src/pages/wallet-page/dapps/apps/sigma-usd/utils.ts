@@ -1,11 +1,14 @@
+import { DAppPropsType } from '@minotaur-ergo/types';
+import {
+  boxesToArrayBox,
+  createEmptyArrayWithIndex,
+} from '@minotaur-ergo/utils';
 import * as wasm from 'ergo-lib-wasm-browser';
-import Boxes from './Boxes';
-import * as parameters from './parameters';
+
 import Bank from './Bank';
+import Boxes from './Boxes';
 import Oracle from './Oracle';
-import { DAppPropsType } from '@/types/dapps';
-import { boxesToArrayBox } from '@/utils/convert';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
+import * as parameters from './parameters';
 
 export const formatWithDecimals = (amount: bigint, decimals: number) => {
   if (decimals <= 0) return amount.toString();
@@ -87,7 +90,7 @@ export const sellToken = async (
 
   const boxes = await props.getCoveringForErgAndToken(
     parameters.MIN_BOX_VALUE,
-    [{ id: sellTokenId, amount }],
+    [{ tokenId: sellTokenId, balance: amount }],
   );
   if (!boxes.covered) {
     throw Error('Insufficient token');

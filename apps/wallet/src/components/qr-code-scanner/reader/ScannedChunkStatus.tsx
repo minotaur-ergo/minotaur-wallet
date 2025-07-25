@@ -1,5 +1,6 @@
-import StatusBox from '@/components/qr-code-scanner/reader/StatusBox';
 import { Box, Typography } from '@mui/material';
+
+import StatusBox from '@/components/qr-code-scanner/reader/StatusBox';
 
 interface ScannedChunkStatusPropsType {
   chunks?: Array<string>;

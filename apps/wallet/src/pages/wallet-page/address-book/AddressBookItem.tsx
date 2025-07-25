@@ -1,4 +1,10 @@
 import { useState } from 'react';
+
+import {
+  Close,
+  DeleteOutlineOutlined,
+  EditOutlined,
+} from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -7,13 +13,10 @@ import {
   Typography,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import {
-  EditOutlined,
-  Close,
-  DeleteOutlineOutlined,
-} from '@mui/icons-material';
+
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import DisplayId from '@/components/display-id/DisplayId';
+
 import AddressBookDeleteAddressDrawer from './AddressBookDeleteAddressDrawer';
 import AddressBookEditAddressDrawer from './AddressBookEditAddressDrawer';
 

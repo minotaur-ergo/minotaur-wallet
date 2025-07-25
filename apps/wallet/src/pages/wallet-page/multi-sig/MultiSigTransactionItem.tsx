@@ -1,9 +1,11 @@
-import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+import { StateWallet } from '@minotaur-ergo/types';
+import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
+
+import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { StateWallet } from '@/store/reducer/wallet';
-import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 
 interface MultiSigTransactionItemPropsType {
   wallet: StateWallet;
@@ -53,9 +55,11 @@ const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
           <Typography sx={{ flexGrow: 1, color: rowState.color }}>
             {rowState.title}
           </Typography>
-          <Typography>
-            {rowState.step} <small>/ {requiredSign}</small>
-          </Typography>
+          {rowState.step >= 0 ? (
+            <Typography>
+              {rowState.step} <small>/ {requiredSign}</small>
+            </Typography>
+          ) : undefined}
         </Box>
         {props.tokensIn > 0 || props.ergIn > 0n ? (
           <Typography variant="body2" color="textSecondary">

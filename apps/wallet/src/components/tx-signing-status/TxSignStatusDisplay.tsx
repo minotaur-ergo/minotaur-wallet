@@ -1,7 +1,9 @@
+import React from 'react';
+
 import { Box, CircularProgress } from '@mui/material';
+
 import { StatusEnum } from '../sign/context/TxSignContext';
 import StateMessage from '../state-message/StateMessage';
-import React from 'react';
 
 interface TxSignStatusDisplayPropsType {
   status: StatusEnum;

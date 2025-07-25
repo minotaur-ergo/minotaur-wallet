@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
+import { CapacitorHttp } from '@capacitor/core';
+
 import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
-import { CapacitorHttp } from '@capacitor/core';
 
 const getCurrentPrice = async () => {
   const queryParams = {

@@ -1,16 +1,17 @@
-import { Alert, AlertColor, AlertTitle } from '@mui/material';
 import { useContext } from 'react';
+
+import { Alert, AlertColor, AlertTitle } from '@mui/material';
+
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { MultiSigStateEnum } from '@/hooks/multi-sig/useMultiSigTxState';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { MultiSigStateEnum } from '@/hooks/multi-sig/useMultiSigTxState';
 
 const StateAlert = () => {
   const context = useContext(MultiSigContext);
   const dataContext = useContext(MultiSigDataContext);
-  const committed = dataContext.committed;
-  const signed = dataContext.signed;
-  const committedCount = committed.filter((item) => item.completed).length;
-  const signedCount = signed.filter((item) => item.completed).length;
+  const actions = dataContext.actions;
+  const committedCount = actions.filter((item) => item.committed).length;
+  const signedCount = actions.filter((item) => item.signed).length;
   const step: number =
     dataContext.state === MultiSigStateEnum.COMMITMENT
       ? committedCount

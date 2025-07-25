@@ -1,18 +1,19 @@
+import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex, getChain } from '@minotaur-ergo/utils';
+
 import Address from '@/db/entities/Address';
 import { AddressValueType } from '@/db/entities/AddressValueInfo';
 import store from '@/store';
-import { setBalances, StateWallet } from '@/store/reducer/wallet';
+import { setBalances } from '@/store/reducer/wallet';
 import { CONFIRMATION_HEIGHT } from '@/utils/const';
-import getChain from '@/utils/networks';
-import { AbstractNetwork } from '@/utils/networks/abstractNetwork';
+
+import { deserialize } from './box';
 import {
   AddressDbAction,
   AddressValueDbAction,
   AssetDbAction,
   BoxDbAction,
 } from './db';
-import { deserialize } from './box';
-import { createEmptyArrayWithIndex } from '@/utils/functions';
 
 const syncInfo = async (network: AbstractNetwork, address: Address) => {
   const info = await network.getAddressInfo(address.address);
@@ -174,7 +175,19 @@ const syncWallet = async (wallet: StateWallet) => {
   await Promise.all(
     addresses.map(async (address) => {
       try {
-        if (await network.syncBoxes(address)) {
+        const syncResult = await network.syncBoxes(
+          address.address,
+          address.process_height,
+          (newHeight) =>
+            AddressDbAction.getInstance().updateAddressHeight(
+              address.id,
+              newHeight,
+            ),
+          (info) => BoxDbAction.getInstance().insertOrUpdateBox(info, address),
+          (boxId, details) =>
+            BoxDbAction.getInstance().spendBox(boxId, details),
+        );
+        if (syncResult) {
           const verifyHeight = await network.getHeight();
           const dbAddresses =
             await AddressDbAction.getInstance().getAddressById(address.id);

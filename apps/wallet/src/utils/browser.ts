@@ -1,5 +1,5 @@
-import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import { Buffer } from 'buffer';
 
 const openInBrowser = (url: string) => {

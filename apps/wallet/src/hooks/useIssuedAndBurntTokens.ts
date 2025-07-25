@@ -1,6 +1,7 @@
-import { TokenType } from '@/types/tx';
-import * as wasm from 'ergo-lib-wasm-browser';
 import { useEffect, useState } from 'react';
+
+import { TokenType } from '@minotaur-ergo/types';
+import * as wasm from 'ergo-lib-wasm-browser';
 
 const extractTokens = (
   wasmTokens: wasm.Tokens,

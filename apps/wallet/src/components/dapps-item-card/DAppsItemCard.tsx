@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import { Avatar, Box, Card, CardActionArea, Typography } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Avatar, Box, Card, CardActionArea, Typography } from '@mui/material';
 
 interface ItemCardPropsType {
   title: string;

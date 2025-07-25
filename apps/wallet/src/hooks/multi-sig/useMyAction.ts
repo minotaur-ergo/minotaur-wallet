@@ -1,33 +1,32 @@
 import { useContext, useEffect, useState } from 'react';
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-import { useSignerWallet } from './useSignerWallet';
-import { AddressActionRow, MyAction } from '@/types/multi-sig';
 
-const useMyAction = (
-  committed: Array<AddressActionRow>,
-  signed: Array<AddressActionRow>,
-) => {
+import { AddressCompletionState, MultiSigMyAction } from '@minotaur-ergo/types';
+
+import { TxDataContext } from '@/components/sign/context/TxDataContext';
+
+import { useSignerWallet } from './useSignerWallet';
+
+const useMyAction = (actions: Array<AddressCompletionState>) => {
   const context = useContext(TxDataContext);
   const signer = useSignerWallet(context.wallet);
-  const [result, setResult] = useState<MyAction>({
+  const [result, setResult] = useState<MultiSigMyAction>({
     committed: false,
     signed: false,
   });
   useEffect(() => {
     const isCommitted =
-      committed.filter(
+      actions.filter(
         (item) =>
-          item.address === signer?.addresses[0].address && item.completed,
+          item.address === signer?.addresses[0].address && item.committed,
       ).length > 0;
     const isSigned =
-      signed.filter(
-        (item) =>
-          item.address === signer?.addresses[0].address && item.completed,
+      actions.filter(
+        (item) => item.address === signer?.addresses[0].address && item.signed,
       ).length > 0;
     if (isCommitted !== result.committed || isSigned !== result.signed) {
       setResult({ committed: isCommitted, signed: isSigned });
     }
-  }, [committed, signed, result, signer]);
+  }, [actions, result, signer]);
   return result;
 };
 

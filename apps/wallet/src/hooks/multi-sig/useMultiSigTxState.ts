@@ -1,20 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
-import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
-import { AddressActionRow, MultiSigStateEnum } from '@/types/multi-sig';
 
-const useMultiSigTxState = (
-  committed: Array<AddressActionRow>,
-  signed: Array<AddressActionRow>,
-) => {
+import {
+  AddressCompletionState,
+  MultiSigStateEnum,
+} from '@minotaur-ergo/types';
+
+import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
+
+const useMultiSigTxState = (actions: Array<AddressCompletionState>) => {
   const context = useContext(MultiSigContext);
   const [commitCount, setCommitCount] = useState(0);
   const [signCount, setSignCount] = useState(0);
   useEffect(() => {
-    setCommitCount(committed.filter((item) => item.completed).length);
-  }, [committed]);
+    setCommitCount(actions.filter((item) => item.committed).length);
+  }, [actions]);
   useEffect(() => {
-    setSignCount(signed.filter((item) => item.completed).length);
-  }, [signed]);
+    setSignCount(actions.filter((item) => item.signed).length);
+  }, [actions]);
   if (signCount >= context.requiredSign)
     return { state: MultiSigStateEnum.COMPLETED, last: false };
   if (commitCount < context.requiredSign) {

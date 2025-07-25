@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+
 import Wallet from './Wallet';
 
 @Entity({ name: 'address' })

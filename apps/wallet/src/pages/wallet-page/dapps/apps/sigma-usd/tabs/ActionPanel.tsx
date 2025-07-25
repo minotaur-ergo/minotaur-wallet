@@ -1,7 +1,8 @@
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { Button, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+
 import { formatWithDecimals } from '../utils';
-import { createEmptyArray } from '@/utils/functions';
 
 interface PurchasePanelPropsType {
   max: bigint;
@@ -13,18 +14,32 @@ interface PurchasePanelPropsType {
 const ActionPanel = (props: PurchasePanelPropsType) => {
   const [amount, setAmount] = useState('');
   const [valid, setValid] = useState(false);
-  const getValue = () => {
+
+  const getValue = useCallback(() => {
     const parts = amount.split('.');
-    const factor = BigInt('1' + createEmptyArray(props.decimals, '0').join(''));
-    return (
-      BigInt('0' + parts[0]) * factor +
-      (parts.length > 1 ? BigInt('0' + parts[1]) : 0n)
-    );
-  };
-  useEffect(() => {
-    const regex = RegExp(`^[0-9]+(.[0-9]{0-${props.decimals}})?`);
-    setValid(regex.test(amount));
+    const integerPart = BigInt(parts[0] || '0');
+    const decimalPart = (parts[1] || '').padEnd(props.decimals, '0');
+    const factor = BigInt('1' + '0'.repeat(props.decimals));
+    return integerPart * factor + BigInt(decimalPart || '0');
   }, [amount, props.decimals]);
+
+  useEffect(() => {
+    const regex = RegExp(`^[0-9]+(\\.[0-9]{0,${props.decimals}})?$`);
+    const matchesFormat = regex.test(amount);
+
+    if (!matchesFormat) {
+      setValid(false);
+      return;
+    }
+
+    try {
+      const value = getValue();
+      setValid(value <= props.max);
+    } catch {
+      setValid(false);
+    }
+  }, [amount, props.decimals, props.max, getValue]);
+
   return (
     <React.Fragment>
       <Typography variant="h2">
@@ -42,6 +57,11 @@ const ActionPanel = (props: PurchasePanelPropsType) => {
         sx={{ mb: 2 }}
         value={amount}
         onChange={({ target }) => setAmount(target.value)}
+        error={!valid && amount !== ''}
+        helperText={
+          !valid && amount !== '' ? 'Invalid amount or exceeds maximum' : ' '
+        }
+        inputProps={{ inputMode: 'decimal' }}
       />
       <Button
         disabled={!valid || getValue() == 0n}

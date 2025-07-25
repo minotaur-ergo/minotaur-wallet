@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import {
   Box,
   Card,
@@ -6,7 +8,6 @@ import {
   CardHeader,
   Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 interface ItemCardPropsType {
   title: string;
@@ -27,8 +28,8 @@ const ItemCard = (props: ItemCardPropsType) => {
           avatar={props.icon}
           title={props.title}
           sx={{
-            pb: 0,
-            color: 'primary.dark',
+            'pb': 0,
+            'color': 'primary.dark',
             '& .MuiCardHeader-title': { fontSize: '1.1rem' },
           }}
         />

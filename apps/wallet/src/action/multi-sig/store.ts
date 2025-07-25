@@ -1,13 +1,18 @@
+import {
+  MultiSigBriefRow,
+  MultiSigDataHint,
+  MultiSigDataRow,
+  MultiSigHintType,
+  StateWallet,
+} from '@minotaur-ergo/types';
 import * as wasm from 'ergo-lib-wasm-browser';
-import { MultiSigTxType } from '@/db/entities/multi-sig/MultiSignTx';
-import { MultiSigBriefRow, MultiSigDataRow } from '@/types/multi-sig';
+
 import store from '@/store';
 import { setMultiSigLoadedTime } from '@/store/reducer/config';
-import { StateWallet } from '@/store/reducer/wallet';
+
 import { deserialize, serialize } from '../box';
 import { MultiSigDbAction, MultiStoreDbAction } from '../db';
-import { extractErgAndTokenSpent, getTxBoxes } from '../tx';
-import getChain from '@/utils/networks';
+import { extractErgAndTokenSpent } from '../tx';
 
 const encoding = 'base64';
 
@@ -22,11 +27,7 @@ const multiSigStoreNewTx = async (
     tx.unsigned_tx().id().to_str(),
   );
   if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigTx(
-      row,
-      serialized,
-      MultiSigTxType.Reduced,
-    );
+    await MultiStoreDbAction.getInstance().insertMultiSigTx(row, serialized);
     await MultiStoreDbAction.getInstance().insertMultiSigInputs(
       row,
       boxes.map((item) => serialize(item)),
@@ -47,43 +48,38 @@ const fetchMultiSigRows = async (
   ).length;
   const res: Array<MultiSigDataRow> = [];
   for (const row of rows) {
-    const reducedBytes = await MultiStoreDbAction.getInstance().getTx(
-      row,
-      MultiSigTxType.Reduced,
-    );
-    const partialBytes = await MultiStoreDbAction.getInstance().getTx(
-      row,
-      MultiSigTxType.Partial,
-    );
+    const reducedBytes = await MultiStoreDbAction.getInstance().getTx(row);
     const inputs = await MultiStoreDbAction.getInstance().getInputs(row);
-    const commitments = await MultiStoreDbAction.getInstance().getCommitments(
+    const hints = await MultiStoreDbAction.getInstance().getHints(
       row,
       inputs.length,
       signerCount,
     );
-    const signed = await MultiStoreDbAction.getInstance().getSigners(row);
     res.push({
       rowId: row.id,
       requiredSign: wallet.requiredSign,
       tx: wasm.ReducedTransaction.sigma_parse_bytes(
         Buffer.from(reducedBytes, encoding),
       ),
-      partial: partialBytes
-        ? wasm.Transaction.sigma_parse_bytes(
-            Buffer.from(partialBytes, encoding),
-          )
-        : undefined,
       dataBoxes: [],
       boxes: inputs.map((item) => deserialize(item)),
-      simulated: signed.simulated,
-      signed: signed.signed,
-      commitments: commitments.commitments,
-      secrets: commitments.secrets,
+      hints,
     });
   }
   return res;
 };
 
+/**
+ * Retrieves a summarized list of multi-signature transactions for a wallet.
+ *
+ * This function fetches all multi-signature transactions associated with the specified
+ * wallet and transforms them into a condensed format suitable for displaying in UI lists.
+ * The returned data includes key transaction information such as signature counts,
+ * transaction ID, and token/ERG transfer details.
+ *
+ * @param wallet - The wallet to fetch multi-signature transactions for
+ * @returns A promise resolving to an array of summarized multi-signature transaction data
+ */
 const fetchMultiSigBriefRow = async (
   wallet: StateWallet,
 ): Promise<Array<MultiSigBriefRow>> => {
@@ -96,11 +92,18 @@ const fetchMultiSigBriefRow = async (
       );
       return {
         rowId: row.rowId,
-        signed: row.signed.filter((item) => item !== '').length,
         committed: Math.min(
-          ...row.commitments.map(
-            (commitmentRow) =>
-              commitmentRow.filter((commitment) => commitment !== '').length,
+          ...row.hints.map(
+            (hintRow) => hintRow.filter((hint) => hint.Commit !== '').length,
+          ),
+        ),
+        signed: Math.min(
+          ...row.hints.map(
+            (hintRow) =>
+              hintRow.filter(
+                (hint) =>
+                  hint.Proof !== '' && hint.Type === MultiSigHintType.Real,
+              ).length,
           ),
         ),
         txId: row.tx.unsigned_tx().id().to_str(),
@@ -115,66 +118,43 @@ const fetchMultiSigBriefRow = async (
   });
 };
 
-const notAvailableAddresses = (
-  wallet: StateWallet,
-  commitments: Array<Array<string>>,
-  tx: wasm.UnsignedTransaction,
-  boxes: Array<wasm.ErgoBox>,
-) => {
-  const prefix = getChain(wallet.networkType).prefix;
-  const boxAddresses = getTxBoxes(tx, boxes)
-    .filter((_item, index) => commitments[index].some((item) => item !== ''))
-    .map((item) =>
-      wasm.Address.recreate_from_ergo_tree(item.ergo_tree()).to_base58(prefix),
-    );
-  const walletAddressSet = new Set(
-    wallet.addresses.map((item) => item.address),
-  );
-  return boxAddresses.filter((item) => !walletAddressSet.has(item));
-};
-
+/**
+ * Updates an existing multi-signature transaction row with new hint data.
+ *
+ * @param rowId - The ID of the multi-signature row to update
+ * @param hints - 2D array of hint data organized by [inputIndex][signerIndex]
+ * @param updateTime - Timestamp to set as the update time
+ */
 const updateMultiSigRow = async (
   rowId: number,
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  signed: Array<string>,
-  simulated: Array<string>,
+  hints: Array<Array<MultiSigDataHint>>,
   updateTime: number,
-  partial?: wasm.Transaction,
 ) => {
   const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
   if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigCommitments(
-      row,
-      commitments,
-      secrets,
-    );
-    if (partial) {
-      await MultiStoreDbAction.getInstance().insertMultiSigTx(
-        row,
-        Buffer.from(partial.sigma_serialize_bytes()).toString(encoding),
-        MultiSigTxType.Partial,
-      );
-    }
-    await MultiStoreDbAction.getInstance().insertMultiSigSigner(
-      row,
-      signed,
-      simulated,
-    );
+    await MultiStoreDbAction.getInstance().insertMultiSigHints(row, hints);
     store.dispatch(setMultiSigLoadedTime(updateTime));
   }
 };
 
+/**
+ * Creates and stores a new multi-signature transaction with associated data
+ * and hints. It performs a complete setup for a new multi-signature transaction
+ * by coordinating several database operations.
+ *
+ * @param wallet - The wallet associated with this multi-signature transaction
+ * @param tx - The reduced transaction to store
+ * @param boxes - Array of input boxes used in the transaction
+ * @param hints - 2D array of hint data organized by [inputIndex][signerIndex]
+ * @param updateTime - Timestamp to set as the creation time
+ * @returns The newly created multi-signature row, or undefined if creation failed
+ */
 const storeMultiSigRow = async (
   wallet: StateWallet,
   tx: wasm.ReducedTransaction,
   boxes: Array<wasm.ErgoBox>,
-  commitments: Array<Array<string>>,
-  secrets: Array<Array<string>>,
-  signed: Array<string>,
-  simulated: Array<string>,
+  hints: Array<Array<MultiSigDataHint>>,
   updateTime: number,
-  partial?: wasm.Transaction,
 ) => {
   const row = await MultiStoreDbAction.getInstance().insertMultiSigRow(
     wallet.id,
@@ -188,17 +168,8 @@ const storeMultiSigRow = async (
     await MultiStoreDbAction.getInstance().insertMultiSigTx(
       row,
       Buffer.from(tx.sigma_serialize_bytes()).toString(encoding),
-      MultiSigTxType.Reduced,
     );
-    await updateMultiSigRow(
-      row.id,
-      commitments,
-      secrets,
-      signed,
-      simulated,
-      updateTime,
-      partial,
-    );
+    await updateMultiSigRow(row.id, hints, updateTime);
   }
   return row;
 };
@@ -208,6 +179,5 @@ export {
   fetchMultiSigRows,
   fetchMultiSigBriefRow,
   storeMultiSigRow,
-  notAvailableAddresses,
   updateMultiSigRow,
 };

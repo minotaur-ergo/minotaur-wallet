@@ -1,12 +1,14 @@
+import { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { getPinHash } from '@minotaur-ergo/utils';
+import { Button, Typography } from '@mui/material';
+
 import { PinDbAction } from '@/action/db';
 import MessageContext from '@/components/app/messageContext';
 import PasswordField from '@/components/password-field/PasswordField';
 import AppFrame from '@/layouts/AppFrame';
-import { getPinHash } from '@/utils/convert';
-import { Button, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
 import { setPinConfig } from '@/store/reducer/config';
-import { useDispatch } from 'react-redux';
 
 const MAX_TRY_COUNT = 3;
 

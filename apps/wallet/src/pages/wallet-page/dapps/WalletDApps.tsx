@@ -1,10 +1,12 @@
+import { StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import { Grid } from '@mui/material';
-import HomeFrame from '@/layouts/HomeFrame';
-import { StateWallet } from '@/store/reducer/wallet';
-import { apps } from './apps/dapps';
-import { RouteMap, getRoute } from '@/router/routerMap';
+
 import DAppsItemCard from '@/components/dapps-item-card/DAppsItemCard';
-import getChain from '@/utils/networks';
+import HomeFrame from '@/layouts/HomeFrame';
+import { getRoute, RouteMap } from '@/router/routerMap';
+
+import { apps } from './apps/dapps';
 
 interface WalletDAppsPropsType {
   wallet: StateWallet;

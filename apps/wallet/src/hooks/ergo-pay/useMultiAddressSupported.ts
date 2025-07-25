@@ -1,11 +1,13 @@
+import { useEffect, useState } from 'react';
+
+import { CapacitorHttp } from '@capacitor/core';
 import {
   MultiAddressSupportedEnum,
   MultipleAddressResponse,
-} from '@/types/ergopay';
+} from '@minotaur-ergo/types';
+
 import { ADDRESS_PLACE_HOLDER } from '@/utils/const';
 import { getUrl } from '@/utils/ergopay';
-import { useEffect, useState } from 'react';
-import { CapacitorHttp } from '@capacitor/core';
 
 const useMultiAddressSupported = (
   url: string,

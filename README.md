@@ -20,7 +20,11 @@ Features:
   - [x] Burn tokens in dApp part
 - [x] Display Transaction in wallet.
 - [x] Display generated transaction before signing
-- [x] DApp support: Any dApp can embed directly in app. we currently create three dapp. one for issue token, one for burning tokens and one for sigma-usd.
+- [x] DApp support: Any dApp can embed directly in app. currently supported dApps are:
+  - [x] Issue token
+  - [x] Burn token
+  - [x] Box consolidation
+  - [x] SigmaUSD
 - [x] Support Android and IOS mobile.
 - [x] Support Desktop build for windows, MacOS and linux
 - [x] Wallet password to encrypt secret.
@@ -29,6 +33,9 @@ Features:
 - [x] ErgoPay support
 - [ ] MultiLingual wallet support
 - [ ] Mempool transaction support
+- [x] Wallet pin
+- [x] Honey Mode: Only display specific list of wallets
+- [x] Animated qrcode
 
 [comment]: <> (You need at least Android 7 or iOS 13 to run Ergo Wallet.)
 
@@ -92,7 +99,7 @@ For Apple Silicon chips (M series) you must use the `arm64` build. Using the int
 In case of **_damaged file_** error, use this command:
 
 ```
-sudo xattr -r -s com.apple.quarantine /Applications/minotaur.app
+sudo xattr -r -d com.apple.quarantine /Applications/minotaur.app
 ```
 
 ### Tip the developer
