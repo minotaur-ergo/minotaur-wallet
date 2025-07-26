@@ -1,7 +1,13 @@
 {
   "singleQuote": true,
   "quoteProps": "consistent",
-  "importOrder": ["react", "<THIRD_PARTY_MODULES>", "^@/(.*)$", "^[.](.*)"],
+  "importOrder": [
+    "setupShim",
+    "react",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)$",
+    "^[.](.*)"
+  ],
   "importOrderCaseInsensitive": true,
   "importOrderParserPlugins": [
     "typescript",
