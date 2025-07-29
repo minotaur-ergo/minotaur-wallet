@@ -36,7 +36,7 @@ export class Wallet {
   })
   updatedAt: Date;
 
-  @ManyToMany(() => User, (user) => user.wallets, { eager: true })
+  @ManyToMany(() => User, (user) => user.wallets)
   @JoinTable({
     name: 'user_wallets',
     joinColumn: {

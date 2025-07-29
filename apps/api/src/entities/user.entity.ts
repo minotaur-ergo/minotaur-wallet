@@ -1,3 +1,4 @@
+import { bip32 } from '@minotaur-ergo/utils';
 import {
   Column,
   Entity,
@@ -11,7 +12,7 @@ import { Auth } from './auth.entity';
 import { Wallet } from './wallet.entity';
 
 @Entity('users')
-@Unique(['chainCode', 'masterPub'])
+@Unique(['chainCode', 'keyData'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,8 +20,8 @@ export class User {
   @Column({ type: 'text', name: 'chain_code' })
   chainCode: string;
 
-  @Column({ type: 'text', name: 'master_pub' })
-  masterPub: string;
+  @Column({ type: 'text', name: 'key_data' })
+  keyData: string;
 
   @Column({
     type: 'datetime',
@@ -41,4 +42,16 @@ export class User {
 
   @ManyToMany(() => Wallet, (wallet) => wallet.users, { eager: true })
   wallets: Wallet[];
+
+  xPub = (): string => {
+    try {
+      const keyDataBuffer = Buffer.from(this.keyData, 'hex');
+      const chainCodeBuffer = Buffer.from(this.chainCode, 'hex');
+
+      const node = bip32.fromPublicKey(keyDataBuffer, chainCodeBuffer);
+      return node.toBase58();
+    } catch (error) {
+      throw new Error(`Failed to generate xpub: ${error.message}`);
+    }
+  };
 }

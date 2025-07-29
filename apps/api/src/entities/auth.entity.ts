@@ -33,10 +33,7 @@ export class Auth {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.publicKeys, {
-    onDelete: 'CASCADE',
-    eager: true,
-  })
+  @ManyToOne(() => User, (user) => user.publicKeys, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

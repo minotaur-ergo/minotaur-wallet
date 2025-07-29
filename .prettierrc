@@ -13,7 +13,7 @@
     "typescript",
     "jsx",
     "classProperties",
-    "[\"decorators\", { \"decoratorsBeforeExport\": true }]"
+    "decorators-legacy"
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
