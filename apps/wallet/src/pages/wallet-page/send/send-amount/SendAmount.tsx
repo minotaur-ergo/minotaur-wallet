@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
-import { createEmptyArray } from '@minotaur-ergo/utils';
+import { createEmptyArray } from '@minotaur/common';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,

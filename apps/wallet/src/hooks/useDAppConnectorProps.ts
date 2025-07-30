@@ -10,10 +10,9 @@ import {
   boxArrayToBoxes,
   boxCandidatesToArrayBoxCandidate,
   boxesToArrayBox,
-  createEmptyArrayWithIndex,
-  dottedText,
   getChain,
 } from '@minotaur-ergo/utils';
+import { createEmptyArrayWithIndex, dottedText } from '@minotaur/common';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { deserialize } from '@/action/box';

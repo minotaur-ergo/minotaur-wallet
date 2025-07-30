@@ -24,14 +24,10 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "@minotaur/common": "^1.0.0",
     "@minotaur-ergo/types": "^1.1.0",
     "@rosen-clients/ergo-explorer": "^1.1.5",
-    "bip32": "^4.0.0",
-    "blakejs": "^1.2.1",
-    "bs58": "^6.0.0",
     "crypto-js": "^4.2.0",
-    "ergo-lib-wasm-browser": "0.26.0",
-    "json-bigint": "^1.0.0",
-    "tiny-secp256k1": "2.2.3"
+    "ergo-lib-wasm-browser": "0.26.0"
   }
 }

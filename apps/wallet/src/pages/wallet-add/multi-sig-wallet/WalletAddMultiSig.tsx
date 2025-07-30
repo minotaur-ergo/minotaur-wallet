@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createEmptyArray, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { createEmptyArray } from '@minotaur/common';
 import { Button, CircularProgress, Grid } from '@mui/material';
 
 import { createMultiSigWallet } from '@/action/wallet';

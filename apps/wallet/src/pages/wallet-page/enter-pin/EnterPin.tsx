@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { getPinHash } from '@minotaur-ergo/utils';
+import { getPinHash } from '@minotaur/common';
 import { Button, Typography } from '@mui/material';
 
 import { PinDbAction } from '@/action/db';

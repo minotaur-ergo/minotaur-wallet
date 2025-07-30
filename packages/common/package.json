@@ -1,0 +1,42 @@
+{
+  "name": "@minotaur/common",
+  "version": "1.0.0",
+  "description": "Common utilities and shared code",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "bip32": "^4.0.0",
+    "blakejs": "^1.2.1",
+    "bs58": "^5.0.0",
+    "json-bigint": "^1.0.0",
+    "tiny-secp256k1": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/json-bigint": "^1.0.4",
+    "bip32": "^4.0.0",
+    "blakejs": "^1.2.1",
+    "bs58": "^5.0.0",
+    "json-bigint": "^1.0.0",
+    "tiny-secp256k1": "^2.2.3",
+    "typescript": "^5.3.3",
+    "vite": "^6.0.1",
+    "vite-plugin-dts": "^4.3.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  }
+}

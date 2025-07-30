@@ -4,13 +4,8 @@ import {
   StateWallet,
   WalletType,
 } from '@minotaur-ergo/types';
-import {
-  bip32,
-  decrypt,
-  encrypt,
-  getBase58ExtendedPublicKey,
-  isValidAddress,
-} from '@minotaur-ergo/utils';
+import { decrypt, encrypt, isValidAddress } from '@minotaur-ergo/utils';
+import { bip32, getBase58ExtendedPublicKey } from '@minotaur/common';
 import { mnemonicToSeedSync } from 'bip39';
 import * as wasm from 'ergo-lib-wasm-browser';
 

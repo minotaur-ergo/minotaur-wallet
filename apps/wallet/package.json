@@ -36,6 +36,7 @@
     "@capacitor/toast": "^5.0.7",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@minotaur/common": "^1.0.0",
     "@minotaur-ergo/icons": "^1.2.0",
     "@minotaur-ergo/types": "^1.1.0",
     "@minotaur-ergo/utils": "^1.1.0",

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { dottedText } from '@minotaur-ergo/utils';
+import { dottedText } from '@minotaur/common';
 import { Box, Typography, TypographyProps } from '@mui/material';
 
 import useAddressName from '@/hooks/useAddressName';

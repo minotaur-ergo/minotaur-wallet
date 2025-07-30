@@ -1,10 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  getBase58ExtendedPublicKey,
-  MAIN_NET_LABEL,
-} from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { getBase58ExtendedPublicKey } from '@minotaur/common';
 import { Button, Grid, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 

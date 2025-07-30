@@ -1,8 +1,6 @@
 import { DAppPropsType } from '@minotaur-ergo/types';
-import {
-  boxesToArrayBox,
-  createEmptyArrayWithIndex,
-} from '@minotaur-ergo/utils';
+import { boxesToArrayBox } from '@minotaur-ergo/utils';
+import { createEmptyArrayWithIndex } from '@minotaur/common';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import Bank from './Bank';

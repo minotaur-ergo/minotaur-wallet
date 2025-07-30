@@ -4,7 +4,8 @@ import {
   InternalBoxLoadedData,
   StateWallet,
 } from '@minotaur-ergo/types';
-import { createEmptyArray, getChain } from '@minotaur-ergo/utils';
+import { getChain } from '@minotaur-ergo/utils';
+import { createEmptyArray } from '@minotaur/common';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { BoxDbAction } from '@/action/db';

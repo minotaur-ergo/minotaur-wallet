@@ -8,11 +8,8 @@ import {
   TxInfo,
   WalletType,
 } from '@minotaur-ergo/types';
-import {
-  createEmptyArray,
-  DEFAULT_ADDRESS_PREFIX,
-  sliceToChunksString,
-} from '@minotaur-ergo/utils';
+import { DEFAULT_ADDRESS_PREFIX } from '@minotaur-ergo/utils';
+import { createEmptyArray, sliceToChunksString } from '@minotaur/common';
 import { DataSource, Like, Repository } from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';

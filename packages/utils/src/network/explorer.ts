@@ -5,11 +5,11 @@ import {
   SpendDetail,
   TokenInfo,
 } from '@minotaur-ergo/types';
+import { JsonBI } from '@minotaur/common';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
 import * as wasm from 'ergo-lib-wasm-browser';
 import JSONBigInt from 'json-bigint';
 
-import { JsonBI } from '../json';
 import { serializeBox } from '../wasm';
 
 const getBoxId = (box: { boxId: string } | { id: string }) => {

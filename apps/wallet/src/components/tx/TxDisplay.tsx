@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
-import { getValueColor } from '@minotaur-ergo/utils';
+import { getValueColor } from '@minotaur/common';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, Typography } from '@mui/material';
 import * as wasm from 'ergo-lib-wasm-browser';

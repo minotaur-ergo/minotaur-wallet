@@ -1,9 +1,7 @@
 import { useContext, useEffect } from 'react';
 
-import {
-  getBase58ExtendedPublicKey,
-  isValidAddress,
-} from '@minotaur-ergo/utils';
+import { isValidAddress } from '@minotaur-ergo/utils';
+import { getBase58ExtendedPublicKey } from '@minotaur/common';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import { IconButton, InputAdornment } from '@mui/material';
 

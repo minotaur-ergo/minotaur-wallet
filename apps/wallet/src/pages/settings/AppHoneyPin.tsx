@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
-import { getPinHash, honeyPinType } from '@minotaur-ergo/utils';
+import { getPinHash, honeyPinType } from '@minotaur/common';
 import { Button, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { PinDbAction } from '@/action/db';

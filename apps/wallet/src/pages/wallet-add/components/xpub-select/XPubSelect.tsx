@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { createEmptyArray } from '@minotaur-ergo/utils';
+import { createEmptyArray } from '@minotaur/common';
 import { Stack } from '@mui/material';
 
 import AddressOrXPub from '../address-or-xpub/AddressOrXPub';

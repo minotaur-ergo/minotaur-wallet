@@ -1,7 +1,7 @@
 import { BoxContent, TokenBalanceBigInt } from '@minotaur-ergo/types';
+import { createEmptyArrayWithIndex } from '@minotaur/common';
 import * as wasm from 'ergo-lib-wasm-browser';
 
-import { createEmptyArrayWithIndex } from './array';
 import { ENCODING } from './const';
 import { getChain } from './network';
 

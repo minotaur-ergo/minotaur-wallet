@@ -4,7 +4,8 @@ import {
   MultiSigHintType,
   StateWallet,
 } from '@minotaur-ergo/types';
-import { dottedText, getChain } from '@minotaur-ergo/utils';
+import { getChain } from '@minotaur-ergo/utils';
+import { dottedText } from '@minotaur/common';
 import * as wasm from 'ergo-lib-wasm-browser';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';

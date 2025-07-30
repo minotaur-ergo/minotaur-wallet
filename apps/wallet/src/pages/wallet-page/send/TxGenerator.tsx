@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
-import { JsonBI } from '@minotaur-ergo/utils';
+import { JsonBI } from '@minotaur/common';
 
 import { generateTx } from '@/action/tx';
 import TxGenerateContext from '@/components/sign/context/TxGenerateContext';

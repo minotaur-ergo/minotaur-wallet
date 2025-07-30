@@ -1,5 +1,6 @@
 import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
-import { createEmptyArrayWithIndex, getChain } from '@minotaur-ergo/utils';
+import { getChain } from '@minotaur-ergo/utils';
+import { createEmptyArrayWithIndex } from '@minotaur/common';
 
 import Address from '@/db/entities/Address';
 import { AddressValueType } from '@/db/entities/AddressValueInfo';

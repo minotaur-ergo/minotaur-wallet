@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { getValueColor } from '@minotaur-ergo/utils';
+import { getValueColor } from '@minotaur/common';
 import {
   Avatar,
   ListItem,
