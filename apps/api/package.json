@@ -15,7 +15,6 @@
     "@fastify/swagger-ui": "^4.0.0",
     "@fastify/type-provider-typebox": "^4.0.0",
     "@minotaur/common": "^1.0.0",
-    "@minotaur-ergo/utils": "^1.1.0",
     "fastify": "^4.26.2",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.6",

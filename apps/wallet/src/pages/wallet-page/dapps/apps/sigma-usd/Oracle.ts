@@ -1,4 +1,4 @@
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 class Oracle {
   static TOKEN_ID =

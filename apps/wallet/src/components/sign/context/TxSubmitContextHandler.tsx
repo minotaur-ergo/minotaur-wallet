@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { StateWallet } from '@minotaur-ergo/types';
 import { getChain } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import SuccessSend from '../success-send/SuccessSend';
 import { StatusEnum } from './TxSignContext';

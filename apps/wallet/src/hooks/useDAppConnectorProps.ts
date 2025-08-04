@@ -13,7 +13,7 @@ import {
   getChain,
 } from '@minotaur-ergo/utils';
 import { createEmptyArrayWithIndex, dottedText } from '@minotaur/common';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { deserialize } from '@/action/box';
 import { AssetDbAction, BoxDbAction } from '@/action/db';

@@ -5,7 +5,7 @@ import { ColdSigningRequestData, GlobalStateType } from '@minotaur-ergo/types';
 import { getChain } from '@minotaur-ergo/utils';
 import { Inventory2Outlined } from '@mui/icons-material';
 import { Button, IconButton } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { deserialize } from '@/action/box';
 import BackButton from '@/components/back-button/BackButton';

@@ -7,7 +7,7 @@ import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import { NetworkPrefix } from 'ergo-lib-wasm-browser';
+import { NetworkPrefix } from '@minotaur/ergo-lib';
 
 import AddressBookModal from '@/components/modals/address-book-modal/AddressBookModal';
 import TextField from '@/components/text-field/TextField';

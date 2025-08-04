@@ -10,7 +10,7 @@
     "strictPropertyInitialization": false,
 
     /* Bundler mode */
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -30,6 +30,8 @@
   "include": ["src"],
   "references": [
     { "path": "./tsconfig.node.json" },
+    { "path": "../../packages/common" },
+    { "path": "../../packages/ergo-lib" },
     { "path": "../../packages/icons" },
     { "path": "../../packages/types" },
     { "path": "../../packages/utils" }

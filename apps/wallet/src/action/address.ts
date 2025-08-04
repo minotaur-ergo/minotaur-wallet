@@ -7,7 +7,7 @@ import {
 import { decrypt, getChain } from '@minotaur-ergo/utils';
 import { bip32, int8Vlq, iterateIndexes, uInt8Vlq } from '@minotaur/common';
 import { mnemonicToSeedSync } from 'bip39';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { AddressDbAction, MultiSigDbAction } from './db';
 

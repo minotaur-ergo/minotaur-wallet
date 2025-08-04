@@ -10,7 +10,7 @@ import {
   StateWallet,
 } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex } from '@minotaur/common';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';

@@ -5,7 +5,7 @@ import {
   TxHintBag,
 } from '@minotaur-ergo/types';
 import { boxArrayToBoxes, fakeContext } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';

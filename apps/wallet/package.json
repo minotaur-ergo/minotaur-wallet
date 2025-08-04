@@ -50,7 +50,7 @@
     "bs58": "^6.0.0",
     "capacitor-plugin-safe-area": "^2.0.6",
     "clipboardy": "^4.0.0",
-    "ergo-lib-wasm-browser": "0.26.0",
+    "@minotaur/ergo-lib": "0.26.0",
     "notistack": "^3.0.1",
     "patch-package": "^8.0.0",
     "qrcode.react": "^3.1.0",

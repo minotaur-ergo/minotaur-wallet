@@ -6,7 +6,7 @@ import {
   LocalFireDepartmentTwoTone,
   TokenTwoTone,
 } from '@mui/icons-material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
 

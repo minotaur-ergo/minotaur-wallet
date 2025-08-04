@@ -4,7 +4,7 @@ import { StateWallet } from '@minotaur-ergo/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import useTxBoxes from '@/hooks/useTxBoxes';
 

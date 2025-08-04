@@ -4,7 +4,7 @@ import {
   StateWallet,
   TxHintBag,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getProver } from '@/action/wallet';

@@ -12,7 +12,7 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import DisplayId from '@/components/display-id/DisplayId';
 import LoadingPage from '@/components/loading-page/LoadingPage';

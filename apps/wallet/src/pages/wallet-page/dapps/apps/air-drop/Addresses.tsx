@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Add, DeleteOutlineOutlined } from '@mui/icons-material';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
 import { Box, Button, IconButton } from '@mui/material';
-import { NetworkPrefix } from 'ergo-lib-wasm-browser';
+import { NetworkPrefix } from '@minotaur/ergo-lib';
 
 import AddressInput from '@/components/address-input/AddressInput';
 import { readClipBoard } from '@/utils/clipboard';

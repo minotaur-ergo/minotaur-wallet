@@ -7,7 +7,7 @@ import {
 import { decrypt, encrypt, isValidAddress } from '@minotaur-ergo/utils';
 import { bip32, getBase58ExtendedPublicKey } from '@minotaur/common';
 import { mnemonicToSeedSync } from 'bip39';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import store from '@/store';
 import { setActiveWallet } from '@/store/reducer/config';

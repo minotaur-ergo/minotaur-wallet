@@ -2,7 +2,7 @@ import './setupShim';
 
 import ReactDOM from 'react-dom/client';
 
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 import 'reflect-metadata';
 
 import AppTheme from './components/app-theme/AppTheme';

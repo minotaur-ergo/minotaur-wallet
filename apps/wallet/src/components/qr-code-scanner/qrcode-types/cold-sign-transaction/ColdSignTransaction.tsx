@@ -11,7 +11,7 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import BackButton from '@/components/back-button/BackButton';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';

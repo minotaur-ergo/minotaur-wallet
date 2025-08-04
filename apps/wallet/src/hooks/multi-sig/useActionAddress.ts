@@ -5,7 +5,7 @@ import {
   MultiSigAddressHolder,
   MultiSigHintType,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { getTxBoxes } from '@/action/tx';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';

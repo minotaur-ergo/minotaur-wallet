@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex } from '@minotaur/common';
 import { Button, Stack } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import FillAmounts from '@/components/select-tokens/FillAmounts';
 import SelectTokens from '@/components/select-tokens/SelectTokens';

@@ -4,7 +4,7 @@ import { StateWallet } from '@minotaur-ergo/types';
 import { getValueColor } from '@minotaur/common';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, Typography } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { openTxInBrowser } from '@/action/tx';
 import ErgAmount from '@/components/amounts-display/ErgAmount';

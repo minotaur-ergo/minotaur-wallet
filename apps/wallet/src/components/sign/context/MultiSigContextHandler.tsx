@@ -7,7 +7,7 @@ import {
   MultiSigData,
   StateWallet,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import { fetchMultiSigRows } from '@/action/multi-sig/store';
 

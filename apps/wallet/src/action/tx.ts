@@ -5,7 +5,7 @@ import {
   TotalSpent,
 } from '@minotaur-ergo/types';
 import { getBoxTokens, getChain } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import openInBrowser from '@/utils/browser';
 

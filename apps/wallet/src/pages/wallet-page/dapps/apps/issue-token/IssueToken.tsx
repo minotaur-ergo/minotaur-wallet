@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DAppPropsType } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex } from '@minotaur/common';
 import { Button, Stack } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur/ergo-lib';
 
 import TextField from '@/components/text-field/TextField';
 
