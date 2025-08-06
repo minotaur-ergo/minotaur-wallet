@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DAppPropsType } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
 import { Button, Stack } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import TextField from '@/components/text-field/TextField';
 

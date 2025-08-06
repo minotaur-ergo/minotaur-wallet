@@ -1,4 +1,4 @@
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 
 const encoding = 'base64';
 const serialize = (box: wasm.ErgoBox) =>

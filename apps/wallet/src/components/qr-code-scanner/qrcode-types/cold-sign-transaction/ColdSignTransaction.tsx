@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet } from '@minotaur-ergo/types';
 import { Inventory2Outlined } from '@mui/icons-material';
 import {
@@ -11,7 +12,6 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import BackButton from '@/components/back-button/BackButton';
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';

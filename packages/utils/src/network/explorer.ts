@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   AbstractNetwork,
   BalanceInfo,
@@ -6,7 +7,6 @@ import {
   TokenInfo,
 } from '@minotaur-ergo/types';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
-import * as wasm from 'ergo-lib-wasm-browser';
 import JSONBigInt from 'json-bigint';
 
 import { JsonBI } from '../json';
@@ -51,7 +51,11 @@ class ErgoExplorerNetwork extends AbstractNetwork {
         headers.map((item) => JsonBI.stringify(item)),
       );
       const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
-      return new wasm.ErgoStateContext(pre_header, blockHeaders);
+      return new wasm.ErgoStateContext(
+        pre_header,
+        blockHeaders,
+        wasm.Parameters.default_parameters(),
+      );
     }
     throw Error('Unknown error occurred');
   };

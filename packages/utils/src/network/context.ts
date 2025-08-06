@@ -1,4 +1,4 @@
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 
 const headers = [
   `{
@@ -248,5 +248,9 @@ export const fakeContext = () => {
   const preHeader = wasm.PreHeader.from_block_header(
     wasm.BlockHeader.from_json(headers[0]),
   );
-  return new wasm.ErgoStateContext(preHeader, blockHeaders);
+  return new wasm.ErgoStateContext(
+    preHeader,
+    blockHeaders,
+    wasm.Parameters.default_parameters(),
+  );
 };

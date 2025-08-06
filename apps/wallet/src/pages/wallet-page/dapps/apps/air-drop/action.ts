@@ -1,5 +1,5 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DAppPropsType, TokenAmount } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import {
   IMPL_ADDRESS,

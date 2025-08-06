@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { QrCodeTypeEnum } from '@minotaur-ergo/types';
 import { CircularProgress } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import DisplayQRCode from '../display-qrcode/DisplayQRCode';
 import StateMessage from '../state-message/StateMessage';

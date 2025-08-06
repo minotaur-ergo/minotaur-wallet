@@ -30,6 +30,7 @@
   "include": ["src"],
   "references": [
     { "path": "./tsconfig.node.json" },
+    { "path": "../../packages/ergo-lib" },
     { "path": "../../packages/icons" },
     { "path": "../../packages/types" },
     { "path": "../../packages/utils" }

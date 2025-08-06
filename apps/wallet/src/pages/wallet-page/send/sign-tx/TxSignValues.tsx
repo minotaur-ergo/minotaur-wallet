@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { ErgoBox } from '@minotaur-ergo/ergo-lib';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet } from '@minotaur-ergo/types';
 import { Box, FormHelperText, Typography } from '@mui/material';
-import { ErgoBox } from 'ergo-lib-wasm-browser';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import AssetRow from '@/components/asset-row/AssetRow';
 import UnBalancedTokensAmount from '@/components/token-amount/UnBalancedTokensAmount';

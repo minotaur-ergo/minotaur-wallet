@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   AddressCompletionState,
   MultiSigAddressHolder,
   MultiSigHintType,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { getTxBoxes } from '@/action/tx';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';

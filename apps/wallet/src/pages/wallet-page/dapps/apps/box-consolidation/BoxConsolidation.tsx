@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DAppPropsType, UnsignedGeneratedTx } from '@minotaur-ergo/types';
 import { boxesToArrayBox } from '@minotaur-ergo/utils';
 import {
@@ -12,7 +13,6 @@ import {
   SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import DisplayId from '@/components/display-id/DisplayId';
 import LoadingPage from '@/components/loading-page/LoadingPage';

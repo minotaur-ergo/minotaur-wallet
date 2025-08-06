@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet, TransactionValues } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { extractErgAndTokenSpent } from '@/action/tx';
 

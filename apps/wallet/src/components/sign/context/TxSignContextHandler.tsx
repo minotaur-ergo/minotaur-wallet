@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet, WalletType } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { multiSigStoreNewTx } from '@/action/multi-sig/store';
 import { signNormalWalletReducedTx, signNormalWalletTx } from '@/action/tx';

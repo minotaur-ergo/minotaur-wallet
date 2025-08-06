@@ -1,11 +1,11 @@
 import { CapacitorHttp } from '@capacitor/core';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   ErgoPayResponse,
   InternalBoxLoadedData,
   StateWallet,
 } from '@minotaur-ergo/types';
 import { createEmptyArray, getChain } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { BoxDbAction } from '@/action/db';
 

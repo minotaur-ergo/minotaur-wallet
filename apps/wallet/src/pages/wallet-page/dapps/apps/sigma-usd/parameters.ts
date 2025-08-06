@@ -1,4 +1,4 @@
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 
 export const RESERVE_COIN_DEFAULT_PRICE = BigInt(1000000);
 export const MIN_BOX_VALUE = BigInt(10000000);

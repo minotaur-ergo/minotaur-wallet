@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
+import { NetworkPrefix } from '@minotaur-ergo/ergo-lib';
 import { Add, DeleteOutlineOutlined } from '@mui/icons-material';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
 import { Box, Button, IconButton } from '@mui/material';
-import { NetworkPrefix } from 'ergo-lib-wasm-browser';
 
 import AddressInput from '@/components/address-input/AddressInput';
 import { readClipBoard } from '@/utils/clipboard';

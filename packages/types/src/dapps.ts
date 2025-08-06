@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { VariantType } from 'notistack';
 
 import { TokenBalanceBigInt } from './db';
