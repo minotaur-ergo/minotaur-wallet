@@ -43,16 +43,22 @@ export type TransactionTokenType = {
 export type WalletType = {
   id: string;
   name: string;
-  type: 'Normal' | 'Multi-signature';
+  type: 'Normal' | 'Multi-signature' | 'Read Only';
   net: 'MAIN-NET' | 'TEST-NET';
   amount: number;
   value: number;
   numberOfTokens?: number;
   favorite?: boolean;
   archived?: boolean;
+  groupId?: string;
 };
 
 export type SelectWalletType = WalletType &
   SelectableType & {
     withSecret?: boolean;
   };
+
+export type WalletGroupType = {
+  id: string;
+  name: string;
+};

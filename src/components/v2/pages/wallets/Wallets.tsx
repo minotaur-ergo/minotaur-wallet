@@ -1,31 +1,59 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AppFrame from '../../layouts/AppFrame';
 import BackButton from '../../components/BackButton';
-import { FormControlLabel, Stack, Switch } from '@mui/material';
+import { Box, FormControlLabel, Stack, Switch } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import TotalBalanceCard from './components/TotalBalanceCard';
 import Heading from '../../components/Heading';
 import WalletItem from './components/WalletItem';
 import SnackAlert, { SnackAlertHandle } from '../../components/SnackAlert';
-import { WALLETS } from '../../data';
+import { WALLET_GROUPS, WALLETS } from '../../data';
 import SubHeading from '../../components/SubHeading';
 import WalletsMoreMenu from './WalletsMoreMenu';
+import { WalletType } from '../../models';
+import WalletGroup from './components/WalletGroup';
 
 const Wallets = () => {
   const location = useLocation();
   const alert = useRef<SnackAlertHandle>(null);
-  const [showArchived, setShowArchived] = useState(false);
-  const [wallets, setWallets] = useState(WALLETS);
+  const [showArchived, setShowArchived] = useState<boolean>(() => {
+    const storedValue = localStorage.getItem('showArchived');
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+  const [wallets, setWallets] = useState<WalletType[]>(WALLETS);
 
-  const [favoriteWallets, otherWallets] = useMemo(() => {
+  const [favoriteWallets, groupedWallets, otherWallets] = useMemo(() => {
     const filteredWalletsByArchive = wallets.filter(
       (row) => showArchived || !row.archived
     );
     return [
       filteredWalletsByArchive.filter((row) => row.favorite),
-      filteredWalletsByArchive.filter((row) => !row.favorite),
+      filteredWalletsByArchive.filter((row) => row.groupId),
+      filteredWalletsByArchive.filter((row) => !row.favorite && !row.groupId),
     ];
   }, [showArchived, wallets]);
+
+  const groups = useMemo(() => {
+    const groupMap: Record<string, WalletType[]> = {};
+    groupedWallets.forEach((wallet) => {
+      if (!groupMap[wallet.groupId!]) {
+        groupMap[wallet.groupId!] = [];
+      }
+      groupMap[wallet.groupId!].push(wallet);
+    });
+    return Object.entries(groupMap).map(([id, wallets]) => ({
+      id,
+      name:
+        WALLET_GROUPS.find((group) => group.id === id)?.name || `Group ${id}`,
+      amount: wallets.reduce((sum, wallet) => sum + wallet.amount, 0),
+      value: wallets.reduce((sum, wallet) => sum + wallet.value, 0),
+      numberOfTokens: wallets.reduce(
+        (sum, wallet) => sum + (wallet.numberOfTokens || 0),
+        0
+      ),
+      wallets,
+    }));
+  }, [groupedWallets]);
 
   const toggleFavorite = (id: string) => {
     const index = wallets.findIndex((row) => row.id === id);
@@ -44,6 +72,10 @@ const Wallets = () => {
       alert.current?.open();
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('showArchived', JSON.stringify(showArchived));
+  }, [showArchived]);
 
   return (
     <AppFrame
@@ -81,14 +113,19 @@ const Wallets = () => {
               />
             ))}
           </Stack>
-          {otherWallets.length > 0 && <SubHeading title="Others" />}
+          {otherWallets.length + groups.length > 0 && (
+            <SubHeading title="Others" />
+          )}
         </>
       )}
-      <Stack spacing={2}>
+      <Box display="flex" flexDirection="column" gap={2}>
+        {groups.map((item, index) => (
+          <WalletGroup {...item} key={index} />
+        ))}
         {otherWallets.map((item, index) => (
           <WalletItem {...item} key={index} toggleFavorite={toggleFavorite} />
         ))}
-      </Stack>
+      </Box>
 
       <SnackAlert ref={alert} />
     </AppFrame>

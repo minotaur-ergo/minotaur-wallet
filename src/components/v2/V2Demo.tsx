@@ -39,6 +39,7 @@ import MultiSigRegistration from './pages/multiSig/registration/MultiSigRegistra
 import ExportWallet from './pages/wallets/export/ExportWallet';
 import BurnToken from './pages/dApps/burnToken/BurnToken';
 import AirDrop from './pages/dApps/airDrop/AirDrop';
+import WalletsGroup from './pages/wallets/group/WalletsGroup';
 
 export const RouterMap = {
   Splash: '/v2/',
@@ -55,6 +56,7 @@ export const RouterMap = {
   BoxConsolidation: '/v2/wallet/dapps/boxConsolidation',
   AirDrop: '/v2/wallet/dapps/airDrop',
   Wallets: '/v2/wallets',
+  WalletsGroup: '/v2/wallets/:id',
   AddWallet: '/v2/wallet/add',
   ExportWallet: '/v2/wallet/export',
   CreateWallet: '/v2/wallet/add/newWallet',
@@ -110,6 +112,10 @@ const V2Demo = () => {
         <Route
           path={RouterMap.Wallets.replace('/v2', '')}
           element={<Wallets />}
+        />
+        <Route
+          path={RouterMap.WalletsGroup.replace('/v2', '')}
+          element={<WalletsGroup />}
         />
         <Route
           path={RouterMap.AddWallet.replace('/v2', '')}

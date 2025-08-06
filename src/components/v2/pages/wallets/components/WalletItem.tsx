@@ -12,6 +12,7 @@ import { RouterMap } from '../../../V2Demo';
 import SvgIcon from '../../../icons/SvgIcon';
 import { StarBorder, Star } from '@mui/icons-material';
 import { MouseEvent } from 'react';
+import { WalletType } from '../../../models';
 
 interface PropsType {
   id: string;
@@ -26,7 +27,11 @@ interface PropsType {
   toggleFavorite: (id: string) => void;
 }
 
-const COLORS = ['#fec844', '#f1592a', '#32b14a', '#4a9195', '#3c5152'];
+export const WALLET_COLOR_MAP: Record<WalletType['type'], string> = {
+  Normal: '#ADE0B7',
+  'Multi-signature': '#F9BDAA',
+  'Read Only': '#B7D3D5',
+};
 
 export default function ({
   id,
@@ -42,7 +47,7 @@ export default function ({
 }: PropsType) {
   const navigate = useNavigate();
 
-  const color = COLORS[Number(id.slice(-2)) % COLORS.length];
+  const color = WALLET_COLOR_MAP[type as WalletType['type']] || '#3c5152';
 
   const handleFavorite = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -54,7 +59,7 @@ export default function ({
       <CardActionArea
         onClick={() => navigate(getRoute(RouterMap.Home, { id }))}
         sx={{
-          bgcolor: color + '70',
+          bgcolor: color,
           pb: 2,
           pt: 1,
         }}

@@ -2,6 +2,7 @@ import {
   AddressBookType,
   AssetType,
   RegistrationType,
+  WalletGroupType,
   WalletType,
 } from './models';
 import { DAppActions } from './pages/dApps/connectedDApp/ConnectedDAppLog';
@@ -315,6 +316,7 @@ export const WALLETS: WalletType[] = [
     amount: 34.2,
     value: 71.04,
     numberOfTokens: 5,
+    groupId: '1001',
   },
   {
     id: '10002',
@@ -323,6 +325,7 @@ export const WALLETS: WalletType[] = [
     net: 'MAIN-NET',
     amount: 0,
     value: 0,
+    groupId: '1001',
   },
   {
     id: '10003',
@@ -333,6 +336,18 @@ export const WALLETS: WalletType[] = [
     value: 87100.0,
     numberOfTokens: 2,
     favorite: true,
+    groupId: '1001',
+  },
+  {
+    id: '10007',
+    name: 'Read Only Wallet 1',
+    type: 'Read Only',
+    net: 'MAIN-NET',
+    amount: 31700.302,
+    value: 67100.0,
+    numberOfTokens: 3,
+    favorite: true,
+    groupId: '1001',
   },
   {
     id: '10004',
@@ -342,6 +357,7 @@ export const WALLETS: WalletType[] = [
     amount: 15.31,
     value: 31.04,
     archived: true,
+    groupId: '1002',
   },
   {
     id: '10005',
@@ -351,6 +367,7 @@ export const WALLETS: WalletType[] = [
     amount: 12.2,
     value: 24.04,
     numberOfTokens: 1,
+    groupId: '1002',
   },
   {
     id: '10006',
@@ -360,6 +377,17 @@ export const WALLETS: WalletType[] = [
     amount: 4.0,
     value: 7.21,
     archived: true,
+  },
+];
+
+export const WALLET_GROUPS: WalletGroupType[] = [
+  {
+    id: '1001',
+    name: 'My Wallets',
+  },
+  {
+    id: '1002',
+    name: 'Group 2',
   },
 ];
 
