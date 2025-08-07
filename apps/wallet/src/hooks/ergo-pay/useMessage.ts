@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   ErgoPaySeverityEnum,
   GlobalStateType,
@@ -10,7 +11,6 @@ import {
   StateWallet,
 } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { SelectableWalletContext } from '@/components/sign/context/SelectableWalletContext';
 import TxSignContext from '@/components/sign/context/TxSignContext';

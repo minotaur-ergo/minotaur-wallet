@@ -1,7 +1,8 @@
+import { Transaction } from '@minotaur-ergo/ergo-lib';
+
 import { StateWallet } from '../state';
 import { AddressCompletionState, MultiSigAddressHolder } from './address';
 import { MultiSigData } from './data';
-import { Transaction } from 'ergo-lib-wasm-browser';
 
 export interface MultiSigMyAction {
   committed: boolean;

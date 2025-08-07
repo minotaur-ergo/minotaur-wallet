@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   DAppPropsType,
   StateWallet,
@@ -14,7 +15,6 @@ import {
   dottedText,
   getChain,
 } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { deserialize } from '@/action/box';
 import { AssetDbAction, BoxDbAction } from '@/action/db';

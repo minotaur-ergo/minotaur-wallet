@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   DerivedWalletAddress,
   StateAddress,
@@ -12,7 +13,6 @@ import {
   isValidAddress,
 } from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import store from '@/store';
 import { setActiveWallet } from '@/store/reducer/config';

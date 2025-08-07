@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   ReceiverType,
   StateWallet,
@@ -5,7 +6,6 @@ import {
   TotalSpent,
 } from '@minotaur-ergo/types';
 import { getBoxTokens, getChain } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import openInBrowser from '@/utils/browser';
 

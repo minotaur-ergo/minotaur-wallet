@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   ChainTypeInterface,
   StateAddress,
   TokenBalance,
 } from '@minotaur-ergo/types';
-import CloseIcon from '@mui/icons-material/Close';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import {
+  Close,
+  EditOutlined,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from '@mui/icons-material';
 import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
 
 import { WalletDbAction } from '@/action/db';
@@ -31,17 +35,21 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
       .setDefaultAddress(props.address.walletId, props.address.idx)
       .then(() => null);
   };
+  const [showMore, setShowMore] = useState(false);
+  const tokens = showMore
+    ? props.address.tokens
+    : props.address.tokens.slice(0, 3);
   return (
     <React.Fragment>
       <Box display="flex" mb={2}>
         <IconButton onClick={props.handleEdit}>
-          <EditOutlinedIcon />
+          <EditOutlined />
         </IconButton>
         <Typography variant="h1" textAlign="center" sx={{ p: 1 }}>
           {props.name}
         </Typography>
         <IconButton onClick={props.handleClose}>
-          <CloseIcon />
+          <Close />
         </IconButton>
       </Box>
       {props.address.tokens.length > 0 ? (
@@ -50,7 +58,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
           <ListController
             loading={false}
             error={false}
-            data={props.address.tokens}
+            data={tokens}
             divider={false}
             emptyTitle={''}
             render={(item: TokenBalance) => (
@@ -63,7 +71,24 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
           />
         </React.Fragment>
       ) : undefined}
-      <Divider sx={{ my: 2 }} />
+      &nbsp;
+      {props.address.tokens.length > 3 ? (
+        <Button variant="outlined" onClick={() => setShowMore(!showMore)}>
+          {showMore ? (
+            <React.Fragment>
+              <KeyboardArrowUp />
+              Show less
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <KeyboardArrowDown />
+              Show more
+            </React.Fragment>
+          )}
+        </Button>
+      ) : (
+        <Divider sx={{ my: 2 }} />
+      )}
       <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
         <QRCodeSVG value={props.address.address} />
       </Box>
