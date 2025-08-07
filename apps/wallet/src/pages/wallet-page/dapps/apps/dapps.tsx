@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DAppType } from '@minotaur-ergo/types';
 import {
   BalanceTwoTone,
@@ -6,7 +7,6 @@ import {
   LocalFireDepartmentTwoTone,
   TokenTwoTone,
 } from '@mui/icons-material';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
 

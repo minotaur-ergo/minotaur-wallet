@@ -1,4 +1,5 @@
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
+
 import { MultiSigDataHint } from './hint';
 
 export interface MultiSigDataShare {

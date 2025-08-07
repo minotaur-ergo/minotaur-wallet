@@ -30,7 +30,7 @@
     "blakejs": "^1.2.1",
     "bs58": "^6.0.0",
     "crypto-js": "^4.2.0",
-    "ergo-lib-wasm-browser": "0.26.0",
+    "@minotaur-ergo/ergo-lib": "0.28.0",
     "json-bigint": "^1.0.0",
     "tiny-secp256k1": "2.2.3"
   }

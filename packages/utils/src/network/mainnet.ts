@@ -1,5 +1,5 @@
+import { ErgoStateContext, NetworkPrefix } from '@minotaur-ergo/ergo-lib';
 import { ChainTypeInterface } from '@minotaur-ergo/types';
-import { ErgoStateContext, NetworkPrefix } from 'ergo-lib-wasm-browser';
 
 import { MAIN_NET_LABEL } from '../const';
 import { fakeContext } from './context';
