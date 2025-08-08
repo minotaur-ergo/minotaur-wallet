@@ -61,6 +61,7 @@ const createWallet = async (
   password: string,
   network_type: string,
   encryptionPassword: string,
+  readOnlyWalletId?: number,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
   const seed = mnemonicToSeedSync(mnemonic, password);
@@ -79,8 +80,9 @@ const createWallet = async (
       ),
     network_type,
   );
-
-  await validateAddresses(addresses);
+  if (readOnlyWalletId === undefined) {
+    await validateAddresses(addresses);
+  }
 
   const storedSeed = encryptionPassword
     ? encrypt(seed, encryptionPassword)
@@ -96,10 +98,13 @@ const createWallet = async (
     network_type,
     1,
     encryptedMnemonic,
+    readOnlyWalletId,
   );
   await WalletDbAction.getInstance().setFlagOnWallet(wallet.id, pinType, false);
   const stateWallet = walletEntityToWalletState(wallet);
-  await addWalletAddresses(stateWallet, addresses);
+  if (readOnlyWalletId === undefined) {
+    await addWalletAddresses(stateWallet, addresses);
+  }
   store.dispatch(addedWallets());
   store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
 };

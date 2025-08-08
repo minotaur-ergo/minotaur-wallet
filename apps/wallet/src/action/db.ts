@@ -84,8 +84,10 @@ class WalletDbAction {
     network_type: string,
     requiredSign: number,
     encryptedMnemonic: string,
+    oldWalletId?: number,
   ) => {
     const wallet = {
+      id: oldWalletId,
       name: name,
       type: type,
       seed: seed,
