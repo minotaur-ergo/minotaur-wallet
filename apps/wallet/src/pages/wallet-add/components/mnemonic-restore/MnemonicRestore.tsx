@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 
 import {
+  Alert,
   Autocomplete,
   Box,
   FormControl,
+  FormControlLabel,
   FormHelperText,
+  Switch,
   TextField,
   Typography,
 } from '@mui/material';
-import { getDefaultWordlist, mnemonicToSeedSync, wordlists } from 'bip39';
+import { getDefaultWordlist, wordlists } from 'bip39';
+
+import useMnemonicValid from '@/hooks/useMnemonicValid';
 
 import MnemonicPassphrase from '../mnemonic-passphrase/MnemonicPassphrase';
 import MnemonicView from '../mnemonic-view/MnemonicView';
@@ -18,15 +23,23 @@ const words = wordlists[getDefaultWordlist()];
 interface MnemonicRestorePropsType {
   mnemonic: string;
   mnemonicPassphrase: string;
+  networkType: string;
   setHasError: (hasError: boolean) => unknown;
   setMnemonic: (mnemonic: string) => unknown;
   setMnemonicPassphrase: (mnemonicPassphrase: string) => unknown;
+  setReadOnlyWalletId: (id: number) => unknown;
 }
 
 export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
   const [selected, setSelected] = useState('');
-  const [extended, setExtended] = useState(false);
+  const [extended, setExtended] = useState(props.mnemonicPassphrase !== '');
+  const [convert, setConvert] = useState(false);
   const mnemonicWords = props.mnemonic.split(' ');
+  const validate = useMnemonicValid(
+    props.mnemonic,
+    props.mnemonicPassphrase,
+    props.networkType,
+  );
 
   const selectElement = (element: string) => {
     if (words.indexOf(element) !== -1) {
@@ -42,20 +55,16 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
     props.setMnemonic(mnemonicParts.join(' '));
   };
   const filteredWords = words.filter((item) => item.indexOf(selected) === 0);
-  const requiredWordCount =
-    Math.max(4, Math.ceil(mnemonicWords.length / 3)) * 3;
   useEffect(() => {
-    if (mnemonicWords.length === requiredWordCount) {
-      try {
-        mnemonicToSeedSync(props.mnemonic);
-        props.setHasError(extended && props.mnemonicPassphrase === '');
-        return;
-      } catch (e) {
-        console.log(e);
-      }
+    if (validate.valid && (!validate.exists || convert)) {
+      props.setHasError(extended && props.mnemonicPassphrase === '');
+    } else {
+      props.setHasError(true);
     }
-    props.setHasError(true);
   });
+  useEffect(() => {
+    props.setReadOnlyWalletId(validate.readOnlyWalletId ?? -1);
+  }, [validate, props]);
   return (
     <Box>
       <Typography>
@@ -100,11 +109,9 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
                   }}
                 />
               </FormControl>
-              {requiredWordCount > mnemonicWords.length ? (
+              {validate.remainingWordCount > 0 ? (
                 <FormHelperText error id="accountId-error">
-                  {requiredWordCount -
-                    (props.mnemonic === '' ? 0 : mnemonicWords.length)}{' '}
-                  words remaining
+                  {validate.remainingWordCount} words remaining
                 </FormHelperText>
               ) : null}
             </>
@@ -118,6 +125,20 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
         extended={extended}
         setExtended={setExtended}
       />
+      {validate.exists ? (
+        <Alert severity="info" icon={' '} sx={{ my: 2 }}>
+          <Typography>
+            A readonly wallet with this mnemonic and pass phrase already exists.
+            The read only wallet name is <b>{validate.name}</b>
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch value={convert} onChange={() => setConvert(!convert)} />
+            }
+            label="Convert it to a normal wallet"
+          />
+        </Alert>
+      ) : undefined}
     </Box>
   );
 };
