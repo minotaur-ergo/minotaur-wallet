@@ -1,16 +1,25 @@
 import React from 'react';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { WALLETS } from '../../data';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ShoppingCartOutlined } from '@mui/icons-material';
+import { RouterMap } from '../../V2Demo';
+import { getRoute } from '../../../route/routerMap';
 
 const WalletCard = () => {
   const { id } = useParams();
+  const theme = useTheme();
+  const navigate = useNavigate();
   const wallet = WALLETS.find((row) => row.id === id);
-  const color = {
-    light: '#fffcb5',
-    main: '#d7d02a',
-  };
+
   return (
     <Card
       sx={{
@@ -28,17 +37,33 @@ const WalletCard = () => {
           zIndex: -1,
           width: '100%',
           height: '100%',
-          backgroundColor: color.light,
+          backgroundColor: 'secondary.light',
         }}
       >
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          style={{ width: '100%', height: '100%' }}
-        >
-          <circle cx={100} cy={0} r={50} fill={color.main} opacity={0.2} />
-          <circle cx={0} cy={130} r={80} fill={color.main} opacity={0.1} />
-        </svg>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -220,
+            right: -100,
+            width: 280,
+            height: 280,
+            bgcolor: 'secondary.main',
+            opacity: 0.25,
+            borderRadius: '50%',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: -200,
+            left: -100,
+            width: 300,
+            height: 300,
+            bgcolor: 'secondary.main',
+            opacity: 0.2,
+            borderRadius: '50%',
+          }}
+        />
       </Box>
       <CardContent>
         <Box display="flex" alignItems="end">
@@ -56,11 +81,44 @@ const WalletCard = () => {
             </Typography>
           </Box>
         </Box>
-        <Typography sx={{ fontSize: '2rem' }}>
-          {wallet?.amount.toFixed(2)}{' '}
-          <span style={{ fontSize: '1.4rem' }}>ERG</span>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          mt={1}
+        >
+          <Typography sx={{ fontSize: '2rem', fontWeight: 500 }}>
+            {wallet?.amount.toLocaleString()}{' '}
+            <Typography
+              component="span"
+              color="text.secondary"
+              style={{ fontSize: '1.4rem' }}
+            >
+              ERG
+            </Typography>
+          </Typography>
+          <Button
+            color="secondary"
+            variant="text"
+            startIcon={<ShoppingCartOutlined />}
+            fullWidth={false}
+            sx={{
+              borderWidth: 2,
+              borderColor: theme.palette.secondary.main,
+              borderStyle: 'solid',
+              backgroundColor: '#FFFFFF7F',
+              lineHeight: '1.5rem',
+              fontWeight: 500,
+              py: 1,
+            }}
+            onClick={() => navigate(getRoute(RouterMap.Buy, { id }))}
+          >
+            BUY
+          </Button>
+        </Box>
+        <Typography color="text.secondary">
+          $ {wallet?.value.toLocaleString()}
         </Typography>
-        <Typography>$ {wallet?.value.toFixed(2)}</Typography>
         <Box sx={{ height: 56 }} />
         <Button
           sx={{
@@ -68,7 +126,7 @@ const WalletCard = () => {
             right: 0,
             bottom: '12%',
             color: '#00000066',
-            backgroundColor: color.main + '66',
+            backgroundColor: theme.palette.secondary.main + '66',
             borderBottomLeftRadius: 20,
             borderTopLeftRadius: 20,
             borderBottomRightRadius: 0,

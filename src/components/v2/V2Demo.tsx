@@ -40,12 +40,14 @@ import ExportWallet from './pages/wallets/export/ExportWallet';
 import BurnToken from './pages/dApps/burnToken/BurnToken';
 import AirDrop from './pages/dApps/airDrop/AirDrop';
 import WalletsGroup from './pages/wallets/group/WalletsGroup';
+import Buy from './pages/buy/Buy';
 
 export const RouterMap = {
   Splash: '/v2/',
   Start: '/v2/start',
   EnterPin: '/v2/enterPin',
   Home: '/v2/wallet/:id',
+  Buy: '/v2/wallet/:id/buy',
   DApps: '/v2/wallet/:id/dapps',
   DAppConnector: '/v2/wallet/:id/dapps/connector',
   WhiteList: '/v2/wallet/:id/dapps/whiteList',
@@ -96,6 +98,7 @@ const V2Demo = () => {
           element={<Splash />}
         />
         <Route path={RouterMap.Home.replace('/v2', '')} element={<Home />} />
+        <Route path={RouterMap.Buy.replace('/v2', '')} element={<Buy />} />
         <Route path={RouterMap.DApps.replace('/v2', '')} element={<DApps />} />
         <Route
           path={RouterMap.IssueToken.replace('/v2', '')}

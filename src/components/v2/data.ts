@@ -285,7 +285,7 @@ export const ADDRESSES = [
   {
     name: 'Secondary Address',
     amount: 0,
-    id: '6506add086b2eae7ef2c25f71cb236830841bd1d6add086b2eae7ef2c25f',
+    id: '5f71cb23683082eae7ef2c21bd146b2eae7ef2c25f506add086bd6add086',
     tokens: [
       {
         name: 'Token 1',
