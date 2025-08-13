@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   QrCodeScannedComponentPropsType,
@@ -49,6 +49,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
     severity,
     selectWallet,
     wallets,
+    loading,
     selectAddress,
     allowMultipleAddress,
   } = useMessage(
@@ -60,6 +61,11 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
       ? wallet?.addresses
       : wallet?.addresses.filter((item) => `${item.id}` === address),
   );
+  useEffect(() => {
+    if (wallets.length === 1 && !wallet) {
+      setWallet(wallets[0]);
+    }
+  }, [wallets, wallet]);
   return (
     <AppFrame
       title="Ergo pay"
@@ -100,7 +106,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
             title={title || ''}
             description={description}
             icon={
-              severity === '' ? (
+              loading || severity === '' ? (
                 <CircularProgress />
               ) : (
                 <SvgIcon
@@ -110,7 +116,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
                 />
               )
             }
-            color={`${severity}.dark`}
+            color={loading ? '' : `${severity}.dark`}
             disableIconShadow={severity === ''}
           />
         </React.Fragment>

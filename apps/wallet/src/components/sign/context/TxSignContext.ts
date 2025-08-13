@@ -39,3 +39,5 @@ const TxSignContext = createContext<TxSignContextType>({
 export default TxSignContext;
 
 export { StatusEnum };
+
+export type { TxSignContextType };
