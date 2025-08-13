@@ -101,7 +101,6 @@ const walletSlice = createSlice({
       state,
       action: PayloadAction<{ pinType: string; wallets: Array<StateWallet> }>,
     ) {
-      console.log(action);
       action.payload.wallets.forEach((wallet) =>
         updateWalletBalance(wallet, state.addresses),
       );

@@ -39,9 +39,13 @@ interface MultipleAddressResponse {
   supported: MultiAddressSupportedEnum;
 }
 
+interface DescriptionType {
+  color: string;
+  body: string;
+}
 interface MessageResponseType {
   title: string;
-  description: Array<string>;
+  description: Array<string | DescriptionType>;
   severity: string;
   replyTo?: string;
   failed: boolean;
@@ -74,6 +78,7 @@ interface InternalBoxLoadedData {
 
 export { MultiAddressSupportedEnum, ErgoPaySeverityEnum };
 export type {
+  DescriptionType,
   ErgoPayResponse,
   MessageResponseType,
   MultipleAddressResponse,

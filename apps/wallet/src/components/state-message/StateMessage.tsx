@@ -1,17 +1,18 @@
 import { ReactElement } from 'react';
 
+import { DescriptionType } from '@minotaur-ergo/types';
 import { Box, Typography, TypographyProps } from '@mui/material';
 
 interface StateMessagePropsType {
   title: string;
-  description?: string | Array<string>;
+  description?: string | DescriptionType | Array<string | DescriptionType>;
   icon?: ReactElement;
   color?: TypographyProps['color'];
   disableIconShadow?: boolean;
 }
 
 const StateMessage = (props: StateMessagePropsType) => {
-  const getDescription = (): Array<string> => {
+  const getDescription = (): Array<string | DescriptionType> => {
     if (props.description) {
       if (Array.isArray(props.description)) {
         return props.description;
@@ -45,11 +46,11 @@ const StateMessage = (props: StateMessagePropsType) => {
       {getDescription().map((row, index) => (
         <Typography
           variant="body2"
-          color="textSecondary"
+          color={typeof row === 'string' ? 'textSecondary' : row.color}
           textAlign="center"
           key={index}
         >
-          {row}
+          {typeof row === 'string' ? row : row.body}
         </Typography>
       ))}
     </Box>

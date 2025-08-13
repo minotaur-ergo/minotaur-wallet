@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   ErgoPayResponse,
@@ -73,13 +73,15 @@ const useErgoPayData = (
     tryCount,
     tryIndex,
   ]);
-  return {
-    ...data,
-    url: loadedUrl,
-    failed: isFailed,
-    loaded: loadedUrl === url,
-    loading: loading,
-  };
+  return useMemo(() => {
+    return {
+      ...data,
+      url: loadedUrl,
+      failed: isFailed,
+      loaded: loadedUrl === url,
+      loading: loading,
+    };
+  }, [data, loadedUrl, isFailed, loading, url]);
 };
 
 export default useErgoPayData;
