@@ -120,7 +120,8 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
             disableIconShadow={severity === ''}
           />
         </React.Fragment>
-      ) : selectWallet ? (
+      ) : undefined}
+      {!loading && selectWallet ? (
         <React.Fragment>
           <Typography>Please Select One Wallet To Connect ErgoPay:</Typography>
           <FormControl sx={{ mt: 1 }}>
@@ -141,7 +142,7 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
           </FormControl>
         </React.Fragment>
       ) : undefined}
-      {selectAddress && wallet !== undefined ? (
+      {!loading && selectAddress && wallet !== undefined ? (
         <React.Fragment>
           <Typography style={{ marginTop: 40 }}>
             Please Select One Address To Use For ErgoPay:
@@ -167,10 +168,10 @@ const ErgoPay = (props: QrCodeScannedComponentPropsType) => {
           </FormControl>
         </React.Fragment>
       ) : undefined}
-      {wallet || wallets.length === 1 ? (
+      {!loading && wallet ? (
         <React.Fragment>
           <SignTx
-            wallet={wallet ? wallet : wallets[0]}
+            wallet={wallet}
             setHasError={setHasError}
             hideLoading={true}
           />

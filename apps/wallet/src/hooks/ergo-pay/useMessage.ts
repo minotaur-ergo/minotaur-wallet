@@ -89,6 +89,7 @@ const calculateData = async (
   context.setTx(unsigned, allBoxes);
   return {
     tx: reducedTx,
+    allowedWallets: foundedWallet,
     error: '',
   };
 };

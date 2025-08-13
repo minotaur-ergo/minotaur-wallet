@@ -12,6 +12,7 @@ export const WalletPageSuffix = {
   WalletMultiSig: 'multi-sig-communication/',
   WalletMultiSigTxView: 'multi-sig-communication/:txId',
   WalletSend: 'send',
+  WalletBuy: 'buy',
 };
 
 export const RouteMap = {
@@ -40,6 +41,7 @@ export const RouteMap = {
   WalletXPub: '/wallet/:id/x-pub',
   WalletChangePassword: '/wallet/:id/password-change',
   WalletSend: '/wallet/:id/send',
+  WalletBuy: '/wallet/:id/buy',
   WalletAddressBookAdd: '/address-book/add',
 };
 
