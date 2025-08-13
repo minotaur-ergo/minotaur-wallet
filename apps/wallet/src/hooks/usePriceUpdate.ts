@@ -26,7 +26,7 @@ const getCurrentPrice = async () => {
 const getPriceAtDate = async (date: Date) => {
   const queryParams = {
     localization: 'false',
-    date: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`,
+    date: `${date.toISOString().split('T')[0]}`,
   };
   const res = await CapacitorHttp.get({
     url: 'https://api.coingecko.com/api/v3/coins/ergo/history',
