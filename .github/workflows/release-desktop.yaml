@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: npm install
 
-      - name: Build icons
+      - name: Build packages
         shell: bash
         run: ./cli/build.sh
 
