@@ -1,10 +1,10 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   CommitResult,
   MultiSigData,
   StateWallet,
   TxHintBag,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { storeMultiSigRow } from '@/action/multi-sig/store';
 import { getProver } from '@/action/wallet';

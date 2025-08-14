@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   MultiSigDataHint,
   MultiSigDataShare,
@@ -5,7 +6,6 @@ import {
   StateWallet,
 } from '@minotaur-ergo/types';
 import { dottedText, getChain } from '@minotaur-ergo/utils';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';

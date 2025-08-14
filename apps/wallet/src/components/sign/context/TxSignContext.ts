@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import * as wasm from 'ergo-lib-wasm-browser';
+import * as wasm from '@minotaur-ergo/ergo-lib';
 
 const enum StatusEnum {
   WAITING,
@@ -39,3 +39,5 @@ const TxSignContext = createContext<TxSignContextType>({
 export default TxSignContext;
 
 export { StatusEnum };
+
+export type { TxSignContextType };

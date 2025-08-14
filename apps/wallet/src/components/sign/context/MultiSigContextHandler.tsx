@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   GlobalStateType,
   MultiSigData,
   StateWallet,
 } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { fetchMultiSigRows } from '@/action/multi-sig/store';
 

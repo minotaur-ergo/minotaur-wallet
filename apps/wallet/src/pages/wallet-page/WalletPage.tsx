@@ -5,6 +5,7 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 
 import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
+import BuyErg from '@/pages/wallet-page/buy-erg/BuyErg';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { WalletPageSuffix } from '@/router/routerMap';
 
@@ -92,6 +93,10 @@ const WalletPage = () => {
       <Route
         path={WalletPageSuffix.WalletDAppView}
         element={<WalletDAppViewPage wallet={wallet} />}
+      />
+      <Route
+        path={WalletPageSuffix.WalletBuy}
+        element={<BuyErg wallet={wallet} />}
       />
     </Routes>
   );

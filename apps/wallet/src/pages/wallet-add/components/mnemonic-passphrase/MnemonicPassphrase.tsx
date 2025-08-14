@@ -16,7 +16,7 @@ interface MnemonicPassPhrasePropsType {
 const MnemonicPassphrase = (props: MnemonicPassPhrasePropsType) => {
   const [passwordConfirm, setPasswordConfirm] = useState(props.password);
   useEffect(() => {
-    props.setError(props.password !== passwordConfirm);
+    props.setError(props.password !== passwordConfirm || props.password === '');
   });
   return (
     <InAdvancedMode>

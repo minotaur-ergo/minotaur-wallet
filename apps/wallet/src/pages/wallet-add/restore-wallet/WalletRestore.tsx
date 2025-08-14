@@ -36,6 +36,7 @@ const WalletRestore = () => {
     mnemonic: '',
     mnemonicPassphrase: '',
     password: '',
+    readOnlyWalletId: -1,
   });
   const STEPS_COUNTS = 4;
 
@@ -49,6 +50,7 @@ const WalletRestore = () => {
         values.mnemonicPassphrase,
         values.network,
         values.password,
+        values.readOnlyWalletId === -1 ? undefined : values.readOnlyWalletId,
       )
         .then(() => {
           navigate(-2);
@@ -116,10 +118,14 @@ const WalletRestore = () => {
         <MnemonicRestore
           mnemonic={values.mnemonic}
           mnemonicPassphrase={values.mnemonicPassphrase}
+          networkType={values.network}
           setHasError={setHasError}
           setMnemonic={(mnemonic) => setParam('mnemonic', mnemonic)}
           setMnemonicPassphrase={(mnemonicPassphrase) =>
             setParam('mnemonicPassphrase', mnemonicPassphrase)
+          }
+          setReadOnlyWalletId={(value: number) =>
+            setValues({ ...values, readOnlyWalletId: value })
           }
         />
         <AddressConfirm

@@ -9,6 +9,54 @@ import {
 import { ADDRESS_PLACE_HOLDER } from '@/utils/const';
 import { getUrl } from '@/utils/ergopay';
 
+const calcMultipleAddressSupported = async (
+  url: string,
+  setState: (state: MultipleAddressResponse) => unknown,
+): Promise<void> => {
+  const cleanDescription = (supported: MultiAddressSupportedEnum) =>
+    setState({ title: '', description: [], severity: '', supported });
+  if (url.indexOf(ADDRESS_PLACE_HOLDER) === -1) {
+    cleanDescription(MultiAddressSupportedEnum.NOT_NEEDED);
+    return;
+  }
+  setState({
+    supported: MultiAddressSupportedEnum.NOT_CHECKED,
+    title: 'Please wait',
+    description: ['Checking if backend Supported Multiple Addresses'],
+    severity: '',
+  });
+  try {
+    const response = await CapacitorHttp.post({
+      url: getUrl(url, 'multiple_check'),
+    });
+    const status = Math.floor(response.status / 100);
+    const supported = [3, 4, 5].includes(status)
+      ? MultiAddressSupportedEnum.NOT_SUPPORTED
+      : status === 2
+        ? MultiAddressSupportedEnum.SUPPORTED
+        : MultiAddressSupportedEnum.FAILED;
+    if (supported === MultiAddressSupportedEnum.FAILED) {
+      setState({
+        title: 'Failed',
+        description: [
+          `Error During Checking Multiple Address Supported`,
+          response.data ? `${response.data}` : '',
+        ],
+        severity: 'error',
+        supported: supported,
+      });
+    } else {
+      cleanDescription(supported);
+    }
+  } catch (e) {
+    setState({
+      title: 'Failed',
+      description: [`Error During Checking Multiple Address Supported`, `${e}`],
+      severity: 'error',
+      supported: MultiAddressSupportedEnum.FAILED,
+    });
+  }
+};
 const useMultiAddressSupported = (
   url: string,
   tryCount: number,
@@ -17,7 +65,7 @@ const useMultiAddressSupported = (
   const [usedTryCount, setUsedTryCount] = useState(0);
   const [response, setResponse] = useState<MultipleAddressResponse>({
     title: '',
-    description: [''],
+    description: [],
     severity: '',
     supported: MultiAddressSupportedEnum.NOT_CHECKED,
   });
@@ -29,61 +77,12 @@ const useMultiAddressSupported = (
         (usedTryCount !== tryCount &&
           response.supported === MultiAddressSupportedEnum.FAILED)
       ) {
-        const cleanDescription = (supported: MultiAddressSupportedEnum) =>
-          setResponse({ title: '', description: [], severity: '', supported });
         setLoading(true);
         setUsedTryCount(tryCount);
-        if (url.indexOf(ADDRESS_PLACE_HOLDER) !== -1) {
-          const loadingUrl = url;
-          setResponse({
-            supported: MultiAddressSupportedEnum.NOT_CHECKED,
-            title: 'Please wait',
-            description: ['Checking if backend Supported Multiple Addresses'],
-            severity: '',
-          });
-          CapacitorHttp.post({
-            url: getUrl(loadingUrl, 'multiple_check'),
-          })
-            .then((res) => {
-              let newSupported = MultiAddressSupportedEnum.FAILED;
-              const status = Math.floor(res.status / 100);
-              if ([3, 4, 5].includes(status)) {
-                newSupported = MultiAddressSupportedEnum.NOT_SUPPORTED;
-              } else if (status === 2) {
-                newSupported = MultiAddressSupportedEnum.SUPPORTED;
-              }
-              if (newSupported === MultiAddressSupportedEnum.FAILED) {
-                setResponse({
-                  title: 'Failed',
-                  description: [
-                    `Error During Checking Multiple Address Supported`,
-                    res.data ? res.data : '',
-                  ],
-                  severity: 'error',
-                  supported: newSupported,
-                });
-              } else {
-                cleanDescription(newSupported);
-              }
-              setLoadedUrl(loadingUrl);
-              setLoading(false);
-            })
-            .catch((err) => {
-              setResponse({
-                title: 'Failed',
-                description: [
-                  `Error During Checking Multiple Address Supported`,
-                  err,
-                ],
-                severity: 'error',
-                supported: MultiAddressSupportedEnum.FAILED,
-              });
-            });
-        } else {
-          cleanDescription(MultiAddressSupportedEnum.NOT_NEEDED);
-          setLoading(false);
-          setLoadedUrl(url);
-        }
+        setLoadedUrl(url);
+        calcMultipleAddressSupported(url, setResponse)
+          .then(() => setLoading(false))
+          .catch(() => setLoading(false));
       }
     }
   }, [loadedUrl, loading, url, tryCount, usedTryCount, response]);

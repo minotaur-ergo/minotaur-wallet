@@ -1,0 +1,41 @@
+name: Build for Windows, Linux And MacOs
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+
+env:
+  CI: false
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.*
+
+      - name: Install app dependencies
+        shell: bash
+        run: npm install
+
+      - name: Build packages
+        shell: bash
+        run: ./cli/build.sh
+
+      - name: Publish @minotaur-ergo/icons package
+        shell: bash
+        run: node cli/release.js packages/icons
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Publish @minotaur-ergo/ergo-lib package
+        shell: bash
+        run: node cli/release.js packages/icons
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}

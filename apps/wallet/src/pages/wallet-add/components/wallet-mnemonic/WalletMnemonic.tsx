@@ -16,7 +16,7 @@ interface WalletMnemonicPropsType {
 }
 
 const WalletMnemonic = (props: WalletMnemonicPropsType) => {
-  const [extended, setExtended] = useState(false);
+  const [extended, setExtended] = useState(props.mnemonicPassphrase !== '');
   const words = props.mnemonic.split(' ');
   const handleChange = (_event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number' && newValue !== words.length) {

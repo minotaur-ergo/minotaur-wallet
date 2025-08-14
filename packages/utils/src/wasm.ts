@@ -1,5 +1,5 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import { BoxContent, TokenBalanceBigInt } from '@minotaur-ergo/types';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { createEmptyArrayWithIndex } from './array';
 import { ENCODING } from './const';

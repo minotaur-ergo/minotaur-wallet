@@ -1,3 +1,4 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   DerivedWalletAddress,
   StateAddress,
@@ -13,7 +14,6 @@ import {
   uInt8Vlq,
 } from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
-import * as wasm from 'ergo-lib-wasm-browser';
 
 import { AddressDbAction, MultiSigDbAction } from './db';
 
