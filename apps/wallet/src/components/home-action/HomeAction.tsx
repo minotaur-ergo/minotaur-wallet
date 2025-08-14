@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import {
   ContactsOutlined,
+  ContentPasteOutlined,
   Download,
   MoreVert,
   QrCodeScanner,
@@ -34,6 +35,10 @@ const HomeAction = (props: HomeActionPropsType) => {
     setAnchorEl(null);
     qrCodeContext.start().then(() => null);
   };
+  const pasteContent = () => {
+    setAnchorEl(null);
+    qrCodeContext.paste();
+  };
   const qrCodeContext = useContext(QrCodeContext);
   const navigate = useNavigate();
   const settingUrl = props.id
@@ -42,9 +47,6 @@ const HomeAction = (props: HomeActionPropsType) => {
   return (
     <React.Fragment>
       {props.children}
-      <IconButton onClick={startScanner}>
-        <QrCodeScanner />
-      </IconButton>
       <IconButton onClick={handleOpenMenu}>
         <MoreVert />
       </IconButton>
@@ -60,6 +62,18 @@ const HomeAction = (props: HomeActionPropsType) => {
             <ContactsOutlined />
           </ListItemIcon>
           Address book
+        </MenuItem>
+        <MenuItem onClick={startScanner}>
+          <ListItemIcon>
+            <QrCodeScanner />
+          </ListItemIcon>
+          Scan QRCode
+        </MenuItem>
+        <MenuItem onClick={pasteContent}>
+          <ListItemIcon>
+            <ContentPasteOutlined />
+          </ListItemIcon>
+          Paste
         </MenuItem>
         {Capacitor.getPlatform() === 'web' ? (
           <MenuItem

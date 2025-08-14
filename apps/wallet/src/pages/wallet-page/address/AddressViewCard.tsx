@@ -89,7 +89,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
       ) : (
         <Divider sx={{ my: 2 }} />
       )}
-      <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
+      <Box sx={{ pl: 8, pr: 8, textAlign: 'center', fontStyle: 'italic' }}>
         <QRCodeSVG value={props.address.address} />
       </Box>
       <AddressCopyable address={props.address.address} />
