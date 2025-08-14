@@ -1,7 +1,7 @@
 {
   "name": "minotaur-wallet",
   "private": true,
-  "version": "3.0.1",
+  "version": "3.1.0",
   "type": "module",
   "scripts": {
     "postinstall": "patch-package && npm run copyIcons",
@@ -38,8 +38,8 @@
     "@emotion/styled": "^11.11.5",
     "@minotaur-ergo/ergo-lib": "0.28.0",
     "@minotaur-ergo/icons": "^1.2.0",
-    "@minotaur-ergo/types": "^1.1.0",
-    "@minotaur-ergo/utils": "^1.1.0",
+    "@minotaur-ergo/types": "^1.1.1",
+    "@minotaur-ergo/utils": "^1.1.1",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.14",
     "@noble/curves": "^1.9.1",
