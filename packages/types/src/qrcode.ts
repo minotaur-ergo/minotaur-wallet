@@ -8,6 +8,7 @@ export interface QrCodePropsType {
 
 export interface QrCodeContextType {
   start: () => Promise<string>;
+  paste: () => unknown;
 }
 
 export interface QrCodeCallback {
