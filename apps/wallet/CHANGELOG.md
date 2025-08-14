@@ -1,5 +1,24 @@
 # minotaur-wallet
 
+## 3.1.0
+
+### Minor Changes
+
+- Collapse assets of address
+- Buy Erg button
+- Convert to normal wallet when restore mnemonic of read-only wallet
+- Update color style for home page card
+
+### Patch Changes
+
+- Fix problem fetching ERG price from coingecko
+- Update ergo-lib-wasm to latest version
+- Fixed an issue where the signature button was not displayed for ErgoPay transactions.
+- Fix bug which cause passphrase removed when back button clicked in create or restore wallet
+- Updated dependencies
+  - @minotaur-ergo/types@1.1.1
+  - @minotaur-ergo/utils@1.1.1
+
 ## 3.0.1
 
 ### Major Changes
