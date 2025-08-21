@@ -34,6 +34,7 @@ interface DisplayQRCodePropsType {
 }
 
 const DisplayQRCode = (props: DisplayQRCodePropsType) => {
+  console.log(props);
   const dataSize = props.value.length;
   const minPages = Math.ceil(
     dataSize / (MAX_CHUNK_SIZE - 10 - props.type.length),

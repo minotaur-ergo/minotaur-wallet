@@ -1,6 +1,12 @@
-import { StateAddress, StateWallet } from '@minotaur-ergo/types';
+import {
+  ExportWallet,
+  StateAddress,
+  StateWallet,
+  WalletType,
+} from '@minotaur-ergo/types';
 import { WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
 
+import { MultiSigDbAction } from '@/action/db';
 import Address from '@/db/entities/Address';
 import Wallet from '@/db/entities/Wallet';
 
@@ -35,3 +41,26 @@ export const addressEntityToAddressState = (
   id: address.id,
   isDefault: false,
 });
+
+export const toExport = async (
+  wallet: StateWallet,
+  addSecret: boolean,
+): Promise<ExportWallet> => {
+  const res: ExportWallet = {
+    name: wallet.name,
+    network: wallet.networkType,
+    type: wallet.type,
+    xPub: wallet.xPub,
+    addresses: wallet.xPub ? [] : wallet.addresses.map((item) => item.address),
+    seed: addSecret ? wallet.seed : '',
+    version: wallet.version,
+  };
+  if (wallet.type === WalletType.MultiSig) {
+    res.requiredSign = wallet.requiredSign;
+    const signers = await MultiSigDbAction.getInstance().getWalletKeys(
+      wallet.id,
+    );
+    res.signers = signers.map((item) => item.extended_key);
+  }
+  return res;
+};

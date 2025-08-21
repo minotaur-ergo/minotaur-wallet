@@ -8,6 +8,7 @@ import Splash from '@/components/splash/Splash';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
 import useUpdater from '@/hooks/useUpdater';
+import WalletExport from '@/pages/export/WalletExport';
 import Home from '@/pages/home/Home';
 import AppHoneyPin from '@/pages/settings/AppHoneyPin';
 import AppPin from '@/pages/settings/AppPin';
@@ -40,6 +41,7 @@ const AppRouter = () => {
           <Route path={RouteMap.Wallets} element={<Wallets />} />
           <Route path={RouteMap.Wallet} element={<WalletPage />} />
           <Route path={RouteMap.WalletAdd} element={<WalletAdd />} />
+          <Route path={RouteMap.WalletExport} element={<WalletExport />} />
           <Route path={RouteMap.WalletAddNew} element={<WalletAddNew />} />
           <Route path={RouteMap.WalletAddRestore} element={<WalletRestore />} />
           <Route

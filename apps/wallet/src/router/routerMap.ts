@@ -23,6 +23,7 @@ export const RouteMap = {
   AddressBook: '/address-book',
   Wallets: '/wallet/list/',
   WalletAdd: '/wallet/add/',
+  WalletExport: '/wallet/export/',
   WalletAddNew: '/wallet/add/new/',
   WalletAddRestore: '/wallet/add/restore/',
   WalletAddReadOnly: '/wallet/add/read-only/',

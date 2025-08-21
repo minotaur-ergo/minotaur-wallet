@@ -17,6 +17,18 @@ export interface StateWallet {
   favorite: boolean;
 }
 
+export interface ExportWallet {
+  name: string;
+  network: string;
+  seed: string;
+  xPub: string;
+  type: WalletType;
+  requiredSign?: number;
+  version: number;
+  signers?: Array<string>;
+  addresses?: Array<string>;
+}
+
 export interface StateAddress {
   id: number;
   name: string;
