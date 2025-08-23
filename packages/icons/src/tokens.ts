@@ -1003,6 +1003,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '1b9b482165b9aa6496212df93227c65f543fdbfdd729494c09dec5dc681657c7',
     fileExtension: 'svg',
   },
+  'e840e3bf0c4a3390d6ad9e3e9bcc14638e649feddcdd8d245f75b9738680fef6': {
+    id: 'e840e3bf0c4a3390d6ad9e3e9bcc14638e649feddcdd8d245f75b9738680fef6',
+    boxId: 'c624508a31eb279e897bf2d210e3925872582f87451f2d5bef216ee8336d24ff',
+    decimals: 2,
+    description:
+      'The official security token of Autolykos, the community backed venture capital collective governed through DAO, rooted in Ergo. LYKOS is used for governance through proof of stake and serves a collateralised equity token (CET), appreciating in nature through profit distribution of Autolykos funded projects.',
+    emissionAmount: '100000000',
+    height: 1592735,
+    name: 'LYKOS',
+    networkType: 'Main Net',
+    txId: '5780dc6395aae78fb39ba1b93da0c33b90586fd2b114dfd9e8d4c8b23a9dbc40',
+    fileExtension: 'svg',
+  },
   'e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807': {
     id: 'e8b20745ee9d18817305f32eb21015831a48f02d40980de6e849f886dca7f807',
     boxId: '83710fe470bf2f235e9a0e7b552550eef5552dbe8fe11228d46879155a333df8',
