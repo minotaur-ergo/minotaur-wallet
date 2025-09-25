@@ -25,8 +25,23 @@ export interface ExportWallet {
   type: WalletType;
   requiredSign?: number;
   version: number;
+  mnemonic?: string;
   signers?: Array<string>;
   addresses?: Array<string>;
+}
+
+export enum ImportProcessingState {
+  NoData = 'no-data',
+  Pending = 'pending',
+  Processing = 'processing',
+  Success = 'success',
+  Error = 'error',
+}
+
+export interface RestoreWalletWithSelection extends ExportWallet {
+  selected: boolean;
+  duplicate: boolean;
+  status: ImportProcessingState;
 }
 
 export interface StateAddress {

@@ -25,6 +25,7 @@ export const RouteMap = {
   WalletAdd: '/wallet/add/',
   WalletExport: '/wallet/export/',
   WalletAddNew: '/wallet/add/new/',
+  WalletAddImport: '/wallet/import/',
   WalletAddRestore: '/wallet/add/restore/',
   WalletAddReadOnly: '/wallet/add/read-only/',
   WalletAddMultiSig: '/wallet/add/multi-sig/',

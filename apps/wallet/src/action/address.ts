@@ -20,7 +20,7 @@ import { AddressDbAction, MultiSigDbAction } from './db';
 const RootPathWithoutIndex = "m/44'/429'/0'/0";
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
-const getNewAddressName = async (name: string, index: number) => {
+export const getNewAddressName = async (name: string, index: number) => {
   if (!name) {
     if (index === 0) {
       return 'Main Address';

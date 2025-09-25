@@ -24,6 +24,8 @@ const DisplayId = ({
   endAdornment = undefined,
   ...restProps
 }: DisplayIdPropsType) => {
+  const a = restProps.color;
+  typeof a;
   const name = useAddressName(showAddress ? id : '', customAddresses);
   const dotted = dottedText(id, name !== '' ? 4 : paddingSize);
   return (

@@ -51,7 +51,7 @@ export const toExport = async (
     network: wallet.networkType,
     type: wallet.type,
     xPub: wallet.xPub,
-    addresses: wallet.xPub ? [] : wallet.addresses.map((item) => item.address),
+    addresses: wallet.addresses.map((item) => item.address),
     seed: addSecret ? wallet.seed : '',
     version: wallet.version,
   };
