@@ -1,7 +1,12 @@
 import { useCallback, useContext } from 'react';
 
 import { ImportProcessingState } from '@minotaur-ergo/types';
-import { CheckCircle, CropSquare, HighlightOff } from '@mui/icons-material';
+import {
+  CheckCircle,
+  CropSquare,
+  HighlightOff,
+  WarningOutlined,
+} from '@mui/icons-material';
 import { Box, Checkbox, CircularProgress, Typography } from '@mui/material';
 
 import DisplayId from '@/components/display-id/DisplayId';
@@ -17,19 +22,19 @@ const WalletExportItem = (props: WalletExportItemProps) => {
   const getIcon = useCallback(() => {
     switch (wallet.status) {
       case ImportProcessingState.Processing:
-        return <CircularProgress size={20} />;
+        return <CircularProgress size={24} />;
       case ImportProcessingState.Success:
         return <CheckCircle color="success" />;
       case ImportProcessingState.Error:
         return <HighlightOff color="error" />;
       case ImportProcessingState.Pending:
-        return <CropSquare />;
+        return <CropSquare color="disabled" />;
     }
     return <div>{wallet.status}</div>;
   }, [wallet.status]);
   return (
     <Box component="label" display="flex" gap={2}>
-      <Box sx={{ flexGrow: 1, mt: 2 }}>
+      <Box sx={{ flexShrink: 0 }}>
         {context.status === ImportProcessingState.Pending ? (
           <Checkbox
             disabled={wallet.duplicate}
@@ -37,22 +42,27 @@ const WalletExportItem = (props: WalletExportItemProps) => {
             onChange={() => context.handleSelection(props.index)}
           />
         ) : (
-          getIcon()
+          <Box p={1}>{getIcon()}</Box>
         )}
       </Box>
-      <Box sx={{ p: 2, flexGrow: 10, opacity: wallet.duplicate ? 0.6 : 1 }}>
-        <Typography>{wallet.name}</Typography>
-        <Typography color="gray">Normal Wallet</Typography>
-        <DisplayId
-          color="gray"
-          id={
-            wallet.addresses && wallet.addresses.length > 0
-              ? wallet.addresses[0]
-              : 'No address'
-          }
-        />
+      <Box sx={{ pt: 1, flexGrow: 1 }}>
+        <Box sx={{ opacity: wallet.duplicate ? 0.6 : 1 }}>
+          <Typography>{wallet.name}</Typography>
+          <Typography color="gray">Normal Wallet</Typography>
+          <DisplayId
+            color="gray"
+            id={
+              wallet.addresses && wallet.addresses.length > 0
+                ? wallet.addresses[0]
+                : 'No address'
+            }
+          />
+        </Box>
         {wallet.duplicate ? (
-          <Typography color="secondary">Duplicate</Typography>
+          <Box display="flex" color="warning.main" gap={1}>
+            <WarningOutlined fontSize="small" />
+            <Typography>Is duplicate!</Typography>
+          </Box>
         ) : (
           ''
         )}

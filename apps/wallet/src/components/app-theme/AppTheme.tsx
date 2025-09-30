@@ -195,6 +195,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          padding: '8px',
+        },
+      },
+    },
   },
 });
 
