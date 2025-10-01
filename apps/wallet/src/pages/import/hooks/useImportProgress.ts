@@ -28,7 +28,6 @@ const useImportProgress = (
   useEffect(() => {
     if (index >= 0 && index < data.length && !loading) {
       const currentWallet = data[index];
-      console.log(currentWallet.selected, currentWallet);
       if (currentWallet.selected) {
         setLoading(true);
         convertStatus(ImportProcessingState.Processing);
@@ -49,7 +48,7 @@ const useImportProgress = (
         setIndex(index + 1);
       }
     }
-  }, [index, data, setIndex, setData, loading]);
+  }, [index, data, setIndex, setData, loading, convertStatus]);
   return null;
 };
 

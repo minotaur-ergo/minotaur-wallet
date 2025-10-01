@@ -1,6 +1,7 @@
 import {
   DerivedWalletAddress,
   RestoreWalletWithSelection,
+  WalletType,
 } from '@minotaur-ergo/types';
 import { getChain } from '@minotaur-ergo/utils';
 
@@ -94,15 +95,15 @@ const importWallet = async (wallet: RestoreWalletWithSelection) => {
       setTimeout(resolve, 1000);
     });
   }
-  // switch (wallet.type) {
-  //   case WalletType.Normal:
-  //   case WalletType.ReadOnly:
-  //     return await importNormalWallet(wallet);
-  //   case WalletType.MultiSig:
-  //     return await importMultiSigWallet(wallet);
-  //   default:
-  //     throw new Error(`Unsupported wallet type: ${wallet.type}`);
-  // }
+  switch (wallet.type) {
+    case WalletType.Normal:
+    case WalletType.ReadOnly:
+      return await importNormalWallet(wallet);
+    case WalletType.MultiSig:
+      return await importMultiSigWallet(wallet);
+    default:
+      throw new Error(`Unsupported wallet type: ${wallet.type}`);
+  }
 };
 
 export { importWallet, importNormalWallet, importMultiSigWallet };
