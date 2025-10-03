@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType } from '@minotaur-ergo/types';
+import { GlobalStateType, SymbolType } from '@minotaur-ergo/types';
 import { ergPriceUsd, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
 
@@ -16,6 +16,9 @@ const TotalBalanceCard = () => {
     .reduce((a, b) => a + b, 0n);
   const totalErgLastWeek = totalErg;
   const value = ergPriceUsd(totalErg, ergPrice);
+  const symbol: SymbolType = useSelector(
+    (state: GlobalStateType) => state.config.symbol,
+  );
   return (
     <Card
       sx={{
@@ -77,7 +80,9 @@ const TotalBalanceCard = () => {
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
         >
-          $ {value.toLocaleString()}
+          {symbol?.direction === 'l'
+            ? `${symbol.symbol} ${value.toLocaleString()}`
+            : `${value.toLocaleString()} ${symbol.symbol}`}
         </Typography>
         <Typography
           variant="body2"

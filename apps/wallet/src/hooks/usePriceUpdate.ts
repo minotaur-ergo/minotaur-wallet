@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { CapacitorHttp } from '@capacitor/core';
+import { GlobalStateType } from '@minotaur-ergo/types';
 
 import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 
-const getCurrentPrice = async () => {
+const getCurrentPrice = async (currency: string) => {
   const queryParams = {
     localization: 'false',
     tickers: 'false',
@@ -20,10 +21,10 @@ const getCurrentPrice = async () => {
     params: queryParams,
   });
   const current_prices = res.data.market_data.current_price;
-  return current_prices.usd;
+  return current_prices[currency.toLowerCase()] ?? current_prices.usd;
 };
 
-const getPriceAtDate = async (date: Date) => {
+const getPriceAtDate = async (date: Date, currency: string) => {
   const queryParams = {
     localization: 'false',
     date: `${date.toISOString().split('T')[0]}`,
@@ -33,33 +34,91 @@ const getPriceAtDate = async (date: Date) => {
     params: queryParams,
   });
   const current_prices = res.data.market_data.current_price;
-  return current_prices.usd;
+  return current_prices[currency.toLowerCase()] ?? current_prices.usd;
+};
+
+const fetchAndDispatch = async (
+  currency: string,
+  onResult: (cur: number, last: number) => void,
+  refresh: () => void,
+) => {
+  try {
+    const today = new Date();
+    const prevWeek = new Date(today.getTime() - 7 * 24 * 3600 * 1000);
+
+    const [current, lastWeek] = await Promise.all([
+      getCurrentPrice(currency),
+      getPriceAtDate(prevWeek, currency),
+    ]);
+
+    onResult(current, lastWeek);
+  } catch (e) {
+    refresh();
+  }
 };
 
 const usePriceUpdate = () => {
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const currency = useSelector((s: GlobalStateType) => s.config.currency);
+
+  const [loading, setLoading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const refresh = () => {
-    setTimeout(() => setLoading(false), PRICE_REFRESH_INTERVAL);
+    if (!currency) return;
+
+    setLoading(true);
+    fetchAndDispatch(
+      currency,
+      (current, lastWeek) => {
+        dispatch(setPrice({ current, lastWeek }));
+        setLoading(false);
+      },
+      refresh,
+    );
   };
+
   useEffect(() => {
-    if (!loading) {
-      const today = new Date();
-      setLoading(true);
-      getCurrentPrice()
-        .then((current) => {
-          const prevWeek = new Date(today.getTime() - 1000 * 3600 * 24 * 7);
-          getPriceAtDate(prevWeek)
-            .then((lastWeek) => {
-              dispatch(setPrice({ current, lastWeek }));
-              refresh();
-            })
-            .catch(refresh);
-        })
-        .catch(refresh);
+    if (!currency) return;
+
+    setLoading(true);
+    fetchAndDispatch(
+      currency,
+      (current, lastWeek) => {
+        dispatch(setPrice({ current, lastWeek }));
+        setLoading(false);
+      },
+      refresh,
+    );
+  }, [currency, dispatch]);
+
+  useEffect(() => {
+    if (!currency) return;
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-  }, [loading, dispatch]);
-  return loading;
+
+    timerRef.current = setInterval(() => {
+      setLoading(true);
+      fetchAndDispatch(
+        currency,
+        (current, lastWeek) => {
+          dispatch(setPrice({ current, lastWeek }));
+          setLoading(false);
+        },
+        refresh,
+      );
+    }, PRICE_REFRESH_INTERVAL);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = null;
+    };
+  }, [currency, dispatch]);
+
+  return { loading, refresh };
 };
 
 export default usePriceUpdate;

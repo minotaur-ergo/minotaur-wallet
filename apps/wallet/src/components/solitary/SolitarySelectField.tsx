@@ -17,7 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 
-interface OptionsType {
+export interface OptionsType {
   label?: string;
   value: string;
 }
@@ -28,6 +28,7 @@ interface SolitarySelectFieldPropsType {
   label: string;
   helperText?: string;
   options: OptionsType[];
+  onOpen?: () => void;
 }
 
 const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
@@ -57,7 +58,15 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={() => setOpen(true)} edge="end">
+              <IconButton
+                onClick={() => {
+                  if (props.onOpen) {
+                    props.onOpen();
+                  }
+                  setOpen(true);
+                }}
+                edge="end"
+              >
                 <KeyboardArrowDownIcon />
               </IconButton>
             </InputAdornment>

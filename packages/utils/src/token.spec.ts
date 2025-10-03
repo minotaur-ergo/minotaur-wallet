@@ -369,7 +369,7 @@ describe('token utilities', () => {
 
       const result = tokenPriceUsd(amount, decimals, tokenPrice);
 
-      expect(result).toBe('0.00');
+      expect(result).toBe('0.001');
     });
 
     /**

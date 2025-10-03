@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,8 +7,11 @@ import { Box, Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
 import Heading from '@/components/heading/Heading';
-import SolitarySelectField from '@/components/solitary/SolitarySelectField';
+import SolitarySelectField, {
+  OptionsType,
+} from '@/components/solitary/SolitarySelectField';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
+import getCurrencies from '@/hooks/useCurrencies';
 import ActionButton from '@/pages/settings/ActionButton';
 import { getRoute, RouteMap } from '@/router/routerMap';
 import {
@@ -63,6 +66,10 @@ const GlobalSettings = () => {
     (state: GlobalStateType) => state.config.pin.hasPin,
   );
 
+  const [currencies, setCurrencies] = useState<OptionsType[]>([
+    { value: currency },
+  ]);
+
   return (
     <React.Fragment>
       <Box mb={2}>
@@ -71,8 +78,13 @@ const GlobalSettings = () => {
           <SolitarySelectField
             label="Currency conversion"
             value={currency}
-            options={[{ value: 'USD' }]}
+            options={currencies}
             onChange={saveCurrency}
+            onOpen={() => {
+              getCurrencies().then((data) => {
+                setCurrencies(data);
+              });
+            }}
           />
           <SolitarySelectField
             label="Display Mode"

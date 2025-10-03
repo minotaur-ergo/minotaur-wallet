@@ -2,7 +2,12 @@ import { MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { ConfigType, GlobalStateType, WalletType } from '@minotaur-ergo/types';
+import {
+  ConfigType,
+  GlobalStateType,
+  SymbolType,
+  WalletType,
+} from '@minotaur-ergo/types';
 import {
   ergPriceUsd,
   MAIN_NET_LABEL,
@@ -53,6 +58,9 @@ const WalletItem = (props: PropsType) => {
   const navigate = useNavigate();
   const amount = props.amount ? props.amount : 0n;
   const color = WalletColorMap[props.type];
+  const symbol: SymbolType = useSelector(
+    (state: GlobalStateType) => state.config.symbol,
+  );
   const activateWallet = () => {
     if (props.onClick) {
       props.onClick();
@@ -142,7 +150,11 @@ const WalletItem = (props: PropsType) => {
             </Typography>
             <Typography variant="body2" color="textSecondary">
               {props.net === MAIN_NET_LABEL ? (
-                ergPriceUsd(amount, ergPrice)
+                symbol?.direction === 'l' ? (
+                  `${symbol.symbol} ${ergPriceUsd(amount, ergPrice)}`
+                ) : (
+                  `${ergPriceUsd(amount, ergPrice)} ${symbol.symbol}`
+                )
               ) : (
                 <span>&nbsp;</span>
               )}

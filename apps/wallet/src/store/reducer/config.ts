@@ -1,8 +1,11 @@
 import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { getCurrencySymbol } from '@/hooks/useCurrencies';
+
 export const configInitialState: ConfigStateType = {
   currency: '',
+  symbol: { symbol: '', direction: 'l' },
   priceLastWeek: 0,
   price: 0,
   display: 'advanced',
@@ -58,6 +61,7 @@ const configSlice = createSlice({
     },
     setCurrency: (state, action: PayloadAction<CurrencyPayload>) => {
       state.currency = action.payload.currency;
+      state.symbol = getCurrencySymbol(action.payload.currency);
     },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
@@ -69,6 +73,7 @@ const configSlice = createSlice({
     setConfig: (state, action: PayloadAction<ConfigPayload>) => {
       state.display = action.payload.display;
       state.currency = action.payload.currency;
+      state.symbol = getCurrencySymbol(action.payload.currency);
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
