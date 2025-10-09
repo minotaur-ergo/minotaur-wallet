@@ -8,20 +8,10 @@ import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 
 const getCurrentPrice = async (currency: string) => {
-  const queryParams = {
-    localization: 'false',
-    tickers: 'false',
-    market_data: 'true',
-    community_data: 'false',
-    developer_data: 'false',
-    sparkline: 'false',
-  };
   const res = await CapacitorHttp.get({
-    url: 'https://api.coingecko.com/api/v3/coins/ergo',
-    params: queryParams,
+    url: `https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency.toLowerCase()}&ids=ergo`,
   });
-  const current_prices = res.data.market_data.current_price;
-  return current_prices[currency.toLowerCase()] ?? current_prices.usd;
+  return res.data.ergo[currency.toLowerCase()];
 };
 
 const getPriceAtDate = async (date: Date, currency: string) => {
