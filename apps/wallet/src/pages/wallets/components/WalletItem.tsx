@@ -9,7 +9,7 @@ import {
   WalletType,
 } from '@minotaur-ergo/types';
 import {
-  ergPriceUsd,
+  ergPriceCurrency,
   MAIN_NET_LABEL,
   WALLET_FLAG_ENUM,
 } from '@minotaur-ergo/utils';
@@ -151,9 +151,9 @@ const WalletItem = (props: PropsType) => {
             <Typography variant="body2" color="textSecondary">
               {props.net === MAIN_NET_LABEL ? (
                 symbol?.direction === 'l' ? (
-                  `${symbol.symbol} ${ergPriceUsd(amount, ergPrice)}`
+                  `${symbol.symbol} ${ergPriceCurrency(amount, ergPrice)}`
                 ) : (
-                  `${ergPriceUsd(amount, ergPrice)} ${symbol.symbol}`
+                  `${ergPriceCurrency(amount, ergPrice)} ${symbol.symbol}`
                 )
               ) : (
                 <span>&nbsp;</span>

@@ -2,7 +2,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { GlobalStateType, StateWallet, SymbolType } from '@minotaur-ergo/types';
-import { ergPriceUsd, getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import {
+  ergPriceCurrency,
+  getChain,
+  MAIN_NET_LABEL,
+} from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -132,8 +136,8 @@ const WalletCard = (props: WalletCardPropsType) => {
         {props.wallet.networkType === MAIN_NET_LABEL ? (
           <Typography color="text.secondary">
             {symbol?.direction === 'l'
-              ? `${symbol.symbol} ${ergPriceUsd(BigInt(props.wallet.balance), ergPrice)}`
-              : `${ergPriceUsd(BigInt(props.wallet.balance), ergPrice)} ${symbol.symbol}`}
+              ? `${symbol.symbol} ${ergPriceCurrency(BigInt(props.wallet.balance), ergPrice)}`
+              : `${ergPriceCurrency(BigInt(props.wallet.balance), ergPrice)} ${symbol.symbol}`}
           </Typography>
         ) : null}
         <Box sx={{ height: 56 }} />

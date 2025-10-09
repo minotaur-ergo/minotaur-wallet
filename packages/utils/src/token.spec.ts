@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  ergPriceUsd,
+  ergPriceCurrency,
   numberWithDecimalToBigInt,
-  tokenPriceUsd,
+  tokenPriceCurrency,
   tokenStr,
 } from './token';
 
@@ -236,15 +236,15 @@ describe('token utilities', () => {
   });
 
   /**
-   * Test suite for tokenPriceUsd function
+   * Test suite for tokenPriceCurrency function
    */
-  describe('tokenPriceUsd', () => {
+  describe('tokenPriceCurrency', () => {
     /**
      * @target Calculate USD price for token amount
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with amount 1000000000n, 9 decimals, and price 100
+     * - Call tokenPriceCurrency with amount 1000000000n, 9 decimals, and price 100
      * @expect
      * - Returns formatted USD price string
      */
@@ -253,7 +253,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 100; // $100 per token
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('100.00');
     });
@@ -263,7 +263,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with fractional amount and price
+     * - Call tokenPriceCurrency with fractional amount and price
      * @expect
      * - Returns correctly calculated USD value
      */
@@ -272,7 +272,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 200; // $200 per token
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('100.00');
     });
@@ -282,7 +282,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with zero amount
+     * - Call tokenPriceCurrency with zero amount
      * @expect
      * - Returns '0.00'
      */
@@ -291,7 +291,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 100;
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('0.00');
     });
@@ -301,7 +301,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with zero price
+     * - Call tokenPriceCurrency with zero price
      * @expect
      * - Returns '0.00'
      */
@@ -310,7 +310,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 0;
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('0.00');
     });
@@ -320,7 +320,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with fractional price
+     * - Call tokenPriceCurrency with fractional price
      * @expect
      * - Returns correctly calculated USD value
      */
@@ -329,7 +329,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 0.5; // $0.50 per token
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('0.50');
     });
@@ -339,7 +339,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with large amount resulting in comma-separated value
+     * - Call tokenPriceCurrency with large amount resulting in comma-separated value
      * @expect
      * - Returns formatted value with commas
      */
@@ -348,7 +348,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 100;
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('1,000,000.00');
     });
@@ -358,7 +358,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with very small amount
+     * - Call tokenPriceCurrency with very small amount
      * @expect
      * - Returns correctly calculated small USD value
      */
@@ -367,7 +367,7 @@ describe('token utilities', () => {
       const decimals = 9;
       const tokenPrice = 1000000; // $1M per token
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('0.001');
     });
@@ -377,7 +377,7 @@ describe('token utilities', () => {
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
-     * - Call tokenPriceUsd with high precision decimals
+     * - Call tokenPriceCurrency with high precision decimals
      * @expect
      * - Returns correctly calculated value
      */
@@ -386,22 +386,22 @@ describe('token utilities', () => {
       const decimals = 18;
       const tokenPrice = 50;
 
-      const result = tokenPriceUsd(amount, decimals, tokenPrice);
+      const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
       expect(result).toBe('50.00');
     });
   });
 
   /**
-   * Test suite for ergPriceUsd function
+   * Test suite for ergPriceCurrency function
    */
-  describe('ergPriceUsd', () => {
+  describe('ergPriceCurrency', () => {
     /**
      * @target Calculate ERG price in USD
      * @dependencies
-     * - tokenPriceUsd function
+     * - tokenPriceCurrency function
      * @scenario
-     * - Call ergPriceUsd with 1000000000n (1 ERG) and price 5
+     * - Call ergPriceCurrency with 1000000000n (1 ERG) and price 5
      * @expect
      * - Returns '5.00'
      */
@@ -409,7 +409,7 @@ describe('token utilities', () => {
       const amount = 1000000000n; // 1 ERG (9 decimals)
       const ergPrice = 5; // $5 per ERG
 
-      const result = ergPriceUsd(amount, ergPrice);
+      const result = ergPriceCurrency(amount, ergPrice);
 
       expect(result).toBe('5.00');
     });
@@ -417,9 +417,9 @@ describe('token utilities', () => {
     /**
      * @target Handle fractional ERG amounts
      * @dependencies
-     * - tokenPriceUsd function
+     * - tokenPriceCurrency function
      * @scenario
-     * - Call ergPriceUsd with 500000000n (0.5 ERG) and price 10
+     * - Call ergPriceCurrency with 500000000n (0.5 ERG) and price 10
      * @expect
      * - Returns '5.00'
      */
@@ -427,7 +427,7 @@ describe('token utilities', () => {
       const amount = 500000000n; // 0.5 ERG
       const ergPrice = 10;
 
-      const result = ergPriceUsd(amount, ergPrice);
+      const result = ergPriceCurrency(amount, ergPrice);
 
       expect(result).toBe('5.00');
     });
@@ -435,9 +435,9 @@ describe('token utilities', () => {
     /**
      * @target Handle zero ERG amount
      * @dependencies
-     * - tokenPriceUsd function
+     * - tokenPriceCurrency function
      * @scenario
-     * - Call ergPriceUsd with 0n amount
+     * - Call ergPriceCurrency with 0n amount
      * @expect
      * - Returns '0.00'
      */
@@ -445,7 +445,7 @@ describe('token utilities', () => {
       const amount = 0n;
       const ergPrice = 5;
 
-      const result = ergPriceUsd(amount, ergPrice);
+      const result = ergPriceCurrency(amount, ergPrice);
 
       expect(result).toBe('0.00');
     });
@@ -453,9 +453,9 @@ describe('token utilities', () => {
     /**
      * @target Handle large ERG amounts
      * @dependencies
-     * - tokenPriceUsd function
+     * - tokenPriceCurrency function
      * @scenario
-     * - Call ergPriceUsd with large amount
+     * - Call ergPriceCurrency with large amount
      * @expect
      * - Returns formatted value with commas
      */
@@ -463,7 +463,7 @@ describe('token utilities', () => {
       const amount = 1000000000000n; // 1,000 ERG
       const ergPrice = 5;
 
-      const result = ergPriceUsd(amount, ergPrice);
+      const result = ergPriceCurrency(amount, ergPrice);
 
       expect(result).toBe('5,000.00');
     });
@@ -471,9 +471,9 @@ describe('token utilities', () => {
     /**
      * @target Use 9 decimals by default
      * @dependencies
-     * - tokenPriceUsd function
+     * - tokenPriceCurrency function
      * @scenario
-     * - Verify ergPriceUsd uses 9 decimals for ERG
+     * - Verify ergPriceCurrency uses 9 decimals for ERG
      * @expect
      * - Calculates correctly with ERG's 9 decimal places
      */
@@ -481,7 +481,7 @@ describe('token utilities', () => {
       const amount = 123456789n; // 0.123456789 ERG
       const ergPrice = 100;
 
-      const result = ergPriceUsd(amount, ergPrice);
+      const result = ergPriceCurrency(amount, ergPrice);
 
       expect(result).toBe('12.34');
     });

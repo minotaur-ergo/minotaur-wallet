@@ -21,7 +21,7 @@ export const tokenStr = (
   );
 };
 
-export const tokenPriceUsd = (
+export const tokenPriceCurrency = (
   amount: bigint,
   decimals: number,
   token_price: number,
@@ -63,8 +63,8 @@ export const tokenPriceUsd = (
   return fracPart ? `${intFormatted}.${fracPart}` : intFormatted;
 };
 
-export const ergPriceUsd = (amount: bigint, erg_price: number) =>
-  tokenPriceUsd(amount, 9, erg_price);
+export const ergPriceCurrency = (amount: bigint, erg_price: number) =>
+  tokenPriceCurrency(amount, 9, erg_price);
 
 export const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   if (amount === '') return 0n;

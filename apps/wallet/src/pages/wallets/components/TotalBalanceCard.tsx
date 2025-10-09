@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType, SymbolType } from '@minotaur-ergo/types';
-import { ergPriceUsd, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { ergPriceCurrency, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
 
 import Rate from './Rate';
@@ -15,7 +15,7 @@ const TotalBalanceCard = () => {
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
   const totalErgLastWeek = totalErg;
-  const value = ergPriceUsd(totalErg, ergPrice);
+  const value = ergPriceCurrency(totalErg, ergPrice);
   const symbol: SymbolType = useSelector(
     (state: GlobalStateType) => state.config.symbol,
   );
