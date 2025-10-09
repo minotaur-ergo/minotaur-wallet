@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CapacitorHttp } from '@capacitor/core';
@@ -27,88 +27,45 @@ const getPriceAtDate = async (date: Date, currency: string) => {
   return current_prices[currency.toLowerCase()] ?? current_prices.usd;
 };
 
-const fetchAndDispatch = async (
-  currency: string,
-  onResult: (cur: number, last: number) => void,
-  refresh: () => void,
-) => {
-  try {
-    const today = new Date();
-    const prevWeek = new Date(today.getTime() - 7 * 24 * 3600 * 1000);
-
-    const [current, lastWeek] = await Promise.all([
-      getCurrentPrice(currency),
-      getPriceAtDate(prevWeek, currency),
-    ]);
-
-    onResult(current, lastWeek);
-  } catch (e) {
-    refresh();
-  }
-};
-
 const usePriceUpdate = () => {
   const dispatch = useDispatch();
   const currency = useSelector((s: GlobalStateType) => s.config.currency);
 
   const [loading, setLoading] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const refresh = () => {
-    if (!currency) return;
-
-    setLoading(true);
-    fetchAndDispatch(
-      currency,
-      (current, lastWeek) => {
-        dispatch(setPrice({ current, lastWeek }));
-        setLoading(false);
-      },
-      refresh,
-    );
-  };
 
   useEffect(() => {
     if (!currency) return;
 
-    setLoading(true);
-    fetchAndDispatch(
-      currency,
-      (current, lastWeek) => {
+    let isActive = true;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    const run = async () => {
+      try {
+        setLoading(true);
+        const today = new Date();
+        const prevWeek = new Date(today.getTime() - 7 * 24 * 3600 * 1000);
+        const [current, lastWeek] = await Promise.all([
+          getCurrentPrice(currency),
+          getPriceAtDate(prevWeek, currency),
+        ]);
+        if (!isActive) return;
         dispatch(setPrice({ current, lastWeek }));
-        setLoading(false);
-      },
-      refresh,
-    );
-  }, [currency, dispatch]);
+      } finally {
+        if (isActive) setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    if (!currency) return;
+    run();
 
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-
-    timerRef.current = setInterval(() => {
-      setLoading(true);
-      fetchAndDispatch(
-        currency,
-        (current, lastWeek) => {
-          dispatch(setPrice({ current, lastWeek }));
-          setLoading(false);
-        },
-        refresh,
-      );
-    }, PRICE_REFRESH_INTERVAL);
+    timer = setInterval(run, PRICE_REFRESH_INTERVAL);
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      timerRef.current = null;
+      isActive = false;
+      if (timer) clearInterval(timer);
     };
   }, [currency, dispatch]);
 
-  return { loading, refresh };
+  return { loading };
 };
 
 export default usePriceUpdate;
