@@ -25,42 +25,20 @@ export const tokenPriceCurrency = (
   amount: bigint,
   decimals: number,
   token_price: number,
-  minFractionDigits: number = 2,
-  maxFractionDigits: number = 8,
 ) => {
-  const denom: bigint = BigInt(10) ** BigInt(decimals);
-
-  const calcAtScale = (scale: number): bigint => {
-    const priceScaled = BigInt(Math.round(token_price * Math.pow(10, scale)));
-    return (amount * priceScaled) / denom;
-  };
-
-  let scale: number = minFractionDigits;
-  let totalScaled: bigint = calcAtScale(scale);
-
-  if (totalScaled === 0n && amount !== 0n && token_price > 0) {
-    while (scale < maxFractionDigits) {
-      scale += 1;
-      totalScaled = calcAtScale(scale);
-      if (totalScaled !== 0n) break;
-    }
-  }
-
-  const s: string = totalScaled.toString();
-  const fracLen: number = scale;
-  const padded: string = s.padStart(fracLen + 1, '0');
-  const intPart: string = padded.slice(0, -fracLen);
-  let fracPart: string = padded.slice(-fracLen);
-
-  if (scale > minFractionDigits) {
-    const trimmed: string = fracPart.replace(/0+$/g, '');
-    if (trimmed.length >= minFractionDigits) {
-      fracPart = trimmed;
-    }
-  }
-
-  const intFormatted: string = commaSeparate(intPart || '0');
-  return fracPart ? `${intFormatted}.${fracPart}` : intFormatted;
+  const erg_price_cent = BigInt(Math.floor(token_price * 100));
+  const total_cent = (
+    (amount * erg_price_cent) /
+    BigInt('1' + '0'.repeat(decimals))
+  ).toString();
+  const total_cent_with_leading_zeros = '00' + total_cent;
+  return (
+    commaSeparate(total_cent.substring(0, total_cent.length - 2) || '0') +
+    '.' +
+    total_cent_with_leading_zeros.substring(
+      total_cent_with_leading_zeros.length - 2,
+    )
+  );
 };
 
 export const ergPriceCurrency = (amount: bigint, erg_price: number) =>

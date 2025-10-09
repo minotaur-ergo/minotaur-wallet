@@ -240,18 +240,18 @@ describe('token utilities', () => {
    */
   describe('tokenPriceCurrency', () => {
     /**
-     * @target Calculate USD price for token amount
+     * @target Calculate selected currency price for token amount
      * @dependencies
      * - commaSeparate function from txt module
      * @scenario
      * - Call tokenPriceCurrency with amount 1000000000n, 9 decimals, and price 100
      * @expect
-     * - Returns formatted USD price string
+     * - Returns formatted selected currency price string
      */
-    it('should calculate USD price for token amount', () => {
+    it('should calculate selected currence price for token amount', () => {
       const amount = 1000000000n; // 1 token with 9 decimals
       const decimals = 9;
-      const tokenPrice = 100; // $100 per token
+      const tokenPrice = 100; // 100 currency per token
 
       const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
@@ -265,12 +265,12 @@ describe('token utilities', () => {
      * @scenario
      * - Call tokenPriceCurrency with fractional amount and price
      * @expect
-     * - Returns correctly calculated USD value
+     * - Returns correctly calculated selected currency value
      */
     it('should handle fractional token amounts', () => {
       const amount = 500000000n; // 0.5 token with 9 decimals
       const decimals = 9;
-      const tokenPrice = 200; // $200 per token
+      const tokenPrice = 200; // 200 currency per token
 
       const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
@@ -322,12 +322,12 @@ describe('token utilities', () => {
      * @scenario
      * - Call tokenPriceCurrency with fractional price
      * @expect
-     * - Returns correctly calculated USD value
+     * - Returns correctly calculated selected currency value
      */
     it('should handle fractional prices', () => {
       const amount = 1000000000n; // 1 token
       const decimals = 9;
-      const tokenPrice = 0.5; // $0.50 per token
+      const tokenPrice = 0.5; // 0.50 currency per token
 
       const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
@@ -360,16 +360,16 @@ describe('token utilities', () => {
      * @scenario
      * - Call tokenPriceCurrency with very small amount
      * @expect
-     * - Returns correctly calculated small USD value
+     * - Returns correctly calculated small selected currency value
      */
     it('should handle very small amounts', () => {
       const amount = 1n; // smallest unit
       const decimals = 9;
-      const tokenPrice = 1000000; // $1M per token
+      const tokenPrice = 1000000; // 1M currency per token
 
       const result = tokenPriceCurrency(amount, decimals, tokenPrice);
 
-      expect(result).toBe('0.001');
+      expect(result).toBe('0.00');
     });
 
     /**
@@ -397,7 +397,7 @@ describe('token utilities', () => {
    */
   describe('ergPriceCurrency', () => {
     /**
-     * @target Calculate ERG price in USD
+     * @target Calculate ERG price in selected currency
      * @dependencies
      * - tokenPriceCurrency function
      * @scenario
@@ -405,9 +405,9 @@ describe('token utilities', () => {
      * @expect
      * - Returns '5.00'
      */
-    it('should calculate ERG price in USD', () => {
+    it('should calculate ERG price in selected currency', () => {
       const amount = 1000000000n; // 1 ERG (9 decimals)
-      const ergPrice = 5; // $5 per ERG
+      const ergPrice = 5; // 5 currency per ERG
 
       const result = ergPriceCurrency(amount, ergPrice);
 
