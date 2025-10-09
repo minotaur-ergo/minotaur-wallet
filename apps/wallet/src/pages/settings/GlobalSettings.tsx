@@ -77,6 +77,7 @@ const GlobalSettings = () => {
         <Stack spacing={2}>
           <SolitarySelectField
             label="Currency conversion"
+            showSearch={true}
             value={currency}
             options={currencies}
             onChange={saveCurrency}
