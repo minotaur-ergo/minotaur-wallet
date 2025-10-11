@@ -81,14 +81,14 @@ const GlobalSettings = () => {
             onChange={saveDisplayMode}
           />
           <ActionButton
-            label="Wallet Pin"
-            helperText="Set or change wallet pin. This pin used to protect wallet usage only."
+            label="Wallet PIN"
+            helperText="Set or change wallet PIN. This PIN is used to protect wallet usage only."
             onClick={() => navigate(getRoute(RouteMap.Pin, {}))}
           />
           {hasPin ? (
             <ActionButton
-              label="Honey Pin"
-              helperText="Use Honey Pin to enter honey mode. in honey mode you can only view some selected wallets"
+              label="Honey PIN"
+              helperText="Use Honey PIN to enter honey mode. In honey mode you can only view some selected wallets."
               onClick={() => navigate(getRoute(RouteMap.HoneyPin, {}))}
             />
           ) : undefined}

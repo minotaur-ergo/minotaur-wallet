@@ -51,7 +51,7 @@ const StateAlert = () => {
       case MultiSigStateEnum.COMMITMENT:
         return step === 0
           ? ` `
-          : `${step} of ${requiredSign} required commitment collected.`;
+          : `${step} of ${requiredSign} required commitments collected.`;
       case MultiSigStateEnum.SIGNING:
       case MultiSigStateEnum.COMPLETED:
         return `Signed by ${step} of ${requiredSign} required signers.`;

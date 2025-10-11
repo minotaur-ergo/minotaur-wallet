@@ -33,7 +33,7 @@ Features:
 - [x] ErgoPay support
 - [ ] MultiLingual wallet support
 - [ ] Mempool transaction support
-- [x] Wallet pin
+- [x] Wallet PIN
 - [x] Honey Mode: Only display specific list of wallets
 - [x] Animated qrcode
 

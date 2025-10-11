@@ -36,11 +36,11 @@
 
 - Fix scanning qrcode for multi-sig transaction
 - Fix address validation and amount validation
-- Ensure amount be lower or equal than maximum available sigUSD/sigRSV
+- Ensure amount is lower than or equal to maximum available sigUSD/sigRSV
 - Fix address book element modification bug
 - Implement error feedback for failed transaction generation
 - Validate addresses before inserting a new wallet
-- Fix a bug which cause all wallet disappeared when new wallet restored
+- Fix a bug which caused all wallets to disappear when new wallet restored
 - Validate the available amounts of Erg and tokens before transaction
 - Fix delete wallet bug
 - Ensure implementorFee min value ≥ wasm.BoxValue.SAFE_USER_MIN
@@ -53,7 +53,7 @@
 
 ### Minor Changes
 
-- Wallet pin
+- Wallet PIN
 - Honey mode - Only display a list of specific wallets in this mode
 - Allow to archive some wallets. These wallets are not displayed in wallet select page by default.
 - Favorite wallets are displayed in start of wallets list.

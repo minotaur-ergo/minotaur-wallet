@@ -89,8 +89,8 @@ const AddressConfirmMultiSig = (props: AddressConfirmMultiSigPropsType) => {
       <Typography variant="subtitle1" sx={{ mt: 1, p: 1 }}>
         This is your main address.
         <br />
-        Please check it. if this is not your address you entered wrong signers
-        public keys . double check it and try again
+        Please check it. If this is not your address, you entered wrong signers'
+        public keys. Double check it and try again.
       </Typography>
       <Box>
         <Card sx={{ display: 'flex', bgcolor: 'info.light', p: 2 }}>

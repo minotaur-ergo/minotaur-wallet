@@ -33,7 +33,7 @@ const WalletPassword = (props: WalletPasswordPropsType) => {
       />
       <PasswordField
         password={passwordConfirm}
-        label="PasswordConfirm"
+        label="Password Confirm"
         setPassword={setPasswordConfirm}
       />
     </Box>
