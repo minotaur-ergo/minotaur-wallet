@@ -1,7 +1,6 @@
 import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
+import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { getCurrencySymbol } from '@/hooks/useCurrencies';
 
 export const configInitialState: ConfigStateType = {
   currency: '',

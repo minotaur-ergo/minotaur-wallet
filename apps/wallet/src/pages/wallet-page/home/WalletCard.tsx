@@ -1,12 +1,7 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, StateWallet, SymbolType } from '@minotaur-ergo/types';
-import {
-  ergPriceCurrency,
-  getChain,
-  MAIN_NET_LABEL,
-} from '@minotaur-ergo/utils';
+import { StateWallet } from '@minotaur-ergo/types';
+import { getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -18,6 +13,7 @@ import {
 } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import { getRoute, RouteMap } from '@/router/routerMap';
 
@@ -26,15 +22,11 @@ interface WalletCardPropsType {
 }
 
 const WalletCard = (props: WalletCardPropsType) => {
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
   const navigate = useNavigate();
   const gotoBuy = () => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
   };
   const theme = useTheme();
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
   return (
     <Card
       sx={{
@@ -134,11 +126,10 @@ const WalletCard = (props: WalletCardPropsType) => {
           ) : undefined}
         </Box>
         {props.wallet.networkType === MAIN_NET_LABEL ? (
-          <Typography color="text.secondary">
-            {symbol?.direction === 'l'
-              ? `${symbol.symbol} ${ergPriceCurrency(BigInt(props.wallet.balance), ergPrice)}`
-              : `${ergPriceCurrency(BigInt(props.wallet.balance), ergPrice)} ${symbol.symbol}`}
-          </Typography>
+          <BalanceDisplay
+            color="text.secondary"
+            amount={BigInt(props.wallet.balance)}
+          />
         ) : null}
         <Box sx={{ height: 56 }} />
         {/*<Button*/}

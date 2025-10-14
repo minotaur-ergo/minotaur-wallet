@@ -2,17 +2,8 @@ import { MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  ConfigType,
-  GlobalStateType,
-  SymbolType,
-  WalletType,
-} from '@minotaur-ergo/types';
-import {
-  ergPriceCurrency,
-  MAIN_NET_LABEL,
-  WALLET_FLAG_ENUM,
-} from '@minotaur-ergo/utils';
+import { ConfigType, GlobalStateType, WalletType } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
 import { Star, StarBorder } from '@mui/icons-material';
 import {
   Box,
@@ -25,6 +16,7 @@ import {
 
 import { ConfigDbAction, WalletDbAction } from '@/action/db';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import SvgIcon from '@/icons/SvgIcon';
 import { getRoute, RouteMap } from '@/router/routerMap';
@@ -51,16 +43,12 @@ const WalletColorMap = {
 // const COLORS = ['#fec844', '#f1592a', '#32b14a', '#4a9195', '#3c5152'];
 
 const WalletItem = (props: PropsType) => {
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
   const navigate = useNavigate();
   const amount = props.amount ? props.amount : 0n;
   const color = WalletColorMap[props.type];
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
   const activateWallet = () => {
     if (props.onClick) {
       props.onClick();
@@ -148,17 +136,15 @@ const WalletItem = (props: PropsType) => {
               <ErgAmountDisplay amount={amount} />
               <small>&nbsp;ERG</small>
             </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {props.net === MAIN_NET_LABEL ? (
-                symbol?.direction === 'l' ? (
-                  `${symbol.symbol} ${ergPriceCurrency(amount, ergPrice)}`
-                ) : (
-                  `${ergPriceCurrency(amount, ergPrice)} ${symbol.symbol}`
-                )
-              ) : (
-                <span>&nbsp;</span>
-              )}
-            </Typography>
+            {props.net === MAIN_NET_LABEL ? (
+              <BalanceDisplay
+                variant="body2"
+                color="textSecondary"
+                amount={amount}
+              />
+            ) : (
+              <span>&nbsp;</span>
+            )}
           </Box>
           <Box mr={2}>
             <Typography

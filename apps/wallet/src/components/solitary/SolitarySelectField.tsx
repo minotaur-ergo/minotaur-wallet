@@ -51,7 +51,6 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
   const handleSelectOption = (optionValue: string) => () => {
     setNewValue(optionValue);
   };
-  const handleSearch = () => {};
 
   return (
     <Fragment>
@@ -94,7 +93,6 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
               value={searchVal}
               onChange={(e) => {
                 setSearchVal(e.target.value);
-                handleSearch();
               }}
               InputProps={{
                 startAdornment: (

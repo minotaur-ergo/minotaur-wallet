@@ -36,8 +36,7 @@ const usePriceUpdate = () => {
   useEffect(() => {
     if (!currency) return;
 
-    let isActive = true;
-    let timer: ReturnType<typeof setInterval> | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     const run = async () => {
       try {
@@ -48,20 +47,18 @@ const usePriceUpdate = () => {
           getCurrentPrice(currency),
           getPriceAtDate(prevWeek, currency),
         ]);
-        if (!isActive) return;
         dispatch(setPrice({ current, lastWeek }));
-      } finally {
-        if (isActive) setLoading(false);
+      } catch (err) {
+        console.log(err);
       }
     };
 
     run();
 
-    timer = setInterval(run, PRICE_REFRESH_INTERVAL);
+    timer = setTimeout(run, PRICE_REFRESH_INTERVAL);
 
     return () => {
-      isActive = false;
-      if (timer) clearInterval(timer);
+      if (timer) clearTimeout(timer);
     };
   }, [currency, dispatch]);
 

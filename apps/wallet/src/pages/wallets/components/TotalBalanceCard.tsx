@@ -1,24 +1,21 @@
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType, SymbolType } from '@minotaur-ergo/types';
-import { ergPriceCurrency, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { GlobalStateType } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
+
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 
 import Rate from './Rate';
 
 const TotalBalanceCard = () => {
   const theme = useTheme();
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
   const totalErg = wallets
     .filter((item) => item.networkType === MAIN_NET_LABEL)
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
   const totalErgLastWeek = totalErg;
-  const value = ergPriceCurrency(totalErg, ergPrice);
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
   return (
     <Card
       sx={{
@@ -75,15 +72,12 @@ const TotalBalanceCard = () => {
         >
           Total Balance
         </Typography>
-        <Typography
+        <BalanceDisplay
           textAlign="center"
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
-        >
-          {symbol?.direction === 'l'
-            ? `${symbol.symbol} ${value.toLocaleString()}`
-            : `${value.toLocaleString()} ${symbol.symbol}`}
-        </Typography>
+          amount={totalErg}
+        />
         <Typography
           variant="body2"
           textAlign="center"
