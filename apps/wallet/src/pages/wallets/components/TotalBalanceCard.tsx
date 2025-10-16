@@ -72,12 +72,13 @@ const TotalBalanceCard = () => {
         >
           Total Balance
         </Typography>
-        <BalanceDisplay
+        <Typography
           textAlign="center"
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
-          amount={totalErg}
-        />
+        >
+          <BalanceDisplay amount={totalErg} />
+        </Typography>
         <Typography
           variant="body2"
           textAlign="center"

@@ -136,15 +136,13 @@ const WalletItem = (props: PropsType) => {
               <ErgAmountDisplay amount={amount} />
               <small>&nbsp;ERG</small>
             </Typography>
-            {props.net === MAIN_NET_LABEL ? (
-              <BalanceDisplay
-                variant="body2"
-                color="textSecondary"
-                amount={amount}
-              />
-            ) : (
-              <span>&nbsp;</span>
-            )}
+            <Typography variant="body2" color="textSecondary">
+              {props.net === MAIN_NET_LABEL ? (
+                <BalanceDisplay amount={amount} />
+              ) : (
+                <span>&nbsp;</span>
+              )}
+            </Typography>
           </Box>
           <Box mr={2}>
             <Typography

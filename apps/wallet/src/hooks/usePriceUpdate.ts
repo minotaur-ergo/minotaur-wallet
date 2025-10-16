@@ -56,7 +56,6 @@ const usePriceUpdate = () => {
 
     run();
 
-
     return () => {
       if (timer) clearTimeout(timer);
     };

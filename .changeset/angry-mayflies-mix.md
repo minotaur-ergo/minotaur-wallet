@@ -1,6 +1,4 @@
 ---
-'@minotaur-ergo/types': minor
-'@minotaur-ergo/utils': minor
 'minotaur-wallet': minor
 ---
 
