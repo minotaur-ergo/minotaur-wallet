@@ -6,11 +6,10 @@ import * as console from 'node:console';
 import { getChain } from './network';
 import { bip32 } from './xpub';
 
-export const RootPathWithoutIndex = "m/44'/429'/0'/0";
-export const calcPathFromIndex = (index: number) =>
-  `${RootPathWithoutIndex}/${index}`;
+const RootPathWithoutIndex = "m/44'/429'/0'/0";
+const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
-export const getNewAddressName = async (name: string, index: number) => {
+const getNewAddressName = async (name: string, index: number) => {
   if (!name) {
     if (index === 0) {
       return 'Main Address';
@@ -20,7 +19,7 @@ export const getNewAddressName = async (name: string, index: number) => {
   return name;
 };
 
-export const deriveAddressFromXPub = (
+const deriveAddressFromXPub = (
   xPub: string,
   networkPrefix: wasm.NetworkPrefix,
   index: number,
@@ -37,7 +36,7 @@ export const deriveAddressFromXPub = (
   };
 };
 
-export const findWalletAddresses = async (
+const findWalletAddresses = async (
   derive: (index: number) => Promise<{ address: string; path: string }>,
   networkType: string,
 ) => {
@@ -74,7 +73,7 @@ export const findWalletAddresses = async (
   return addresses;
 };
 
-export const deriveAddressFromMnemonic = async (
+const deriveAddressFromMnemonic = async (
   mnemonic: string,
   password: string,
   NETWORK_TYPE: wasm.NetworkPrefix,
@@ -90,4 +89,13 @@ export const deriveAddressFromMnemonic = async (
     address: secret.get_address().to_base58(NETWORK_TYPE),
     path: path,
   };
+};
+
+export {
+  RootPathWithoutIndex,
+  calcPathFromIndex,
+  getNewAddressName,
+  deriveAddressFromXPub,
+  findWalletAddresses,
+  deriveAddressFromMnemonic,
 };

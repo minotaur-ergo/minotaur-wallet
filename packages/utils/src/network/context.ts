@@ -243,7 +243,7 @@ const headers = [
     }`,
 ];
 
-export const fakeContext = () => {
+const fakeContext = () => {
   const blockHeaders = wasm.BlockHeaders.from_json(headers);
   const preHeader = wasm.PreHeader.from_block_header(
     wasm.BlockHeader.from_json(headers[0]),
@@ -254,3 +254,5 @@ export const fakeContext = () => {
     wasm.Parameters.default_parameters(),
   );
 };
+
+export { fakeContext };
