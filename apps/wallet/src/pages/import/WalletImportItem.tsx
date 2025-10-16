@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 
 import { ImportProcessingState } from '@minotaur-ergo/types';
 import {
@@ -32,12 +32,13 @@ const WalletExportItem = (props: WalletExportItemProps) => {
     }
     return <div>{wallet.status}</div>;
   }, [wallet.status]);
+  const disabled = useMemo(() => (wallet.invalid ?? '') !== '', [wallet]);
   return (
     <Box component="label" display="flex" gap={2}>
       <Box sx={{ flexShrink: 0 }}>
         {context.status === ImportProcessingState.Pending ? (
           <Checkbox
-            disabled={wallet.duplicate}
+            disabled={disabled}
             checked={wallet.selected}
             onChange={() => context.handleSelection(props.index)}
           />
@@ -46,7 +47,7 @@ const WalletExportItem = (props: WalletExportItemProps) => {
         )}
       </Box>
       <Box sx={{ pt: 1, flexGrow: 1 }}>
-        <Box sx={{ opacity: wallet.duplicate ? 0.6 : 1 }}>
+        <Box sx={{ opacity: disabled ? 0.6 : 1 }}>
           <Typography>{wallet.name}</Typography>
           <Typography color="gray">Normal Wallet</Typography>
           <DisplayId
@@ -58,14 +59,12 @@ const WalletExportItem = (props: WalletExportItemProps) => {
             }
           />
         </Box>
-        {wallet.duplicate ? (
+        {disabled ? (
           <Box display="flex" color="warning.main" gap={1}>
             <WarningOutlined fontSize="small" />
-            <Typography>Is duplicate!</Typography>
+            <Typography>{wallet.invalid}</Typography>
           </Box>
-        ) : (
-          ''
-        )}
+        ) : undefined}
       </Box>
     </Box>
   );

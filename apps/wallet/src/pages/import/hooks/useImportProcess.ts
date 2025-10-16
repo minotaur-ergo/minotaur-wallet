@@ -40,7 +40,7 @@ const useImportProcess = () => {
               return {
                 ...item,
                 selected: false,
-                duplicate: exists,
+                invalid: exists ? 'is duplicate!' : undefined,
                 status: ImportProcessingState.Pending,
               };
             }),

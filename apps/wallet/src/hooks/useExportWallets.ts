@@ -50,6 +50,22 @@ const useExportWallets = () => {
   const changeSelection = (index: number, selected: boolean) => {
     const newSelection = [...selection];
     newSelection[index] = { ...newSelection[index], selected };
+    // const selectedWallet = newSelection[index];
+    // if (selectedWallet.wallet.type !== WalletType.MultiSig && !selected) {
+    //   newSelection.findIndex((item) => {
+    //     if(item.wallet.type === WalletType.MultiSig) {
+    //       item.signWalletId === selectedWallet.wallet.id
+    //     }
+    //     return false
+    //   });
+    // }
+    // if (selectedWallet.wallet.type === WalletType.MultiSig && selected) {
+    //   newSelection.forEach((item) => {
+    //     if (item.wallet.type === WalletType.MultiSig) {
+    //       item.selected = false;
+    //     }
+    //   });
+    // }
     setSelection(newSelection);
   };
   const setSecret = (index: number, secret: boolean) => {
@@ -57,7 +73,6 @@ const useExportWallets = () => {
     newSelection[index] = { ...newSelection[index], secret };
     setSelection(newSelection);
   };
-  console.log(encoded);
   return {
     selection,
     selectAll,

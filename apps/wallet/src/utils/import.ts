@@ -3,11 +3,10 @@ import {
   RestoreWalletWithSelection,
   WalletType,
 } from '@minotaur-ergo/types';
-import { getChain } from '@minotaur-ergo/utils';
+import { deriveAddressFromXPub, getChain } from '@minotaur-ergo/utils';
 
 import {
   addWalletAddresses,
-  deriveAddressFromXPub,
   deriveMultiSigWalletAddress,
 } from '@/action/address';
 import { MultiSigDbAction, WalletDbAction } from '@/action/db';

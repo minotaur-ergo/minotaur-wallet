@@ -58,7 +58,6 @@ const WalletExport = () => {
       </Stack>
       <Drawer anchor="bottom" open={open} onClose={close}>
         <Box mb={2} display={'flex'}>
-          {/*<Box sx={{ flexBasis: 40 }} />*/}
           <Typography variant="h1" textAlign="center" sx={{ p: 1 }}>
             Exporting {selectedCount} Wallet{selectedCount > 1 ? 's' : ''}
           </Typography>
@@ -67,7 +66,6 @@ const WalletExport = () => {
           </IconButton>
         </Box>
         <DisplayQRCode value={encoded} type={QrCodeTypeEnum.WalletExportJSON} />
-        {/*</Box>*/}
       </Drawer>
     </AppFrame>
   );

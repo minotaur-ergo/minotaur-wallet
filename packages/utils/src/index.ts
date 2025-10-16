@@ -9,3 +9,4 @@ export * from './txt';
 export * from './vlq';
 export * from './wasm';
 export * from './xpub';
+export * from './address';

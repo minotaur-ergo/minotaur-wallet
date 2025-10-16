@@ -40,7 +40,7 @@ export enum ImportProcessingState {
 
 export interface RestoreWalletWithSelection extends ExportWallet {
   selected: boolean;
-  duplicate: boolean;
+  invalid?: string;
   status: ImportProcessingState;
 }
 

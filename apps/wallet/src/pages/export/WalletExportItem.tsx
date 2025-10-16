@@ -34,7 +34,7 @@ const WalletExportItem = (props: WalletExportItemProps) => {
                 onChange={() => props.handleSecret(!props.secret)}
               />
             }
-            label={`${props.secret ? 'as ReadOnly Wallet' : 'as Normal Wallet'}`}
+            label={`${props.secret ? 'as Normal Wallet' : 'as ReadOnly Wallet'}`}
             slotProps={{
               typography: {
                 fontSize: 'small',

@@ -15,7 +15,7 @@
     "ergo-lib-wasm-nodejs": "0.28.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.3",
     "vite": "^6.0.1",
     "vite-plugin-dts": "^4.3.0"
   },

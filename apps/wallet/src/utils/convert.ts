@@ -51,7 +51,7 @@ export const toExport = async (
     network: wallet.networkType,
     type: wallet.type,
     xPub: wallet.xPub,
-    addresses: wallet.addresses.map((item) => item.address),
+    addresses: wallet.addresses.map((item) => item.address ),
     seed: addSecret ? wallet.seed : '',
     version: wallet.version,
   };
@@ -60,7 +60,9 @@ export const toExport = async (
     const signers = await MultiSigDbAction.getInstance().getWalletKeys(
       wallet.id,
     );
-    res.signers = signers.map((item) => item.extended_key);
+    res.signers = signers.map(
+      (item) => (item.sign_wallet ? '+' : '-') + item.extended_key,
+    );
   }
   return res;
 };

@@ -237,10 +237,14 @@ class MultiSigDbAction {
   };
 
   getWalletKeys = async (walletId: number) => {
-    return await this.repository
-      .createQueryBuilder()
-      .where('walletId = :walletId', { walletId: walletId })
-      .getMany();
+    return await this.repository.find({
+      where:{
+        wallet:{
+          id: walletId,
+        }
+      },
+      relations: ['sign_wallet']
+    })
   };
 
   deleteWalletKeys = async (walletId: number) => {

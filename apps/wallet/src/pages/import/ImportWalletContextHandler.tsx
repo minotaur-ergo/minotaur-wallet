@@ -33,7 +33,6 @@ const ImportWalletContextHandler = (props: ImportWalletContextHandler) => {
   );
   const status = useProcessingState(data);
   useImportProgress(data, setData, index, setIndex);
-  console.log(index, data);
   return (
     <ImportWalletContext.Provider
       value={{
