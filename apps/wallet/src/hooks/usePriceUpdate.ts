@@ -51,11 +51,11 @@ const usePriceUpdate = () => {
       } catch (err) {
         console.log(err);
       }
+      timer = setTimeout(run, PRICE_REFRESH_INTERVAL);
     };
 
     run();
 
-    timer = setTimeout(run, PRICE_REFRESH_INTERVAL);
 
     return () => {
       if (timer) clearTimeout(timer);
