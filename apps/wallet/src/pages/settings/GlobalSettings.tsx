@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { ConfigType, DisplayType, GlobalStateType } from '@minotaur-ergo/types';
+import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { Box, Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
@@ -32,6 +33,7 @@ const GlobalSettings = () => {
   );
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
+    currency = currency.split(' ')[0];
     ConfigDbAction.getInstance()
       .setConfig(ConfigType.Currency, currency, activePinType)
       .then(() => {
@@ -67,7 +69,7 @@ const GlobalSettings = () => {
   );
 
   const [currencies, setCurrencies] = useState<OptionsType[]>([
-    { value: currency },
+    { value: `${currency} (${getCurrencySymbol(currency).symbol})` },
   ]);
 
   return (
@@ -78,7 +80,7 @@ const GlobalSettings = () => {
           <SolitarySelectField
             label="Currency conversion"
             showSearch={true}
-            value={currency}
+            value={`${currency} (${getCurrencySymbol(currency).symbol})`}
             options={currencies}
             onChange={saveCurrency}
             onOpen={() => {

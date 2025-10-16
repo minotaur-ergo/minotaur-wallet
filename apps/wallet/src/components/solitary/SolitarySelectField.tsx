@@ -78,45 +78,45 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
         inputProps={{ readOnly: true }}
       />
       <Drawer anchor="bottom" open={open} onClose={handleClose}>
+        <Typography fontWeight="bold" sx={{ mt: 2, mb: 1 }}>
+          Select {props.label?.toLowerCase()}
+        </Typography>
+        {props.showSearch && (
+          <TextField
+            sx={{
+              '& .MuiInputBase-input': {
+                marginBottom: '12px',
+              },
+            }}
+            placeholder="Search"
+            value={searchVal}
+            onChange={(e) => {
+              setSearchVal(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <ManageSearchOutlined sx={{ fontSize: 30, mb: 2 }} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      setSearchVal('');
+                    }}
+                    edge="end"
+                    size="small"
+                  >
+                    <Cancel />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{ autoFocus: true, autoComplete: 'off' }}
+          />
+        )}
         <div style={{ overflowY: 'auto' }}>
-          <Typography fontWeight="bold" sx={{ mt: 2, mb: 1 }}>
-            Select {props.label?.toLowerCase()}
-          </Typography>
-          {props.showSearch && (
-            <TextField
-              sx={{
-                '& .MuiInputBase-input': {
-                  marginBottom: '12px',
-                },
-              }}
-              placeholder="Search"
-              value={searchVal}
-              onChange={(e) => {
-                setSearchVal(e.target.value);
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <ManageSearchOutlined sx={{ fontSize: 30, mb: 2 }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => {
-                        setSearchVal('');
-                      }}
-                      edge="end"
-                      size="small"
-                    >
-                      <Cancel />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              inputProps={{ autoFocus: true }}
-            />
-          )}
           <List disablePadding>
             {props.options
               .filter((o) =>

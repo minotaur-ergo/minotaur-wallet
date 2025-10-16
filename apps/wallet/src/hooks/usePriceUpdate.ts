@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CapacitorHttp } from '@capacitor/core';
@@ -30,17 +30,15 @@ const getPriceAtDate = async (date: Date, currency: string) => {
 const usePriceUpdate = () => {
   const dispatch = useDispatch();
   const currency = useSelector((s: GlobalStateType) => s.config.currency);
-
-  const [loading, setLoading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const loading = useRef<boolean>(false);
 
   useEffect(() => {
     if (!currency) return;
-
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
     const run = async () => {
+      if (loading.current) return;
       try {
-        setLoading(true);
+        loading.current = true;
         const today = new Date();
         const prevWeek = new Date(today.getTime() - 7 * 24 * 3600 * 1000);
         const [current, lastWeek] = await Promise.all([
@@ -48,16 +46,18 @@ const usePriceUpdate = () => {
           getPriceAtDate(prevWeek, currency),
         ]);
         dispatch(setPrice({ current, lastWeek }));
-      } catch (err) {
-        console.log(err);
+      } finally {
+        loading.current = false;
       }
-      timer = setTimeout(run, PRICE_REFRESH_INTERVAL);
     };
 
     run();
-
+    timerRef.current = setInterval(run, PRICE_REFRESH_INTERVAL);
     return () => {
-      if (timer) clearTimeout(timer);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
   }, [currency, dispatch]);
 

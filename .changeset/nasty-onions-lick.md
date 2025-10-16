@@ -2,4 +2,4 @@
 '@minotaur-ergo/types': minor
 ---
 
-add SymbolType
+Add SymbolType
