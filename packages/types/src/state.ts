@@ -82,9 +82,15 @@ export interface PinConfig {
   loaded: boolean;
 }
 
+export interface SymbolType {
+  symbol: string;
+  direction: 'l' | 'r';
+}
+
 export interface ConfigStateType {
   display: DisplayType;
   currency: string;
+  symbol: SymbolType;
   price: number;
   priceLastWeek: number;
   activeWallet?: number;

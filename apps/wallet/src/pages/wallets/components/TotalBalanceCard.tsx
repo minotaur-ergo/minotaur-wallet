@@ -1,21 +1,21 @@
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
-import { ergPriceUsd, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
+
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 
 import Rate from './Rate';
 
 const TotalBalanceCard = () => {
   const theme = useTheme();
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
   const totalErg = wallets
     .filter((item) => item.networkType === MAIN_NET_LABEL)
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
   const totalErgLastWeek = totalErg;
-  const value = ergPriceUsd(totalErg, ergPrice);
   return (
     <Card
       sx={{
@@ -77,7 +77,7 @@ const TotalBalanceCard = () => {
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
         >
-          $ {value.toLocaleString()}
+          <BalanceDisplay amount={totalErg} />
         </Typography>
         <Typography
           variant="body2"

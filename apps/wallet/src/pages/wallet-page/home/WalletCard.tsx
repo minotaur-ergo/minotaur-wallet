@@ -1,8 +1,7 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
-import { ergPriceUsd, getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { StateWallet } from '@minotaur-ergo/types';
+import { getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -14,6 +13,7 @@ import {
 } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import { getRoute, RouteMap } from '@/router/routerMap';
 
@@ -22,7 +22,6 @@ interface WalletCardPropsType {
 }
 
 const WalletCard = (props: WalletCardPropsType) => {
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
   const navigate = useNavigate();
   const gotoBuy = () => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
@@ -128,7 +127,7 @@ const WalletCard = (props: WalletCardPropsType) => {
         </Box>
         {props.wallet.networkType === MAIN_NET_LABEL ? (
           <Typography color="text.secondary">
-            $ {ergPriceUsd(BigInt(props.wallet.balance), ergPrice)}
+            <BalanceDisplay amount={BigInt(props.wallet.balance)} />
           </Typography>
         ) : null}
         <Box sx={{ height: 56 }} />
