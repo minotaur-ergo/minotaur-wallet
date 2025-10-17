@@ -4,7 +4,7 @@
     "target": "ES2020",
     "composite": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "lib": ["ES2020"],
     "declaration": true,
     "outDir": "./dist",

@@ -17,7 +17,7 @@ const tokenStr = (amount: bigint, decimal: number, displayDecimal?: number) => {
   );
 };
 
-const tokenPriceUsd = (
+const tokenPriceCurrency = (
   amount: bigint,
   decimals: number,
   token_price: number,
@@ -37,8 +37,8 @@ const tokenPriceUsd = (
   );
 };
 
-const ergPriceUsd = (amount: bigint, erg_price: number) =>
-  tokenPriceUsd(amount, 9, erg_price);
+const ergPriceCurrency = (amount: bigint, erg_price: number) =>
+  tokenPriceCurrency(amount, 9, erg_price);
 
 const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   if (amount === '') return 0n;
@@ -53,4 +53,9 @@ const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   return BigInt(parts[0] + part1);
 };
 
-export { tokenStr, tokenPriceUsd, ergPriceUsd, numberWithDecimalToBigInt };
+export {
+  tokenStr,
+  tokenPriceCurrency,
+  ergPriceCurrency,
+  numberWithDecimalToBigInt,
+};

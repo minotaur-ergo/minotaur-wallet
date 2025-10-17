@@ -1,7 +1,6 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DerivedWalletAddress } from '@minotaur-ergo/types';
 import { mnemonicToSeedSync } from 'bip39';
-import * as console from 'node:console';
 
 import { getChain } from './network';
 import { bip32 } from './xpub';
@@ -9,7 +8,7 @@ import { bip32 } from './xpub';
 const RootPathWithoutIndex = "m/44'/429'/0'/0";
 const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
 
-const getNewAddressName = async (name: string, index: number) => {
+const getNewAddressName = (name: string, index: number) => {
   if (!name) {
     if (index === 0) {
       return 'Main Address';
@@ -45,7 +44,6 @@ const findWalletAddresses = async (
   const chain = getChain(networkType);
   const network = chain.getNetwork();
   const firstAddress = await derive(0);
-  console.log('address is ', firstAddress);
   addresses.push({
     address: firstAddress.address,
     path: firstAddress.path,

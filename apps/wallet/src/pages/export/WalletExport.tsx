@@ -13,19 +13,17 @@ import {
 
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import DisplayQRCode from '@/components/display-qrcode/DisplayQRCode';
-import useExportWallets from '@/hooks/useExportWallets';
+import { useExportData } from '@/hooks/export/useExportData';
+import { useExportWallet } from '@/hooks/export/useExportWallet';
+import { useSelection } from '@/hooks/export/useSelection';
 import AppFrame from '@/layouts/AppFrame';
 import WalletExportItem from '@/pages/export/WalletExportItem';
 
 const WalletExport = () => {
-  const {
-    selectAll,
-    selection,
-    selectedCount,
-    setSelection,
-    setSecret,
-    encoded,
-  } = useExportWallets();
+  const wallets = useExportWallet();
+  const { selection, select, selectAll, selectedCount, changeSecret } =
+    useSelection(wallets);
+  const encoded = useExportData(selection);
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   return (
@@ -35,7 +33,7 @@ const WalletExport = () => {
       actions={
         <IconButton
           color={selection.length > selectedCount ? 'default' : 'primary'}
-          onClick={selectAll}
+          onClick={() => selectAll(selection.length < selectedCount)}
         >
           <Checklist />
         </IconButton>
@@ -51,8 +49,8 @@ const WalletExport = () => {
           <WalletExportItem
             key={index}
             {...item}
-            handleSecret={(selected: boolean) => setSecret(index, selected)}
-            handleSelection={(secret: boolean) => setSelection(index, secret)}
+            handleSecret={() => changeSecret(index)}
+            handleSelection={() => select(index)}
           />
         ))}
       </Stack>

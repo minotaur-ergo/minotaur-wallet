@@ -1,4 +1,4 @@
-import { StateWallet, WalletType } from '@minotaur-ergo/types';
+import { ExportWallet, WalletType } from '@minotaur-ergo/types';
 import {
   Box,
   Card,
@@ -11,29 +11,21 @@ import {
 interface WalletExportItemProps {
   selected: boolean;
   secret: boolean;
-  wallet: StateWallet;
-  handleSelection: (selected: boolean) => unknown;
-  handleSecret: (secret: boolean) => unknown;
+  wallet: ExportWallet;
+  handleSelection: () => unknown;
+  handleSecret: () => unknown;
 }
 
 const WalletExportItem = (props: WalletExportItemProps) => {
   return (
     <Box component="label" display="flex" gap={2}>
-      <Checkbox
-        checked={props.selected}
-        onChange={() => props.handleSelection(!props.selected)}
-      />
+      <Checkbox checked={props.selected} onChange={props.handleSelection} />
       <Card sx={{ p: 2, flexGrow: 1 }}>
         <Typography>{props.wallet.name}</Typography>
         {props.wallet.type === WalletType.Normal ? (
           <FormControlLabel
             checked={props.secret}
-            control={
-              <Switch
-                size="small"
-                onChange={() => props.handleSecret(!props.secret)}
-              />
-            }
+            control={<Switch size="small" onChange={props.handleSecret} />}
             label={`${props.secret ? 'as Normal Wallet' : 'as ReadOnly Wallet'}`}
             slotProps={{
               typography: {

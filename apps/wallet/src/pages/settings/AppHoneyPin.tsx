@@ -52,7 +52,7 @@ const WalletSetPin = () => {
 
   return (
     <AppFrame
-      title="Set/Change honey pin"
+      title="Set/Change honey PIN"
       navigation={<BackButtonRouter />}
       toolbar={
         <Button
@@ -78,12 +78,12 @@ const WalletSetPin = () => {
             <PasswordField
               password={newPin}
               setPassword={setNewPin}
-              label="Honey Pin"
+              label="Honey PIN"
             />
             <PasswordField
               password={newPinConfirm}
               setPassword={setNewPinConfirm}
-              label="Confirm Honey Pin"
+              label="Confirm Honey PIN"
             />
           </>
         )}

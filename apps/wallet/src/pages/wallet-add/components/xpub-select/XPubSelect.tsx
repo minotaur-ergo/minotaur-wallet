@@ -53,7 +53,7 @@ const XPubSelect = (props: XPubSelectPropsType) => {
       {props.xPubs.map((xPub, index) => (
         <AddressOrXPub
           key={`xpub-${index}`}
-          label={`Enter public key #${index + 1}`}
+          label={`Enter extended public key #${index + 1}`}
           value={xPub}
           setValue={xPubSetter(index)}
           setHasError={setHasError(index)}

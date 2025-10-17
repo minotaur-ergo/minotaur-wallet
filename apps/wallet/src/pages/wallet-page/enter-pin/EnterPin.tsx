@@ -25,7 +25,7 @@ const EnterPin = () => {
         .findPinByValue(pinHash)
         .then((foundPin) => {
           if (foundPin === null) {
-            message.insert('Invalid pin entered', 'error');
+            message.insert('Invalid PIN entered', 'error');
             setPin('');
           } else {
             setTryCount(0);
@@ -39,7 +39,7 @@ const EnterPin = () => {
 
   return (
     <AppFrame
-      title="Enter Pin"
+      title="Enter PIN"
       toolbar={
         <Button disabled={tryCount >= MAX_TRY_COUNT} onClick={handleSubmit}>
           Unlock
@@ -49,10 +49,10 @@ const EnterPin = () => {
       <Typography mb={2}>
         Please enter your wallet pin to unlock wallet
       </Typography>
-      <PasswordField password={pin} setPassword={setPin} label="Pin" />
+      <PasswordField password={pin} setPassword={setPin} label="PIN" />
       {tryCount >= MAX_TRY_COUNT ? (
         <Typography mb={2} color={'red'}>
-          Tried 3 times with wrong pin. Please Close application and try again.
+          Tried 3 times with wrong PIN. Please Close application and try again.
         </Typography>
       ) : undefined}
     </AppFrame>

@@ -155,7 +155,7 @@ const useMessage = (
   }, [multiple.description, ergoPayData.message, error, isLoading]);
   const title = useMemo(() => {
     if (multiple.supported === MultiAddressSupportedEnum.NOT_CHECKED)
-      return 'Checking Multiple Address Supported';
+      return 'Checking Multiple Address Support';
     if (ergoPayData.loading) return 'Loading ErgoPay data';
     if (loading) return 'Loading transaction details';
     if (multiple.title) return multiple.title;
