@@ -76,6 +76,7 @@ const Wallets = () => {
                 net={item.networkType}
                 tokensCount={item.tokens.length}
                 amount={BigInt(item.balance)}
+                tokensValueInNanoErg={BigInt(item.tokensBalanceInNanoErg)}
                 key={index}
                 archived={item.archived}
                 favorite={item.favorite}
@@ -94,6 +95,7 @@ const Wallets = () => {
             net={item.networkType}
             tokensCount={item.tokens.length}
             amount={BigInt(item.balance)}
+            tokensValueInNanoErg={BigInt(item.tokensBalanceInNanoErg)}
             key={index}
             archived={item.archived}
             favorite={item.favorite}

@@ -27,6 +27,7 @@ const getInitializeData = async (): Promise<InitializeAllPayload> => {
       const row: AddressBalance = addressBalance[balance.address.address] || {
         amount: '0',
         tokens: [],
+        tokensValuesInNanoErg: '0',
       };
       if (balance.token_id === '') {
         row.amount = (BigInt(row.amount) + balance.amount).toString();
@@ -42,6 +43,7 @@ const getInitializeData = async (): Promise<InitializeAllPayload> => {
           row.tokens.push({
             tokenId: balance.token_id,
             balance: balance.amount.toString(),
+            valueInNanoErg: '',
           });
         }
       }

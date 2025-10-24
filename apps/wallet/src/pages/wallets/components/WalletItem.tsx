@@ -28,6 +28,7 @@ interface PropsType {
   net?: string;
   amount?: bigint;
   tokensCount?: number;
+  tokensValueInNanoErg: bigint;
   onClick?: () => unknown;
   archived: boolean;
   favorite: boolean;
@@ -48,6 +49,9 @@ const WalletItem = (props: PropsType) => {
   );
   const navigate = useNavigate();
   const amount = props.amount ? props.amount : 0n;
+  const tokensValueInNanoErg = props.tokensValueInNanoErg
+    ? props.tokensValueInNanoErg
+    : 0n;
   const color = WalletColorMap[props.type];
   const activateWallet = () => {
     if (props.onClick) {
@@ -138,7 +142,7 @@ const WalletItem = (props: PropsType) => {
             </Typography>
             <Typography variant="body2" color="textSecondary">
               {props.net === MAIN_NET_LABEL ? (
-                <BalanceDisplay amount={amount} />
+                <BalanceDisplay amount={amount + tokensValueInNanoErg} />
               ) : (
                 <span>&nbsp;</span>
               )}

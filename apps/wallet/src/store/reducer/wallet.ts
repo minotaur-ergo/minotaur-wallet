@@ -32,19 +32,29 @@ const updateWalletBalance = (
   wallet.balance = addresses
     .reduce((a, b) => a + BigInt(b.balance), 0n)
     .toString();
-  const tokens: { [tokenId: string]: bigint } = {};
+  wallet.tokensBalanceInNanoErg = addresses
+    .reduce((a, b) => a + BigInt(b.tokensBalanceInNanoErg) || 0n, 0n)
+    .toString();
+  const tokens: {
+    [tokenId: string]: { balance: bigint; valueInNanoErg: bigint };
+  } = {};
   addresses.forEach((address) => {
     address.tokens.forEach((token) => {
       if (Object.keys(tokens).includes(token.tokenId)) {
-        tokens[token.tokenId] += BigInt(token.balance);
+        tokens[token.tokenId].balance += BigInt(token.balance);
+        tokens[token.tokenId].valueInNanoErg += BigInt(token.valueInNanoErg);
       } else {
-        tokens[token.tokenId] = BigInt(token.balance);
+        tokens[token.tokenId] = {
+          balance: BigInt(token.balance),
+          valueInNanoErg: BigInt(token.valueInNanoErg),
+        };
       }
     });
   });
   wallet.tokens = Object.entries(tokens).map((item) => ({
     tokenId: item[0],
-    balance: item[1].toString(),
+    balance: item[1].balance.toString(),
+    valueInNanoErg: item[1].valueInNanoErg.toString(),
   }));
   if (
     wallet.flags.filter((item) => item.startsWith(DEFAULT_ADDRESS_PREFIX))
@@ -68,8 +78,10 @@ const updateAddressBalance = (
   const addressBalances: AddressBalance = balances[address.address] || {
     tokens: [],
     amount: '0',
+    tokensValuesInNanoErg: '0',
   };
   address.balance = addressBalances.amount;
+  address.tokensBalanceInNanoErg = addressBalances.tokensValuesInNanoErg || '0';
   address.tokens = addressBalances.tokens.filter((item) => {
     try {
       return BigInt(item.balance) > 0n;

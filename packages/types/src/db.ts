@@ -11,6 +11,7 @@ export enum WalletType {
 export interface TokenBalance {
   tokenId: string;
   balance: string;
+  valueInNanoErg: string;
 }
 
 export interface TokenBalanceBigInt {
