@@ -127,12 +127,7 @@ const WalletCard = (props: WalletCardPropsType) => {
         </Box>
         {props.wallet.networkType === MAIN_NET_LABEL ? (
           <Typography color="text.secondary">
-            <BalanceDisplay
-              amount={
-                BigInt(props.wallet.balance) +
-                BigInt(props.wallet.tokensBalanceInNanoErg)
-              }
-            />
+            <BalanceDisplay amount={BigInt(props.wallet.balance)} />
           </Typography>
         ) : null}
         <Box sx={{ height: 56 }} />

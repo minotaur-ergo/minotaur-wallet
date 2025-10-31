@@ -11,7 +11,6 @@ export interface StateWallet {
   version: number;
   balance: string;
   tokens: Array<TokenBalance>;
-  tokensBalanceInNanoErg: string;
   addresses: Array<StateAddress>;
   flags: Array<string>;
   archived: boolean;
@@ -28,7 +27,6 @@ export interface StateAddress {
   walletId: number;
   proceedHeight: number;
   tokens: Array<TokenBalance>;
-  tokensBalanceInNanoErg: string;
   isDefault: boolean;
 }
 
@@ -41,7 +39,6 @@ export interface DerivedWalletAddress {
 export interface AddressBalance {
   amount: string;
   tokens: Array<TokenBalance>;
-  tokensValuesInNanoErg: string;
 }
 
 export interface AddressBalancePayload {

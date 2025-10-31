@@ -15,10 +15,6 @@ const TotalBalanceCard = () => {
     .filter((item) => item.networkType === MAIN_NET_LABEL)
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
-  const totalTokensInNanoErg = wallets
-    .filter((item) => item.networkType === MAIN_NET_LABEL)
-    .map((item) => BigInt(item.tokensBalanceInNanoErg))
-    .reduce((a, b) => a + b, 0n);
   const totalErgLastWeek = totalErg;
   return (
     <Card
@@ -81,7 +77,7 @@ const TotalBalanceCard = () => {
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
         >
-          <BalanceDisplay amount={totalErg + totalTokensInNanoErg} />
+          <BalanceDisplay amount={totalErg} />
         </Typography>
         <Typography
           variant="body2"

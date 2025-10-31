@@ -1,9 +1,4 @@
-import { CapacitorHttp } from '@capacitor/core';
-import {
-  AbstractNetwork,
-  StateWallet,
-  TokenBalance,
-} from '@minotaur-ergo/types';
+import { AbstractNetwork, StateWallet } from '@minotaur-ergo/types';
 import { createEmptyArrayWithIndex, getChain } from '@minotaur-ergo/utils';
 
 import Address from '@/db/entities/Address';
@@ -22,25 +17,6 @@ import {
 
 const syncInfo = async (network: AbstractNetwork, address: Address) => {
   const info = await network.getAddressInfo(address.address);
-  // fetch tokens value
-  let allTokensValuesInNanoErgs: bigint = 0n;
-  const tokens: TokenBalance[] = [];
-
-  for (const token of info.tokens) {
-    const res = await CapacitorHttp.get({
-      url: `https://api.cruxfinance.io/crux/token_info/${token.id}`,
-    });
-    const valueInNanoErg: bigint = BigInt(
-      Math.round(res.data.value_in_erg * 10 ** 9) *
-        Math.round(Number(token.amount) / 10 ** res.data.decimals),
-    );
-    allTokensValuesInNanoErgs += valueInNanoErg;
-    tokens.push({
-      tokenId: token.id,
-      balance: token.amount.toString(),
-      valueInNanoErg: valueInNanoErg.toString(),
-    });
-  }
   // Store fetched info
   await AddressValueDbAction.getInstance().insertBalance(
     '',
@@ -86,10 +62,7 @@ const syncInfo = async (network: AbstractNetwork, address: Address) => {
       )
     ) {
       const oldBalance = store.getState().wallet.balances[address.address];
-      if (
-        BigInt(oldBalance.amount) !== info.nanoErgs ||
-        BigInt(oldBalance.tokensValuesInNanoErg) !== allTokensValuesInNanoErgs
-      ) {
+      if (BigInt(oldBalance.amount) !== info.nanoErgs) {
         return true;
       }
       const sortedNewTokens = [...info.tokens].sort((a, b) =>
@@ -118,8 +91,10 @@ const syncInfo = async (network: AbstractNetwork, address: Address) => {
         address: address.address,
         balance: {
           amount: info.nanoErgs.toString(),
-          tokens: tokens,
-          tokensValuesInNanoErg: allTokensValuesInNanoErgs.toString(),
+          tokens: info.tokens.map((token) => ({
+            tokenId: token.id,
+            balance: token.amount.toString(),
+          })),
         },
       }),
     );
