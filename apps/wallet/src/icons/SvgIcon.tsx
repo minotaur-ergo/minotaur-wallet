@@ -37,9 +37,9 @@ const SvgIcon = (props: SvgIconPropsType) => {
       return theme.palette.info;
     };
     return {
-      fill: getColor().dark,
-      width: props.width ? props.width : 100,
-      opacity: props.opacity ? props.opacity : 0.4,
+      fill: getColor().main,
+      width: props.width ? props.width : 80,
+      opacity: props.opacity ? props.opacity : 1,
       ...props.style,
     };
   }, [theme, props.width, props.opacity, props.color, props.style]);

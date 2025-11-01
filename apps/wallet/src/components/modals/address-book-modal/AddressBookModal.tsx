@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { CircleOutlined, RadioButtonChecked } from '@mui/icons-material';
+import { Add, CircleOutlined, RadioButtonChecked } from '@mui/icons-material';
 import {
   Box,
-  Dialog,
-  DialogTitle,
+  Button,
+  Drawer,
   ListItemIcon,
   MenuItem,
   Typography,
@@ -12,7 +13,10 @@ import {
 
 import { SavedAddressDbAction } from '@/action/db';
 import DisplayId from '@/components/display-id/DisplayId';
+import StateMessage from '@/components/state-message/StateMessage';
 import SavedAddress from '@/db/entities/SavedAddress';
+import SvgIcon from '@/icons/SvgIcon';
+import { RouteMap } from '@/router/routerMap';
 
 interface AddressBookModalPropsType {
   open: boolean;
@@ -22,6 +26,7 @@ interface AddressBookModalPropsType {
 }
 
 const AddressBookModal = (props: AddressBookModalPropsType) => {
+  const navigate = useNavigate();
   const [addresses, setAddresses] = useState<Array<SavedAddress>>([]);
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(false);
@@ -46,15 +51,34 @@ const AddressBookModal = (props: AddressBookModalPropsType) => {
   };
 
   return (
-    <Dialog
-      open={props.open}
-      onClose={props.onClose}
-      fullWidth
-      PaperProps={{ sx: { pb: 2 } }}
-    >
-      <DialogTitle>Select From Address Book</DialogTitle>
+    <Drawer open={props.open} onClose={props.onClose} anchor="bottom">
+      <Typography variant="h3" mt={1} mb={2}>
+        Select Address
+      </Typography>
+      {addresses.length === 0 ? (
+        <StateMessage
+          title="No record"
+          description="You don’t have any addresses in your address book yet!"
+          icon={<SvgIcon icon="document" color="secondary" />}
+          color="secondary.dark"
+          action={
+            <Button
+              variant="text"
+              size="small"
+              startIcon={<Add />}
+              onClick={() => navigate(RouteMap.WalletAddressBookAdd)}
+            >
+              Add first address
+            </Button>
+          }
+        />
+      ) : (
+        <Typography color="textSecondary" mb={2}>
+          Select an address from your address book.
+        </Typography>
+      )}
       {addresses.map((item, index) => (
-        <MenuItem key={index} onClick={handleSelect(item)}>
+        <MenuItem key={index} onClick={handleSelect(item)} disableGutters>
           <ListItemIcon>
             {item.address === props.address ? (
               <RadioButtonChecked color="primary" />
@@ -72,7 +96,7 @@ const AddressBookModal = (props: AddressBookModalPropsType) => {
           </Box>
         </MenuItem>
       ))}
-    </Dialog>
+    </Drawer>
   );
 };
 
