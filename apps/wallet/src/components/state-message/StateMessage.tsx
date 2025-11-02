@@ -7,6 +7,7 @@ interface StateMessagePropsType {
   title: string;
   description?: string | DescriptionType | Array<string | DescriptionType>;
   icon?: ReactElement;
+  action?: ReactElement;
   color?: TypographyProps['color'];
   disableIconShadow?: boolean;
 }
@@ -22,14 +23,14 @@ const StateMessage = (props: StateMessagePropsType) => {
     return [];
   };
   return (
-    <Box>
+    <Box py={4} px={2}>
       {props.icon && (
-        <Box sx={{ textAlign: 'center', mb: 3, color: props.color }}>
+        <Box sx={{ textAlign: 'center', mb: 2, color: props.color }}>
           {props.icon}
           {!props.disableIconShadow && (
             <Box
               sx={{
-                width: '100px',
+                width: '80px',
                 height: '16px',
                 borderRadius: '50%',
                 bgcolor: props.color,
@@ -40,7 +41,7 @@ const StateMessage = (props: StateMessagePropsType) => {
           )}
         </Box>
       )}
-      <Typography variant="h2" color={props.color} textAlign="center">
+      <Typography color={props.color} textAlign="center">
         {props.title}
       </Typography>
       {getDescription().map((row, index) => (
@@ -53,6 +54,9 @@ const StateMessage = (props: StateMessagePropsType) => {
           {typeof row === 'string' ? row : row.body}
         </Typography>
       ))}
+      {props.action && (
+        <Box sx={{ textAlign: 'center', mt: 2 }}>{props.action}</Box>
+      )}
     </Box>
   );
 };
