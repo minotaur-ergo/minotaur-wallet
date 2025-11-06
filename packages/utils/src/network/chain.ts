@@ -3,11 +3,11 @@ import { ChainTypeInterface } from '@minotaur-ergo/types';
 import { MainnetChain } from './mainnet';
 import { TestnetChain } from './testnet';
 
-export const availableNetworks: Array<ChainTypeInterface> = [
+const availableNetworks: Array<ChainTypeInterface> = [
   new TestnetChain(),
   new MainnetChain(),
 ];
-export const getChain = (networkType: string) => {
+const getChain = (networkType: string) => {
   const filtered = availableNetworks.filter(
     (item) => item.label === networkType,
   );
@@ -16,3 +16,5 @@ export const getChain = (networkType: string) => {
   }
   return availableNetworks[0];
 };
+
+export { availableNetworks, getChain };

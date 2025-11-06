@@ -289,4 +289,4 @@ class ErgoExplorerNetwork extends AbstractNetwork {
   };
 }
 
-export default ErgoExplorerNetwork;
+export { ErgoExplorerNetwork as default };

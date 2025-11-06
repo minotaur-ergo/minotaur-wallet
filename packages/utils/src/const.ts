@@ -1,14 +1,23 @@
-export const ENCODING = 'base64';
+const ENCODING = 'base64';
 
-export const MAIN_NET_LABEL = 'Main Net';
-export const TEST_NET_LABEL = 'Test Net';
+const MAIN_NET_LABEL = 'Main Net';
+const TEST_NET_LABEL = 'Test Net';
 
-export const WALLET_FAVORITE_FLAG = 'favorite';
-export const WALLET_ARCHIVE_FLAG = 'archive';
+const WALLET_FAVORITE_FLAG = 'favorite';
+const WALLET_ARCHIVE_FLAG = 'archive';
 
-export const DEFAULT_ADDRESS_PREFIX = 'default_';
+const DEFAULT_ADDRESS_PREFIX = 'default_';
 
 export enum WALLET_FLAG_ENUM {
   FAVORITE = WALLET_FAVORITE_FLAG,
   ARCHIVE = WALLET_ARCHIVE_FLAG,
 }
+
+export {
+  ENCODING,
+  MAIN_NET_LABEL,
+  TEST_NET_LABEL,
+  WALLET_FAVORITE_FLAG,
+  WALLET_ARCHIVE_FLAG,
+  DEFAULT_ADDRESS_PREFIX,
+};
