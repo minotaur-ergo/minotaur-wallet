@@ -17,6 +17,39 @@ export interface StateWallet {
   favorite: boolean;
 }
 
+export interface ExportWallet {
+  name: string;
+  network: string;
+  seed: string;
+  xPub: string;
+  type: WalletType;
+  requiredSign?: number;
+  version: number;
+  mnemonic?: string;
+  signers?: Array<string>;
+  addresses?: Array<string>;
+}
+
+export interface ExportSelection {
+  wallet: ExportWallet;
+  secret: boolean;
+  selected: boolean;
+}
+
+export enum ImportProcessingState {
+  NoData = 'no-data',
+  Pending = 'pending',
+  Processing = 'processing',
+  Success = 'success',
+  Error = 'error',
+}
+
+export interface RestoreWalletWithSelection extends ExportWallet {
+  selected: boolean;
+  invalid?: string;
+  status: ImportProcessingState;
+}
+
 export interface StateAddress {
   id: number;
   name: string;
