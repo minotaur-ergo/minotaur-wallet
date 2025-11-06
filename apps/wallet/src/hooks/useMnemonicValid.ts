@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { WalletType } from '@minotaur-ergo/types';
-import { bip32 } from '@minotaur-ergo/utils';
+import { bip32, RootPathWithoutIndex } from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
 
-import { RootPathWithoutIndex } from '@/action/address';
 import { WalletDbAction } from '@/action/db';
 
 interface MnemonicValid {
