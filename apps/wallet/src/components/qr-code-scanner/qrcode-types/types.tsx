@@ -3,8 +3,9 @@ import { QrCodeType, QrCodeTypeEnum } from '@minotaur-ergo/types';
 import { detectPageFromJson } from '@/utils/qrcode';
 
 import ColdSignTransaction from './cold-sign-transaction/ColdSignTransaction';
-import ColdSigningRequest from './cold-signing-request/ColdSignignRequest';
+import ColdSigningRequest from './cold-signing-request/ColdSignRequest';
 import ErgoPay from './ergo-pay/ErgoPay';
+import ImportWallets from './import-wallets/ImportWallets';
 
 const QrCodeTypes: Array<QrCodeType> = [
   {
@@ -30,6 +31,14 @@ const QrCodeTypes: Array<QrCodeType> = [
       <ColdSignTransaction scanned={scanned} close={close} />
     ),
     type: QrCodeTypeEnum.ColdSignTransaction,
+  },
+  {
+    detect: (scanned: string) =>
+      detectPageFromJson(scanned, QrCodeTypeEnum.WalletExportJSON),
+    render: (scanned: string, close: () => unknown) => (
+      <ImportWallets scanned={scanned} close={close} />
+    ),
+    type: QrCodeTypeEnum.WalletExportJSON,
   },
 ];
 

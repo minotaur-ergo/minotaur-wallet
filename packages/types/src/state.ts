@@ -15,6 +15,7 @@ export interface StateWallet {
   flags: Array<string>;
   archived: boolean;
   favorite: boolean;
+  encryptedMnemonic?: string;
 }
 
 export interface ExportWallet {
@@ -37,16 +38,27 @@ export interface ExportSelection {
 }
 
 export enum ImportProcessingState {
-  NoData = 'no-data',
   Pending = 'pending',
   Processing = 'processing',
   Success = 'success',
   Error = 'error',
 }
 
-export interface RestoreWalletWithSelection extends ExportWallet {
+export interface WalletWithProblem {
+  id: number;
+  name: string;
+}
+
+export interface RestoreWalletFlags {
+  duplicate?: WalletWithProblem;
+  convert?: WalletWithProblem;
+  noSignerWallet?: boolean;
+}
+
+export interface RestoreWalletWithSelection {
+  wallet: ExportWallet;
   selected: boolean;
-  invalid?: string;
+  flags: RestoreWalletFlags;
   status: ImportProcessingState;
 }
 
@@ -66,6 +78,7 @@ export interface StateAddress {
 export interface DerivedWalletAddress {
   address: string;
   path: string;
+  name?: string;
   index: number;
 }
 

@@ -25,6 +25,7 @@ export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({
   flags: wallet.flags.split('|').filter(Boolean),
   archived: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.ARCHIVE),
   favorite: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.FAVORITE),
+  encryptedMnemonic: wallet.encrypted_mnemonic,
 });
 
 export const addressEntityToAddressState = (
@@ -61,6 +62,7 @@ export const toExport = async (
     xPub: wallet.xPub,
     addresses: wallet.addresses.map(toExportAddress),
     seed: addSecret ? wallet.seed : '',
+    mnemonic: addSecret ? wallet.encryptedMnemonic : '',
     version: wallet.version,
   };
   if (wallet.type === WalletType.MultiSig) {

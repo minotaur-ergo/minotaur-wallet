@@ -1,6 +1,7 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DerivedWalletAddress } from '@minotaur-ergo/types';
 import { mnemonicToSeedSync } from 'bip39';
+import * as console from 'console';
 
 import { getChain } from './network';
 import { bip32 } from './xpub';
@@ -40,7 +41,6 @@ const findWalletAddresses = async (
   networkType: string,
 ) => {
   const addresses: DerivedWalletAddress[] = [];
-
   const chain = getChain(networkType);
   const network = chain.getNetwork();
   const firstAddress = await derive(0);
@@ -49,25 +49,27 @@ const findWalletAddresses = async (
     path: firstAddress.path,
     index: 0,
   });
-
   let index = 1;
-  for (;;) {
-    const addressObject = await derive(index);
-    const txCount = await network.getAddressTransactionCount(
-      addressObject.address,
-    );
-    if (txCount > 0) {
-      addresses.push({
-        address: addressObject.address,
-        path: addressObject.path,
-        index,
-      });
-    } else {
-      break;
+  try {
+    for (;;) {
+      const addressObject = await derive(index);
+      const txCount = await network.getAddressTransactionCount(
+        addressObject.address,
+      );
+      if (txCount > 0) {
+        addresses.push({
+          address: addressObject.address,
+          path: addressObject.path,
+          index,
+        });
+      } else {
+        break;
+      }
+      index++;
     }
-    index++;
+  } catch (e) {
+    console.log('Unable to find wallet addresses: ', e);
   }
-
   return addresses;
 };
 

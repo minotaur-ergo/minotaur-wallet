@@ -130,7 +130,7 @@ const addWalletAddresses = async (
 ) => {
   try {
     for (const addr of addresses) {
-      const name = getNewAddressName('', addr.index);
+      const name = getNewAddressName(addr.name ?? '', addr.index);
       await AddressDbAction.getInstance().saveAddress(
         wallet.id,
         name,

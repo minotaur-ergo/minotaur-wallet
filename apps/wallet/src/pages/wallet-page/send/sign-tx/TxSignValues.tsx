@@ -81,7 +81,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
         </React.Fragment>
       ) : null}
       <FormHelperText sx={{ mb: 2 }}>
-        These amount will be spent when transaction proceed.
+        These amounts will be spent when the transaction proceeds.
       </FormHelperText>
       <UnBalancedTokensAmount
         amounts={burnt}

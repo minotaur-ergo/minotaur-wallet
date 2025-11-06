@@ -1,23 +1,23 @@
 {
   "name": "minotaur-wallet",
-  "private": true,
   "version": "3.1.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "patch-package && npm run copyIcons",
-    "dev": "vite --host",
-    "clean": "rimraf ./dist",
     "build": "tsc && vite build",
-    "type-check": "tsc",
+    "clean": "rimraf ./dist",
+    "copyIcons": "node bin/copy-icons.js",
+    "coverage": "npm run test -- --coverage",
+    "dev": "vite --host",
+    "postinstall": "patch-package && npm run copyIcons",
     "lint": "npm run prettify && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx .",
     "prettify": "prettier --ignore-unknown --write .",
     "preview": "vite preview",
-    "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron",
     "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
+    "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron",
     "test": "echo 'no test'",
-    "coverage": "npm run test -- --coverage",
-    "copyIcons": "node bin/copy-icons.js"
+    "type-check": "tsc"
   },
   "dependencies": {
     "@capacitor-community/electron": "^5.0.1",

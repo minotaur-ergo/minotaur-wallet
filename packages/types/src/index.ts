@@ -7,4 +7,3 @@ export * from './tx';
 export * from './window';
 export * from './ergopay';
 export * from './qrcode';
-export * from './context';
