@@ -26,7 +26,7 @@ const useMnemonicValid = (
     remainingWordCount: 0,
   });
   useEffect(() => {
-    const mnemonicWords = mnemonic.split(' ');
+    const mnemonicWords = mnemonic.split(' ').filter(Boolean);
     const requiredWordCount =
       Math.max(4, Math.ceil(mnemonicWords.length / 3)) * 3;
     if (requiredWordCount === mnemonicWords.length) {
