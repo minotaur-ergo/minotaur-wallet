@@ -1,5 +1,13 @@
 # @minotaur-ergo/types
 
+## 1.2.0
+
+### Minor Changes
+
+- Add paste functionality for qrcode context type
+- Add `ExportWallet` type
+- Add SymbolType
+
 ## 1.1.1
 
 ### Patch Changes

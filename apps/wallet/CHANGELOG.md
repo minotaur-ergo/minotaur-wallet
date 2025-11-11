@@ -1,5 +1,31 @@
 # minotaur-wallet
 
+## 3.2.0
+
+### Minor Changes
+
+- Add BalanceDisplay component
+- Add `Export` and `Import` wallet functionality
+- Add `Paste` button instead of scan qrcode
+- Add search input for currencies drawer
+- Change api endpoint for fetching erg value based on currency
+- Divide save & cancel buttons from currencies scrollable section
+- Fetch unknown asset details when details are not stored yet
+- Load & save other currencies and their symbols for balance display
+- Move address related utility functions to `@minotaur-ergo/utils`
+
+### Patch Changes
+
+- Fix display of transaction with 0 erg transfer.
+- Fix display derivation path in address card
+- Fix remaining word counter in restore wallet page when no words entered
+- Fix some typos
+- Remove extra padding of qrcode in address qrcode display
+- Updated dependencies
+  - @minotaur-ergo/utils@1.2.0
+  - @minotaur-ergo/types@1.2.0
+  - @minotaur-ergo/icons@1.3.0
+
 ## 3.1.0
 
 ### Minor Changes

@@ -10,9 +10,21 @@ const useExportState = () => {
   const [selection, setSelection] = useState<Array<ExportSelection>>([]);
   const wallets = useExportWallet();
   useEffect(() => {
-    setSelection(
-      wallets.map((item) => ({ wallet: item, secret: false, selected: false })),
-    );
+    setSelection((currentSelection) => {
+      return wallets.map((item, index) => {
+        if (currentSelection.length > index) {
+          return {
+            ...currentSelection[index],
+            wallet: item,
+          };
+        }
+        return {
+          wallet: item,
+          secret: false,
+          selected: false,
+        };
+      });
+    });
   }, [wallets]);
   const { select, selectAll, selectedCount, total } = useSelection(
     selection,

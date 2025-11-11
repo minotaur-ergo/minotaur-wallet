@@ -57,6 +57,7 @@ const ImportWallets = (props: QrCodeScannedComponentPropsType) => {
     setData,
     valid,
   );
+  console.log(index);
   return (
     <AppFrame
       title="Import Wallets"
@@ -87,16 +88,16 @@ const ImportWallets = (props: QrCodeScannedComponentPropsType) => {
       }
     >
       <Stack gap={2}>
-        {data.map((item, index) => (
+        {data.map((item, dataIndex) => (
           <WalletItem
-            key={index}
+            key={dataIndex}
             selected={item.selected}
             wallet={item.wallet}
             disabled={
               item.flags.duplicate !== undefined ||
               item.flags.noSignerWallet !== undefined
             }
-            handleSelection={() => select(index)}
+            handleSelection={() => select(dataIndex)}
             status={index >= 0 ? item.status : undefined}
             message={<ImportWalletProblemMessage {...item.flags} />}
           />

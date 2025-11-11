@@ -14,7 +14,7 @@ interface WalletIconPropsType {
 const WalletIcon = (props: WalletIconPropsType) => {
   return (
     <React.Fragment>
-      {props.status ? (
+      {props.status && props.status !== ImportProcessingState.Pending ? (
         <Box p={1}>
           {props.status === ImportProcessingState.Processing && (
             <CircularProgress size={24} />
@@ -30,7 +30,9 @@ const WalletIcon = (props: WalletIconPropsType) => {
         <Checkbox
           disabled={props.disabled}
           checked={props.selected}
-          onChange={props.handleSelection}
+          onChange={() =>
+            props.status === undefined ? props.handleSelection() : null
+          }
         />
       )}
     </React.Fragment>

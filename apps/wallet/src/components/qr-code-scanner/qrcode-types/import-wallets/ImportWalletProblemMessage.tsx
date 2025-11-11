@@ -16,7 +16,6 @@ const ImportWalletProblemMessage = (props: RestoreWalletFlags) => {
     if (props.convert) return 'info.main';
     return '';
   }, [props]);
-  console.log(props);
   return (
     <React.Fragment>
       {message ? (
