@@ -23,7 +23,7 @@ const TransactionItem = (props: TransactionItemPropsType) => {
   const theme = useTheme();
   const erg_in = props.tx.ergIn;
   const erg_out = props.tx.ergOut;
-  const txType = erg_in > erg_out ? 'in' : 'out';
+  const txType = erg_in > erg_out ? 'in' : erg_in < erg_out ? 'out' : 'none';
   const amount = txType === 'in' ? erg_in - erg_out : erg_out - erg_in;
   const values =
     txType === 'in'
@@ -32,11 +32,17 @@ const TransactionItem = (props: TransactionItemPropsType) => {
           sign: '+',
           color: theme.palette.success.main,
         }
-      : {
-          title: 'Send',
-          sign: '-',
-          color: theme.palette.error.main,
-        };
+      : txType === 'out'
+        ? {
+            title: 'Send',
+            sign: '-',
+            color: theme.palette.error.main,
+          }
+        : {
+            title: '--',
+            sign: '',
+            color: theme.palette.warning.main,
+          };
   const navigate = useNavigate();
   const openTx = () => {
     navigate(
