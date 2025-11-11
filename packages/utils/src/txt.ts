@@ -26,6 +26,6 @@ const sliceToChunksString = (arr: string, chunkSize: number) => {
 };
 
 const getValueColor = (value: bigint) =>
-  value > 0 ? 'success.main' : 'error.main';
+  value > 0 ? 'success.main' : value < 0 ? 'error.main' : 'warning.main';
 
 export { commaSeparate, dottedText, sliceToChunksString, getValueColor };
