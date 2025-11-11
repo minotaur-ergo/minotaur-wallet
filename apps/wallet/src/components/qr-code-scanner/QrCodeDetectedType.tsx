@@ -1,78 +1,91 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { GlobalStateType, QrCodeType, StateWallet } from '@minotaur-ergo/types';
+import { QrCodeType } from '@minotaur-ergo/types';
+import { Button } from '@mui/material';
 
+import MessageContext from '@/components/app/messageContext';
 import LoadingPage from '@/components/loading-page/LoadingPage';
+import StateMessage from '@/components/state-message/StateMessage';
+import SvgIcon from '@/icons/SvgIcon';
 
-import { SelectableWalletContext } from '../sign/context/SelectableWalletContext';
-import TxSignContextHandler from '../sign/context/TxSignContextHandler';
 import QrCodeTypes from './qrcode-types/types';
 
 interface QrCodeDetectedTypePropsType {
   scanned: string;
   open: boolean;
   scanning: boolean;
-  callback?: (scanned: string) => unknown;
+  callback: (scanned: string) => unknown;
+  callbackRequired: boolean;
   close: () => unknown;
 }
 
 const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   const [selectedType, setSelectedType] = useState<QrCodeType | undefined>();
   const [checked, setChecked] = useState('');
-  const [data, setData] = useState('');
   const [checking, setChecking] = useState(false);
-  const firstWallet = useSelector(
-    (state: GlobalStateType) => state.wallet.wallets[0],
-  );
-  const [wallet, setWallet] = useState<StateWallet | undefined>();
-  const storeWallet = (newWallet: StateWallet) => {
-    if (wallet === undefined || wallet.id !== newWallet.id) {
-      setWallet(newWallet);
-    }
-  };
+  const [data, setData] = useState('');
+  const [invalidQrCode, setInvalidQrCode] = useState(false);
+  const messageContext = useContext(MessageContext);
   useEffect(() => {
-    if (props.scanned !== checked && !checking) {
+    if (props.scanned !== checked && !checking && props.open) {
       console.debug('start process detected type');
       setChecking(true);
-      const selectedTypes = QrCodeTypes.filter((item) =>
-        item.detect(props.scanned),
-      );
-      setSelectedType(selectedTypes.length > 0 ? selectedTypes[0] : undefined);
-      setData(
-        selectedTypes.length > 0
-          ? (selectedTypes[0].detect(props.scanned) ?? '')
-          : '',
-      );
-      if (
-        (selectedTypes.length == 0 || selectedTypes[0].render === undefined) &&
-        props.callback
-      ) {
-        props.callback(props.scanned);
+      let found = false;
+      for (const qrCodeType of QrCodeTypes) {
+        const data = qrCodeType.detect(props.scanned);
+        if (data) {
+          if (qrCodeType.render === undefined && props.callbackRequired) {
+            props.callback(props.scanned);
+          } else {
+            setData(data);
+            setSelectedType(qrCodeType);
+            found = true;
+          }
+          break;
+        }
+      }
+      if (!found) {
+        setSelectedType(undefined);
+        setData('');
+        if (props.callbackRequired) {
+          messageContext.insert('Invalid QR code', 'error');
+          props.close();
+        } else {
+          setInvalidQrCode(true);
+        }
+      } else {
+        setInvalidQrCode(false);
       }
       setChecked(props.scanned);
       setChecking(false);
     }
-  }, [checked, checking, props]);
-  const usedWallet = wallet === undefined ? firstWallet : wallet;
-  if (checking) {
-    return <LoadingPage />;
-  }
-  if (usedWallet && selectedType !== undefined && selectedType.render) {
-    return (
-      <SelectableWalletContext.Provider
-        value={{ setWallet: storeWallet, wallet: usedWallet }}
-      >
-        <TxSignContextHandler
-          denySubmit={true}
-          wallet={usedWallet}
-          close={props.close}
-        >
-          {selectedType.render(data, props.close)}
-        </TxSignContextHandler>
-      </SelectableWalletContext.Provider>
-    );
-  }
+  }, [checked, checking, props, messageContext]);
+  useEffect(() => {
+    if (!props.open) {
+      setChecked('');
+    }
+  }, [props.open]);
+  return (
+    <React.Fragment>
+      {checking ? <LoadingPage /> : undefined}
+      {selectedType && selectedType.render
+        ? selectedType.render(data, props.close)
+        : undefined}
+      {invalidQrCode && (
+        <StateMessage
+          title="Invalid QR Code"
+          description="The scanned QR code is not recognized. Please scan a valid QR code."
+          icon={<SvgIcon icon="warning" color="error" />}
+          color="error.dark"
+          action={
+            <Button variant="contained" onClick={props.close}>
+              Close
+            </Button>
+          }
+        />
+      )}
+    </React.Fragment>
+  );
 };
 
 export default QrCodeDetectedType;

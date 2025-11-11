@@ -20,7 +20,7 @@ const WalletAddress = (props: WalletAddressPropsType) => {
         error={false}
         data={props.wallet.addresses}
         divider={false}
-        emptyTitle={'You have no address '}
+        emptyTitle={'You have no addresses '}
         render={(item) => <AddressItem address={item} chain={chain} />}
       />
       {props.wallet.xPub !== '' ? <NewAddress wallet={props.wallet} /> : null}

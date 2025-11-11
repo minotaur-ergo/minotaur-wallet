@@ -9,8 +9,10 @@ import {
   bip32,
   decrypt,
   encrypt,
+  findWalletAddresses,
   getBase58ExtendedPublicKey,
   isValidAddress,
+  RootPathWithoutIndex,
 } from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
 
@@ -23,9 +25,7 @@ import {
   addWalletAddresses,
   deriveMultiSigWalletAddress,
   deriveNormalWalletAddress,
-  findWalletAddresses,
   getWalletAddressSecret,
-  RootPathWithoutIndex,
 } from './address';
 import { AddressDbAction, MultiSigDbAction, WalletDbAction } from './db';
 

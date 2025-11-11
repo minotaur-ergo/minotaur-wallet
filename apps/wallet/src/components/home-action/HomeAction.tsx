@@ -6,6 +6,7 @@ import {
   ContactsOutlined,
   ContentPasteOutlined,
   Download,
+  FileUploadOutlined,
   MoreVert,
   QrCodeScanner,
   SettingsOutlined,
@@ -38,6 +39,10 @@ const HomeAction = (props: HomeActionPropsType) => {
   const pasteContent = () => {
     setAnchorEl(null);
     qrCodeContext.paste();
+  };
+  const exportWallets = () => {
+    setAnchorEl(null);
+    navigate(RouteMap.WalletExport);
   };
   const qrCodeContext = useContext(QrCodeContext);
   const navigate = useNavigate();
@@ -74,6 +79,12 @@ const HomeAction = (props: HomeActionPropsType) => {
             <ContentPasteOutlined />
           </ListItemIcon>
           Paste
+        </MenuItem>
+        <MenuItem onClick={exportWallets}>
+          <ListItemIcon>
+            <FileUploadOutlined />
+          </ListItemIcon>
+          Export Wallets
         </MenuItem>
         {Capacitor.getPlatform() === 'web' ? (
           <MenuItem

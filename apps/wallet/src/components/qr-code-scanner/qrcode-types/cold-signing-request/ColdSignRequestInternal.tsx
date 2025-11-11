@@ -25,7 +25,7 @@ interface ColdSigningRequestPropsType {
   close: () => unknown;
 }
 
-const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
+const ColdSigningRequestInternal = (props: ColdSigningRequestPropsType) => {
   const [loaded, setLoaded] = useState('');
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -148,4 +148,4 @@ const ColdSigningRequest = (props: ColdSigningRequestPropsType) => {
   );
 };
 
-export default ColdSigningRequest;
+export default ColdSigningRequestInternal;

@@ -2,36 +2,37 @@
   "name": "@minotaur-ergo/utils",
   "version": "1.1.1",
   "description": "Utility functions for Minotaur wallet",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
-    "coverage": "vitest --coverage"
-  },
-  "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
-    "@types/json-bigint": "^1.0.4",
-    "typescript": "^5.0.0",
-    "vitest": "^3.2.4",
-    "@vitest/coverage-v8": "^3.2.4"
-  },
   "files": [
     "dist/**/*"
   ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "coverage": "npm run test -- --coverage",
+    "dev": "tsc --watch",
+    "test": "NODE_OPTIONS='--import tsx' vitest",
+    "test:watch": "NODE_OPTIONS='--import tsx' vitest --watch"
+  },
   "dependencies": {
+    "@minotaur-ergo/ergo-lib": "0.28.0",
     "@minotaur-ergo/types": "^1.1.1",
-    "@rosen-clients/ergo-explorer": "^1.1.5",
+    "@rosen-clients/ergo-explorer": "^2.1.0",
     "bip32": "^4.0.0",
     "blakejs": "^1.2.1",
     "bs58": "^6.0.0",
     "crypto-js": "^4.2.0",
-    "@minotaur-ergo/ergo-lib": "0.28.0",
     "json-bigint": "^1.0.0",
     "tiny-secp256k1": "2.2.3"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/json-bigint": "^1.0.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }

@@ -1,7 +1,4 @@
-export const createEmptyArray = <T>(
-  length: number,
-  defaultValue: T,
-): Array<T> => {
+const createEmptyArray = <T>(length: number, defaultValue: T): Array<T> => {
   const res: Array<T> = [];
   for (let index = 0; index < length; index++) {
     res.push(defaultValue);
@@ -9,7 +6,7 @@ export const createEmptyArray = <T>(
   return res;
 };
 
-export const createEmptyArrayWithIndex = (length: number): Array<number> => {
+const createEmptyArrayWithIndex = (length: number): Array<number> => {
   const res: Array<number> = [];
   for (let index = 0; index < length; index++) {
     res.push(index);
@@ -17,7 +14,7 @@ export const createEmptyArrayWithIndex = (length: number): Array<number> => {
   return res;
 };
 
-export const iterateIndexes = (length: number) => {
+const iterateIndexes = (length: number) => {
   return {
     forEach: (callback: (index: number) => unknown) => {
       for (let index = 0; index < length; index++) {
@@ -26,3 +23,5 @@ export const iterateIndexes = (length: number) => {
     },
   };
 };
+
+export { createEmptyArray, createEmptyArrayWithIndex, iterateIndexes };

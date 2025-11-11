@@ -26,7 +26,6 @@ const AirDrop = (props: DAppPropsType) => {
     ergAmount < totalErg &&
     ergAmount >= BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str())
   );
-  console.log(amounts);
   const tokensError = Object.keys(amounts)
     .map((item) => amounts[item].hasError)
     .reduce((a, b) => a || b, false);
