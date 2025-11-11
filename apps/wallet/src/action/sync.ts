@@ -101,6 +101,18 @@ const syncInfo = async (network: AbstractNetwork, address: Address) => {
   }
 };
 
+const storeAssetDetails = async (
+  assetId: string,
+  networkType: string,
+  network?: AbstractNetwork,
+) => {
+  if (network === undefined) {
+    network = getChain(networkType).getNetwork();
+  }
+  const details = await network.getAssetDetails(assetId);
+  await AssetDbAction.getInstance().createOrUpdateAsset(details, networkType);
+};
+
 const syncAssets = async (
   network: AbstractNetwork,
   networkType: string,
@@ -115,8 +127,7 @@ const syncAssets = async (
     );
   const assets = [...unknownAssets, ...unconfirmedAssets];
   for (const asset of assets) {
-    const details = await network.getAssetDetails(asset.asset_id);
-    await AssetDbAction.getInstance().createOrUpdateAsset(details, networkType);
+    await storeAssetDetails(asset.asset_id, networkType, network);
   }
 };
 
@@ -206,4 +217,4 @@ const syncWallet = async (wallet: StateWallet) => {
   await syncAssets(network, wallet.networkType, height);
 };
 
-export { syncWallet };
+export { syncWallet, storeAssetDetails };
