@@ -2,7 +2,12 @@ import { MouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { ConfigType, GlobalStateType, WalletType } from '@minotaur-ergo/types';
+import {
+  ConfigType,
+  GlobalStateType,
+  TokenBalance,
+  WalletType,
+} from '@minotaur-ergo/types';
 import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
 import { Star, StarBorder } from '@mui/icons-material';
 import {
@@ -31,6 +36,7 @@ interface PropsType {
   onClick?: () => unknown;
   archived: boolean;
   favorite: boolean;
+  tokensBalance: Array<TokenBalance>;
 }
 
 const WalletColorMap = {
@@ -138,7 +144,10 @@ const WalletItem = (props: PropsType) => {
             </Typography>
             <Typography variant="body2" color="textSecondary">
               {props.net === MAIN_NET_LABEL ? (
-                <BalanceDisplay amount={amount} />
+                <BalanceDisplay
+                  amount={amount}
+                  tokenBalances={props.tokensBalance}
+                />
               ) : (
                 <span>&nbsp;</span>
               )}

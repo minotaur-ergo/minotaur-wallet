@@ -7,6 +7,7 @@ import { GlobalStateType } from '@minotaur-ergo/types';
 import Splash from '@/components/splash/Splash';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
+import useTokenPrice from '@/hooks/useTokenPrice';
 import useUpdater from '@/hooks/useUpdater';
 import WalletExport from '@/pages/export/WalletExport';
 import Home from '@/pages/home/Home';
@@ -31,6 +32,7 @@ const AppRouter = () => {
   const { initialized } = useInitConfig();
   useUpdater();
   usePriceUpdate();
+  useTokenPrice();
   const { hasPin, locked } = useSelector(
     (state: GlobalStateType) => state.config.pin,
   );

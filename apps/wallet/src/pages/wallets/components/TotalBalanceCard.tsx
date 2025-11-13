@@ -77,7 +77,13 @@ const TotalBalanceCard = () => {
           fontWeight={600}
           sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
         >
-          <BalanceDisplay amount={totalErg} />
+          <BalanceDisplay
+            amount={totalErg}
+            tokenBalances={wallets
+              .filter((w) => w.networkType === MAIN_NET_LABEL)
+              .map((w) => w.tokens)
+              .flat()}
+          />
         </Typography>
         <Typography
           variant="body2"
