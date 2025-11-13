@@ -42,7 +42,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
       {date ? (
         <React.Fragment>
           <Typography variant="body2" color="textSecondary">
-            Received on
+            Date
           </Typography>
           <Typography mb={2}>{date}</Typography>
         </React.Fragment>

@@ -1,7 +1,9 @@
 import JSONBigInt from 'json-bigint';
 
-export const JsonBI = JSONBigInt({ useNativeBigInt: true });
-export const JsonAllBI = JSONBigInt({
+const JsonBI = JSONBigInt({ useNativeBigInt: true });
+const JsonAllBI = JSONBigInt({
   useNativeBigInt: true,
   alwaysParseAsBig: true,
 });
+
+export { JsonBI, JsonAllBI };

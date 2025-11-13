@@ -4,10 +4,10 @@ import { MultiSigAddressHolder, StateWallet } from '@minotaur-ergo/types';
 import {
   bip32,
   createEmptyArrayWithIndex,
+  deriveAddressFromXPub,
   getChain,
 } from '@minotaur-ergo/utils';
 
-import { deriveAddressFromXPub } from '@/action/address';
 import { MultiSigDbAction } from '@/action/db';
 
 const useMultiSigAddressHolders = (

@@ -5,20 +5,17 @@ import { createEmptyArrayWithIndex } from './array';
 import { ENCODING } from './const';
 import { getChain } from './network';
 
-export const serializeBox = (box: wasm.ErgoBox) =>
+const serializeBox = (box: wasm.ErgoBox) =>
   Buffer.from(box.sigma_serialize_bytes()).toString(ENCODING);
 
-export const deserializeBox = (boxEncoded: string) =>
+const deserializeBox = (boxEncoded: string) =>
   wasm.ErgoBox.sigma_parse_bytes(Buffer.from(boxEncoded, ENCODING));
 
-export const serializeTx = (tx: wasm.ReducedTransaction | wasm.Transaction) => {
+const serializeTx = (tx: wasm.ReducedTransaction | wasm.Transaction) => {
   Buffer.from(tx.sigma_serialize_bytes()).toString(ENCODING);
 };
 
-export const deserializeTx = (
-  txEncoded: string,
-  type: 'reduced' | 'signed',
-) => {
+const deserializeTx = (txEncoded: string, type: 'reduced' | 'signed') => {
   if (type === 'reduced') {
     return wasm.ReducedTransaction.sigma_parse_bytes(
       Buffer.from(txEncoded, ENCODING),
@@ -27,18 +24,18 @@ export const deserializeTx = (
   return wasm.Transaction.sigma_parse_bytes(Buffer.from(txEncoded, ENCODING));
 };
 
-export const deserializeSignedTx = (txEncoded: string) =>
+const deserializeSignedTx = (txEncoded: string) =>
   deserializeTx(txEncoded, 'signed');
-export const deserializeReducedTx = (txEncoded: string) =>
+const deserializeReducedTx = (txEncoded: string) =>
   deserializeTx(txEncoded, 'reduced');
 
-export const boxesToArrayBox = (boxes: wasm.ErgoBoxes): Array<wasm.ErgoBox> => {
+const boxesToArrayBox = (boxes: wasm.ErgoBoxes): Array<wasm.ErgoBox> => {
   return createEmptyArrayWithIndex(boxes.len()).map((index) =>
     boxes.get(index),
   );
 };
 
-export const boxCandidatesToArrayBoxCandidate = (
+const boxCandidatesToArrayBoxCandidate = (
   boxes: wasm.ErgoBoxCandidates,
 ): Array<wasm.ErgoBoxCandidate> => {
   return createEmptyArrayWithIndex(boxes.len()).map((index) =>
@@ -46,16 +43,13 @@ export const boxCandidatesToArrayBoxCandidate = (
   );
 };
 
-export const boxArrayToBoxes = (boxes: Array<wasm.ErgoBox>): wasm.ErgoBoxes => {
+const boxArrayToBoxes = (boxes: Array<wasm.ErgoBox>): wasm.ErgoBoxes => {
   const res = wasm.ErgoBoxes.empty();
   boxes.forEach((box) => res.add(box));
   return res;
 };
 
-export const isValidAddress = (
-  address: string,
-  network?: wasm.NetworkPrefix,
-) => {
+const isValidAddress = (address: string, network?: wasm.NetworkPrefix) => {
   try {
     const wasmAddress = wasm.Address.from_base58(address);
     if (network) {
@@ -67,7 +61,7 @@ export const isValidAddress = (
   }
 };
 
-export const getBoxTokens = (
+const getBoxTokens = (
   box: wasm.ErgoBox | wasm.ErgoBoxCandidate,
 ): Array<TokenBalanceBigInt> => {
   const res: Array<TokenBalanceBigInt> = [];
@@ -81,7 +75,7 @@ export const getBoxTokens = (
   return res;
 };
 
-export const boxesToContent = (
+const boxesToContent = (
   networkType: string,
   boxes: Array<wasm.ErgoBox | wasm.ErgoBoxCandidate>,
 ): Array<BoxContent> => {
@@ -94,4 +88,19 @@ export const boxesToContent = (
       prefix,
     ),
   }));
+};
+
+export {
+  serializeBox,
+  deserializeBox,
+  serializeTx,
+  deserializeTx,
+  deserializeSignedTx,
+  deserializeReducedTx,
+  boxesToArrayBox,
+  boxCandidatesToArrayBoxCandidate,
+  boxArrayToBoxes,
+  isValidAddress,
+  getBoxTokens,
+  boxesToContent,
 };

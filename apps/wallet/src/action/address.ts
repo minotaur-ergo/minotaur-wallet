@@ -7,28 +7,17 @@ import {
 } from '@minotaur-ergo/types';
 import {
   bip32,
+  calcPathFromIndex,
   decrypt,
+  deriveAddressFromXPub,
   getChain,
+  getNewAddressName,
   int8Vlq,
   iterateIndexes,
   uInt8Vlq,
 } from '@minotaur-ergo/utils';
-import { mnemonicToSeedSync } from 'bip39';
 
 import { AddressDbAction, MultiSigDbAction } from './db';
-
-const RootPathWithoutIndex = "m/44'/429'/0'/0";
-const calcPathFromIndex = (index: number) => `${RootPathWithoutIndex}/${index}`;
-
-const getNewAddressName = async (name: string, index: number) => {
-  if (!name) {
-    if (index === 0) {
-      return 'Main Address';
-    }
-    name = `Derived Address ${index}`;
-  }
-  return name;
-};
 
 const generateMultiSigV1AddressFromPublicKeys = (
   publicKeys: Array<string>,
@@ -102,23 +91,6 @@ const deriveMultiSigWalletAddress = async (
   };
 };
 
-const deriveAddressFromXPub = (
-  xPub: string,
-  networkPrefix: wasm.NetworkPrefix,
-  index: number,
-) => {
-  const pub = bip32.fromBase58(xPub);
-  const derived1 = pub.derive(index);
-  const address = wasm.Address.from_public_key(
-    Uint8Array.from(derived1.publicKey),
-  );
-  const path = calcPathFromIndex(index);
-  return {
-    address: address.to_base58(networkPrefix),
-    path: path,
-  };
-};
-
 const deriveNormalWalletAddress = async (
   walletId: number,
   xPub: string,
@@ -152,49 +124,13 @@ const deriveWalletAddress = (wallet: StateWallet, index?: number) => {
   throw Error('invalid wallet type');
 };
 
-const findWalletAddresses = async (
-  derive: (index: number) => Promise<{ address: string; path: string }>,
-  networkType: string,
-) => {
-  const addresses: DerivedWalletAddress[] = [];
-
-  const chain = getChain(networkType);
-  const network = chain.getNetwork();
-  const firstAddress = await derive(0);
-  addresses.push({
-    address: firstAddress.address,
-    path: firstAddress.path,
-    index: 0,
-  });
-
-  let index = 1;
-  for (;;) {
-    const addressObject = await derive(index);
-    const txCount = await network.getAddressTransactionCount(
-      addressObject.address,
-    );
-    if (txCount > 0) {
-      addresses.push({
-        address: addressObject.address,
-        path: addressObject.path,
-        index,
-      });
-    } else {
-      break;
-    }
-    index++;
-  }
-
-  return addresses;
-};
-
 const addWalletAddresses = async (
   wallet: StateWallet,
   addresses: DerivedWalletAddress[],
 ) => {
   try {
     for (const addr of addresses) {
-      const name = await getNewAddressName('', addr.index);
+      const name = getNewAddressName(addr.name ?? '', addr.index);
       await AddressDbAction.getInstance().saveAddress(
         wallet.id,
         name,
@@ -242,33 +178,11 @@ const getWalletAddressSecret = (
   );
 };
 
-const deriveAddressFromMnemonic = async (
-  mnemonic: string,
-  password: string,
-  NETWORK_TYPE: wasm.NetworkPrefix,
-  index: number,
-) => {
-  const seed = mnemonicToSeedSync(mnemonic, password);
-  const path = calcPathFromIndex(index);
-  const extended = bip32.fromSeed(seed).derivePath(path);
-  const secret = wasm.SecretKey.dlog_from_bytes(
-    extended.privateKey ? extended.privateKey : Buffer.from(''),
-  );
-  return {
-    address: secret.get_address().to_base58(NETWORK_TYPE),
-    path: path,
-  };
-};
-
 export {
   deriveNewAddress,
-  deriveAddressFromMnemonic,
   deriveNormalWalletAddress,
   deriveMultiSigWalletAddress,
   generateMultiSigAddressFromPublicKeys,
-  findWalletAddresses,
   addWalletAddresses,
-  deriveAddressFromXPub,
-  RootPathWithoutIndex,
   getWalletAddressSecret,
 };

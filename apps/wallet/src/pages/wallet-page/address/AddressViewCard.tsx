@@ -98,7 +98,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
         variant="body2"
         color="textSecondary"
       >
-        Derivation path: {"m/44'/429'/0'/00/"}
+        Derivation path: {props.address.path}
       </Typography>
       {!props.isDefault && (
         <Button variant="text" onClick={() => setDefaultAddress()}>

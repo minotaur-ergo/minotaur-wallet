@@ -111,7 +111,8 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
               </FormControl>
               {validate.remainingWordCount > 0 ? (
                 <FormHelperText error id="accountId-error">
-                  {validate.remainingWordCount} words remaining
+                  {validate.remainingWordCount} word
+                  {validate.remainingWordCount > 1 ? 's' : ''} remaining
                 </FormHelperText>
               ) : null}
             </>

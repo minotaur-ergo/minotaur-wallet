@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { WalletType } from '@minotaur-ergo/types';
-import { bip32 } from '@minotaur-ergo/utils';
+import { bip32, RootPathWithoutIndex } from '@minotaur-ergo/utils';
 import { mnemonicToSeedSync } from 'bip39';
 
-import { RootPathWithoutIndex } from '@/action/address';
 import { WalletDbAction } from '@/action/db';
 
 interface MnemonicValid {
@@ -27,7 +26,7 @@ const useMnemonicValid = (
     remainingWordCount: 0,
   });
   useEffect(() => {
-    const mnemonicWords = mnemonic.split(' ');
+    const mnemonicWords = mnemonic.split(' ').filter(Boolean);
     const requiredWordCount =
       Math.max(4, Math.ceil(mnemonicWords.length / 3)) * 3;
     if (requiredWordCount === mnemonicWords.length) {

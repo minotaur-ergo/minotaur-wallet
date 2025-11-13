@@ -1,7 +1,10 @@
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import SettingsBackupRestoreOutlinedIcon from '@mui/icons-material/SettingsBackupRestoreOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import WorkspacesOutlinedIcon from '@mui/icons-material/WorkspacesOutlined';
+import {
+  AddCircleOutlineOutlined,
+  FileDownloadTwoTone,
+  SettingsBackupRestoreOutlined,
+  VisibilityOutlined,
+  WorkspacesOutlined,
+} from '@mui/icons-material';
 import { Stack } from '@mui/material';
 
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
@@ -18,25 +21,31 @@ const AddWallet = () => {
           title="New wallet"
           description="Generate a random mnemonic and create a wallet with it. It can be a cold wallet or a normal wallet"
           path={RouteMap.WalletAddNew}
-          icon={<AddCircleOutlineOutlinedIcon />}
+          icon={<AddCircleOutlineOutlined />}
         />
         <ItemCard
           title="Restore wallet"
           description="Restore a wallet from an existing mnemonic. It can be a cold wallet or a normal wallet"
           path={RouteMap.WalletAddRestore}
-          icon={<SettingsBackupRestoreOutlinedIcon />}
+          icon={<SettingsBackupRestoreOutlined />}
         />
         <ItemCard
           title="Add read only wallet"
           description="Create a read-only wallet without storing any secret to track and create your transactions. It cannot sign any transaction and you need the corresponding cold wallet for signing."
           path={RouteMap.WalletAddReadOnly}
-          icon={<VisibilityOutlinedIcon />}
+          icon={<VisibilityOutlined />}
         />
         <ItemCard
           title="Add multi sig wallet"
           description="New Multi-Signature Wallet Create a multi-signature wallet and manage your co-signing wallets."
           path={RouteMap.WalletAddMultiSig}
-          icon={<WorkspacesOutlinedIcon />}
+          icon={<WorkspacesOutlined />}
+        />
+        <ItemCard
+          title="Import Wallets"
+          description="Import Wallet from another instance of minotaur."
+          path={RouteMap.WalletAddImport}
+          icon={<FileDownloadTwoTone />}
         />
       </Stack>
     </AppFrame>

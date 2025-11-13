@@ -1,11 +1,7 @@
 import { createEmptyArray } from './array';
 import { commaSeparate } from './txt';
 
-export const tokenStr = (
-  amount: bigint,
-  decimal: number,
-  displayDecimal?: number,
-) => {
+const tokenStr = (amount: bigint, decimal: number, displayDecimal?: number) => {
   const amount_str =
     createEmptyArray(decimal, '0').join('') + amount.toString();
   const valuePart =
@@ -21,7 +17,7 @@ export const tokenStr = (
   );
 };
 
-export const tokenPriceCurrency = (
+const tokenPriceCurrency = (
   amount: bigint,
   decimals: number,
   token_price: number,
@@ -41,10 +37,10 @@ export const tokenPriceCurrency = (
   );
 };
 
-export const ergPriceCurrency = (amount: bigint, erg_price: number) =>
+const ergPriceCurrency = (amount: bigint, erg_price: number) =>
   tokenPriceCurrency(amount, 9, erg_price);
 
-export const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
+const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   if (amount === '') return 0n;
   const regex = new RegExp(`^\\d+(\\.\\d*)?$`);
   if (!regex.test(amount)) {
@@ -55,4 +51,11 @@ export const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   let part1 = parts[1].slice(0, decimal);
   part1 = part1 + createEmptyArray(decimal - parts[1].length, '0').join('');
   return BigInt(parts[0] + part1);
+};
+
+export {
+  tokenStr,
+  tokenPriceCurrency,
+  ergPriceCurrency,
+  numberWithDecimalToBigInt,
 };

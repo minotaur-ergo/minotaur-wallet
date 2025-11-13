@@ -26,6 +26,7 @@ export enum QrCodeTypeEnum {
   ColdSignTransaction = 'CSTX',
   ErgoPay = 'ergopay',
   MultiSigRequest = 'MSR',
+  WalletExportJSON = 'WEJ',
 }
 
 export interface QrCodeType {

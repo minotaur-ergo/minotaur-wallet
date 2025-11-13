@@ -2,30 +2,30 @@
   "name": "@minotaur-ergo/ergo-lib",
   "version": "0.28.0",
   "description": "Environment-aware ergo-lib-wasm wrapper",
+  "type": "module",
+  "exports": {
+    "import": {
+      "node": "./dist/node-entry.js",
+      "default": "./dist/browser-entry.js"
+    }
+  },
   "main": "dist/node-entry.js",
   "types": "dist/node-entry.d.ts",
-  "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
-    "dev": "vite build --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch"
   },
   "dependencies": {
     "ergo-lib-wasm-browser": "0.28.0",
     "ergo-lib-wasm-nodejs": "0.28.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.3",
     "vite": "^6.0.1",
     "vite-plugin-dts": "^4.3.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    "import": {
-      "node": "./dist/node-entry.js",
-      "default": "./dist/browser-entry.js"
-    }
   }
 }

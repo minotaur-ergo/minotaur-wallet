@@ -79,6 +79,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
           open={open}
           scanning={scanning}
           close={close}
+          callbackRequired={callbacks.length > 0}
           callback={sendDataToCallbacks}
         />
       </div>

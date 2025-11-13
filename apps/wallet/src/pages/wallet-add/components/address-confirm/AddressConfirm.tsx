@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { getChain } from '@minotaur-ergo/utils';
+import { deriveAddressFromMnemonic, getChain } from '@minotaur-ergo/utils';
 import { Box, Card, Typography } from '@mui/material';
 
-import { deriveAddressFromMnemonic } from '@/action/address';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import DisplayId from '@/components/display-id/DisplayId';
 
