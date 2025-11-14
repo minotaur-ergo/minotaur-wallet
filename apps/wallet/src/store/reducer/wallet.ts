@@ -5,7 +5,7 @@ import {
   InitializeAllPayload,
   StateAddress,
   StateWallet,
-  TokenValues,
+  TokenValue,
   WalletStateType,
 } from '@minotaur-ergo/types';
 import { DEFAULT_ADDRESS_PREFIX } from '@minotaur-ergo/utils';
@@ -21,7 +21,7 @@ export const walletInitialState: WalletStateType = {
   initialized: false,
   refresh: false,
   updatedWallets: [],
-  tokenValues: [],
+  tokenValues: new Map(),
 };
 
 const updateWalletBalance = (
@@ -131,7 +131,7 @@ const walletSlice = createSlice({
             .forEach((wallet) => updateWalletBalance(wallet, state.addresses));
         });
     },
-    setTokenValues(state, action: PayloadAction<Array<TokenValues>>) {
+    setTokenValues(state, action: PayloadAction<Map<string, TokenValue>>) {
       state.tokenValues = action.payload;
     },
     invalidateWallets(state) {

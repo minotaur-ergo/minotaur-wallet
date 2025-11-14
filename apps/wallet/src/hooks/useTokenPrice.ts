@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CapacitorHttp } from '@capacitor/core';
-import { GlobalStateType, TokenValues } from '@minotaur-ergo/types';
+import { GlobalStateType, TokenValue } from '@minotaur-ergo/types';
 
 import { setTokenValues } from '@/store/reducer/wallet';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
@@ -20,14 +20,13 @@ const useTokenPrice = async () => {
       try {
         loading.current = true;
         const tokenIds: string[] = [];
-        const tokenValues: Array<TokenValues> = [];
-        const fetchPush = async (id: string) => {
+        const tokenValues: Map<string, TokenValue> = new Map();
+        const fetchAndStoreTokenValueInErg = async (id: string) => {
           const res = await CapacitorHttp.get({
             url: `https://api.cruxfinance.io/crux/token_info/${id}`,
           });
-          tokenValues.push({
-            id: id,
-            valueInNanoErg: res.data.value_in_erg,
+          tokenValues.set(id, {
+            valueInErg: res.data.value_in_erg,
             decimal: res.data.decimals,
           });
         };
@@ -38,7 +37,9 @@ const useTokenPrice = async () => {
             }
           });
         });
-        await Promise.all(tokenIds.map((id) => fetchPush(id)));
+        await Promise.all(
+          tokenIds.map((id) => fetchAndStoreTokenValueInErg(id)),
+        );
         dispatch(setTokenValues(tokenValues));
       } finally {
         loading.current = false;

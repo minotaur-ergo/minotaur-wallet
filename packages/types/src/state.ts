@@ -110,7 +110,7 @@ export interface WalletStateType {
   initialized: boolean;
   refresh: boolean;
   updatedWallets: Array<number>;
-  tokenValues: Array<TokenValues>;
+  tokenValues: Map<string, TokenValue>;
 }
 
 export enum ConfigType {
@@ -134,9 +134,8 @@ export interface SymbolType {
   direction: 'l' | 'r';
 }
 
-export interface TokenValues {
-  id: string;
-  valueInNanoErg: number;
+export interface TokenValue {
+  valueInErg: number;
   decimal: number;
 }
 

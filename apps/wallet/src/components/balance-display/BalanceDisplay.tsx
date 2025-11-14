@@ -4,6 +4,7 @@ import {
   GlobalStateType,
   SymbolType,
   TokenBalance,
+  TokenValue,
 } from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
 
@@ -19,15 +20,14 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
   );
   const totalTokensInErg = props.tokenBalances
     .map((t) => {
-      for (const tv of tokenValues) {
-        if (tv.id === t.tokenId) {
-          return BigInt(
-            Math.round(tv.valueInNanoErg * 10 ** 9) *
-              Math.round(Number(t.balance) / 10 ** tv.decimal),
-          );
-        }
-      }
-      return 0n;
+      const tv: TokenValue = tokenValues.get(t.tokenId) || {
+        valueInErg: 0,
+        decimal: 0,
+      };
+      return BigInt(
+        Math.round(tv.valueInErg * 10 ** 9) *
+          Math.round(Number(t.balance) / 10 ** tv.decimal),
+      );
     })
     .reduce((a, b) => a + b, 0n);
   const value = ergPriceCurrency(
