@@ -110,6 +110,7 @@ export interface WalletStateType {
   initialized: boolean;
   refresh: boolean;
   updatedWallets: Array<number>;
+  tokenValues: Map<string, TokenValue>;
 }
 
 export enum ConfigType {
@@ -131,6 +132,11 @@ export interface PinConfig {
 export interface SymbolType {
   symbol: string;
   direction: 'l' | 'r';
+}
+
+export interface TokenValue {
+  valueInErg: number;
+  decimal: number;
 }
 
 export interface ConfigStateType {
