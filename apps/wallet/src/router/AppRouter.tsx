@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { GlobalStateType } from '@minotaur-ergo/types';
 
 import Splash from '@/components/splash/Splash';
+import useBalanceChart from '@/hooks/useBalanceChart';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
 import useTokenPrice from '@/hooks/useTokenPrice';
@@ -33,6 +34,7 @@ const AppRouter = () => {
   useUpdater();
   usePriceUpdate();
   useTokenPrice();
+  useBalanceChart();
   const { hasPin, locked } = useSelector(
     (state: GlobalStateType) => state.config.pin,
   );

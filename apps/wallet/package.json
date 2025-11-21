@@ -42,6 +42,7 @@
     "@minotaur-ergo/utils": "^1.2.0",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.14",
+    "@mui/x-charts": "^8.19.0",
     "@noble/curves": "^1.9.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@zxing/browser": "^0.1.5",
