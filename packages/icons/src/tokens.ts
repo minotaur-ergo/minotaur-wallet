@@ -1,6 +1,19 @@
 import type { TokenType } from './types';
 
 export const tokens: { [tokenId: string]: TokenType } = {
+  '0019fd2bf9b619bc3c181c5f727139fdd2a4139371f48a5c31af0703953ddeaf': {
+    id: '0019fd2bf9b619bc3c181c5f727139fdd2a4139371f48a5c31af0703953ddeaf',
+    boxId: '13421d3d55876ad6fba7735559e4740bd4355e7148b0e65c366b1485f4997ba6',
+    decimals: 8,
+    description:
+      '{"title":"rosen bridge wrapped GIZMO•IMAGINARY•KITTEN","originNetwork":"BitcoinRunes","originToken":"865193:4006","isNativeToken":false}',
+    emissionAmount: '100000000000000000',
+    height: 1656660,
+    name: 'rsGIZMO',
+    networkType: 'Main Net',
+    txId: '40ec0d9fba9612eb20fd6839475d27d1b552dffa249c1e621390524dc6712831',
+    fileExtension: 'png',
+  },
   '003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0': {
     id: '003bd19d0187117f130b62e1bcab0939929ff5c7709f843c5c4dd158949285d0',
     boxId: 'f9a68078bea48ca7aa23474fe405c13b1927385a353b031192b17b625126688e',
@@ -158,6 +171,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     name: 'QUACKS',
     networkType: 'Main Net',
     txId: '119413f28bf08e2cbeafb74c4c7c183de3c305502c095e4275c5e762d126a4ce',
+    fileExtension: 'png',
+  },
+  '09a39277e042c71a14ff44a30daac7082a09c1d746d794de93da2e25919b8394': {
+    id: '09a39277e042c71a14ff44a30daac7082a09c1d746d794de93da2e25919b8394',
+    boxId: '956a580698a791852bf6434d9f417439c1a8a59283b0201a100396ec30c20afd',
+    decimals: 0,
+    description:
+      '{"title":"rosen bridge wrapped BILLION•DOLLAR•CAT","originNetwork":"BitcoinRunes","originToken":"845764:84","isNativeToken":false}',
+    emissionAmount: '1000000000',
+    height: 1656659,
+    name: 'rsBDC',
+    networkType: 'Main Net',
+    txId: '0d3f8e1579a14b968e521355ae01f6af47d00ab550882574bb41a3700ef47c63',
     fileExtension: 'png',
   },
   '0cd8c9f416e5b1ca9f986a7f10a84191dfb85941619e49e53c0dc30ebf83324b': {
@@ -334,6 +360,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'a0f0a9cc4b2ea3e7731294a302971bcc7d4a7494031c3ba385f6c162db1c310b',
     fileExtension: 'png',
   },
+  '20116c9d694800f8e71ab8fbc03c19d46fdb3a0746e85263eaa5812576112fde': {
+    id: '20116c9d694800f8e71ab8fbc03c19d46fdb3a0746e85263eaa5812576112fde',
+    boxId: '398563c4f550429c7a7b2cef6eb59f5021c1f29c50697a46a161335b44b1d5db',
+    decimals: 0,
+    description:
+      '{"title":"rosen bridge wrapped MAGIC•INTERNET•MONEY","originNetwork":"BitcoinRunes","originToken":"840000:45","isNativeToken":false}',
+    emissionAmount: '21000000000',
+    height: 1656659,
+    name: 'rsMIM',
+    networkType: 'Main Net',
+    txId: '055ba36bba74f5c22a0adbc010cb55c505ff751b6b4181a8a8beb20f220e3c5c',
+    fileExtension: 'png',
+  },
   '203ef3066a912f35c488487cc2cb94bdb0d30680dab22551c7e6fdbc70dfcc8e': {
     id: '203ef3066a912f35c488487cc2cb94bdb0d30680dab22551c7e6fdbc70dfcc8e',
     boxId: 'a89ea70a2dcb5ccc192536cbbca20905de509123ee13a0367fc5abf5e73310f4',
@@ -371,6 +410,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     networkType: 'Main Net',
     txId: 'c0315e1b3511b5399b86d1e0418a85a5527bf3014d3526ffc85ca87500900fce',
     fileExtension: 'svg',
+  },
+  '2839764c15f72c47e85dd4e8a21ca86c8e0bdd561438c2fff052f484d58b683e': {
+    id: '2839764c15f72c47e85dd4e8a21ca86c8e0bdd561438c2fff052f484d58b683e',
+    boxId: 'c2f893b277e827172fc3728a4e0c410c7e3df2fbcf35078c520be2ac1e043fcd',
+    decimals: 2,
+    description:
+      '{"title":"rosen bridge wrapped LIQUIDIUM•TOKEN","originNetwork":"BitcoinRunes","originToken":"840010:907","isNativeToken":false}',
+    emissionAmount: '10000000000',
+    height: 1656659,
+    name: 'rsLIQ',
+    networkType: 'Main Net',
+    txId: '131ac3634304b75d6b67e0b5f8479ef0d94ddf4659834b14acf66dddf5e02dfb',
+    fileExtension: 'png',
   },
   '285776315233d73976a50e4d8121606e53cfd3c9ecf03dd455d72cfa0a762631': {
     id: '285776315233d73976a50e4d8121606e53cfd3c9ecf03dd455d72cfa0a762631',
@@ -538,6 +590,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'b013e34bfad822d5eb2b1672a01637acbec0b90ed81408ded33f8c09e8e70588',
     fileExtension: 'png',
   },
+  '567486ce7a1a9aef42362e3c65f7ae6cfc7d0ce5626234f1948bc321dc16fcde': {
+    id: '567486ce7a1a9aef42362e3c65f7ae6cfc7d0ce5626234f1948bc321dc16fcde',
+    boxId: '2d12052a29951a84dde5c73fc8cd60042d82ad2883c7f42e3cdf7aed5ee7c4fa',
+    decimals: 0,
+    description:
+      '{"title":"rosen bridge wrapped UNCOMMON•GOODS","originNetwork":"BitcoinRunes","originToken":"1:0","isNativeToken":false}',
+    emissionAmount: '1000000000000000',
+    height: 1656660,
+    name: 'rsUCGOODS',
+    networkType: 'Main Net',
+    txId: '2266293da1403d9facfc2f8971186e433fd336aab5140c6ac2ed86ec8f05adc5',
+    fileExtension: 'png',
+  },
   '59ee24951ce668f0ed32bdb2e2e5731b6c36128748a3b23c28407c5f8ccbf0f6': {
     id: '59ee24951ce668f0ed32bdb2e2e5731b6c36128748a3b23c28407c5f8ccbf0f6',
     boxId: 'ef6c6125589b9469b1d59368a6cc98c86e0ba1d96c40554690c2117c3f6e1e0a',
@@ -586,6 +651,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     networkType: 'Main Net',
     txId: 'c62482bd3ed09604bcfe53f3cb387e311cb1f37356f4b7dc82c4e21d87902d6a',
     fileExtension: 'svg',
+  },
+  '6cc0b3bec5fc5916d0e8e53776103641c439bece5ea2b62ddc15a892118dcc30': {
+    id: '6cc0b3bec5fc5916d0e8e53776103641c439bece5ea2b62ddc15a892118dcc30',
+    boxId: 'e49e623981006743aeff20899d68a82f5f04e0d7a456c36281ab9bbd3d8aac26',
+    decimals: 9,
+    description:
+      '{"title":"rosen bridge wrapped PUPS•WORLD•PEACE","originNetwork":"BitcoinRunes","originToken":"840000:41","isNativeToken":false}',
+    emissionAmount: '1000000000000000000',
+    height: 1656659,
+    name: 'rsPUPS',
+    networkType: 'Main Net',
+    txId: '1d76d7dde4f3687b18d7e0994f2c1686327c120e43f39b714607ec6349e96017',
+    fileExtension: 'png',
   },
   '6de6f46e5c3eca524d938d822e444b924dbffbe02e5d34bd9dcd4bbfe9e85940': {
     id: '6de6f46e5c3eca524d938d822e444b924dbffbe02e5d34bd9dcd4bbfe9e85940',
@@ -773,6 +851,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     networkType: 'Main Net',
     txId: '95e6c7fe7cd69aef9971e4146a409fc14f793016e2076ff7316ea87072237bae',
     fileExtension: 'svg',
+  },
+  '9a2349affa9ab70cfbfd221fc889052279f241b65a2eb171190bef2f69ef9348': {
+    id: '9a2349affa9ab70cfbfd221fc889052279f241b65a2eb171190bef2f69ef9348',
+    boxId: 'c9cbbb9e10316608ba686024ce5be3d18864dd876e69b099b1b03cd7604712e4',
+    decimals: 5,
+    description:
+      '{"title":"rosen bridge wrapped DOG•GO•TO•THE•MOON","originNetwork":"BitcoinRunes","originToken":"840000:3","isNativeToken":false}',
+    emissionAmount: '10000000000000000',
+    height: 1656657,
+    name: 'rsDOG',
+    networkType: 'Main Net',
+    txId: '1dbf025a208dcd7bfa246e1f72eca283408d9b334646c460e020894146b66ad2',
+    fileExtension: 'png',
   },
   '9dbc8dd9d7ea75e38ef43cf3c0ffde2c55fd74d58ac7fc0489ec8ffee082991b': {
     id: '9dbc8dd9d7ea75e38ef43cf3c0ffde2c55fd74d58ac7fc0489ec8ffee082991b',
