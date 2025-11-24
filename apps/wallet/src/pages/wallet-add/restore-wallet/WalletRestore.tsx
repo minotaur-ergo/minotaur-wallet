@@ -57,6 +57,7 @@ const WalletRestore = () => {
         })
         .catch((exp) => {
           context.insert(exp, 'error');
+          setRestoring(false);
         });
     }
   };
