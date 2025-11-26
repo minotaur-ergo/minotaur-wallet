@@ -104,7 +104,6 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
         <Autocomplete
           // size='small'
           autoHighlight={true}
-          // autoSelect={true}
           value={null}
           inputValue={selected}
           onInputChange={(_e, value) => setSelected(value)}
