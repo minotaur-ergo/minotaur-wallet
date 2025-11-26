@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType, SymbolType } from '@minotaur-ergo/types';
+import { GlobalStateType } from '@minotaur-ergo/types';
 import {
   getLast12MonthNames,
   getWeeklyDateLabels,
@@ -18,12 +18,6 @@ const avg = (arr: number[]) =>
   arr.length === 0 ? 0 : arr.reduce((s, n) => s + n, 0) / arr.length;
 
 const BalanceChart = ({ walletId }: BalanceChartProps) => {
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
-  const currency = useSelector(
-    (state: GlobalStateType) => state.config.currency,
-  );
   const history = useSelector(
     (state: GlobalStateType) => state.wallet.balanceHistory[walletId],
   );
@@ -63,33 +57,21 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
 
   return (
     <>
-      <LineChart
-        xAxis={[
-          {
-            data: xAxis,
-            scaleType: 'band',
-            height: mode === 'monthly' ? 40 : 60,
-            tickLabelStyle: { angle: -90 },
-          },
-        ]}
-        series={[
-          {
-            data: data,
-            label: `${currency} (${symbol.symbol})`,
-          },
-        ]}
-        height={200}
-        margin={{ bottom: 20 }}
-      />
-
       <Box display="flex" justifyContent="center" sx={{ width: '100%' }}>
         <FormControl
           sx={{
-            width: { xs: 120, sm: 140, md: 160 },
-            margin: 1,
-            borderRadius: 1,
-            backgroundColor: '#ffffff',
+            position: 'absolute',
+            right: 0,
+            bottom: '56%',
+            color: '#00000066',
+            backgroundColor: '#FFFFFF7E',
+            borderBottomLeftRadius: 20,
+            borderTopLeftRadius: 20,
+            borderBottomRightRadius: 0,
+            borderTopRightRadius: 0,
+            p: 1,
           }}
+          fullWidth={false}
         >
           <Select
             value={mode}
@@ -97,7 +79,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
             variant="outlined"
             IconComponent={ArrowDropDown}
             sx={{
-              'minHeight': 36,
+              'minHeight': 20,
               'textAlign': 'center',
               'borderRadius': 100,
               '& .MuiOutlinedInput-notchedOutline': {
@@ -111,22 +93,74 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
             MenuProps={{
               PaperProps: {
                 sx: {
-                  'borderRadius': 2,
+                  'borderRadius': 1,
+                  'marginTop': 0.8,
+                  'padding': '0px 8px',
                   '& .MuiMenuItem-root': {
                     'justifyContent': 'center',
                     'textAlign': 'center',
-                    'borderRadius': 2,
-                    '&:hover': { backgroundColor: '#f0f0f0' },
+                    'borderRadius': 1,
+                    '&:hover': { backgroundColor: '#FFFFFF7E' },
                   },
                 },
               },
             }}
           >
-            <MenuItem value="monthly">Monthly</MenuItem>
-            <MenuItem value="weekly">Weekly</MenuItem>
+            <MenuItem value="monthly">Mo.</MenuItem>
+            <MenuItem value="weekly">We.</MenuItem>
           </Select>
         </FormControl>
       </Box>
+
+      <LineChart
+        xAxis={[
+          {
+            data: xAxis,
+            scaleType: 'band',
+            height: mode === 'monthly' ? 40 : 60,
+            tickLabelStyle: { angle: -45, fill: '#576574' },
+            disableTicks: true,
+          },
+        ]}
+        series={[
+          {
+            data: data,
+            area: true,
+            showMark: false,
+          },
+        ]}
+        grid={{
+          horizontal: true,
+        }}
+        colors={['rgba(243, 156, 18,0.6)']}
+        yAxis={[
+          {
+            disableLine: true,
+            disableTicks: true,
+            tickLabelStyle: {
+              fill: '#576574',
+              transform: 'translate(2.5rem, -0.5rem)',
+            },
+            tickLabelInterval: (_value, index: number) => {
+              if (index == 0) return false;
+              return true;
+            },
+          },
+        ]}
+        height={200}
+        margin={{
+          bottom: 0,
+          right: 12,
+          left: -32,
+          top: 0,
+        }}
+        sx={{
+          'transform': 'translateY(-50px)',
+          '.MuiChartsAxis-root .MuiChartsAxis-line': {
+            stroke: 'rgba(0, 0, 0, 0.12)',
+          },
+        }}
+      />
     </>
   );
 };
