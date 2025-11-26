@@ -53,7 +53,7 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
 
   const selectElements = (elements: string[]) => {
     const valids: string[] = [];
-    const inValidIndex: number = elements.findIndex((w: string) => {
+    const invalidIndex: number = elements.findIndex((w: string) => {
       const found = words.includes(w);
       if (found) valids.push(w);
       return !found;
@@ -64,8 +64,8 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
         : valids.join(' ')
       ).trim(),
     );
-    if (inValidIndex !== -1) {
-      setSelected(elements.slice(inValidIndex).join(' '));
+    if (invalidIndex !== -1) {
+      setSelected(elements.slice(invalidIndex).join(' '));
     } else {
       setSelected('');
     }
