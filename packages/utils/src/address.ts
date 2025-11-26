@@ -1,7 +1,6 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { DerivedWalletAddress } from '@minotaur-ergo/types';
 import { mnemonicToSeedSync } from 'bip39';
-import * as console from 'console';
 
 import { getChain } from './network';
 import { bip32 } from './xpub';
