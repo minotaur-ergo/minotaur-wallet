@@ -69,7 +69,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
             borderTopLeftRadius: 20,
             borderBottomRightRadius: 0,
             borderTopRightRadius: 0,
-            p: 1,
+            p: 0.5,
           }}
           fullWidth={false}
         >
@@ -106,8 +106,8 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
               },
             }}
           >
-            <MenuItem value="monthly">Mo.</MenuItem>
-            <MenuItem value="weekly">We.</MenuItem>
+            <MenuItem value="monthly">Monthly</MenuItem>
+            <MenuItem value="weekly">Weekly</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -116,12 +116,16 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
         xAxis={[
           {
             data: xAxis,
-            scaleType: 'band',
+            scaleType: 'point',
             height: mode === 'monthly' ? 40 : 60,
-            tickLabelStyle: { angle: -45, fill: '#576574' },
+            tickLabelStyle: {
+              angle: -45,
+              fill: '#576574',
+            },
             disableTicks: true,
           },
         ]}
+        disableAxisListener={true}
         series={[
           {
             data: data,
@@ -133,6 +137,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
           horizontal: true,
         }}
         colors={['rgba(243, 156, 18,0.6)']}
+        axisHighlight={{ x: 'none', y: 'none' }}
         yAxis={[
           {
             disableLine: true,
@@ -150,12 +155,12 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
         height={200}
         margin={{
           bottom: 0,
-          right: 12,
-          left: -32,
+          right: 16,
+          left: -28,
           top: 0,
         }}
         sx={{
-          'transform': 'translateY(-50px)',
+          'transform': 'translateY(-20px)',
           '.MuiChartsAxis-root .MuiChartsAxis-line': {
             stroke: 'rgba(0, 0, 0, 0.12)',
           },

@@ -2,8 +2,6 @@
 'minotaur-wallet': minor
 ---
 
-Change `useTokenPrice.ts` to fetch price of all tokens of all boxes.
-Add `@mui/x-charts` library.
-Add `useBalanceChart.ts` to calculate each wallet's balance during last year.
-Add `BalanceChart.tsx` to show Monthly or Weekly chart of balance of current wallet during last year.
-Use `BalanceChart.tsx` in wallet home page `WalletCard.tsx`.
+Fetch price of all tokens of all spent and unSpent boxes.
+Calculate balance of wallets during last year.
+Show balance chart for monthly or weekly period in wallet homepage.
