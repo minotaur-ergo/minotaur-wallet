@@ -1,0 +1,38 @@
+name: 'Build Minotaur App'
+description: 'Build the complete Minotaur wallet application'
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '22'
+  working-directory:
+    description: 'Working directory for the build'
+    required: false
+    default: '.'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install app dependencies
+      shell: bash
+      run: npm install
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Build packages
+      shell: bash
+      run: ./cli/build.sh
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Copy icons to public dir
+      shell: bash
+      run: npm run copy:icons
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Build Minotaur JS app and update capacitor
+      shell: bash
+      run: npm run build:app
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Remove icns from assets
+      shell: bash
+      run: rm -f apps/wallet/dist/assets/*.icns
+      working-directory: ${{ inputs.working-directory }}

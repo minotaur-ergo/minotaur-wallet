@@ -1,0 +1,49 @@
+name: 'Extract Version Information'
+description: 'Extract version information from git tags and changelog'
+inputs:
+  version_prefix:
+    description: 'Prefix used in changelog for version sections'
+    required: false
+    default: '## '
+  error_on_failure:
+    description: 'Whether to stop pipeline if extract changelog failed or not (true/false)'
+    required: false
+    default: 'true'
+  changelog_path:
+    description: 'Path to the changelog file'
+    required: false
+    default: ''
+  package_json_paths:
+    description: 'Comma-separated list of package.json file paths to update with extracted version'
+    required: false
+    default: ''
+outputs:
+  MAJOR:
+    description: 'Major version number'
+    value: ${{ env.MAJOR }}
+  MINOR:
+    description: 'Minor version number'
+    value: ${{ env.MINOR }}
+  PATCH:
+    description: 'Patch version number'
+    value: ${{ env.PATCH }}
+  PRE_RELEASE:
+    description: 'Pre-release version tag'
+    value: ${{ env.PRE_RELEASE }}
+  NUMBER_OF_COMMITS:
+    description: 'Total number of commits'
+    value: ${{ env.NUMBER_OF_COMMITS }}
+  CHANGE_LOG:
+    description: 'Changelog content for the current version'
+    value: ${{ env.CHANGE_LOG }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Extract version information
+      shell: bash
+      run: node ${{ github.action_path }}/../../../dist/extract_info.js
+      env:
+        INPUT_VERSION_PREFIX: ${{ inputs.version_prefix }}
+        INPUT_ERROR_ON_FAILURE: ${{ inputs.error_on_failure }}
+        INPUT_CHANGELOG_PATH: ${{ inputs.changelog_path }}
+        INPUT_PACKAGE_JSON_PATHS: ${{ inputs.package_json_paths }}
