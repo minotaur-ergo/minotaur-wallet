@@ -15,6 +15,51 @@ export interface StateWallet {
   flags: Array<string>;
   archived: boolean;
   favorite: boolean;
+  encryptedMnemonic?: string;
+}
+
+export interface ExportWallet {
+  name: string;
+  network: string;
+  seed: string;
+  xPub: string;
+  type: WalletType;
+  requiredSign?: number;
+  version: number;
+  mnemonic?: string;
+  signers?: Array<string>;
+  addresses?: Array<string>;
+}
+
+export interface ExportSelection {
+  wallet: ExportWallet;
+  secret: boolean;
+  selected: boolean;
+}
+
+export enum ImportProcessingState {
+  Pending = 'pending',
+  Processing = 'processing',
+  Success = 'success',
+  Error = 'error',
+}
+
+export interface WalletWithProblem {
+  id: number;
+  name: string;
+}
+
+export interface RestoreWalletFlags {
+  duplicate?: WalletWithProblem;
+  convert?: WalletWithProblem;
+  noSignerWallet?: boolean;
+}
+
+export interface RestoreWalletWithSelection {
+  wallet: ExportWallet;
+  selected: boolean;
+  flags: RestoreWalletFlags;
+  status: ImportProcessingState;
 }
 
 export interface StateAddress {
@@ -33,6 +78,7 @@ export interface StateAddress {
 export interface DerivedWalletAddress {
   address: string;
   path: string;
+  name?: string;
   index: number;
 }
 
@@ -64,6 +110,7 @@ export interface WalletStateType {
   initialized: boolean;
   refresh: boolean;
   updatedWallets: Array<number>;
+  tokenValues: Map<string, TokenValue>;
 }
 
 export enum ConfigType {
@@ -82,9 +129,20 @@ export interface PinConfig {
   loaded: boolean;
 }
 
+export interface SymbolType {
+  symbol: string;
+  direction: 'l' | 'r';
+}
+
+export interface TokenValue {
+  valueInErg: number;
+  decimal: number;
+}
+
 export interface ConfigStateType {
   display: DisplayType;
   currency: string;
+  symbol: SymbolType;
   price: number;
   priceLastWeek: number;
   activeWallet?: number;

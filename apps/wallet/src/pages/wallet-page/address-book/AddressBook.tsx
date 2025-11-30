@@ -47,7 +47,7 @@ const AddressBook = () => {
         error={false}
         data={addresses}
         divider={false}
-        emptyTitle={'You have no address '}
+        emptyTitle={'You have no addresses '}
         render={(item) => (
           <AddressBookItem
             id={item.id}

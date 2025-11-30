@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 
+import { Cancel, ManageSearchOutlined } from '@mui/icons-material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {
   List,
@@ -17,7 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 
-interface OptionsType {
+export interface OptionsType {
   label?: string;
   value: string;
 }
@@ -28,11 +29,14 @@ interface SolitarySelectFieldPropsType {
   label: string;
   helperText?: string;
   options: OptionsType[];
+  onOpen?: () => void;
+  showSearch?: boolean;
 }
 
 const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
   const [open, setOpen] = useState(false);
   const [newValue, setNewValue] = useState(props.value);
+  const [searchVal, setSearchVal] = useState<string>('');
 
   const handleClose = () => {
     setOpen(false);
@@ -57,7 +61,15 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={() => setOpen(true)} edge="end">
+              <IconButton
+                onClick={() => {
+                  if (props.onOpen) {
+                    props.onOpen();
+                  }
+                  setOpen(true);
+                }}
+                edge="end"
+              >
                 <KeyboardArrowDownIcon />
               </IconButton>
             </InputAdornment>
@@ -69,28 +81,70 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
         <Typography fontWeight="bold" sx={{ mt: 2, mb: 1 }}>
           Select {props.label?.toLowerCase()}
         </Typography>
-        <List disablePadding>
-          {props.options.map((opt, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton
-                onClick={handleSelectOption(opt.value)}
-                role={undefined}
-                disableGutters
-                dense
-              >
-                <ListItemIcon>
-                  <Radio
-                    edge="start"
-                    checked={opt.value === newValue}
-                    tabIndex={-1}
-                    disableRipple
-                  />
-                </ListItemIcon>
-                <ListItemText primary={opt.label || opt.value} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        {props.showSearch && (
+          <TextField
+            sx={{
+              '& .MuiInputBase-input': {
+                marginBottom: '12px',
+              },
+            }}
+            placeholder="Search"
+            value={searchVal}
+            onChange={(e) => {
+              setSearchVal(e.target.value);
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <ManageSearchOutlined sx={{ fontSize: 30, mb: 2 }} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      setSearchVal('');
+                    }}
+                    edge="end"
+                    size="small"
+                  >
+                    <Cancel />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{ autoFocus: true, autoComplete: 'off' }}
+          />
+        )}
+        <div style={{ overflowY: 'auto' }}>
+          <List disablePadding>
+            {props.options
+              .filter((o) =>
+                o.value.toLowerCase().includes(searchVal.toLowerCase()),
+              )
+              .map((opt, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    onClick={handleSelectOption(opt.value)}
+                    role={undefined}
+                    disableGutters
+                    dense
+                  >
+                    <ListItemIcon>
+                      <Radio
+                        edge="start"
+                        checked={opt.value === newValue}
+                        tabIndex={-1}
+                        disableRipple
+                        sx={{ ml: 1 }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={opt.label || opt.value} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+          </List>
+        </div>
         <Stack direction="row-reverse" spacing={2}>
           <Button
             onClick={handleConfirm}

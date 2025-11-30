@@ -30,7 +30,7 @@ const WalletSigners = (props: WalletSignersPropsType) => {
   return (
     <Box>
       <Typography variant="subtitle2">
-        From {props.signers} cosigners
+        From {props.signers} co-signer{props.signers > 1 ? 's' : ''}
       </Typography>
       <Slider
         aria-label="Total Signers"
@@ -43,7 +43,8 @@ const WalletSigners = (props: WalletSignersPropsType) => {
         max={20}
       />
       <Typography variant="subtitle2" sx={{ mt: 2 }}>
-        Requires {Math.min(props.signers, props.threshold)} signatures
+        Requires {Math.min(props.signers, props.threshold)} signature
+        {props.signers === 1 ? '' : 's'}
       </Typography>
       <Slider
         aria-label="Minimum Required Signs"

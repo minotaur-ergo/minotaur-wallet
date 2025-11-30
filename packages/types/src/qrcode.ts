@@ -8,6 +8,7 @@ export interface QrCodePropsType {
 
 export interface QrCodeContextType {
   start: () => Promise<string>;
+  paste: () => unknown;
 }
 
 export interface QrCodeCallback {
@@ -25,6 +26,7 @@ export enum QrCodeTypeEnum {
   ColdSignTransaction = 'CSTX',
   ErgoPay = 'ergopay',
   MultiSigRequest = 'MSR',
+  WalletExportJSON = 'WEJ',
 }
 
 export interface QrCodeType {

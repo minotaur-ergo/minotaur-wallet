@@ -4,6 +4,7 @@ import { QrCodeCallback } from '@minotaur-ergo/types';
 
 import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
+import { readClipBoard } from '@/utils/clipboard';
 
 import { QrCodeContext } from './QrCodeContext';
 
@@ -46,6 +47,13 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     setScanning(false);
   };
 
+  const pasteCode = async () => {
+    const content = await readClipBoard();
+    setData(content);
+    setScanning(false);
+    setOpen(true);
+  };
+
   const close = () => {
     setData('');
     setScanning(false);
@@ -55,6 +63,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     <QrCodeContext.Provider
       value={{
         start: startScan,
+        paste: pasteCode,
       }}
     >
       {open && scanning && (
@@ -70,6 +79,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
           open={open}
           scanning={scanning}
           close={close}
+          callbackRequired={callbacks.length > 0}
           callback={sendDataToCallbacks}
         />
       </div>

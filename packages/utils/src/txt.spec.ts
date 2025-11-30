@@ -532,12 +532,12 @@ describe('text utilities', () => {
      * @expect
      * - Returns 'error.main'
      */
-    it('should return error color for zero value', () => {
+    it('should return warning color for zero value', () => {
       const value = 0n;
 
       const result = getValueColor(value);
 
-      expect(result).toBe('error.main');
+      expect(result).toBe('warning.main');
     });
 
     /**

@@ -7,7 +7,7 @@ export const TransactionErrorTypes: TransactionErrorType[] = [
   {
     detect: (error) =>
       error !== null && error.toLowerCase().includes('insufficient funds'),
-    render: () => ' Insufficient funds. Please check your balance',
+    render: () => 'Insufficient funds. Please check your balance.',
   },
   {
     detect: (error) =>

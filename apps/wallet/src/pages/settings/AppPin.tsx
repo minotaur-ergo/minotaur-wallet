@@ -63,7 +63,7 @@ const AppPin = () => {
   };
   return (
     <AppFrame
-      title={hasPin ? 'Change pin' : 'Set pin'}
+      title={hasPin ? 'Change PIN' : 'Set PIN'}
       navigation={<BackButtonRouter />}
       toolbar={
         <Button disabled={!isValid} onClick={handleSubmit}>
@@ -76,19 +76,19 @@ const AppPin = () => {
           <PasswordField
             setPassword={setOldPin}
             password={oldPin}
-            label="Old Pin"
+            label="Old PIN"
           />
         ) : undefined}
 
         <PasswordField
           setPassword={setNewPin}
           password={newPin}
-          label="New Pin"
+          label="New PIN"
         />
         <PasswordField
           setPassword={setNewPinConfirm}
           password={newPinConfirm}
-          label="Confirm New Pin"
+          label="Confirm New PIN"
         />
       </Stack>
     </AppFrame>

@@ -2,9 +2,9 @@ import { BIP32Factory } from 'bip32';
 import base58 from 'bs58';
 import * as ecc from 'tiny-secp256k1';
 
-export const bip32 = BIP32Factory(ecc);
+const bip32 = BIP32Factory(ecc);
 
-export const isValidExtendedPublicKeyBase58 = (extended_public_key: string) => {
+const isValidExtendedPublicKeyBase58 = (extended_public_key: string) => {
   try {
     bip32.fromBase58(extended_public_key);
     return true;
@@ -13,9 +13,7 @@ export const isValidExtendedPublicKeyBase58 = (extended_public_key: string) => {
   }
 };
 
-export const getExtendedPublicKeyFromEip0003 = (
-  extended_public_key: string,
-) => {
+const getExtendedPublicKeyFromEip0003 = (extended_public_key: string) => {
   try {
     const buffer = Buffer.from(extended_public_key, 'hex');
     if (buffer.length < 78) return undefined;
@@ -30,7 +28,7 @@ export const getExtendedPublicKeyFromEip0003 = (
   }
 };
 
-export const getExtendedPublicKeyBase64OrHexToBase58 = (
+const getExtendedPublicKeyBase64OrHexToBase58 = (
   extended_public_key: string,
   encoding: 'base64' | 'hex' = 'base64',
 ) => {
@@ -44,7 +42,7 @@ export const getExtendedPublicKeyBase64OrHexToBase58 = (
   }
 };
 
-export const getBase58ExtendedPublicKey = (extended_public_key: string) => {
+const getBase58ExtendedPublicKey = (extended_public_key: string) => {
   if (isValidExtendedPublicKeyBase58(extended_public_key))
     return extended_public_key;
   const fromBase64 = getExtendedPublicKeyBase64OrHexToBase58(
@@ -58,4 +56,12 @@ export const getBase58ExtendedPublicKey = (extended_public_key: string) => {
   );
   if (fromHex) return fromHex;
   return getExtendedPublicKeyFromEip0003(extended_public_key);
+};
+
+export {
+  bip32,
+  isValidExtendedPublicKeyBase58,
+  getExtendedPublicKeyFromEip0003,
+  getExtendedPublicKeyBase64OrHexToBase58,
+  getBase58ExtendedPublicKey,
 };

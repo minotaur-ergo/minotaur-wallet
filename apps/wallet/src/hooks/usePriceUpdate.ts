@@ -1,29 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { CapacitorHttp } from '@capacitor/core';
+import { GlobalStateType } from '@minotaur-ergo/types';
 
 import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 
-const getCurrentPrice = async () => {
-  const queryParams = {
-    localization: 'false',
-    tickers: 'false',
-    market_data: 'true',
-    community_data: 'false',
-    developer_data: 'false',
-    sparkline: 'false',
-  };
+const getCurrentPrice = async (currency: string) => {
   const res = await CapacitorHttp.get({
-    url: 'https://api.coingecko.com/api/v3/coins/ergo',
-    params: queryParams,
+    url: `https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency.toLowerCase()}&ids=ergo`,
   });
-  const current_prices = res.data.market_data.current_price;
-  return current_prices.usd;
+  return res.data.ergo[currency.toLowerCase()];
 };
 
-const getPriceAtDate = async (date: Date) => {
+const getPriceAtDate = async (date: Date, currency: string) => {
   const queryParams = {
     localization: 'false',
     date: `${date.toISOString().split('T')[0]}`,
@@ -33,33 +24,44 @@ const getPriceAtDate = async (date: Date) => {
     params: queryParams,
   });
   const current_prices = res.data.market_data.current_price;
-  return current_prices.usd;
+  return current_prices[currency.toLowerCase()] ?? current_prices.usd;
 };
 
 const usePriceUpdate = () => {
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const refresh = () => {
-    setTimeout(() => setLoading(false), PRICE_REFRESH_INTERVAL);
-  };
+  const currency = useSelector((s: GlobalStateType) => s.config.currency);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const loading = useRef<boolean>(false);
+
   useEffect(() => {
-    if (!loading) {
-      const today = new Date();
-      setLoading(true);
-      getCurrentPrice()
-        .then((current) => {
-          const prevWeek = new Date(today.getTime() - 1000 * 3600 * 24 * 7);
-          getPriceAtDate(prevWeek)
-            .then((lastWeek) => {
-              dispatch(setPrice({ current, lastWeek }));
-              refresh();
-            })
-            .catch(refresh);
-        })
-        .catch(refresh);
-    }
-  }, [loading, dispatch]);
-  return loading;
+    if (!currency) return;
+    const run = async () => {
+      if (loading.current) return;
+      try {
+        loading.current = true;
+        const today = new Date();
+        const prevWeek = new Date(today.getTime() - 7 * 24 * 3600 * 1000);
+        const [current, lastWeek] = await Promise.all([
+          getCurrentPrice(currency),
+          getPriceAtDate(prevWeek, currency),
+        ]);
+        dispatch(setPrice({ current, lastWeek }));
+      } finally {
+        loading.current = false;
+      }
+    };
+
+    run();
+    timerRef.current = setInterval(run, PRICE_REFRESH_INTERVAL);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [currency, dispatch]);
+
+  return { loading };
 };
 
 export default usePriceUpdate;

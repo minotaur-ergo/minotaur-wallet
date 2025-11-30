@@ -79,6 +79,7 @@ const Wallets = () => {
                 key={index}
                 archived={item.archived}
                 favorite={item.favorite}
+                tokensBalance={item.tokens}
               />
             ))}
           </Stack>
@@ -97,6 +98,7 @@ const Wallets = () => {
             key={index}
             archived={item.archived}
             favorite={item.favorite}
+            tokensBalance={item.tokens}
           />
         ))}
       </Stack>

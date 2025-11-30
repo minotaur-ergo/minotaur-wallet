@@ -45,14 +45,15 @@ const theme = createTheme({
       flexGrow: 1,
     },
     h3: {
-      fontSize: '0.875rem',
-      fontWeight: 400,
+      fontSize: '1rem',
+      fontWeight: 600,
+      lineHeight: '1.25rem',
       flexGrow: 1,
     },
     h4: {
-      fontSize: '1rem',
+      fontSize: '0.875rem',
       fontWeight: 600,
-      lineHeight: 1.5,
+      lineHeight: '1rem',
     },
     h5: {
       fontSize: '1rem',
@@ -192,6 +193,13 @@ const theme = createTheme({
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
           maxHeight: 'calc(100vh - 100px)',
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          padding: '8px',
         },
       },
     },

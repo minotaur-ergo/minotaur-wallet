@@ -4,6 +4,7 @@ import { tokens } from '@minotaur-ergo/icons';
 import { AssetDetailType } from '@minotaur-ergo/types';
 
 import { AssetDbAction } from '@/action/db';
+import { storeAssetDetails } from '@/action/sync';
 
 const useAssetDetail = (assetId: string, networkType: string) => {
   const [details, setDetails] = useState<AssetDetailType>({
@@ -84,6 +85,9 @@ const useAssetDetail = (assetId: string, networkType: string) => {
                 emissionAmount: -1n,
                 txId: '',
                 tokenId: assetId,
+              });
+              storeAssetDetails(assetId, networkType).then(() => {
+                setDetails((details) => ({ ...details, tokenId: '' }));
               });
             }
             setLoading(false);

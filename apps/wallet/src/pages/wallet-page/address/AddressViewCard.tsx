@@ -89,7 +89,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
       ) : (
         <Divider sx={{ my: 2 }} />
       )}
-      <Box sx={{ p: 8, textAlign: 'center', fontStyle: 'italic' }}>
+      <Box sx={{ pl: 8, pr: 8, textAlign: 'center', fontStyle: 'italic' }}>
         <QRCodeSVG value={props.address.address} />
       </Box>
       <AddressCopyable address={props.address.address} />
@@ -98,7 +98,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
         variant="body2"
         color="textSecondary"
       >
-        Derivation path: {"m/44'/429'/0'/00/"}
+        Derivation path: {props.address.path}
       </Typography>
       {!props.isDefault && (
         <Button variant="text" onClick={() => setDefaultAddress()}>
