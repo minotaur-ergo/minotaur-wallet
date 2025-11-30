@@ -67,7 +67,7 @@ const findWalletAddresses = async (
       index++;
     }
   } catch (e) {
-    console.log('Unable to find wallet addresses: ', e);
+    // Ignore error
   }
   return addresses;
 };
