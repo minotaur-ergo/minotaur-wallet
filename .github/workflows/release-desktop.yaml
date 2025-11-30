@@ -72,9 +72,19 @@ jobs:
         working-directory: ./apps/wallet/electron
         run: npm i; npm run electron:make
 
+      - name: Extract Changelog
+        id: changelog
+        uses: nickohold/changelog-version-extractor@v1.0.0
+        with:
+          version_prefix: '## '
+          version: '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
+          changelog_path: './apps/wallet/CHANGELOG.md'
+
       - name: Upload Executable File to release
         uses: softprops/action-gh-release@v1
         with:
           files: ./apps/wallet/electron/dist/minotaur*.${{ matrix.extension }}
+          prerelease: true
+          body: '${{ steps.changelog.outputs.changelog }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

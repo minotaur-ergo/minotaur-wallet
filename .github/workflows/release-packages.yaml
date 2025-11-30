@@ -1,4 +1,4 @@
-name: Build for Windows, Linux And MacOs
+name: Build and release packages
 on:
   push:
     branches:
