@@ -1,5 +1,22 @@
 # minotaur-wallet
 
+## 3.3.0
+
+### Minor Changes
+
+- Calculate tokens amount in selected currency
+- Allow Paste whole mnemonic or a part of it in wallet restore.
+
+### Patch Changes
+
+- Fix warning in `MnemonicRestore.tsx` when type in input box.
+- Fix bug in wallet creation in cold mode that displayed `error void(0) is not a function`
+- Fix bug of auto select word after clicking anywhere on page.
+- Updated dependencies
+  - @minotaur-ergo/icons@1.4.0
+  - @minotaur-ergo/utils@1.3.0
+  - @minotaur-ergo/types@1.3.0
+
 ## 3.2.0
 
 ### Minor Changes

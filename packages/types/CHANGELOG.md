@@ -1,5 +1,12 @@
 # @minotaur-ergo/types
 
+## 1.3.0
+
+### Minor Changes
+
+- Add `TokenValues` interface.
+- Add `tokenValues` to `WalletStateType` interface.
+
 ## 1.2.0
 
 ### Minor Changes
