@@ -904,6 +904,18 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '17b02d977a74ea757231a01e677aad99762323a4768156695d12f5a0df817c99',
     fileExtension: 'svg',
   },
+  'a55b8735ed1a99e46c2c89f8994aacdf4b1109bdcf682f1e5b34479c6e392669': {
+    id: 'a55b8735ed1a99e46c2c89f8994aacdf4b1109bdcf682f1e5b34479c6e392669',
+    boxId: '3a184b31e4506684c1e59b106759875b9f92ba025bffa85e6888a3a884564658',
+    decimals: 3,
+    description: 'USE (DexyUSD)',
+    emissionAmount: '1000000000000000000',
+    height: 1666991,
+    name: 'USE',
+    networkType: 'Main Net',
+    txId: 'adbf3c5855aa66baf5e45dc192c2bb6dc85f168eafffc9ade7d3fd79137a39cd',
+    fileExtension: 'svg',
+  },
   'a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26': {
     id: 'a9beb1e13364cbbbdac4a456658477862f140725854803dfdcd8e0f4863e7a26',
     boxId: 'c3126ffbecba90ef12aa78ab163b4eb9e47a6c001a7c44f35b39df7751453bfd',
