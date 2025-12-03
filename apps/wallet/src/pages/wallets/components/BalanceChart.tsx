@@ -21,6 +21,9 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
   const history = useSelector(
     (state: GlobalStateType) => state.wallet.balanceHistory[walletId],
   );
+  const loading = useSelector(
+    (state: GlobalStateType) => state.wallet.loadingBalanceHistory,
+  );
   const [mode, setMode] = useState('monthly');
 
   const monthlyData = useMemo(() => {
@@ -32,6 +35,9 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
     const xAxis = getLast12MonthNames();
 
     for (let i = start; i < history.length; i += daysPerMonth) {
+      if (data.length === xAxis.length) {
+        break;
+      }
       data.push(avg(history.slice(i, i + daysPerMonth)));
     }
 
@@ -44,12 +50,15 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
     const daysPerWeek = 7;
     const start = new Date().getDay();
     const data: number[] = [];
+    const xAxis = getWeeklyDateLabels(data.length);
 
     for (let i = start; i < history.length; i += daysPerWeek) {
+      if (data.length === xAxis.length) {
+        break;
+      }
       data.push(avg(history.slice(i, i + daysPerWeek)));
     }
 
-    const xAxis = getWeeklyDateLabels(data.length);
     return { data, xAxis };
   }, [history]);
 
@@ -113,6 +122,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
       </Box>
 
       <LineChart
+        loading={loading}
         xAxis={[
           {
             data: xAxis,
@@ -137,7 +147,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
           horizontal: true,
         }}
         colors={['rgba(243, 156, 18,0.6)']}
-        axisHighlight={{ x: 'none', y: 'none' }}
+        // axisHighlight={{ x: 'none', y: 'none' }}
         yAxis={[
           {
             disableLine: true,

@@ -1,5 +1,8 @@
+import { BoxInfo, TokenValue } from '@minotaur-ergo/types';
+
 import { createEmptyArray } from './array';
 import { commaSeparate } from './txt';
+import { deserializeBox } from './wasm';
 
 const tokenStr = (amount: bigint, decimal: number, displayDecimal?: number) => {
   const amount_str =
@@ -53,9 +56,30 @@ const numberWithDecimalToBigInt = (amount: string, decimal = 9) => {
   return BigInt(parts[0] + part1);
 };
 
+const getBoxTokensValue = (
+  box: BoxInfo,
+  tokenValues: Map<string, TokenValue>,
+): number => {
+  const tokens = deserializeBox(box.serialized).tokens();
+  let sum: number = 0;
+  for (let i = 0; i < tokens.len(); i++) {
+    const t = tokens.get(i);
+    const tv: TokenValue = tokenValues.get(t.id().to_str()) || {
+      valueInErg: 0,
+      decimal: 0,
+    };
+    const val =
+      Math.round(tv.valueInErg * 10 ** 9) *
+      Math.round(Number(t.amount().as_i64().as_num()) / 10 ** tv.decimal);
+    sum += val;
+  }
+  return sum;
+};
+
 export {
   tokenStr,
   tokenPriceCurrency,
   ergPriceCurrency,
   numberWithDecimalToBigInt,
+  getBoxTokensValue,
 };

@@ -670,4 +670,20 @@ describe('token utilities', () => {
       expect(result).toBe(9999999999999999n);
     });
   });
+
+  /**
+   * Test suite for getBoxTokensValue function
+   */
+  describe('getBoxTokensValue', () => {
+    /**
+     * @target Convert decimal string to bigint
+     * @dependencies
+     * - createEmptyArray function from array module
+     * @scenario
+     * - Call numberWithDecimalToBigInt with '123.456' and 6 decimals
+     * @expect
+     * - Returns 123456000n
+     */
+    it('', () => {});
+  });
 });
