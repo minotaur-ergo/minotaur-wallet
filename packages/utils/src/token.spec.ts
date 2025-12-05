@@ -1,7 +1,9 @@
+import { BoxInfo, TokenValue } from '@minotaur-ergo/types';
 import { describe, expect, it } from 'vitest';
 
 import {
   ergPriceCurrency,
+  getBoxTokensValue,
   numberWithDecimalToBigInt,
   tokenPriceCurrency,
   tokenStr,
@@ -676,14 +678,370 @@ describe('token utilities', () => {
    */
   describe('getBoxTokensValue', () => {
     /**
-     * @target Convert decimal string to bigint
+     * @target Calculate sum of box tokens
      * @dependencies
-     * - createEmptyArray function from array module
+     * - Create BoxInfo only with serialized value and a map of tokenId -> TokenValue
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
      * @scenario
-     * - Call numberWithDecimalToBigInt with '123.456' and 6 decimals
+     * - Create a box with 7 tokens. Create 10 TokenValue
      * @expect
-     * - Returns 123456000n
+     * - 3993263616
      */
-    it('', () => {});
+    it('should calculate sum of box tokens', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized:
+          'jrHjiwEACM0CA7QEyEeo7WDG9HPNiMV5vAAa6l1F822TkrXkOMrxq2rioWQHWjeMadRxgvKiiWkpXl3Rr9+4jUsEUtpfL/CeOOyuSMK/55vFi94WH2SadWD50baX1CJcV8kEDJEB5BgdrhNFQe6K/skpRMXAhD3rtA7Kt7t9KpNQJBAIBtsE9ExiwzrpdWz2/Ey2uaotEuz8hQpq1wzb+SiivdOXBBo2pcJJCjW+tNIOq7VmbwBLEDxxiayeBPDVvfR0/L1CSWCObcbpzzSjJ7IY9mRF6lRbTHEbRnbjkatLo3x78YJijHUzYU9Azs4llNVkVYmQEnzceSGfCCtglfuAgIK/k+/wCJoG2eVFpB/VHu/8XiDYGAc7+CDGNeKp2SImmRPg3jadvJo5AApfI2Dd2335YuI0P/l+SwgPra4UoxXVH37bWcLjHA08AQ==',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+      // amount: 937276
+      tokenValues.set(
+        '9a06d9e545a41fd51eeffc5e20d818073bf820c635e2a9d922269913e0de369d',
+        {
+          valueInErg: 0.0007942409305954882,
+          decimal: 6,
+        },
+      );
+
+      // amount: 5000000000000000
+      tokenValues.set(
+        'a37c7bf182628c7533614f40cece2594d564558990127cdc79219f082b6095fb',
+        {
+          valueInErg: 6.213072602665675e-8,
+          decimal: 8,
+        },
+      );
+
+      // amount: 1234321
+      tokenValues.set(
+        'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
+        {
+          valueInErg: 5.53307836062801e-8,
+          decimal: 0,
+        },
+      );
+
+      // amount: 69420
+      tokenValues.set(
+        '6ad70cdbf928a2bdd397041a36a5c2490a35beb4d20eabb5666f004b103c7189',
+        {
+          valueInErg: 4.539131081044265e-8,
+          decimal: 0,
+        },
+      );
+
+      // amount: 21069420
+      tokenValues.set(
+        'ebb40ecab7bb7d2a935024100806db04f44c62c33ae9756cf6fc4cb6b9aa2d12',
+        {
+          valueInErg: 2.0655165335746958e-8,
+          decimal: 0,
+        },
+      );
+
+      // amount: 1000000
+      tokenValues.set(
+        '1f649a7560f9d1b697d4225c57c9040c9101e4181dae134541ee8afec92944c5',
+        {
+          valueInErg: 3.7893573601280705e-7,
+          decimal: 0,
+        },
+      );
+
+      // amount: 99989936599999
+      tokenValues.set(
+        '5a378c69d47182f2a28969295e5dd1afdfb88d4b0452da5f2ff09e38ecae48c2',
+        {
+          valueInErg: 0,
+          decimal: 4,
+        },
+      );
+
+      // not exists in box
+      tokenValues.set(
+        '8b08cdd5449a9592a9e79711d7d79249d7a03c535d17efaee83e216e80a44c4b',
+        {
+          valueInErg: 0.03741669671878438,
+          decimal: 3,
+        },
+      );
+      tokenValues.set(
+        'e023c5f382b6e96fbd878f6811aac73345489032157ad5affb84aefd4956c297',
+        {
+          valueInErg: 0.000010605139421605357,
+          decimal: 0,
+        },
+      );
+      tokenValues.set(
+        'ed2197ebb2b958670cb568aeed54693617a3f3718d16d1a298b8c8d337193da0',
+        {
+          valueInErg: 0,
+          decimal: 1,
+        },
+      );
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(3993263616);
+    });
+
+    /**
+     * @target Handle empty tokenValues
+     * @dependencies
+     * - Create BoxInfo only with serialized value and a empty map
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
+     * @scenario
+     * - TokenValues is not loaded yet, so it should give 0
+     * @expect
+     * - 0
+     */
+    it('should give 0 when tokenValues is not loaded', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized:
+          'jrHjiwEACM0CA7QEyEeo7WDG9HPNiMV5vAAa6l1F822TkrXkOMrxq2rioWQHWjeMadRxgvKiiWkpXl3Rr9+4jUsEUtpfL/CeOOyuSMK/55vFi94WH2SadWD50baX1CJcV8kEDJEB5BgdrhNFQe6K/skpRMXAhD3rtA7Kt7t9KpNQJBAIBtsE9ExiwzrpdWz2/Ey2uaotEuz8hQpq1wzb+SiivdOXBBo2pcJJCjW+tNIOq7VmbwBLEDxxiayeBPDVvfR0/L1CSWCObcbpzzSjJ7IY9mRF6lRbTHEbRnbjkatLo3x78YJijHUzYU9Azs4llNVkVYmQEnzceSGfCCtglfuAgIK/k+/wCJoG2eVFpB/VHu/8XiDYGAc7+CDGNeKp2SImmRPg3jadvJo5AApfI2Dd2335YuI0P/l+SwgPra4UoxXVH37bWcLjHA08AQ==',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(0);
+    });
+
+    /**
+     * @target Handle box with no tokens
+     * @dependencies
+     * - Create BoxInfo only with serialized value and a map of tokenId -> TokenValue
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
+     * @scenario
+     * - Box has no tokens so it should give 0
+     * @expect
+     * - 0
+     */
+    it('should give 0 when tokenValues is not loaded', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized:
+          'gJDfwEoACM0DjymPHUCSuRluV5RJzK0/jlkxnvwtZmD82aLZ/9gMS6OJ2XgAAEDqtT43wsD1Qpe77n6+U0iJnFuNuFBT6Up/JyAmR7LbAA==',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+      // amount: 937276
+      tokenValues.set(
+        '9a06d9e545a41fd51eeffc5e20d818073bf820c635e2a9d922269913e0de369d',
+        {
+          valueInErg: 0.0007942409305954882,
+          decimal: 6,
+        },
+      );
+
+      // amount: 5000000000000000
+      tokenValues.set(
+        'a37c7bf182628c7533614f40cece2594d564558990127cdc79219f082b6095fb',
+        {
+          valueInErg: 6.213072602665675e-8,
+          decimal: 8,
+        },
+      );
+
+      // amount: 1234321
+      tokenValues.set(
+        'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
+        {
+          valueInErg: 5.53307836062801e-8,
+          decimal: 0,
+        },
+      );
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(0);
+    });
+
+    /**
+     * @target Handle when a token exists in the box but NOT in tokenValues map
+     * @dependencies
+     * - Create BoxInfo only with serialized value and a map of tokenId -> TokenValue
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
+     * @scenario
+     * - Box tokens doesn't exist in tokenValues so it should give 0
+     * @expect
+     * - 0
+     */
+    it('handle box tokens does not exist in tokenValues map', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized:
+          /*
+        this box has 7105 of this token id: ed2197ebb2b958670cb568aeed54693617a3f3718d16d1a298b8c8d337193da0
+        */
+          'yN8CAAjNAgO0BMhHqO1gxvRzzYjFebwAGupdRfNtk5K15DjK8atqjZ1iAe0hl+uyuVhnDLVoru1UaTYXo/NxjRbRopi4yNM3GT2gwTcAxqDQ/INS3yTD/suZEg5zwYS6A6KK57I8hwf2t67gQFJw',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+      tokenValues.set(
+        'a37c7bf182628c7533614f40cece2594d564558990127cdc79219f082b6095fb',
+        {
+          valueInErg: 6.213072602665675e-8,
+          decimal: 8,
+        },
+      );
+      tokenValues.set(
+        'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
+        {
+          valueInErg: 5.53307836062801e-8,
+          decimal: 0,
+        },
+      );
+      tokenValues.set(
+        '6ad70cdbf928a2bdd397041a36a5c2490a35beb4d20eabb5666f004b103c7189',
+        {
+          valueInErg: 4.539131081044265e-8,
+          decimal: 0,
+        },
+      );
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(0);
+    });
+
+    /**
+     * @target Test corrupted or invalid serialized box data
+     * @dependencies
+     * - Create BoxInfo only with a corrupted or invalid serialized value
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
+     * @scenario
+     * - Box serialized data is corrupted or invalid so it should give 0
+     * @expect
+     * - 0
+     */
+    it('handle corrupted or invalid serialized box data', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized: 'abcdefghijklmnopqrstuvwxyz',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+      tokenValues.set(
+        'a37c7bf182628c7533614f40cece2594d564558990127cdc79219f082b6095fb',
+        {
+          valueInErg: 6.213072602665675e-8,
+          decimal: 8,
+        },
+      );
+      tokenValues.set(
+        'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
+        {
+          valueInErg: 5.53307836062801e-8,
+          decimal: 0,
+        },
+      );
+      tokenValues.set(
+        '6ad70cdbf928a2bdd397041a36a5c2490a35beb4d20eabb5666f004b103c7189',
+        {
+          valueInErg: 4.539131081044265e-8,
+          decimal: 0,
+        },
+      );
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(0);
+    });
+
+    /**
+     * @target Test when value in erg is zero for all token values
+     * @dependencies
+     * - Create BoxInfo only with serialized value and a map of tokenId -> TokenValue
+     * - It uses deserializeBox to deserialize box serailized value and access its tokens
+     * @scenario
+     * - Token values all have valueInErg as 0 so it should give 0
+     * @expect
+     * - 0
+     */
+    it('handle when value in erg is zero for all token values', () => {
+      const box: BoxInfo = {
+        address: '',
+        boxId: '',
+        create: {
+          index: 0,
+          height: 0,
+          tx: '',
+          timestamp: 0,
+        },
+        serialized:
+          'jrHjiwEACM0CA7QEyEeo7WDG9HPNiMV5vAAa6l1F822TkrXkOMrxq2rioWQHWjeMadRxgvKiiWkpXl3Rr9+4jUsEUtpfL/CeOOyuSMK/55vFi94WH2SadWD50baX1CJcV8kEDJEB5BgdrhNFQe6K/skpRMXAhD3rtA7Kt7t9KpNQJBAIBtsE9ExiwzrpdWz2/Ey2uaotEuz8hQpq1wzb+SiivdOXBBo2pcJJCjW+tNIOq7VmbwBLEDxxiayeBPDVvfR0/L1CSWCObcbpzzSjJ7IY9mRF6lRbTHEbRnbjkatLo3x78YJijHUzYU9Azs4llNVkVYmQEnzceSGfCCtglfuAgIK/k+/wCJoG2eVFpB/VHu/8XiDYGAc7+CDGNeKp2SImmRPg3jadvJo5AApfI2Dd2335YuI0P/l+SwgPra4UoxXVH37bWcLjHA08AQ==',
+      };
+
+      const tokenValues: Map<string, TokenValue> = new Map();
+      // amount: 937276
+      tokenValues.set(
+        '9a06d9e545a41fd51eeffc5e20d818073bf820c635e2a9d922269913e0de369d',
+        {
+          valueInErg: 0,
+          decimal: 6,
+        },
+      );
+
+      // amount: 5000000000000000
+      tokenValues.set(
+        'a37c7bf182628c7533614f40cece2594d564558990127cdc79219f082b6095fb',
+        {
+          valueInErg: 0,
+          decimal: 8,
+        },
+      );
+
+      // amount: 1234321
+      tokenValues.set(
+        'f0d5bdf474fcbd4249608e6dc6e9cf34a327b218f66445ea545b4c711b4676e3',
+        {
+          valueInErg: 0,
+          decimal: 0,
+        },
+      );
+
+      const result = getBoxTokensValue(box, tokenValues);
+
+      expect(result).toBe(0);
+    });
   });
 });

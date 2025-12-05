@@ -50,7 +50,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
     const daysPerWeek = 7;
     const start = new Date().getDay();
     const data: number[] = [];
-    const xAxis = getWeeklyDateLabels(data.length);
+    const xAxis = getWeeklyDateLabels(48);
 
     for (let i = start; i < history.length; i += daysPerWeek) {
       if (data.length === xAxis.length) {
@@ -147,7 +147,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
           horizontal: true,
         }}
         colors={['rgba(243, 156, 18,0.6)']}
-        // axisHighlight={{ x: 'none', y: 'none' }}
+        axisHighlight={{ x: 'none', y: 'none' }}
         yAxis={[
           {
             disableLine: true,
