@@ -8,10 +8,12 @@ import { Box, Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
 import Heading from '@/components/heading/Heading';
+import SubHeading from '@/components/heading/SubHeading';
 import SolitarySelectField, {
   OptionsType,
 } from '@/components/solitary/SolitarySelectField';
 import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
+import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import getCurrencies from '@/hooks/useCurrencies';
 import ActionButton from '@/pages/settings/ActionButton';
 import { getRoute, RouteMap } from '@/router/routerMap';
@@ -19,7 +21,12 @@ import {
   setActiveWallet,
   setCurrency,
   setDisplay,
+  setMainnetNodeAddress,
+  setMainnetSyncWithNode,
+  setTestnetNodeAddress,
+  setTestnetSyncWithNode,
 } from '@/store/reducer/config';
+import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
 
 const GlobalSettings = () => {
   const activePinType = useSelector(
@@ -28,9 +35,15 @@ const GlobalSettings = () => {
   const displayMode = useSelector(
     (state: GlobalStateType) => state.config.display,
   );
-  const { useActiveWallet, activeWallet, currency } = useSelector(
-    (state: GlobalStateType) => state.config,
-  );
+  const {
+    useActiveWallet,
+    activeWallet,
+    currency,
+    mainnetNodeAddress,
+    mainnetSyncWithNode,
+    testnetNodeAddress,
+    testnetSyncWithNode,
+  } = useSelector((state: GlobalStateType) => state.config);
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
     currency = currency.split(' ')[0];
@@ -63,6 +76,46 @@ const GlobalSettings = () => {
         );
       });
   };
+
+  const saveSyncWithNode = (
+    isMainnet: boolean,
+    sync?: boolean,
+    address?: string,
+  ) => {
+    ConfigDbAction.getInstance()
+      .setConfig(
+        getConfigType(isMainnet, !!address),
+        address ? address : sync ? 'true' : 'false',
+        activePinType,
+      )
+      .then(() => {
+        dispatch(
+          isMainnet
+            ? address
+              ? setMainnetNodeAddress(address)
+              : setMainnetSyncWithNode(!!sync)
+            : address
+              ? setTestnetNodeAddress(address)
+              : setTestnetSyncWithNode(!!sync),
+        );
+      });
+  };
+
+  const getConfigType = (
+    isMainnet: boolean,
+    isAddress: boolean,
+  ): ConfigType => {
+    if (isMainnet) {
+      return isAddress
+        ? ConfigType.MainnetNodeAddress
+        : ConfigType.MainnetSyncWithNode;
+    } else {
+      return isAddress
+        ? ConfigType.TestnetNodeAddress
+        : ConfigType.TestnetSyncWithNode;
+    }
+  };
+
   const navigate = useNavigate();
   const hasPin = useSelector(
     (state: GlobalStateType) => state.config.pin.hasPin,
@@ -114,6 +167,50 @@ const GlobalSettings = () => {
             value={useActiveWallet}
             onChange={saveUseActiveWallet}
           />
+          {/* Mainnet */}
+          <SubHeading title="Mainnet Node Settings" />
+          <SolitarySwitchField
+            label="Use Node Explorer API For Mainnet"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={mainnetSyncWithNode}
+            onChange={(sync) => {
+              saveSyncWithNode(true, sync);
+            }}
+          />
+          {mainnetSyncWithNode && (
+            <SolitaryTextField
+              value={mainnetNodeAddress}
+              label="Node URL"
+              onChange={(address) => {
+                saveSyncWithNode(true, undefined, address);
+              }}
+              resetLabel="Reset to Alex Node"
+              resetValue={DEFAULT_NODE_ADDRESS}
+            />
+          )}
+          {/* Testnet */}
+          <SubHeading title="Testnet Node Settings" />
+          <SolitarySwitchField
+            label="Use Node Explorer API For Testnet"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={testnetSyncWithNode}
+            onChange={(sync) => {
+              saveSyncWithNode(false, sync);
+            }}
+          />
+          {testnetSyncWithNode && (
+            <SolitaryTextField
+              value={testnetNodeAddress}
+              label="Node URL"
+              onChange={(address) => {
+                saveSyncWithNode(false, undefined, address);
+              }}
+              resetLabel="Reset to Alex Node"
+              resetValue={DEFAULT_NODE_ADDRESS}
+            />
+          )}
         </Stack>
       </Box>
     </React.Fragment>

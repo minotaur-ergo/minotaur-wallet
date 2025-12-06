@@ -13,6 +13,8 @@ interface SolitaryTextFieldPropsType {
   onChange: (newValue: string) => unknown;
   label: string;
   helperText?: string;
+  resetLabel?: string;
+  resetValue?: string;
 }
 
 const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
@@ -20,6 +22,8 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
   onChange,
   label,
   helperText,
+  resetLabel,
+  resetValue,
 }) => {
   const [open, setOpen] = useState(false);
   const [newValue, setNewValue] = useState(value);
@@ -31,6 +35,13 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
   const handleConfirm = () => {
     if (onChange) {
       onChange(newValue);
+    }
+    setOpen(false);
+  };
+  const handleReset = () => {
+    setNewValue(resetValue || '');
+    if (onChange && resetValue !== undefined) {
+      onChange(resetValue);
     }
     setOpen(false);
   };
@@ -72,6 +83,16 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
           >
             Save
           </Button>
+          {resetLabel && (
+            <Button
+              onClick={handleReset}
+              variant="text"
+              fullWidth={false}
+              sx={{ px: 0, minWidth: 0 }}
+            >
+              {resetLabel || 'Reset'}
+            </Button>
+          )}
           <Button
             onClick={handleClose}
             variant="text"

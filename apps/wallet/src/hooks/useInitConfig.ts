@@ -11,6 +11,7 @@ import {
 import { getInitializeData } from '@/action/initialize';
 import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
+import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
 import {
   addressEntityToAddressState,
   walletEntityToWalletState,
@@ -54,6 +55,10 @@ const useInitConfig = () => {
           activeWallet: -1,
           pinType: activePinType,
           useActiveWallet: true,
+          MainnetSyncWithNode: false,
+          TestnetSyncWithNode: false,
+          MainnetNodeAddress: DEFAULT_NODE_ADDRESS,
+          TestnetNodeAddress: DEFAULT_NODE_ADDRESS,
         };
         configs.forEach((item) => {
           if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
@@ -64,6 +69,14 @@ const useInitConfig = () => {
             config.activeWallet = parseInt(item.value);
           } else if (item.key === ConfigType.useActiveWallet) {
             config.useActiveWallet = item.value !== 'false';
+          } else if (item.key === ConfigType.MainnetSyncWithNode) {
+            config.MainnetSyncWithNode = item.value === 'true';
+          } else if (item.key === ConfigType.TestnetSyncWithNode) {
+            config.TestnetSyncWithNode = item.value === 'true';
+          } else if (item.key === ConfigType.MainnetNodeAddress) {
+            config.MainnetNodeAddress = item.value;
+          } else if (item.key === ConfigType.TestnetNodeAddress) {
+            config.TestnetNodeAddress = item.value;
           }
         });
         dispatch(setConfig(config));

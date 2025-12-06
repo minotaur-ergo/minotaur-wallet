@@ -118,6 +118,10 @@ export enum ConfigType {
   Currency = 'CURRENCY',
   ActiveWallet = 'ACTIVE_WALLET',
   useActiveWallet = 'USE_ACTIVE_WALLET',
+  MainnetSyncWithNode = 'MAINNET_SYNC_WITH_NODE',
+  MainnetNodeAddress = 'MAINNET_NODE_ADDRESS',
+  TestnetSyncWithNode = 'TESTNET_SYNC_WITH_NODE',
+  TestnetNodeAddress = 'TESTNET_NODE_ADDRESS',
 }
 
 export type DisplayType = 'simple' | 'advanced';
@@ -147,6 +151,10 @@ export interface ConfigStateType {
   priceLastWeek: number;
   activeWallet?: number;
   useActiveWallet: boolean;
+  mainnetSyncWithNode: boolean;
+  testnetSyncWithNode: boolean;
+  mainnetNodeAddress: string;
+  testnetNodeAddress: string;
   multiSigLoadedTime: number;
   loadedPinType: string;
   pin: PinConfig;

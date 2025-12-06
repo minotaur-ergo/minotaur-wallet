@@ -2,6 +2,8 @@ import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
+
 export const configInitialState: ConfigStateType = {
   currency: '',
   symbol: { symbol: '', direction: 'l' },
@@ -11,6 +13,10 @@ export const configInitialState: ConfigStateType = {
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
   useActiveWallet: true,
+  mainnetSyncWithNode: false,
+  testnetSyncWithNode: false,
+  mainnetNodeAddress: DEFAULT_NODE_ADDRESS,
+  testnetNodeAddress: DEFAULT_NODE_ADDRESS,
   pin: {
     hasPin: false,
     activePinType: '',
@@ -38,9 +44,17 @@ export type PinPayload = {
   locked?: boolean;
 };
 
+export type SyncWithNodePayload = {
+  MainnetSyncWithNode: boolean;
+  MainnetNodeAddress: string;
+  TestnetSyncWithNode: boolean;
+  TestnetNodeAddress: string;
+};
+
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
-  ActiveWalletPayload & { pinType: string };
+  ActiveWalletPayload &
+  SyncWithNodePayload & { pinType: string };
 
 export type PricePayload = {
   current: number;
@@ -62,6 +76,18 @@ const configSlice = createSlice({
       state.currency = action.payload.currency;
       state.symbol = getCurrencySymbol(action.payload.currency);
     },
+    setMainnetSyncWithNode: (state, action: PayloadAction<boolean>) => {
+      state.mainnetSyncWithNode = action.payload;
+    },
+    setTestnetSyncWithNode: (state, action: PayloadAction<boolean>) => {
+      state.testnetSyncWithNode = action.payload;
+    },
+    setMainnetNodeAddress: (state, action: PayloadAction<string>) => {
+      state.mainnetNodeAddress = action.payload;
+    },
+    setTestnetNodeAddress: (state, action: PayloadAction<string>) => {
+      state.testnetNodeAddress = action.payload;
+    },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet =
@@ -76,6 +102,10 @@ const configSlice = createSlice({
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
+      state.mainnetSyncWithNode = action.payload.MainnetSyncWithNode;
+      state.testnetSyncWithNode = action.payload.TestnetSyncWithNode;
+      state.mainnetNodeAddress = action.payload.MainnetNodeAddress;
+      state.testnetNodeAddress = action.payload.TestnetNodeAddress;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -104,6 +134,10 @@ export const {
   setPrice,
   setDisplay,
   setCurrency,
+  setMainnetSyncWithNode,
+  setTestnetSyncWithNode,
+  setMainnetNodeAddress,
+  setTestnetNodeAddress,
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,
