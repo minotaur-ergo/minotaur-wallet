@@ -22,6 +22,8 @@ export const walletInitialState: WalletStateType = {
   refresh: false,
   updatedWallets: [],
   tokenValues: new Map(),
+  balanceHistory: {},
+  loadingBalanceHistory: false,
 };
 
 const updateWalletBalance = (
@@ -134,6 +136,12 @@ const walletSlice = createSlice({
     setTokenValues(state, action: PayloadAction<Map<string, TokenValue>>) {
       state.tokenValues = action.payload;
     },
+    setBalanceHistory(state, action: PayloadAction<Record<number, number[]>>) {
+      state.balanceHistory = action.payload;
+    },
+    setLoadingBalanceHistory(state, action: PayloadAction<boolean>) {
+      state.loadingBalanceHistory = action.payload;
+    },
     invalidateWallets(state) {
       state.walletsValid = false;
       state.addressesValid = false;
@@ -168,6 +176,8 @@ export const {
   setAddresses,
   setBalances,
   setTokenValues,
+  setBalanceHistory,
+  setLoadingBalanceHistory,
   addUpdatedWallets,
   clearUpdatedWallets,
   forceRefresh,
