@@ -1,3 +1,4 @@
+import { CapacitorHttp } from '@capacitor/core';
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   AbstractNetwork,
@@ -289,4 +290,98 @@ class ErgoExplorerNetwork extends AbstractNetwork {
   };
 }
 
-export { ErgoExplorerNetwork as default };
+class ErgoNodeNetwork extends ErgoExplorerNetwork {
+  private static MAX_ALLOWED_BOX_PER_PAGE = 100;
+
+  constructor(url: string) {
+    super(url);
+  }
+
+  getAddressBoxes = async (address: string, limit: number, offset: number) => {
+    return await CapacitorHttp.post({
+      url: `http://213.239.193.208:9053/blockchain/box/byAddress?offset=${offset}&limit=${limit}`,
+      params: {
+        address,
+      },
+    });
+  };
+
+  syncBoxes = async (
+    address: string,
+    addressHeight: number,
+    updateAddressHeight: (height: number) => Promise<unknown>,
+    insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
+    spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
+  ): Promise<boolean> => {
+    try {
+      const height = await this.getHeight();
+      let toHeight = height;
+      const proceedToHeight = async (proceedHeight: number) => {
+        await updateAddressHeight(proceedHeight);
+        addressHeight = proceedHeight;
+        toHeight = height;
+      };
+      while (addressHeight < height) {
+        // get from node
+        let chunck = await this.getAddressBoxes(address, 1, 0);
+        if (chunck.data.total > ErgoNodeNetwork.MAX_ALLOWED_BOX_PER_PAGE) {
+          if (toHeight > addressHeight + 1) {
+            toHeight = Math.floor((toHeight + addressHeight) / 2);
+          } else {
+            // add output boxes
+
+            // add input boxes
+
+            await proceedToHeight(toHeight);
+          }
+        } else {
+          if (chunck.data.total > 1) {
+            // get from node
+            chunck = await this.getAddressBoxes(
+              address,
+              ErgoNodeNetwork.MAX_ALLOWED_BOX_PER_PAGE,
+              0,
+            );
+          }
+          // add output boxes
+          for (const box of chunck.data.items) {
+            insertOrUpdateBox({
+              address: address,
+              boxId: box.boxId,
+              create: {
+                index: box.index,
+                tx: box.transactionId,
+                // from tx
+                height: box.creationHeight,
+                // from tx
+                timestamp: parseInt(box.timestamp.toString()),
+              },
+              serialized: serializeBox(
+                wasm.ErgoBox.from_json(JsonBI.stringify(box)),
+              ),
+            });
+            if (box.spentTransactionId) {
+              await spendBox(box.boxId, {
+                // from tx
+                height: box.inclusionHeight!,
+                // from tx
+                timestamp: parseInt(box.spentTimestamp!.toString()),
+                tx: box.spentTransactionId!,
+                index: box.index,
+              });
+            }
+          }
+          // add input boxes
+
+          await proceedToHeight(toHeight);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+    return true;
+  };
+}
+
+export { ErgoExplorerNetwork as default, ErgoNodeNetwork };
