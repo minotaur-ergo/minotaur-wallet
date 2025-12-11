@@ -74,6 +74,7 @@ const WalletAddNew = () => {
         })
         .catch((exp) => {
           context.insert(exp, 'error');
+          setCreating(false);
         });
     }
   };

@@ -87,6 +87,7 @@ const WalletAddMultiSig = () => {
         })
         .catch((exp) => {
           context.insert(exp, 'error');
+          setCreating(false);
         });
     }
   };

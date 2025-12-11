@@ -955,6 +955,18 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: '603c16347ff01903a9b79e42bfec2f1a75adaea4db283ce0736ece8fc0335e04',
     fileExtension: 'png',
   },
+  'ae399fcb751e8e247d0da8179a2bcca2aa5119fff9c85721ffab9cdc9a3cb2dd': {
+    id: 'ae399fcb751e8e247d0da8179a2bcca2aa5119fff9c85721ffab9cdc9a3cb2dd',
+    boxId: '96f19bdfa765e1914c03887903d4bb2c62158075171efaa67c005043a3d0f4e2',
+    decimals: 0,
+    description: 'USD Oracle Reward Token (DORT)',
+    emissionAmount: '250000000',
+    height: 1621314,
+    name: 'DORT',
+    networkType: 'Main Net',
+    txId: '1a655bac1b35113cea882e614d75d98a6934d70a5c134d8e298a5c8fe77064af',
+    fileExtension: 'svg',
+  },
   'b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0': {
     id: 'b0b312cde931c8bbdac0dac5bfd8e2c03bf4611275dc967988c8d15bd5ec20e0',
     boxId: '61afa81afcccd4fb66046ce84ab52a5ad6315f9febdb6b4352d8ae7ed706d083',
