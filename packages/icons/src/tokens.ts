@@ -677,6 +677,19 @@ export const tokens: { [tokenId: string]: TokenType } = {
     txId: 'eb71dfc9e481cee4e51633258fafdb9016f2e1b60c5dc8b62d408b5bb188cad8',
     fileExtension: 'png',
   },
+  '76dfd2a08bb3d586f1b75136915d051c1de31ba3252c1240cafdc1699a4f777c': {
+    id: '76dfd2a08bb3d586f1b75136915d051c1de31ba3252c1240cafdc1699a4f777c',
+    boxId: 'e27e4beb1b92afac566bdd1dafbf6f93b0867236d86e234b431af0783cf95b9f',
+    decimals: 6,
+    description:
+      '{"title":"rosen bridge wrapped NIGHT","originNetwork":"Cardano","originToken":"0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa.4e49474854","isNativeToken":false}',
+    emissionAmount: '24000000000000000',
+    height: 1671699,
+    name: 'rsNIGHT',
+    networkType: 'Main Net',
+    txId: '27b42a981a82ed08bc9fe9d11e3da511b321b30781fb52500ad505fc37f58217',
+    fileExtension: 'svg',
+  },
   '7a51950e5f548549ec1aa63ffdc38279505b11e7e803d01bcf8347e0123c88b0': {
     id: '7a51950e5f548549ec1aa63ffdc38279505b11e7e803d01bcf8347e0123c88b0',
     boxId: 'e2ed4d64393222db666f20e67803e9e6fbe6d64531e14ff52ddd95615b0cbf17',
