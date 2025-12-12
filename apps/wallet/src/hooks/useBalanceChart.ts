@@ -11,6 +11,7 @@ import Box from '@/db/entities/Box';
 import {
   setBalanceHistory,
   setLoadingBalanceHistory,
+  setShowBalanceChart,
 } from '@/store/reducer/wallet';
 
 const useBalanceChart = () => {
@@ -22,6 +23,7 @@ const useBalanceChart = () => {
     (state: GlobalStateType) => state.config.currency,
   );
   const isRunning = useRef<boolean>(false);
+  const ergValues = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
     if (isRunning.current || !currency) return;
@@ -33,17 +35,24 @@ const useBalanceChart = () => {
       const endDate = today.getTime();
       const startDate = new Date(endDate - 365 * 24 * 3600 * 1000).getTime();
       // erg value during last year
-      const ergValues = new Map();
-      try {
-        await CapacitorHttp.get({
-          url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
-        }).then((res) =>
-          res.data.prices.map((price: number[]) => {
-            ergValues.set(toDay(price[0]), price[1]);
-          }),
-        );
-      } catch (e) {
-        console.error('Failed to fetch ergo price data', e);
+      if (ergValues.current.size === 0) {
+        try {
+          await CapacitorHttp.get({
+            url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
+          }).then((res) => {
+            res.data.prices.map((price: number[]) => {
+              ergValues.current.set(toDay(price[0]), price[1]);
+            });
+          });
+        } catch (e) {
+          console.log('Failed to fetch ergo price data');
+          dispatch(setShowBalanceChart(false));
+          isRunning.current = false;
+          setTimeout(() => {
+            run();
+          }, 30000);
+          return;
+        }
       }
 
       const groupedBox = new Map<number, BoxInfo[]>();
@@ -85,13 +94,14 @@ const useBalanceChart = () => {
         endDate,
         tokenValues,
         groupedBox,
-        ergValues,
+        ergValues.current,
       )
         .then((data: Record<number, number[]>) => {
           dispatch(setBalanceHistory(data));
         })
         .finally(() => {
           dispatch(setLoadingBalanceHistory(false));
+          dispatch(setShowBalanceChart(true));
           isRunning.current = false;
         });
     };

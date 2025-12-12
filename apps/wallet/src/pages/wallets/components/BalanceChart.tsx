@@ -21,9 +21,10 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
   const history = useSelector(
     (state: GlobalStateType) => state.wallet.balanceHistory[walletId],
   );
-  const loading = useSelector(
-    (state: GlobalStateType) => state.wallet.loadingBalanceHistory,
-  );
+  const [loading, showChart] = useSelector((state: GlobalStateType) => [
+    state.wallet.loadingBalanceHistory,
+    state.wallet.showBalanceChart,
+  ]);
   const [mode, setMode] = useState('monthly');
 
   const monthlyData = useMemo(() => {
@@ -64,7 +65,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
 
   const { data, xAxis } = mode === 'monthly' ? monthlyData : weeklyData;
 
-  return (
+  return showChart ? (
     <>
       <Box display="flex" justifyContent="center" sx={{ width: '100%' }}>
         <FormControl
@@ -177,7 +178,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
         }}
       />
     </>
-  );
+  ) : null;
 };
 
 export default BalanceChart;
