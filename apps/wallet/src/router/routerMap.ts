@@ -20,6 +20,8 @@ export const RouteMap = {
   Settings: '/settings/',
   Pin: '/pin/',
   HoneyPin: '/pin/honey/',
+  MainnetNetworkSettings: '/mainnetNetworkSettings',
+  TestnetNetworkSettings: '/testnetNetworkSettings',
   AddressBook: '/address-book',
   Wallets: '/wallet/list/',
   WalletAdd: '/wallet/add/',
