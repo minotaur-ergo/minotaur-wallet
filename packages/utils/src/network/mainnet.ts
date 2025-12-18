@@ -3,7 +3,7 @@ import { ChainTypeInterface } from '@minotaur-ergo/types';
 
 import { MAIN_NET_LABEL } from '../const';
 import { fakeContext } from './context';
-import ErgoExplorerNetwork from './explorer';
+import ErgoExplorerNetwork, { ErgoNodeNetwork } from './explorer';
 
 class MainnetChain implements ChainTypeInterface {
   readonly label = MAIN_NET_LABEL;
@@ -19,6 +19,10 @@ class MainnetChain implements ChainTypeInterface {
 
   fakeContext = (): ErgoStateContext => {
     return fakeContext();
+  };
+
+  getNodeNetwork = (node: string) => {
+    return new ErgoNodeNetwork('https://api.ergoplatform.com', node);
   };
 }
 

@@ -56,6 +56,7 @@ interface ChainTypeInterface {
   getNetwork: () => AbstractNetwork;
   getExplorerFront: () => string;
   fakeContext: () => wasm.ErgoStateContext;
+  getNodeNetwork: (node: string) => AbstractNetwork;
 }
 
 export { ChainTypeInterface, BalanceInfo, AbstractNetwork, TokenInfo };

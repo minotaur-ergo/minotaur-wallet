@@ -39,10 +39,12 @@ const deriveAddressFromXPub = (
 const findWalletAddresses = async (
   derive: (index: number) => Promise<{ address: string; path: string }>,
   networkType: string,
+  syncWithNode: boolean,
+  url: string,
 ) => {
   const addresses: DerivedWalletAddress[] = [];
   const chain = getChain(networkType);
-  const network = chain.getNetwork();
+  const network = syncWithNode ? chain.getNodeNetwork(url) : chain.getNetwork();
   const firstAddress = await derive(0);
   addresses.push({
     address: firstAddress.address,

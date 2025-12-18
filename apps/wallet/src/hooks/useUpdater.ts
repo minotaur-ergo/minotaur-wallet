@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
 
 import { syncWallet } from '@/action/sync';
 import store from '@/store';
@@ -21,9 +22,13 @@ const useUpdater = () => {
   const updatedWallets = useSelector(
     (state: GlobalStateType) => state.wallet.updatedWallets,
   );
-  const activeWallet = useSelector(
-    (state: GlobalStateType) => state.config.activeWallet,
-  );
+  const {
+    activeWallet,
+    mainnetSyncWithNode,
+    testnetSyncWithNode,
+    mainnetNodeAddress,
+    testnetNodeAddress,
+  } = useSelector((state: GlobalStateType) => state.config);
   const refresh = useSelector((state: GlobalStateType) => state.wallet.refresh);
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
 
@@ -43,7 +48,16 @@ const useUpdater = () => {
       const wallet =
         filteredActive.length === 0 ? filtered[0] : filteredActive[0];
       if (wallet) {
-        syncWallet(wallet)
+        syncWallet(
+          wallet,
+          // sync with node?
+          (wallet.networkType === MAIN_NET_LABEL && mainnetSyncWithNode) ||
+            (wallet.networkType === TEST_NET_LABEL && testnetSyncWithNode),
+          // node url
+          wallet.networkType === MAIN_NET_LABEL
+            ? mainnetNodeAddress
+            : testnetNodeAddress,
+        )
           .then(() => {
             store.dispatch(addUpdatedWallets(wallet.id));
             setLoading(false);
@@ -58,7 +72,17 @@ const useUpdater = () => {
         setLoading(false);
       }
     }
-  }, [activeWallet, loading, initialized, wallets, updatedWallets]);
+  }, [
+    activeWallet,
+    loading,
+    initialized,
+    wallets,
+    updatedWallets,
+    mainnetSyncWithNode,
+    testnetSyncWithNode,
+    mainnetNodeAddress,
+    testnetNodeAddress,
+  ]);
   useEffect(() => {
     if (!loading && refresh) {
       store.dispatch(clearUpdatedWallets());

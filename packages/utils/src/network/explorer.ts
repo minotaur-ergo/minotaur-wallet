@@ -8,6 +8,7 @@ import {
   TokenInfo,
 } from '@minotaur-ergo/types';
 import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
+import { ItemsTransactionInfo } from '@rosen-clients/ergo-explorer/dist/v1/types';
 import JSONBigInt from 'json-bigint';
 
 import { JsonBI } from '../json';
@@ -21,7 +22,7 @@ const getBoxId = (box: { boxId: string } | { id: string }) => {
 
 class ErgoExplorerNetwork extends AbstractNetwork {
   private readonly client;
-  private static MAX_ALLOWED_TX_PER_PAGE = 100;
+  static MAX_ALLOWED_TX_PER_PAGE = 100;
 
   constructor(url: string) {
     super();
@@ -101,7 +102,7 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     }
   };
 
-  protected processTransactionInput = async (
+  processTransactionInput = async (
     tx: V1.TransactionInfo | V1.TransactionInfo1,
     address: string,
     spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
@@ -118,7 +119,7 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     }
   };
 
-  protected processTransactionOutput = async (
+  processTransactionOutput = async (
     tx: V1.TransactionInfo | V1.TransactionInfo1,
     address: string,
     insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
@@ -290,20 +291,70 @@ class ErgoExplorerNetwork extends AbstractNetwork {
   };
 }
 
-class ErgoNodeNetwork extends ErgoExplorerNetwork {
-  private static MAX_ALLOWED_BOX_PER_PAGE = 100;
+class ErgoNodeNetwork extends AbstractNetwork {
+  private nodeUrl: string;
+  private ergoExplorerNetwork: ErgoExplorerNetwork;
 
-  constructor(url: string) {
-    super(url);
+  constructor(url: string, node: string) {
+    super();
+    this.nodeUrl = node;
+    this.ergoExplorerNetwork = new ErgoExplorerNetwork(url);
   }
 
-  getAddressBoxes = async (address: string, limit: number, offset: number) => {
-    return await CapacitorHttp.post({
-      url: `http://213.239.193.208:9053/blockchain/box/byAddress?offset=${offset}&limit=${limit}`,
-      params: {
-        address,
-      },
+  getHeight = async (): Promise<number> => {
+    const res = await CapacitorHttp.get({
+      url: `http://213.239.193.208:9053/blockchain/indexedHeight`,
     });
+    return res.data.fullHeight;
+  };
+
+  getAddressTransactionCount = async (address: string): Promise<number> => {
+    const date = await this.getAddressTransactions(address, 1, 0);
+    return date.total;
+  };
+
+  getContext = async (): Promise<wasm.ErgoStateContext> => {
+    return this.ergoExplorerNetwork.getContext();
+  };
+
+  sendTx = async (tx: wasm.Transaction): Promise<{ txId: string }> => {
+    return this.ergoExplorerNetwork.sendTx(tx);
+  };
+
+  getAddressInfo = async (address: string): Promise<BalanceInfo> => {
+    const res = await CapacitorHttp.post({
+      url: `http://213.239.193.208:9053/blockchain/balance`,
+      data: address,
+    });
+    return {
+      nanoErgs: BigInt(res.data.confirmed.nanoErgs),
+      tokens: res.data.confirmed.tokens.map(
+        (item: { tokenId: string; amount: number }) => ({
+          id: item.tokenId,
+          amount: item.amount,
+        }),
+      ),
+    };
+  };
+
+  getAssetDetails = async (assetId: string): Promise<TokenInfo> => {
+    return this.ergoExplorerNetwork.getAssetDetails(assetId);
+  };
+
+  getBoxById = async (boxId: string): Promise<wasm.ErgoBox | undefined> => {
+    return this.ergoExplorerNetwork.getBoxById(boxId);
+  };
+
+  getAddressTransactions = async (
+    address: string,
+    limit: number,
+    offset: number,
+  ): Promise<ItemsTransactionInfo> => {
+    const res = await CapacitorHttp.post({
+      url: `http://213.239.193.208:9053/blockchain/transaction/byAddress?offset=${offset}&limit=${limit}`,
+      data: address,
+    });
+    return res.data;
   };
 
   syncBoxes = async (
@@ -315,72 +366,73 @@ class ErgoNodeNetwork extends ErgoExplorerNetwork {
   ): Promise<boolean> => {
     try {
       const height = await this.getHeight();
-      let toHeight = height;
-      const proceedToHeight = async (proceedHeight: number) => {
-        await updateAddressHeight(proceedHeight);
-        addressHeight = proceedHeight;
-        toHeight = height;
+      const proceedToHeight = async () => {
+        await updateAddressHeight(height);
       };
-      while (addressHeight < height) {
-        // get from node
-        let chunck = await this.getAddressBoxes(address, 1, 0);
-        if (chunck.data.total > ErgoNodeNetwork.MAX_ALLOWED_BOX_PER_PAGE) {
-          if (toHeight > addressHeight + 1) {
-            toHeight = Math.floor((toHeight + addressHeight) / 2);
-          } else {
-            // add output boxes
-
-            // add input boxes
-
-            await proceedToHeight(toHeight);
-          }
-        } else {
-          if (chunck.data.total > 1) {
-            // get from node
-            chunck = await this.getAddressBoxes(
-              address,
-              ErgoNodeNetwork.MAX_ALLOWED_BOX_PER_PAGE,
-              0,
-            );
-          }
-          // add output boxes
-          for (const box of chunck.data.items) {
-            insertOrUpdateBox({
-              address: address,
-              boxId: box.boxId,
-              create: {
-                index: box.index,
-                tx: box.transactionId,
-                // from tx
-                height: box.creationHeight,
-                // from tx
-                timestamp: parseInt(box.timestamp.toString()),
-              },
-              serialized: serializeBox(
-                wasm.ErgoBox.from_json(JsonBI.stringify(box)),
-              ),
-            });
-            if (box.spentTransactionId) {
-              await spendBox(box.boxId, {
-                // from tx
-                height: box.inclusionHeight!,
-                // from tx
-                timestamp: parseInt(box.spentTimestamp!.toString()),
-                tx: box.spentTransactionId!,
-                index: box.index,
-              });
-            }
-          }
-          // add input boxes
-
-          await proceedToHeight(toHeight);
-        }
+      if (addressHeight >= height) {
+        return true;
       }
+      // fetch transactions from node
+      let chunk = null;
+      let offset = 0;
+      do {
+        chunk = await this.getAddressTransactions(
+          address,
+          ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
+          offset,
+        );
+        offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE;
+        // add output boxes
+        for (const tx of chunk.items ?? []) {
+          await this.ergoExplorerNetwork.processTransactionOutput(
+            tx,
+            address,
+            insertOrUpdateBox,
+          );
+        }
+        // add input boxes = spent boxes
+        for (const tx of chunk.items ?? []) {
+          await this.ergoExplorerNetwork.processTransactionInput(
+            tx,
+            address,
+            spendBox,
+          );
+        }
+      } while (chunk.total > 100);
+
+      // update height
+      await proceedToHeight();
     } catch (e) {
       console.error(e);
       return false;
     }
     return true;
+  };
+
+  getUnspentBoxByTokenId = async (
+    tokenId: string,
+    offset: number,
+    limit: number,
+  ): Promise<Array<wasm.ErgoBox>> => {
+    return this.ergoExplorerNetwork.getUnspentBoxByTokenId(
+      tokenId,
+      offset,
+      limit,
+    );
+  };
+
+  trackMempool = async (box: wasm.ErgoBox): Promise<wasm.ErgoBox> => {
+    return this.ergoExplorerNetwork.trackMempool(box);
+  };
+
+  getTransaction = async (
+    txId: string,
+  ): Promise<{
+    tx?: wasm.Transaction;
+    date: string;
+    boxes: Array<wasm.ErgoBox>;
+  }> => {
+    return this.ergoExplorerNetwork.getTransaction(txId);
   };
 }
 

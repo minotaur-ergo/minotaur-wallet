@@ -1,7 +1,13 @@
 import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { createEmptyArray, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { GlobalStateType } from '@minotaur-ergo/types';
+import {
+  createEmptyArray,
+  MAIN_NET_LABEL,
+  TEST_NET_LABEL,
+} from '@minotaur-ergo/utils';
 import { Button, CircularProgress, Grid } from '@mui/material';
 
 import { createMultiSigWallet } from '@/action/wallet';
@@ -22,6 +28,12 @@ type WalletValueKeysNumber = 'signers' | 'threshold';
 const WalletAddMultiSig = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
+  const {
+    mainnetSyncWithNode,
+    testnetSyncWithNode,
+    mainnetNodeAddress,
+    testnetNodeAddress,
+  } = useSelector((state: GlobalStateType) => state.config);
   const STEPS_COUNTS = 4;
   const [step, setStep] = useState(1);
   const [hasError, setHasError] = useState(true);
@@ -81,6 +93,13 @@ const WalletAddMultiSig = () => {
         parseInt(values.walletId),
         values.xPubs,
         values.threshold,
+        // sync with node?
+        (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
+          (values.network === TEST_NET_LABEL && testnetSyncWithNode),
+        // node url
+        values.network === MAIN_NET_LABEL
+          ? mainnetNodeAddress
+          : testnetNodeAddress,
       )
         .then(() => {
           navigate(-2);
