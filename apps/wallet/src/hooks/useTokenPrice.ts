@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CapacitorHttp } from '@capacitor/core';
 import { GlobalStateType, TokenValue } from '@minotaur-ergo/types';
 
+import { deserialize } from '@/action/box';
+import { BoxDbAction } from '@/action/db';
 import { setTokenValues } from '@/store/reducer/wallet';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 
@@ -30,13 +32,19 @@ const useTokenPrice = async () => {
             decimal: res.data.decimals,
           });
         };
-        wallets.forEach((w) => {
-          w.tokens.forEach((t) => {
-            if (tokenIds.indexOf(t.tokenId) === -1) {
-              tokenIds.push(t.tokenId);
+        await BoxDbAction.getInstance()
+          .getBoxes()
+          .then((boxes) => {
+            for (const b of boxes) {
+              const tokens = deserialize(b.serialized).tokens();
+              for (let i = 0; i < tokens.len(); i++) {
+                const tId = tokens.get(i).id().to_str();
+                if (tokenIds.indexOf(tId) === -1) {
+                  tokenIds.push(tId);
+                }
+              }
             }
           });
-        });
         await Promise.all(
           tokenIds.map((id) => fetchAndStoreTokenValueInErg(id)),
         );

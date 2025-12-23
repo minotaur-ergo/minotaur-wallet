@@ -1,5 +1,11 @@
 # @minotaur-ergo/icons
 
+## 1.4.0
+
+### Minor Changes
+
+- Add icons for rsGIZMO, rsBDC, rsMIM, rsLIQ, rsUCGOODS, rsPUPS and rsDOG
+
 ## 1.3.0
 
 ### Minor Changes

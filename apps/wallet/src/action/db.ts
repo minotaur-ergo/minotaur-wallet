@@ -669,6 +669,20 @@ class BoxDbAction {
       .getMany();
   };
 
+  getBoxes = async () => {
+    return this.repository.find({
+      relations: ['address', 'address.wallet'],
+      where: {
+        address: {
+          network_type: 'Main Net',
+        },
+      },
+      order: {
+        id: 'ASC',
+      },
+    });
+  };
+
   updateBoxDetailForTx = async (txId: string, info: TxInfo) => {
     await this.repository
       .createQueryBuilder()

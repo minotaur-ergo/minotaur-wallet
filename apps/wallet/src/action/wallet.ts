@@ -11,6 +11,7 @@ import {
   encrypt,
   findWalletAddresses,
   getBase58ExtendedPublicKey,
+  getChain,
   isValidAddress,
   RootPathWithoutIndex,
 } from '@minotaur-ergo/utils';
@@ -23,7 +24,7 @@ import { walletEntityToWalletState } from '@/utils/convert';
 
 import {
   addWalletAddresses,
-  deriveMultiSigWalletAddress,
+  deriveMultiSigWalletAddressFromXPubs,
   deriveNormalWalletAddress,
   getWalletAddressSecret,
 } from './address';
@@ -199,6 +200,27 @@ const createMultiSigWallet = async (
   if (wallet) {
     const is_derivable =
       !!wallet.extended_public_key && !isValidAddress(keys[0]);
+    if (!is_derivable || keys.some((key) => !getBase58ExtendedPublicKey(key)))
+      throw Error(
+        'Only wallet with extended public key allowed for multi-sig wallet creation',
+      );
+    const prefix = getChain(wallet.network_type).prefix;
+    const addresses = await findWalletAddresses(
+      (index: number) =>
+        Promise.resolve(
+          deriveMultiSigWalletAddressFromXPubs(
+            [...keys, wallet.extended_public_key],
+            minSig,
+            prefix,
+            1,
+            index,
+          ),
+        ),
+      wallet.network_type,
+      syncWithNode,
+      url,
+    );
+    await validateAddresses(addresses);
     const createdWallet = await WalletDbAction.getInstance().createWallet(
       name,
       WalletType.MultiSig,
@@ -231,13 +253,7 @@ const createMultiSigWallet = async (
       }
     }
     const walletState = walletEntityToWalletState(createdWallet);
-    const derivedAddresses = await findWalletAddresses(
-      (index: number) => deriveMultiSigWalletAddress(walletState, index),
-      walletState.networkType,
-      syncWithNode,
-      url,
-    );
-    await addWalletAddresses(walletState, derivedAddresses);
+    await addWalletAddresses(walletState, addresses);
     store.dispatch(addedWallets());
     store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
   }
