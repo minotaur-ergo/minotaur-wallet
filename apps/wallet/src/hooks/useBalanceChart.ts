@@ -9,7 +9,6 @@ import Box from '@/db/entities/Box';
 import {
   setBalanceHistory,
   setLoadingBalanceHistory,
-  setShowBalanceChart,
 } from '@/store/reducer/wallet';
 
 import useErgoPrice from './useErgoPrice';
@@ -82,7 +81,6 @@ const useBalanceChart = () => {
         })
         .finally(() => {
           dispatch(setLoadingBalanceHistory(false));
-          dispatch(setShowBalanceChart(true));
           isRunning.current = false;
         });
     };

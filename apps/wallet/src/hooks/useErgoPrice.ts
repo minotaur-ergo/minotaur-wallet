@@ -16,42 +16,35 @@ const useErgoPrice = (currency: string) => {
   const endDate = today.getTime();
   const startDate = new Date(endDate - 365 * 24 * 3600 * MS).getTime();
 
-  const run = async () => {
-    if (isRunning.current) return;
-    isRunning.current = true;
-    try {
-      await CapacitorHttp.get({
-        url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
-      }).then((res) => {
-        const newErgValues = new Map<string, number>();
-        res.data.prices.map((price: number[]) => {
-          newErgValues.set(toDay(price[0]), price[1]);
+  useEffect(() => {
+    if (!currency) return;
+    const run = async () => {
+      if (isRunning.current) return;
+      isRunning.current = true;
+      try {
+        await CapacitorHttp.get({
+          url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
+        }).then((res) => {
+          const newErgValues = new Map<string, number>();
+          res.data.prices.map((price: number[]) => {
+            newErgValues.set(toDay(price[0]), price[1]);
+          });
+          setErgValues(newErgValues);
         });
-        setErgValues(newErgValues);
-      });
-    } catch (e) {
-      console.log('Failed to fetch ergo price data');
-      dispatch(setShowBalanceChart(false));
-      setTimeout(() => {
-        run();
-      }, 30 * MS);
-      return;
-    } finally {
-      isRunning.current = false;
-    }
-  };
-
-  useEffect(
-    () => {
-      /*if (currency) {
-      run();
-    }*/
-    },
-    [
-      /*currency, run*/
-    ],
-  );
-  run();
+        dispatch(setShowBalanceChart(true));
+      } catch (e) {
+        dispatch(setShowBalanceChart(false));
+        console.log('Failed to fetch ergo price data');
+        setTimeout(() => {
+          run();
+        }, 60 * MS);
+        return;
+      } finally {
+        isRunning.current = false;
+      }
+    };
+    run();
+  }, [currency, dispatch, startDate, endDate]);
 
   return ergValues;
 };
