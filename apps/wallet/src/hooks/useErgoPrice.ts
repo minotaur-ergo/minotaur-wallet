@@ -12,16 +12,14 @@ const useErgoPrice = (currency: string) => {
   const [ergValues, setErgValues] = useState<Map<string, number>>(new Map());
   const isRunning = useRef<boolean>(false);
 
-  const today = new Date();
-  const endDate = today.getTime();
-  const startDate = new Date(endDate - 365 * 24 * 3600 * MS).getTime();
-
   useEffect(() => {
     if (!currency) return;
     const run = async () => {
       if (isRunning.current) return;
       isRunning.current = true;
       try {
+        const endDate = new Date().getTime();
+        const startDate = new Date(endDate - 365 * 24 * 3600 * MS).getTime();
         await CapacitorHttp.get({
           url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
         }).then((res) => {
@@ -44,7 +42,7 @@ const useErgoPrice = (currency: string) => {
       }
     };
     run();
-  }, [currency, dispatch, startDate, endDate]);
+  }, [currency, dispatch]);
 
   return ergValues;
 };
