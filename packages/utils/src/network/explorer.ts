@@ -303,7 +303,7 @@ class ErgoNodeNetwork extends AbstractNetwork {
 
   getHeight = async (): Promise<number> => {
     const res = await CapacitorHttp.get({
-      url: `http://213.239.193.208:9053/blockchain/indexedHeight`,
+      url: `${this.nodeUrl}blockchain/indexedHeight`,
     });
     return res.data.fullHeight;
   };
@@ -323,7 +323,7 @@ class ErgoNodeNetwork extends AbstractNetwork {
 
   getAddressInfo = async (address: string): Promise<BalanceInfo> => {
     const res = await CapacitorHttp.post({
-      url: `http://213.239.193.208:9053/blockchain/balance`,
+      url: `${this.nodeUrl}blockchain/balance`,
       data: address,
     });
     return {
@@ -351,7 +351,7 @@ class ErgoNodeNetwork extends AbstractNetwork {
     offset: number,
   ): Promise<ItemsTransactionInfo> => {
     const res = await CapacitorHttp.post({
-      url: `http://213.239.193.208:9053/blockchain/transaction/byAddress?offset=${offset}&limit=${limit}`,
+      url: `${this.nodeUrl}blockchain/transaction/byAddress?offset=${offset}&limit=${limit}`,
       data: address,
     });
     return res.data;
@@ -379,9 +379,8 @@ class ErgoNodeNetwork extends AbstractNetwork {
         chunk = await this.getAddressTransactions(
           address,
           ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
-          offset,
+          (offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE),
         );
-        offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE;
         // add output boxes
         for (const tx of chunk.items ?? []) {
           await this.ergoExplorerNetwork.processTransactionOutput(

@@ -74,8 +74,8 @@ const WalletAddNew = () => {
         values.mnemonic,
         values.mnemonicPassphrase,
         values.network,
-        // sync with node?
         values.password,
+        // sync with node?
         (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
           (values.network === TEST_NET_LABEL && testnetSyncWithNode),
         // node url
