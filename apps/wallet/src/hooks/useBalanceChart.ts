@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
 import { BoxInfo, GlobalStateType } from '@minotaur-ergo/types';
 import { calculateDailyBalance } from '@minotaur-ergo/utils/src/balance';
-import { toDay } from '@minotaur-ergo/utils/src/date';
 
 import { BoxDbAction } from '@/action/db';
 import Box from '@/db/entities/Box';
@@ -13,6 +11,8 @@ import {
   setLoadingBalanceHistory,
   setShowBalanceChart,
 } from '@/store/reducer/wallet';
+
+import useErgoPrice from './useErgoPrice';
 
 const useBalanceChart = () => {
   const dispatch = useDispatch();
@@ -23,7 +23,8 @@ const useBalanceChart = () => {
     (state: GlobalStateType) => state.config.currency,
   );
   const isRunning = useRef<boolean>(false);
-  const ergValues = useRef<Map<string, number>>(new Map());
+  // erg value during last year
+  const ergValues = useErgoPrice(currency);
 
   useEffect(() => {
     if (isRunning.current || !currency) return;
@@ -34,26 +35,6 @@ const useBalanceChart = () => {
       const today = new Date();
       const endDate = today.getTime();
       const startDate = new Date(endDate - 365 * 24 * 3600 * 1000).getTime();
-      // erg value during last year
-      if (ergValues.current.size === 0) {
-        try {
-          await CapacitorHttp.get({
-            url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
-          }).then((res) => {
-            res.data.prices.map((price: number[]) => {
-              ergValues.current.set(toDay(price[0]), price[1]);
-            });
-          });
-        } catch (e) {
-          console.log('Failed to fetch ergo price data');
-          dispatch(setShowBalanceChart(false));
-          isRunning.current = false;
-          setTimeout(() => {
-            run();
-          }, 30000);
-          return;
-        }
-      }
 
       const groupedBox = new Map<number, BoxInfo[]>();
       await BoxDbAction.getInstance()
@@ -94,7 +75,7 @@ const useBalanceChart = () => {
         endDate,
         tokenValues,
         groupedBox,
-        ergValues.current,
+        ergValues,
       )
         .then((data: Record<number, number[]>) => {
           dispatch(setBalanceHistory(data));
@@ -107,7 +88,7 @@ const useBalanceChart = () => {
     };
 
     run();
-  }, [currency, tokenValues, dispatch]);
+  }, [currency, tokenValues, dispatch, ergValues]);
 };
 
 export default useBalanceChart;
