@@ -28,7 +28,7 @@ export const calculateDailyBalance = async (
       const created = box.create.timestamp;
       const spent = box.spend ? box.spend.timestamp : null;
       const ergValue = deserializeBox(box.serialized).value().as_i64().as_num();
-      const tokenValues = getBoxTokensValue(box, allTokenValues);
+      const tokenValues = getBoxTokensValue(box, allTokenValues) || 0;
       // it was in wallet before start date
       if (created < startDate && (!spent || spent >= startDate)) {
         startBalance += ergValue + tokenValues;
