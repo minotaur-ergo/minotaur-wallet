@@ -118,7 +118,6 @@ const GlobalSettings = () => {
           {/* Mainnet */}
           <ActionButton
             label="Mainnet Network Settings"
-            helperText="Node and API connections"
             onClick={() =>
               navigate(getRoute(RouteMap.MainnetNetworkSettings, {}))
             }
@@ -127,7 +126,6 @@ const GlobalSettings = () => {
           {/* Testnet */}
           <ActionButton
             label="Testnet Network Settings"
-            helperText="Node and API connections"
             onClick={() =>
               navigate(getRoute(RouteMap.TestnetNetworkSettings, {}))
             }

@@ -379,8 +379,9 @@ class ErgoNodeNetwork extends AbstractNetwork {
         chunk = await this.getAddressTransactions(
           address,
           ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
-          (offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE),
+          offset,
         );
+        offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE;
         // add output boxes
         for (const tx of chunk.items ?? []) {
           await this.ergoExplorerNetwork.processTransactionOutput(
@@ -397,7 +398,7 @@ class ErgoNodeNetwork extends AbstractNetwork {
             spendBox,
           );
         }
-      } while (chunk.total > 100);
+      } while (chunk.total > offset);
 
       // update height
       await proceedToHeight();

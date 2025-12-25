@@ -70,7 +70,7 @@ const MainnetNetworkSettings = () => {
             onChange={(address) => {
               saveSyncWithNode(undefined, address);
             }}
-            resetLabel="Reset to Alex Node"
+            resetLabel="Reset"
             resetValue={DEFAULT_NODE_ADDRESS}
           />
         )}
