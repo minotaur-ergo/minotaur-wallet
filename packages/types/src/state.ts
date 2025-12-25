@@ -120,8 +120,10 @@ export enum ConfigType {
   Currency = 'CURRENCY',
   ActiveWallet = 'ACTIVE_WALLET',
   useActiveWallet = 'USE_ACTIVE_WALLET',
+  MainnetExplorerUrl = 'MAINNET_EXPLORER_URL',
   MainnetSyncWithNode = 'MAINNET_SYNC_WITH_NODE',
   MainnetNodeAddress = 'MAINNET_NODE_ADDRESS',
+  TestnetExplorerUrl = 'TESTNET_EXPLORER_URL',
   TestnetSyncWithNode = 'TESTNET_SYNC_WITH_NODE',
   TestnetNodeAddress = 'TESTNET_NODE_ADDRESS',
 }
@@ -153,6 +155,8 @@ export interface ConfigStateType {
   priceLastWeek: number;
   activeWallet?: number;
   useActiveWallet: boolean;
+  mainnetExplorerUrl: string;
+  testnetExplorerUrl: string;
   mainnetSyncWithNode: boolean;
   testnetSyncWithNode: boolean;
   mainnetNodeAddress: string;

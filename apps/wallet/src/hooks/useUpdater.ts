@@ -24,6 +24,8 @@ const useUpdater = () => {
   );
   const {
     activeWallet,
+    mainnetExplorerUrl,
+    testnetExplorerUrl,
     mainnetSyncWithNode,
     testnetSyncWithNode,
     mainnetNodeAddress,
@@ -50,6 +52,10 @@ const useUpdater = () => {
       if (wallet) {
         syncWallet(
           wallet,
+          // explorer url
+          wallet.networkType === MAIN_NET_LABEL
+            ? mainnetExplorerUrl
+            : testnetExplorerUrl,
           // sync with node?
           (wallet.networkType === MAIN_NET_LABEL && mainnetSyncWithNode) ||
             (wallet.networkType === TEST_NET_LABEL && testnetSyncWithNode),
@@ -78,6 +84,8 @@ const useUpdater = () => {
     initialized,
     wallets,
     updatedWallets,
+    mainnetExplorerUrl,
+    testnetExplorerUrl,
     mainnetSyncWithNode,
     testnetSyncWithNode,
     mainnetNodeAddress,

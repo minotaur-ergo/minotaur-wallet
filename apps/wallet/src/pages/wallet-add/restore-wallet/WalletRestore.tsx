@@ -29,6 +29,8 @@ const WalletRestore = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
   const {
+    mainnetExplorerUrl,
+    testnetExplorerUrl,
     mainnetSyncWithNode,
     testnetSyncWithNode,
     mainnetNodeAddress,
@@ -57,6 +59,10 @@ const WalletRestore = () => {
         values.mnemonicPassphrase,
         values.network,
         values.password,
+        // explorer url
+        values.network === MAIN_NET_LABEL
+          ? mainnetExplorerUrl
+          : testnetExplorerUrl,
         // sync with node?
         (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
           (values.network === TEST_NET_LABEL && testnetSyncWithNode),

@@ -9,19 +9,18 @@ import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import AppFrame from '@/layouts/AppFrame';
 import {
+  setTestnetExplorerUrl,
   setTestnetNodeAddress,
   setTestnetSyncWithNode,
 } from '@/store/reducer/config';
-import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
 
 const TestnetNetworkSettings = () => {
   const dispatch = useDispatch();
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
-  const { testnetNodeAddress, testnetSyncWithNode } = useSelector(
-    (state: GlobalStateType) => state.config,
-  );
+  const { testnetExplorerUrl, testnetNodeAddress, testnetSyncWithNode } =
+    useSelector((state: GlobalStateType) => state.config);
 
   const saveSyncWithNode = (sync?: boolean, address?: string) => {
     // const NODE_ADDRESS_REGEX =
@@ -42,6 +41,14 @@ const TestnetNetworkSettings = () => {
       });
   };
 
+  const saveExplorerUrl = (url: string) => {
+    ConfigDbAction.getInstance()
+      .setConfig(ConfigType.TestnetExplorerUrl, url, activePinType)
+      .then(() => {
+        dispatch(setTestnetExplorerUrl(url));
+      });
+  };
+
   const getConfigType = (isAddress: boolean): ConfigType => {
     return isAddress
       ? ConfigType.TestnetNodeAddress
@@ -54,8 +61,22 @@ const TestnetNetworkSettings = () => {
       navigation={<BackButtonRouter />}
     >
       <Stack spacing={2}>
+        <SolitaryTextField
+          value={testnetExplorerUrl}
+          label="Testnet Explorer API URL"
+          onChange={(address) => {
+            saveExplorerUrl(address);
+          }}
+        />
+        <SolitaryTextField
+          value={testnetNodeAddress}
+          label="Node URL"
+          onChange={(address) => {
+            saveSyncWithNode(undefined, address);
+          }}
+        />
         <SolitarySwitchField
-          label="Use Node Explorer API For Testnet"
+          label="Sync Using Node"
           checkedDescription="Yes"
           uncheckedDescription="No"
           value={testnetSyncWithNode}
@@ -63,17 +84,6 @@ const TestnetNetworkSettings = () => {
             saveSyncWithNode(sync);
           }}
         />
-        {testnetSyncWithNode && (
-          <SolitaryTextField
-            value={testnetNodeAddress}
-            label="Node URL"
-            onChange={(address) => {
-              saveSyncWithNode(undefined, address);
-            }}
-            resetLabel="Reset"
-            resetValue={DEFAULT_NODE_ADDRESS}
-          />
-        )}
       </Stack>
     </AppFrame>
   );

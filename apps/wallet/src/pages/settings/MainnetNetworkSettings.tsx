@@ -9,19 +9,18 @@ import SolitarySwitchField from '@/components/solitary/SolitarySwitchField';
 import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import AppFrame from '@/layouts/AppFrame';
 import {
+  setMainnetExplorerUrl,
   setMainnetNodeAddress,
   setMainnetSyncWithNode,
 } from '@/store/reducer/config';
-import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
 
 const MainnetNetworkSettings = () => {
   const dispatch = useDispatch();
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
-  const { mainnetNodeAddress, mainnetSyncWithNode } = useSelector(
-    (state: GlobalStateType) => state.config,
-  );
+  const { mainnetExplorerUrl, mainnetNodeAddress, mainnetSyncWithNode } =
+    useSelector((state: GlobalStateType) => state.config);
 
   const saveSyncWithNode = (sync?: boolean, address?: string) => {
     //   const NODE_ADDRESS_REGEX =
@@ -42,6 +41,14 @@ const MainnetNetworkSettings = () => {
       });
   };
 
+  const saveExplorerUrl = (url: string) => {
+    ConfigDbAction.getInstance()
+      .setConfig(ConfigType.TestnetExplorerUrl, url, activePinType)
+      .then(() => {
+        dispatch(setMainnetExplorerUrl(url));
+      });
+  };
+
   const getConfigType = (isAddress: boolean): ConfigType => {
     return isAddress
       ? ConfigType.MainnetNodeAddress
@@ -54,8 +61,22 @@ const MainnetNetworkSettings = () => {
       navigation={<BackButtonRouter />}
     >
       <Stack spacing={2}>
+        <SolitaryTextField
+          value={mainnetExplorerUrl}
+          label="Mainnet Explorer API URL"
+          onChange={(address) => {
+            saveExplorerUrl(address);
+          }}
+        />
+        <SolitaryTextField
+          value={mainnetNodeAddress}
+          label="Node URL"
+          onChange={(address) => {
+            saveSyncWithNode(undefined, address);
+          }}
+        />
         <SolitarySwitchField
-          label="Use Node Explorer API For Mainnet"
+          label="Sync Using Node"
           checkedDescription="Yes"
           uncheckedDescription="No"
           value={mainnetSyncWithNode}
@@ -63,17 +84,6 @@ const MainnetNetworkSettings = () => {
             saveSyncWithNode(sync);
           }}
         />
-        {mainnetSyncWithNode && (
-          <SolitaryTextField
-            value={mainnetNodeAddress}
-            label="Node URL"
-            onChange={(address) => {
-              saveSyncWithNode(undefined, address);
-            }}
-            resetLabel="Reset"
-            resetValue={DEFAULT_NODE_ADDRESS}
-          />
-        )}
       </Stack>
     </AppFrame>
   );

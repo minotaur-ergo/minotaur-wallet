@@ -26,6 +26,8 @@ const WalletReadOnly = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
   const {
+    mainnetExplorerUrl,
+    testnetExplorerUrl,
     mainnetSyncWithNode,
     testnetSyncWithNode,
     mainnetNodeAddress,
@@ -50,6 +52,10 @@ const WalletReadOnly = () => {
         xPub ? ' ' : values.public,
         xPub ? xPub : '',
         values.network,
+        // explorer url
+        values.network === MAIN_NET_LABEL
+          ? mainnetExplorerUrl
+          : testnetExplorerUrl,
         // sync with node?
         (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
           (values.network === TEST_NET_LABEL && testnetSyncWithNode),

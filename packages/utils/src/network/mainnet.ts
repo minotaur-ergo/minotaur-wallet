@@ -3,14 +3,19 @@ import { ChainTypeInterface } from '@minotaur-ergo/types';
 
 import { MAIN_NET_LABEL } from '../const';
 import { fakeContext } from './context';
-import ErgoExplorerNetwork, { ErgoNodeNetwork } from './explorer';
+import ErgoExplorerNetwork from './explorer';
+import ErgoNodeNetwork from './node';
 
 class MainnetChain implements ChainTypeInterface {
   readonly label = MAIN_NET_LABEL;
   readonly prefix = NetworkPrefix.Mainnet;
 
   getNetwork = () => {
-    return new ErgoExplorerNetwork('https://api.ergoplatform.com');
+    return this.getCustomNetwork('https://api.ergoplatform.com');
+  };
+
+  getCustomNetwork = (explorerUrl: string) => {
+    return new ErgoExplorerNetwork(explorerUrl);
   };
 
   getExplorerFront(): string {
@@ -21,8 +26,8 @@ class MainnetChain implements ChainTypeInterface {
     return fakeContext();
   };
 
-  getNodeNetwork = (node: string) => {
-    return new ErgoNodeNetwork('https://api.ergoplatform.com', node);
+  getNodeNetwork = (explorer: string, node: string) => {
+    return new ErgoNodeNetwork(explorer, node);
   };
 }
 

@@ -2,7 +2,11 @@ import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { DEFAULT_NODE_ADDRESS } from '@/utils/const';
+import {
+  DEFAULT_MAINNET_EXPLORER_URL,
+  DEFAULT_NODE_ADDRESS,
+  DEFAULT_TESTNET_EXPLORER_URL,
+} from '@/utils/const';
 
 export const configInitialState: ConfigStateType = {
   currency: '',
@@ -17,6 +21,8 @@ export const configInitialState: ConfigStateType = {
   testnetSyncWithNode: false,
   mainnetNodeAddress: DEFAULT_NODE_ADDRESS,
   testnetNodeAddress: DEFAULT_NODE_ADDRESS,
+  mainnetExplorerUrl: DEFAULT_MAINNET_EXPLORER_URL,
+  testnetExplorerUrl: DEFAULT_TESTNET_EXPLORER_URL,
   pin: {
     hasPin: false,
     activePinType: '',
@@ -44,9 +50,11 @@ export type PinPayload = {
   locked?: boolean;
 };
 
-export type SyncWithNodePayload = {
+export type NetworkPayload = {
+  MainnetExplorerUrl: string;
   MainnetSyncWithNode: boolean;
   MainnetNodeAddress: string;
+  TestnetExplorerUrl: string;
   TestnetSyncWithNode: boolean;
   TestnetNodeAddress: string;
 };
@@ -54,7 +62,7 @@ export type SyncWithNodePayload = {
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
   ActiveWalletPayload &
-  SyncWithNodePayload & { pinType: string };
+  NetworkPayload & { pinType: string };
 
 export type PricePayload = {
   current: number;
@@ -75,6 +83,12 @@ const configSlice = createSlice({
     setCurrency: (state, action: PayloadAction<CurrencyPayload>) => {
       state.currency = action.payload.currency;
       state.symbol = getCurrencySymbol(action.payload.currency);
+    },
+    setMainnetExplorerUrl: (state, action: PayloadAction<string>) => {
+      state.mainnetExplorerUrl = action.payload;
+    },
+    setTestnetExplorerUrl: (state, action: PayloadAction<string>) => {
+      state.testnetExplorerUrl = action.payload;
     },
     setMainnetSyncWithNode: (state, action: PayloadAction<boolean>) => {
       state.mainnetSyncWithNode = action.payload;
@@ -102,6 +116,8 @@ const configSlice = createSlice({
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
+      state.mainnetExplorerUrl = action.payload.MainnetExplorerUrl;
+      state.testnetExplorerUrl = action.payload.TestnetExplorerUrl;
       state.mainnetSyncWithNode = action.payload.MainnetSyncWithNode;
       state.testnetSyncWithNode = action.payload.TestnetSyncWithNode;
       state.mainnetNodeAddress = action.payload.MainnetNodeAddress;
@@ -134,6 +150,8 @@ export const {
   setPrice,
   setDisplay,
   setCurrency,
+  setMainnetExplorerUrl,
+  setTestnetExplorerUrl,
   setMainnetSyncWithNode,
   setTestnetSyncWithNode,
   setMainnetNodeAddress,

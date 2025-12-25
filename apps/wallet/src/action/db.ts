@@ -486,6 +486,23 @@ class BoxDbAction {
       .where('box_id = :boxId', { boxId })
       .execute();
   };
+  spendBoxBatch = (boxes: { boxId: string; spend: SpendDetail }[]) => {
+    const queryBuilder = this.repository.createQueryBuilder();
+
+    boxes.forEach((box) => {
+      queryBuilder
+        .update()
+        .set({
+          spend_tx_id: box.spend.tx,
+          spend_timestamp: box.spend.timestamp,
+          spend_index: box.spend.index,
+          spend_height: box.spend.height,
+        })
+        .where('box_id = :boxId', { boxId: box.boxId });
+    });
+
+    queryBuilder.execute();
+  };
   deleteBoxByBoxId = (id: number) => {
     return this.repository
       .createQueryBuilder()

@@ -62,8 +62,9 @@ const createWallet = async (
   password: string,
   network_type: string,
   encryptionPassword: string,
+  explorerUrl: string,
   syncWithNode: boolean,
-  url: string,
+  nodeUrl: string,
   readOnlyWalletId?: number,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
@@ -82,8 +83,9 @@ const createWallet = async (
         index,
       ),
     network_type,
+    explorerUrl,
     syncWithNode,
-    url,
+    nodeUrl,
   );
   if (readOnlyWalletId === undefined) {
     await validateAddresses(addresses);
@@ -140,8 +142,9 @@ const createReadOnlyWallet = async (
   address: string,
   extended_public_key: string,
   network_type: string,
+  explorerUrl: string,
   syncWithNode: boolean,
-  url: string,
+  nodeUrl: string,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
   let addresses: DerivedWalletAddress[] = [];
@@ -151,8 +154,9 @@ const createReadOnlyWallet = async (
       (index: number) =>
         deriveNormalWalletAddress(0, extended_public_key, network_type, index),
       network_type,
+      explorerUrl,
       syncWithNode,
-      url,
+      nodeUrl,
     );
   } else if (address) {
     addresses = [
@@ -192,8 +196,9 @@ const createMultiSigWallet = async (
   walletId: number,
   keys: Array<string>,
   minSig: number,
+  explorerUrl: string,
   syncWithNode: boolean,
-  url: string,
+  nodeUrl: string,
 ) => {
   const pinType = store.getState().config.pin.activePinType;
   const wallet = await WalletDbAction.getInstance().getWalletById(walletId);
@@ -217,8 +222,9 @@ const createMultiSigWallet = async (
           ),
         ),
       wallet.network_type,
+      explorerUrl,
       syncWithNode,
-      url,
+      nodeUrl,
     );
     await validateAddresses(addresses);
     const createdWallet = await WalletDbAction.getInstance().createWallet(

@@ -169,11 +169,14 @@ const verifyAddress = async (addressId: number) => {
 
 const syncWallet = async (
   wallet: StateWallet,
+  explorerUrl: string,
   syncWithNode: boolean,
-  url: string,
+  nodeUrl: string,
 ) => {
   const chain = getChain(wallet.networkType);
-  const network = syncWithNode ? chain.getNodeNetwork(url) : chain.getNetwork();
+  const network = syncWithNode
+    ? chain.getNodeNetwork(explorerUrl, nodeUrl)
+    : chain.getCustomNetwork(explorerUrl);
   const height = await network.getHeight();
   const addresses = await AddressDbAction.getInstance().getWalletAddresses(
     wallet.id,

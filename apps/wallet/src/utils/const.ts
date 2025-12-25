@@ -24,3 +24,8 @@ export const PUBLISH_ACTION = 'publish';
 export const ADDRESS_PLACE_HOLDER = '#P2PK_ADDRESS#';
 
 export const DEFAULT_NODE_ADDRESS = 'http://213.239.193.208:9053/';
+
+export const DEFAULT_MAINNET_EXPLORER_URL = 'https://api.ergoplatform.com/';
+
+export const DEFAULT_TESTNET_EXPLORER_URL =
+  'https://api-testnet.ergoplatform.com/';
