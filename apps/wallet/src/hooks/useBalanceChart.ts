@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
 import { BoxInfo, GlobalStateType } from '@minotaur-ergo/types';
 import { calculateDailyBalance } from '@minotaur-ergo/utils/src/balance';
-import { toDay } from '@minotaur-ergo/utils/src/date';
 
 import { BoxDbAction } from '@/action/db';
 import Box from '@/db/entities/Box';
@@ -12,6 +10,8 @@ import {
   setBalanceHistory,
   setLoadingBalanceHistory,
 } from '@/store/reducer/wallet';
+
+import useErgoPrice from './useErgoPrice';
 
 const useBalanceChart = () => {
   const dispatch = useDispatch();
@@ -22,6 +22,8 @@ const useBalanceChart = () => {
     (state: GlobalStateType) => state.config.currency,
   );
   const isRunning = useRef<boolean>(false);
+  // erg value during last year
+  const ergValues = useErgoPrice(currency);
 
   useEffect(() => {
     if (isRunning.current || !currency) return;
@@ -32,19 +34,6 @@ const useBalanceChart = () => {
       const today = new Date();
       const endDate = today.getTime();
       const startDate = new Date(endDate - 365 * 24 * 3600 * 1000).getTime();
-      // erg value during last year
-      const ergValues = new Map();
-      try {
-        await CapacitorHttp.get({
-          url: `https://api.coingecko.com/api/v3/coins/ergo/market_chart/range?vs_currency=${currency.toLowerCase()}&from=${toDay(startDate)}&to=${toDay(endDate)}`,
-        }).then((res) =>
-          res.data.prices.map((price: number[]) => {
-            ergValues.set(toDay(price[0]), price[1]);
-          }),
-        );
-      } catch (e) {
-        console.error('Failed to fetch ergo price data', e);
-      }
 
       const groupedBox = new Map<number, BoxInfo[]>();
       await BoxDbAction.getInstance()
@@ -97,7 +86,7 @@ const useBalanceChart = () => {
     };
 
     run();
-  }, [currency, tokenValues, dispatch]);
+  }, [currency, tokenValues, dispatch, ergValues]);
 };
 
 export default useBalanceChart;

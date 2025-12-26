@@ -113,6 +113,7 @@ export interface WalletStateType {
   tokenValues: Map<string, TokenValue>;
   balanceHistory: Record<number, number[]>;
   loadingBalanceHistory: boolean;
+  showBalanceChart: boolean;
 }
 
 export enum ConfigType {
