@@ -26,6 +26,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
     state.wallet.showBalanceChart,
   ]);
   const [mode, setMode] = useState('monthly');
+  const [hideChart, setHideChart] = useState(false);
 
   const monthlyData = useMemo(() => {
     if (!history) return { data: [], xAxis: [] };
@@ -39,7 +40,11 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
       if (data.length === xAxis.length) {
         break;
       }
-      data.push(avg(history.slice(i, i + daysPerMonth)));
+      const balance = avg(history.slice(i, i + daysPerMonth));
+      if (balance < 0) {
+        setHideChart(true);
+      }
+      data.push(balance);
     }
 
     return { data, xAxis };
@@ -57,7 +62,11 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
       if (data.length === xAxis.length) {
         break;
       }
-      data.push(avg(history.slice(i, i + daysPerWeek)));
+      const balance = avg(history.slice(i, i + daysPerWeek));
+      if (balance < 0) {
+        setHideChart(true);
+      }
+      data.push(balance);
     }
 
     return { data, xAxis };
@@ -65,7 +74,7 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
 
   const { data, xAxis } = mode === 'monthly' ? monthlyData : weeklyData;
 
-  return showChart ? (
+  return showChart && !hideChart ? (
     <>
       <Box display="flex" justifyContent="center" sx={{ width: '100%' }}>
         <FormControl
