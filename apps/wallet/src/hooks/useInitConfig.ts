@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
+import { getChain, MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
 
 import {
   AddressDbAction,
@@ -89,6 +90,16 @@ const useInitConfig = () => {
             config.TestnetNodeAddress = item.value;
           }
         });
+        getChain(MAIN_NET_LABEL).init(
+          config.MainnetSyncWithNode,
+          config.MainnetExplorerUrl,
+          config.MainnetNodeAddress,
+        );
+        getChain(TEST_NET_LABEL).init(
+          config.TestnetSyncWithNode,
+          config.TestnetExplorerUrl,
+          config.TestnetNodeAddress,
+        );
         dispatch(setConfig(config));
       });
   } else if (!initialized) {

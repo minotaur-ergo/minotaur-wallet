@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
+import { getChain, TEST_NET_LABEL } from '@minotaur-ergo/utils';
 import { Stack } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
@@ -33,6 +34,11 @@ const TestnetNetworkSettings = () => {
         activePinType,
       )
       .then(() => {
+        getChain(TEST_NET_LABEL).init(
+          testnetSyncWithNode,
+          testnetExplorerUrl,
+          testnetNodeAddress,
+        );
         dispatch(
           address
             ? setTestnetNodeAddress(address)
@@ -45,6 +51,11 @@ const TestnetNetworkSettings = () => {
     ConfigDbAction.getInstance()
       .setConfig(ConfigType.TestnetExplorerUrl, url, activePinType)
       .then(() => {
+        getChain(TEST_NET_LABEL).init(
+          testnetSyncWithNode,
+          testnetExplorerUrl,
+          testnetNodeAddress,
+        );
         dispatch(setTestnetExplorerUrl(url));
       });
   };

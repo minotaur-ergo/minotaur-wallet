@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, WalletType } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
+import { WalletType } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Button, Grid } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -28,14 +27,6 @@ type WalletValueKeys =
 const WalletRestore = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
-  const {
-    mainnetExplorerUrl,
-    testnetExplorerUrl,
-    mainnetSyncWithNode,
-    testnetSyncWithNode,
-    mainnetNodeAddress,
-    testnetNodeAddress,
-  } = useSelector((state: GlobalStateType) => state.config);
   const [step, setStep] = useState(1);
   const [hasError, setHasError] = useState(true);
   const [restoring, setRestoring] = useState(false);
@@ -59,17 +50,6 @@ const WalletRestore = () => {
         values.mnemonicPassphrase,
         values.network,
         values.password,
-        // explorer url
-        values.network === MAIN_NET_LABEL
-          ? mainnetExplorerUrl
-          : testnetExplorerUrl,
-        // sync with node?
-        (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
-          (values.network === TEST_NET_LABEL && testnetSyncWithNode),
-        // node url
-        values.network === MAIN_NET_LABEL
-          ? mainnetNodeAddress
-          : testnetNodeAddress,
         values.readOnlyWalletId === -1 ? undefined : values.readOnlyWalletId,
       )
         .then(() => {

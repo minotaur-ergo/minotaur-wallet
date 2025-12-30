@@ -9,13 +9,20 @@ import ErgoNodeNetwork from './node';
 class MainnetChain implements ChainTypeInterface {
   readonly label = MAIN_NET_LABEL;
   readonly prefix = NetworkPrefix.Mainnet;
+  static isUsingNode: boolean;
+  static ergoExplorerNetwork: ErgoExplorerNetwork;
+  static ergoNodeNetwork: ErgoNodeNetwork;
 
-  getNetwork = () => {
-    return this.getCustomNetwork('https://api.ergoplatform.com');
+  init = (isUsingNode: boolean, explorerUrl: string, nodeUrl: string) => {
+    MainnetChain.isUsingNode = isUsingNode;
+    MainnetChain.ergoExplorerNetwork = new ErgoExplorerNetwork(explorerUrl);
+    MainnetChain.ergoNodeNetwork = new ErgoNodeNetwork(explorerUrl, nodeUrl);
   };
 
-  getCustomNetwork = (explorerUrl: string) => {
-    return new ErgoExplorerNetwork(explorerUrl);
+  getNetwork = () => {
+    return MainnetChain.isUsingNode
+      ? MainnetChain.ergoNodeNetwork
+      : MainnetChain.ergoExplorerNetwork;
   };
 
   getExplorerFront(): string {
@@ -24,10 +31,6 @@ class MainnetChain implements ChainTypeInterface {
 
   fakeContext = (): ErgoStateContext => {
     return fakeContext();
-  };
-
-  getNodeNetwork = (explorer: string, node: string) => {
-    return new ErgoNodeNetwork(explorer, node);
   };
 }
 
