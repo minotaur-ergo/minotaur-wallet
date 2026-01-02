@@ -1,12 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType } from '@minotaur-ergo/types';
 import {
   getBase58ExtendedPublicKey,
   MAIN_NET_LABEL,
-  TEST_NET_LABEL,
 } from '@minotaur-ergo/utils';
 import { Button, Grid, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -25,14 +22,6 @@ type WalletValueKeys = 'name' | 'network' | 'public';
 const WalletReadOnly = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
-  const {
-    mainnetExplorerUrl,
-    testnetExplorerUrl,
-    mainnetSyncWithNode,
-    testnetSyncWithNode,
-    mainnetNodeAddress,
-    testnetNodeAddress,
-  } = useSelector((state: GlobalStateType) => state.config);
   const [step, setStep] = useState(1);
   const [hasError, setHasError] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -52,17 +41,6 @@ const WalletReadOnly = () => {
         xPub ? ' ' : values.public,
         xPub ? xPub : '',
         values.network,
-        // explorer url
-        values.network === MAIN_NET_LABEL
-          ? mainnetExplorerUrl
-          : testnetExplorerUrl,
-        // sync with node?
-        (values.network === MAIN_NET_LABEL && mainnetSyncWithNode) ||
-          (values.network === TEST_NET_LABEL && testnetSyncWithNode),
-        // node url
-        values.network === MAIN_NET_LABEL
-          ? mainnetNodeAddress
-          : testnetNodeAddress,
       )
         .then(() => {
           navigate(-2);

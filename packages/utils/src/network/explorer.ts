@@ -20,7 +20,7 @@ const getBoxId = (box: { boxId: string } | { id: string }) => {
 
 class ErgoExplorerNetwork extends AbstractNetwork {
   private readonly client;
-  static MAX_ALLOWED_TX_PER_PAGE = 100;
+  private static MAX_ALLOWED_TX_PER_PAGE = 100;
 
   constructor(url: string) {
     super();
@@ -117,16 +117,6 @@ class ErgoExplorerNetwork extends AbstractNetwork {
           });
         }),
     );
-    // for (const input of tx.inputs ?? []) {
-    //   if (input.address === address) {
-    //     await spendBox(getBoxId(input), {
-    //       height: tx.inclusionHeight,
-    //       timestamp: parseInt(tx.timestamp.toString()),
-    //       tx: tx.id,
-    //       index: input.index,
-    //     });
-    //   }
-    // }
   };
 
   processTransactionOutput = async (
@@ -153,23 +143,6 @@ class ErgoExplorerNetwork extends AbstractNetwork {
           });
         }),
     );
-    // for (const output of tx.outputs ?? []) {
-    //   if (output.address === address) {
-    //     await insertOrUpdateBox({
-    //       address: output.address,
-    //       boxId: getBoxId(output),
-    //       create: {
-    //         index: output.index,
-    //         tx: tx.id,
-    //         height: tx.inclusionHeight,
-    //         timestamp: parseInt(tx.timestamp.toString()),
-    //       },
-    //       serialized: serializeBox(
-    //         wasm.ErgoBox.from_json(JsonBI.stringify(output)),
-    //       ),
-    //     });
-    //   }
-    // }
   };
 
   syncBoxes = async (

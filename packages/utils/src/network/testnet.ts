@@ -3,19 +3,26 @@ import { ChainTypeInterface } from '@minotaur-ergo/types';
 
 import { TEST_NET_LABEL } from '../const';
 import { fakeContext } from './context';
-import ExplorerNetwork from './explorer';
+import ErgoExplorerNetwork from './explorer';
 import ErgoNodeNetwork from './node';
 
 class TestnetChain implements ChainTypeInterface {
   readonly label = TEST_NET_LABEL;
   readonly prefix = NetworkPrefix.Testnet;
+  static isUsingNode: boolean;
+  static ergoExplorerNetwork: ErgoExplorerNetwork;
+  static ergoNodeNetwork: ErgoNodeNetwork;
 
-  getNetwork = () => {
-    return this.getCustomNetwork('https://api-testnet.ergoplatform.com');
+  init = (isUsingNode: boolean, explorerUrl: string, nodeUrl: string) => {
+    TestnetChain.isUsingNode = isUsingNode;
+    TestnetChain.ergoExplorerNetwork = new ErgoExplorerNetwork(explorerUrl);
+    TestnetChain.ergoNodeNetwork = new ErgoNodeNetwork(explorerUrl, nodeUrl);
   };
 
-  getCustomNetwork = (explorerUrl: string) => {
-    return new ExplorerNetwork(explorerUrl);
+  getNetwork = () => {
+    return TestnetChain.isUsingNode
+      ? TestnetChain.ergoNodeNetwork
+      : TestnetChain.ergoExplorerNetwork;
   };
 
   getExplorerFront(): string {
@@ -24,10 +31,6 @@ class TestnetChain implements ChainTypeInterface {
 
   fakeContext = (): ErgoStateContext => {
     return fakeContext();
-  };
-
-  getNodeNetwork = (explorer: string, node: string) => {
-    return new ErgoNodeNetwork(explorer, node);
   };
 }
 

@@ -2,5 +2,5 @@
 '@minotaur-ergo/types': minor
 ---
 
-Add `MainnetSyncWithNode`, `MainnetNodeAddress`, `TestnetSyncWithNode` and `TestnetNodeAddress` to ConfigTypes.
-Add `getNodeNetwork` method to `ChainTypeInterface`.
+Introduce structured network configuration types for Mainnet and Testnet, including sync mode, explorer URL, and node URL.
+Add `init()` method to `ChainTypeInterface`.

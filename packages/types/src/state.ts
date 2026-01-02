@@ -122,11 +122,11 @@ export enum ConfigType {
   ActiveWallet = 'ACTIVE_WALLET',
   useActiveWallet = 'USE_ACTIVE_WALLET',
   MainnetExplorerUrl = 'MAINNET_EXPLORER_URL',
-  MainnetSyncWithNode = 'MAINNET_SYNC_WITH_NODE',
-  MainnetNodeAddress = 'MAINNET_NODE_ADDRESS',
+  MainnetSync = 'MAINNET_SYNC',
+  MainnetNodeUrl = 'MAINNET_NODE_URL',
   TestnetExplorerUrl = 'TESTNET_EXPLORER_URL',
-  TestnetSyncWithNode = 'TESTNET_SYNC_WITH_NODE',
-  TestnetNodeAddress = 'TESTNET_NODE_ADDRESS',
+  TestnetSync = 'TESTNET_SYNC',
+  TestnetNodeUrl = 'TESTNET_NODE_URL',
 }
 
 export type DisplayType = 'simple' | 'advanced';
@@ -148,6 +148,12 @@ export interface TokenValue {
   decimal: number;
 }
 
+export interface NetworkSettingType {
+  sync: 'Node' | 'Explorer';
+  explorerUrl: string;
+  nodeUrl: string;
+}
+
 export interface ConfigStateType {
   display: DisplayType;
   currency: string;
@@ -156,12 +162,10 @@ export interface ConfigStateType {
   priceLastWeek: number;
   activeWallet?: number;
   useActiveWallet: boolean;
-  mainnetExplorerUrl: string;
-  testnetExplorerUrl: string;
-  mainnetSyncWithNode: boolean;
-  testnetSyncWithNode: boolean;
-  mainnetNodeAddress: string;
-  testnetNodeAddress: string;
+  network: {
+    mainnet: NetworkSettingType;
+    testnet: NetworkSettingType;
+  };
   multiSigLoadedTime: number;
   loadedPinType: string;
   pin: PinConfig;
