@@ -14,6 +14,7 @@ import ErgoExplorerNetwork from './explorer';
 class ErgoNodeNetwork extends AbstractNetwork {
   private nodeUrl: string;
   private ergoExplorerNetwork: ErgoExplorerNetwork;
+  private static MAX_ALLOWED_TX_PER_PAGE = 100;
 
   constructor(url: string, node: string) {
     super();
@@ -98,10 +99,10 @@ class ErgoNodeNetwork extends AbstractNetwork {
       do {
         chunk = await this.getAddressTransactions(
           address,
-          ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE,
+          ErgoNodeNetwork.MAX_ALLOWED_TX_PER_PAGE,
           offset,
         );
-        offset += ErgoExplorerNetwork.MAX_ALLOWED_TX_PER_PAGE;
+        offset += ErgoNodeNetwork.MAX_ALLOWED_TX_PER_PAGE;
         // add output boxes
         for (const tx of chunk.items ?? []) {
           await this.ergoExplorerNetwork.processTransactionOutput(

@@ -15,9 +15,8 @@ import Home from '@/pages/home/Home';
 import WalletImport from '@/pages/import/WalletImport';
 import AppHoneyPin from '@/pages/settings/AppHoneyPin';
 import AppPin from '@/pages/settings/AppPin';
-import MainnetNetworkSettings from '@/pages/settings/MainnetNetworkSettings';
+import NetworkSettings from '@/pages/settings/NetworkSettings';
 import Settings from '@/pages/settings/Settings';
-import TestnetNetworkSettings from '@/pages/settings/TestnetNetworkSettings';
 import WalletAddMultiSig from '@/pages/wallet-add/multi-sig-wallet/WalletAddMultiSig';
 import WalletAddNew from '@/pages/wallet-add/new-wallet/WalletAddNew';
 import WalletReadOnly from '@/pages/wallet-add/read-only-wallet/WalletReadOnly';
@@ -60,12 +59,12 @@ const AppRouter = () => {
           <Route path={RouteMap.Pin} element={<AppPin />} />
           <Route path={RouteMap.HoneyPin} element={<AppHoneyPin />} />
           <Route
-            path={RouteMap.MainnetNetworkSettings}
-            element={<MainnetNetworkSettings />}
+            path={RouteMap.NetworkSettings}
+            element={<NetworkSettings />}
           />
           <Route
-            path={RouteMap.TestnetNetworkSettings}
-            element={<TestnetNetworkSettings />}
+            path={RouteMap.NetworkSettings}
+            element={<NetworkSettings />}
           />
           <Route
             path={RouteMap.WalletAddMultiSig}

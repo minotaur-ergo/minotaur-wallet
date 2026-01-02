@@ -1,12 +1,12 @@
-import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
+import {
+  ConfigStateType,
+  DisplayType,
+  NetworkSettingType,
+} from '@minotaur-ergo/types';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import {
-  DEFAULT_MAINNET_EXPLORER_URL,
-  DEFAULT_NODE_ADDRESS,
-  DEFAULT_TESTNET_EXPLORER_URL,
-} from '@/utils/const';
+import { DEFAULT_EXPLORER, DEFAULT_NODE } from '@/utils/const';
 
 export const configInitialState: ConfigStateType = {
   currency: '',
@@ -17,12 +17,18 @@ export const configInitialState: ConfigStateType = {
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
   useActiveWallet: true,
-  mainnetSyncWithNode: false,
-  testnetSyncWithNode: false,
-  mainnetNodeAddress: DEFAULT_NODE_ADDRESS,
-  testnetNodeAddress: DEFAULT_NODE_ADDRESS,
-  mainnetExplorerUrl: DEFAULT_MAINNET_EXPLORER_URL,
-  testnetExplorerUrl: DEFAULT_TESTNET_EXPLORER_URL,
+  mainnetNetworkSetting: {
+    network: 'mainnet',
+    sync: 'explorer',
+    explorerUrl: DEFAULT_EXPLORER.mainnet,
+    nodeUrl: DEFAULT_NODE.mainnet,
+  },
+  testnetNetworkSetting: {
+    network: 'testnet',
+    sync: 'explorer',
+    explorerUrl: DEFAULT_EXPLORER.testnet,
+    nodeUrl: DEFAULT_NODE.testnet,
+  },
   pin: {
     hasPin: false,
     activePinType: '',
@@ -51,12 +57,8 @@ export type PinPayload = {
 };
 
 export type NetworkPayload = {
-  MainnetExplorerUrl: string;
-  MainnetSyncWithNode: boolean;
-  MainnetNodeAddress: string;
-  TestnetExplorerUrl: string;
-  TestnetSyncWithNode: boolean;
-  TestnetNodeAddress: string;
+  mainnetNetworkSetting: NetworkSettingType;
+  testnetNetworkSetting: NetworkSettingType;
 };
 
 export type ConfigPayload = CurrencyPayload &
@@ -84,23 +86,48 @@ const configSlice = createSlice({
       state.currency = action.payload.currency;
       state.symbol = getCurrencySymbol(action.payload.currency);
     },
-    setMainnetExplorerUrl: (state, action: PayloadAction<string>) => {
-      state.mainnetExplorerUrl = action.payload;
+    setExplorerUrl: (
+      state,
+      action: PayloadAction<{
+        network: 'MAINNET' | 'TESTNET';
+        explorerUrl: string;
+      }>,
+    ) => {
+      if (action.payload.network === 'MAINNET') {
+        state.mainnetNetworkSetting.explorerUrl = action.payload.explorerUrl;
+      } else {
+        state.testnetNetworkSetting.explorerUrl = action.payload.explorerUrl;
+      }
     },
-    setTestnetExplorerUrl: (state, action: PayloadAction<string>) => {
-      state.testnetExplorerUrl = action.payload;
+    setSyncWithNode: (
+      state,
+      action: PayloadAction<{
+        network: 'MAINNET' | 'TESTNET';
+        syncWithNode: boolean;
+      }>,
+    ) => {
+      if (action.payload.network === 'MAINNET') {
+        state.mainnetNetworkSetting.sync = action.payload.syncWithNode
+          ? 'node'
+          : 'explorer';
+      } else {
+        state.testnetNetworkSetting.sync = action.payload.syncWithNode
+          ? 'node'
+          : 'explorer';
+      }
     },
-    setMainnetSyncWithNode: (state, action: PayloadAction<boolean>) => {
-      state.mainnetSyncWithNode = action.payload;
-    },
-    setTestnetSyncWithNode: (state, action: PayloadAction<boolean>) => {
-      state.testnetSyncWithNode = action.payload;
-    },
-    setMainnetNodeAddress: (state, action: PayloadAction<string>) => {
-      state.mainnetNodeAddress = action.payload;
-    },
-    setTestnetNodeAddress: (state, action: PayloadAction<string>) => {
-      state.testnetNodeAddress = action.payload;
+    setNodeUrl: (
+      state,
+      action: PayloadAction<{
+        network: 'MAINNET' | 'TESTNET';
+        nodeUrl: string;
+      }>,
+    ) => {
+      if (action.payload.network === 'MAINNET') {
+        state.mainnetNetworkSetting.nodeUrl = action.payload.nodeUrl;
+      } else {
+        state.testnetNetworkSetting.nodeUrl = action.payload.nodeUrl;
+      }
     },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
@@ -116,12 +143,8 @@ const configSlice = createSlice({
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
-      state.mainnetExplorerUrl = action.payload.MainnetExplorerUrl;
-      state.testnetExplorerUrl = action.payload.TestnetExplorerUrl;
-      state.mainnetSyncWithNode = action.payload.MainnetSyncWithNode;
-      state.testnetSyncWithNode = action.payload.TestnetSyncWithNode;
-      state.mainnetNodeAddress = action.payload.MainnetNodeAddress;
-      state.testnetNodeAddress = action.payload.TestnetNodeAddress;
+      state.mainnetNetworkSetting = action.payload.mainnetNetworkSetting;
+      state.testnetNetworkSetting = action.payload.testnetNetworkSetting;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -150,12 +173,9 @@ export const {
   setPrice,
   setDisplay,
   setCurrency,
-  setMainnetExplorerUrl,
-  setTestnetExplorerUrl,
-  setMainnetSyncWithNode,
-  setTestnetSyncWithNode,
-  setMainnetNodeAddress,
-  setTestnetNodeAddress,
+  setExplorerUrl,
+  setSyncWithNode,
+  setNodeUrl,
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,

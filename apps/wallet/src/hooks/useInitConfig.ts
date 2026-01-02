@@ -12,11 +12,7 @@ import {
 import { getInitializeData } from '@/action/initialize';
 import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
-import {
-  DEFAULT_MAINNET_EXPLORER_URL,
-  DEFAULT_NODE_ADDRESS,
-  DEFAULT_TESTNET_EXPLORER_URL,
-} from '@/utils/const';
+import { DEFAULT_EXPLORER, DEFAULT_NODE } from '@/utils/const';
 import {
   addressEntityToAddressState,
   walletEntityToWalletState,
@@ -60,12 +56,18 @@ const useInitConfig = () => {
           activeWallet: -1,
           pinType: activePinType,
           useActiveWallet: true,
-          MainnetExplorerUrl: DEFAULT_MAINNET_EXPLORER_URL,
-          TestnetExplorerUrl: DEFAULT_TESTNET_EXPLORER_URL,
-          MainnetSyncWithNode: false,
-          TestnetSyncWithNode: false,
-          MainnetNodeAddress: DEFAULT_NODE_ADDRESS,
-          TestnetNodeAddress: DEFAULT_NODE_ADDRESS,
+          mainnetNetworkSetting: {
+            network: 'mainnet',
+            sync: 'explorer',
+            explorerUrl: DEFAULT_EXPLORER.mainnet,
+            nodeUrl: DEFAULT_NODE.mainnet,
+          },
+          testnetNetworkSetting: {
+            network: 'testnet',
+            sync: 'explorer',
+            explorerUrl: DEFAULT_EXPLORER.testnet,
+            nodeUrl: DEFAULT_NODE.testnet,
+          },
         };
         configs.forEach((item) => {
           if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
@@ -77,28 +79,30 @@ const useInitConfig = () => {
           } else if (item.key === ConfigType.useActiveWallet) {
             config.useActiveWallet = item.value !== 'false';
           } else if (item.key === ConfigType.MainnetExplorerUrl) {
-            config.MainnetExplorerUrl = item.value;
+            config.mainnetNetworkSetting.explorerUrl = item.value;
           } else if (item.key === ConfigType.TestnetExplorerUrl) {
-            config.TestnetExplorerUrl = item.value;
+            config.testnetNetworkSetting.explorerUrl = item.value;
           } else if (item.key === ConfigType.MainnetSyncWithNode) {
-            config.MainnetSyncWithNode = item.value === 'true';
+            config.mainnetNetworkSetting.sync =
+              item.value === 'true' ? 'node' : 'explorer';
           } else if (item.key === ConfigType.TestnetSyncWithNode) {
-            config.TestnetSyncWithNode = item.value === 'true';
+            config.testnetNetworkSetting.sync =
+              item.value === 'true' ? 'node' : 'explorer';
           } else if (item.key === ConfigType.MainnetNodeAddress) {
-            config.MainnetNodeAddress = item.value;
+            config.mainnetNetworkSetting.nodeUrl = item.value;
           } else if (item.key === ConfigType.TestnetNodeAddress) {
-            config.TestnetNodeAddress = item.value;
+            config.testnetNetworkSetting.nodeUrl = item.value;
           }
         });
         getChain(MAIN_NET_LABEL).init(
-          config.MainnetSyncWithNode,
-          config.MainnetExplorerUrl,
-          config.MainnetNodeAddress,
+          config.mainnetNetworkSetting.sync === 'node',
+          config.mainnetNetworkSetting.explorerUrl,
+          config.mainnetNetworkSetting.nodeUrl,
         );
         getChain(TEST_NET_LABEL).init(
-          config.TestnetSyncWithNode,
-          config.TestnetExplorerUrl,
-          config.TestnetNodeAddress,
+          config.testnetNetworkSetting.sync === 'node',
+          config.testnetNetworkSetting.explorerUrl,
+          config.testnetNetworkSetting.nodeUrl,
         );
         dispatch(setConfig(config));
       });

@@ -119,7 +119,9 @@ const GlobalSettings = () => {
           <ActionButton
             label="Mainnet Network Settings"
             onClick={() =>
-              navigate(getRoute(RouteMap.MainnetNetworkSettings, {}))
+              navigate(
+                getRoute(RouteMap.NetworkSettings, { network: 'MAINNET' }),
+              )
             }
           />
 
@@ -127,7 +129,9 @@ const GlobalSettings = () => {
           <ActionButton
             label="Testnet Network Settings"
             onClick={() =>
-              navigate(getRoute(RouteMap.TestnetNetworkSettings, {}))
+              navigate(
+                getRoute(RouteMap.NetworkSettings, { network: 'TESTNET' }),
+              )
             }
           />
         </Stack>

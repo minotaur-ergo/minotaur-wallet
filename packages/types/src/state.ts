@@ -148,6 +148,13 @@ export interface TokenValue {
   decimal: number;
 }
 
+export interface NetworkSettingType {
+  network: 'mainnet' | 'testnet';
+  sync: 'node' | 'explorer';
+  explorerUrl: string;
+  nodeUrl: string;
+}
+
 export interface ConfigStateType {
   display: DisplayType;
   currency: string;
@@ -156,12 +163,8 @@ export interface ConfigStateType {
   priceLastWeek: number;
   activeWallet?: number;
   useActiveWallet: boolean;
-  mainnetExplorerUrl: string;
-  testnetExplorerUrl: string;
-  mainnetSyncWithNode: boolean;
-  testnetSyncWithNode: boolean;
-  mainnetNodeAddress: string;
-  testnetNodeAddress: string;
+  mainnetNetworkSetting: NetworkSettingType;
+  testnetNetworkSetting: NetworkSettingType;
   multiSigLoadedTime: number;
   loadedPinType: string;
   pin: PinConfig;
