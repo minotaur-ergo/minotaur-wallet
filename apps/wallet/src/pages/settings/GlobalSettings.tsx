@@ -115,24 +115,10 @@ const GlobalSettings = () => {
             value={useActiveWallet}
             onChange={saveUseActiveWallet}
           />
-          {/* Mainnet */}
           <ActionButton
-            label="Mainnet Network Settings"
-            onClick={() =>
-              navigate(
-                getRoute(RouteMap.NetworkSettings, { network: 'MAINNET' }),
-              )
-            }
-          />
-
-          {/* Testnet */}
-          <ActionButton
-            label="Testnet Network Settings"
-            onClick={() =>
-              navigate(
-                getRoute(RouteMap.NetworkSettings, { network: 'TESTNET' }),
-              )
-            }
+            label="Network Settings"
+            helperText="Choose how the wallet connects to the Mainnet and Testnet networks."
+            onClick={() => navigate(getRoute(RouteMap.NetworkSettings, {}))}
           />
         </Stack>
       </Box>

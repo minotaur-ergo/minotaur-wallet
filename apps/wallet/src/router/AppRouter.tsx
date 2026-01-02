@@ -63,10 +63,6 @@ const AppRouter = () => {
             element={<NetworkSettings />}
           />
           <Route
-            path={RouteMap.NetworkSettings}
-            element={<NetworkSettings />}
-          />
-          <Route
             path={RouteMap.WalletAddMultiSig}
             element={<WalletAddMultiSig />}
           />

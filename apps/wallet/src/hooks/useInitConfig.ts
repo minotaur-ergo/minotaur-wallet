@@ -56,17 +56,17 @@ const useInitConfig = () => {
           activeWallet: -1,
           pinType: activePinType,
           useActiveWallet: true,
-          mainnetNetworkSetting: {
-            network: 'mainnet',
-            sync: 'explorer',
-            explorerUrl: DEFAULT_EXPLORER.mainnet,
-            nodeUrl: DEFAULT_NODE.mainnet,
-          },
-          testnetNetworkSetting: {
-            network: 'testnet',
-            sync: 'explorer',
-            explorerUrl: DEFAULT_EXPLORER.testnet,
-            nodeUrl: DEFAULT_NODE.testnet,
+          network: {
+            mainnet: {
+              sync: 'Explorer',
+              explorerUrl: DEFAULT_EXPLORER.mainnet,
+              nodeUrl: DEFAULT_NODE.mainnet,
+            },
+            testnet: {
+              sync: 'Explorer',
+              explorerUrl: DEFAULT_EXPLORER.testnet,
+              nodeUrl: DEFAULT_NODE.testnet,
+            },
           },
         };
         configs.forEach((item) => {
@@ -79,30 +79,30 @@ const useInitConfig = () => {
           } else if (item.key === ConfigType.useActiveWallet) {
             config.useActiveWallet = item.value !== 'false';
           } else if (item.key === ConfigType.MainnetExplorerUrl) {
-            config.mainnetNetworkSetting.explorerUrl = item.value;
+            config.network.mainnet.explorerUrl = item.value;
           } else if (item.key === ConfigType.TestnetExplorerUrl) {
-            config.testnetNetworkSetting.explorerUrl = item.value;
-          } else if (item.key === ConfigType.MainnetSyncWithNode) {
-            config.mainnetNetworkSetting.sync =
-              item.value === 'true' ? 'node' : 'explorer';
-          } else if (item.key === ConfigType.TestnetSyncWithNode) {
-            config.testnetNetworkSetting.sync =
-              item.value === 'true' ? 'node' : 'explorer';
-          } else if (item.key === ConfigType.MainnetNodeAddress) {
-            config.mainnetNetworkSetting.nodeUrl = item.value;
-          } else if (item.key === ConfigType.TestnetNodeAddress) {
-            config.testnetNetworkSetting.nodeUrl = item.value;
+            config.network.testnet.explorerUrl = item.value;
+          } else if (item.key === ConfigType.MainnetSync) {
+            config.network.mainnet.sync =
+              item.value === 'Node' ? 'Node' : 'Explorer';
+          } else if (item.key === ConfigType.TestnetSync) {
+            config.network.testnet.sync =
+              item.value === 'Node' ? 'Node' : 'Explorer';
+          } else if (item.key === ConfigType.MainnetNodeUrl) {
+            config.network.mainnet.nodeUrl = item.value;
+          } else if (item.key === ConfigType.TestnetNodeUrl) {
+            config.network.testnet.nodeUrl = item.value;
           }
         });
         getChain(MAIN_NET_LABEL).init(
-          config.mainnetNetworkSetting.sync === 'node',
-          config.mainnetNetworkSetting.explorerUrl,
-          config.mainnetNetworkSetting.nodeUrl,
+          config.network.mainnet.sync === 'Node',
+          config.network.mainnet.explorerUrl,
+          config.network.mainnet.nodeUrl,
         );
         getChain(TEST_NET_LABEL).init(
-          config.testnetNetworkSetting.sync === 'node',
-          config.testnetNetworkSetting.explorerUrl,
-          config.testnetNetworkSetting.nodeUrl,
+          config.network.testnet.sync === 'Node',
+          config.network.testnet.explorerUrl,
+          config.network.testnet.nodeUrl,
         );
         dispatch(setConfig(config));
       });

@@ -2,6 +2,5 @@
 'minotaur-wallet': minor
 ---
 
-Add possibility of fetch addresses info from node APIs.
-Add possibility of edit explorer URL.
-Add Mainnet & Testnet sync with node setting page.
+Add support for syncing via a node or explorer using a custom URL.
+Add Network Settings page for both Mainnet and Testnet.
