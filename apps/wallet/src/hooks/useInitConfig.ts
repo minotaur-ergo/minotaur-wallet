@@ -61,11 +61,13 @@ const useInitConfig = () => {
               sync: 'Explorer',
               explorerUrl: DEFAULT_EXPLORER.mainnet,
               nodeUrl: DEFAULT_NODE.mainnet,
+              submitTX: 'Explorer',
             },
             testnet: {
               sync: 'Explorer',
               explorerUrl: DEFAULT_EXPLORER.testnet,
               nodeUrl: DEFAULT_NODE.testnet,
+              submitTX: 'Explorer',
             },
           },
         };
@@ -92,6 +94,12 @@ const useInitConfig = () => {
             config.network.mainnet.nodeUrl = item.value;
           } else if (item.key === ConfigType.TestnetNodeUrl) {
             config.network.testnet.nodeUrl = item.value;
+          } else if (item.key === ConfigType.MainnetSubmitTX) {
+            config.network.mainnet.submitTX =
+              item.value === 'Node' ? 'Node' : 'Explorer';
+          } else if (item.key === ConfigType.TestnetSubmitTX) {
+            config.network.testnet.submitTX =
+              item.value === 'Node' ? 'Node' : 'Explorer';
           }
         });
         getChain(MAIN_NET_LABEL).init(

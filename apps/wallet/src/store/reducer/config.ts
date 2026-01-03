@@ -22,11 +22,13 @@ export const configInitialState: ConfigStateType = {
       sync: 'Explorer',
       explorerUrl: DEFAULT_EXPLORER.mainnet,
       nodeUrl: DEFAULT_NODE.mainnet,
+      submitTX: 'Explorer',
     },
     testnet: {
       sync: 'Explorer',
       explorerUrl: DEFAULT_EXPLORER.testnet,
       nodeUrl: DEFAULT_NODE.testnet,
+      submitTX: 'Explorer',
     },
   },
   pin: {
@@ -114,6 +116,19 @@ const configSlice = createSlice({
         state.network.testnet.sync = action.payload.sync;
       }
     },
+    setSubmitTX: (
+      state,
+      action: PayloadAction<{
+        network: 'MAINNET' | 'TESTNET';
+        submitTX: 'Node' | 'Explorer';
+      }>,
+    ) => {
+      if (action.payload.network === 'MAINNET') {
+        state.network.mainnet.submitTX = action.payload.submitTX;
+      } else {
+        state.network.testnet.submitTX = action.payload.submitTX;
+      }
+    },
     setNodeUrl: (
       state,
       action: PayloadAction<{
@@ -173,6 +188,7 @@ export const {
   setCurrency,
   setExplorerUrl,
   setSyncWithNode,
+  setSubmitTX,
   setNodeUrl,
   setActiveWallet,
   setConfig,

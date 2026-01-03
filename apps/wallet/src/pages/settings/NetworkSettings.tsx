@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
-import { getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { getChain, MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
@@ -13,6 +13,7 @@ import AppFrame from '@/layouts/AppFrame';
 import {
   setExplorerUrl,
   setNodeUrl,
+  setSubmitTX,
   setSyncWithNode,
 } from '@/store/reducer/config';
 
@@ -88,6 +89,31 @@ const NetworkSettings = () => {
         : ConfigType.TestnetSync;
   };
 
+  const saveSubmitTX = (submit: 'Node' | 'Explorer') => {
+    const isMainnet: boolean = tab === 'MAINNET';
+    ConfigDbAction.getInstance()
+      .setConfig(
+        isMainnet ? ConfigType.MainnetSubmitTX : ConfigType.TestnetSubmitTX,
+        submit,
+        activePinType,
+      )
+      .then(() => {
+        getChain(isMainnet ? MAIN_NET_LABEL : TEST_NET_LABEL).init(
+          isMainnet
+            ? network.mainnet.sync === 'Node'
+            : network.testnet.sync === 'Node',
+          isMainnet ? network.mainnet.explorerUrl : network.testnet.explorerUrl,
+          isMainnet ? network.mainnet.nodeUrl : network.testnet.nodeUrl,
+        );
+        dispatch(
+          setSubmitTX({
+            network: isMainnet ? 'MAINNET' : 'TESTNET',
+            submitTX: submit,
+          }),
+        );
+      });
+  };
+
   return (
     <AppFrame
       title={`${tab === 'MAINNET' ? 'Mainnet' : 'Testnet'} Network Settings`}
@@ -158,6 +184,19 @@ const NetworkSettings = () => {
             options={[{ value: 'Explorer' }, { value: 'Node' }]}
             onChange={(network) => {
               saveSyncWithNode(network === 'Node' ? 'Node' : 'Explorer');
+            }}
+          />
+          <SolitarySelectField
+            key={`${tab}-tx`}
+            label="Submit Transactions"
+            value={
+              tab === 'MAINNET'
+                ? network.mainnet.submitTX
+                : network.testnet.submitTX
+            }
+            options={[{ value: 'Explorer' }, { value: 'Node' }]}
+            onChange={(network) => {
+              saveSubmitTX(network === 'Node' ? 'Node' : 'Explorer');
             }}
           />
         </Stack>

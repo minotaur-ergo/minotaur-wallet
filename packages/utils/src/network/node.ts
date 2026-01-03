@@ -9,6 +9,7 @@ import {
 } from '@minotaur-ergo/types';
 import { ItemsTransactionInfo } from '@rosen-clients/ergo-explorer/dist/v1/types';
 
+import { JsonBI } from '../json';
 import ErgoExplorerNetwork from './explorer';
 
 class ErgoNodeNetwork extends AbstractNetwork {
@@ -35,11 +36,29 @@ class ErgoNodeNetwork extends AbstractNetwork {
   };
 
   getContext = async (): Promise<wasm.ErgoStateContext> => {
-    return this.ergoExplorerNetwork.getContext();
+    const headers = await CapacitorHttp.get({
+      url: `${this.nodeUrl}/blocks/lastHeaders/10`,
+    }).then((res) => res.data.reverse());
+    if (headers) {
+      const blockHeaders = wasm.BlockHeaders.from_json(
+        headers.map((item: wasm.BlockHeader) => JsonBI.stringify(item)),
+      );
+      const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
+      return new wasm.ErgoStateContext(
+        pre_header,
+        blockHeaders,
+        wasm.Parameters.default_parameters(),
+      );
+    }
+    throw Error('Unknown error occurred');
   };
 
   sendTx = async (tx: wasm.Transaction): Promise<{ txId: string }> => {
-    return this.ergoExplorerNetwork.sendTx(tx);
+    const res = await CapacitorHttp.post({
+      url: `${this.nodeUrl}/transactions`,
+      data: tx.to_json(),
+    });
+    return { txId: res.data.id };
   };
 
   getAddressInfo = async (address: string): Promise<BalanceInfo> => {

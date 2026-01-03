@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 
 import { Cancel, ManageSearchOutlined } from '@mui/icons-material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import {
   List,
   ListItem,
@@ -70,7 +70,7 @@ const SolitarySelectField = (props: SolitarySelectFieldPropsType) => {
                 }}
                 edge="end"
               >
-                <KeyboardArrowDownIcon />
+                <UnfoldMoreIcon />
               </IconButton>
             </InputAdornment>
           ),

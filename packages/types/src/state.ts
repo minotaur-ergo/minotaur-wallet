@@ -124,9 +124,11 @@ export enum ConfigType {
   MainnetExplorerUrl = 'MAINNET_EXPLORER_URL',
   MainnetSync = 'MAINNET_SYNC',
   MainnetNodeUrl = 'MAINNET_NODE_URL',
+  MainnetSubmitTX = 'MAINNET_SUBMIT_TX',
   TestnetExplorerUrl = 'TESTNET_EXPLORER_URL',
   TestnetSync = 'TESTNET_SYNC',
   TestnetNodeUrl = 'TESTNET_NODE_URL',
+  TestnetSubmitTX = 'TESTNET_SUBMIT_TX',
 }
 
 export type DisplayType = 'simple' | 'advanced';
@@ -152,6 +154,7 @@ export interface NetworkSettingType {
   sync: 'Node' | 'Explorer';
   explorerUrl: string;
   nodeUrl: string;
+  submitTX: 'Node' | 'Explorer';
 }
 
 export interface ConfigStateType {

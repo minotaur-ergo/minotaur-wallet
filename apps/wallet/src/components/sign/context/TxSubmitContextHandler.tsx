@@ -25,10 +25,10 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
   const usedStatus = props.status ?? internalStatus;
   const usedSetStatus = props.setStatus ?? internalSetStatus;
 
-  const submitTx = (signed: wasm.Transaction) => {
+  const submitTx = async (signed: wasm.Transaction) => {
     usedSetStatus(StatusEnum.SENDING);
     return getChain(props.wallet.networkType)
-      .getNetwork()
+      .getSubmitTxNetwork()
       .sendTx(signed)
       .then(() => {
         usedSetStatus(StatusEnum.SENT);
@@ -38,7 +38,9 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
         if (err.response) {
           setError(err.response.data.reason);
         } else {
-          setError('unknown error occurred. check application logs');
+          setError(
+            'Transaction submission failed. You can try submitting it via the node.',
+          );
           console.log(err);
         }
         usedSetStatus(StatusEnum.ERROR);
