@@ -36,7 +36,7 @@ const NetworkSettings = () => {
         activePinType,
       )
       .then(() => {
-        getChain(MAIN_NET_LABEL).init(
+        getChain(isMainnet ? MAIN_NET_LABEL : TEST_NET_LABEL).init(
           isMainnet
             ? network.mainnet.sync === 'Node'
             : network.testnet.sync === 'Node',
@@ -62,7 +62,7 @@ const NetworkSettings = () => {
     ConfigDbAction.getInstance()
       .setConfig(ConfigType.TestnetExplorerUrl, url, activePinType)
       .then(() => {
-        getChain(MAIN_NET_LABEL).init(
+        getChain(isMainnet ? MAIN_NET_LABEL : TEST_NET_LABEL).init(
           isMainnet
             ? network.mainnet.sync === 'Node'
             : network.testnet.sync === 'Node',
