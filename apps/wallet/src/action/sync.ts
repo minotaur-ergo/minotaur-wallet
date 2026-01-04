@@ -107,7 +107,7 @@ const storeAssetDetails = async (
   network?: AbstractNetwork,
 ) => {
   if (network === undefined) {
-    network = getChain(networkType).getNetwork();
+    network = getChain(networkType).getExplorerNetwork();
   }
   const details = await network.getAssetDetails(assetId);
   await AssetDbAction.getInstance().createOrUpdateAsset(details, networkType);
@@ -167,9 +167,9 @@ const verifyAddress = async (addressId: number) => {
   }
 };
 
-const syncWallet = async (wallet: StateWallet) => {
+const syncWallet = async (wallet: StateWallet, useNode: boolean) => {
   const chain = getChain(wallet.networkType);
-  const network = chain.getNetwork();
+  const network = useNode ? chain.getNodeNetwork() : chain.getExplorerNetwork();
   const height = await network.getHeight();
   const addresses = await AddressDbAction.getInstance().getWalletAddresses(
     wallet.id,

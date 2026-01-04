@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
 import { createEmptyArray, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 import { Button, CircularProgress, Grid } from '@mui/material';
 
@@ -20,6 +22,7 @@ type WalletValueKeysString = 'name' | 'walletId' | 'network';
 type WalletValueKeysNumber = 'signers' | 'threshold';
 
 const WalletAddMultiSig = () => {
+  const network = useSelector((state: GlobalStateType) => state.config.network);
   const context = useContext(MessageContext);
   const navigate = useNavigate();
   const STEPS_COUNTS = 4;
@@ -81,6 +84,9 @@ const WalletAddMultiSig = () => {
         parseInt(values.walletId),
         values.xPubs,
         values.threshold,
+        (values.network === MAIN_NET_LABEL
+          ? network.mainnet.sync
+          : network.testnet.sync) === 'Node',
       )
         .then(() => {
           navigate(-2);

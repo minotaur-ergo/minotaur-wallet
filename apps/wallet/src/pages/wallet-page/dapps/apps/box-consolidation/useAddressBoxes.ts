@@ -35,7 +35,7 @@ const useAddressBoxes = (
           const lowestHeight = Math.min(
             ...boxes.map((box) => box.creation_height()),
           );
-          const network = props.chain.getNetwork();
+          const network = props.chain.getExplorerNetwork();
           network.getHeight().then((height) => {
             setHeight(height);
             const diff = height - lowestHeight;

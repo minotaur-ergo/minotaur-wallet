@@ -9,20 +9,20 @@ import ErgoNodeNetwork from './node';
 class TestnetChain implements ChainTypeInterface {
   readonly label = TEST_NET_LABEL;
   readonly prefix = NetworkPrefix.Testnet;
-  static isUsingNode: boolean;
   static ergoExplorerNetwork: ErgoExplorerNetwork;
   static ergoNodeNetwork: ErgoNodeNetwork;
 
-  init = (isUsingNode: boolean, explorerUrl: string, nodeUrl: string) => {
-    TestnetChain.isUsingNode = isUsingNode;
+  init = (explorerUrl: string, nodeUrl: string) => {
     TestnetChain.ergoExplorerNetwork = new ErgoExplorerNetwork(explorerUrl);
     TestnetChain.ergoNodeNetwork = new ErgoNodeNetwork(explorerUrl, nodeUrl);
   };
 
-  getNetwork = () => {
-    return TestnetChain.isUsingNode
-      ? TestnetChain.ergoNodeNetwork
-      : TestnetChain.ergoExplorerNetwork;
+  getExplorerNetwork = () => {
+    return TestnetChain.ergoExplorerNetwork;
+  };
+
+  getNodeNetwork = () => {
+    return TestnetChain.ergoNodeNetwork;
   };
 
   getExplorerFront(): string {
