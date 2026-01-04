@@ -14,6 +14,7 @@ interface TxSubmitContextHandlerPropsType {
   close?: () => unknown;
   status?: StatusEnum;
   setStatus?: (newStatus: StatusEnum) => unknown;
+  // sendViaNode: () => void;
 }
 
 const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
@@ -25,10 +26,12 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
   const usedStatus = props.status ?? internalStatus;
   const usedSetStatus = props.setStatus ?? internalSetStatus;
 
-  const submitTx = async (signed: wasm.Transaction) => {
+  const submitTx = async (signed: wasm.Transaction, forceNode: boolean) => {
     usedSetStatus(StatusEnum.SENDING);
-    return getChain(props.wallet.networkType)
-      .getSubmitTxNetwork()
+    const network = forceNode
+      ? getChain(props.wallet.networkType).getNodeNetwork()
+      : getChain(props.wallet.networkType).getNetwork();
+    return network
       .sendTx(signed)
       .then(() => {
         usedSetStatus(StatusEnum.SENT);
@@ -62,6 +65,7 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
     >
       {props.children}
       <SuccessSend
+        // sendViaNode={props.sendViaNode}
         networkType={props.wallet.networkType}
         open={usedStatus === StatusEnum.SENT || usedStatus === StatusEnum.ERROR}
         id={txId}

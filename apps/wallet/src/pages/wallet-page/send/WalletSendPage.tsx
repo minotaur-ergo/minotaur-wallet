@@ -13,7 +13,10 @@ interface WalletSendPropsType {
 const WalletSendPage = (props: WalletSendPropsType) => {
   return (
     <TxGenerateContextHandler wallet={props.wallet}>
-      <TxSignContextHandler wallet={props.wallet}>
+      <TxSignContextHandler
+        wallet={props.wallet}
+        // sendViaNode={() => {}}
+      >
         <TxGenerator wallet={props.wallet} />
         <WalletSend wallet={props.wallet} />
       </TxSignContextHandler>

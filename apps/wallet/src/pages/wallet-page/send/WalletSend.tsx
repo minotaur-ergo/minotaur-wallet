@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { StateWallet } from '@minotaur-ergo/types';
@@ -32,13 +32,25 @@ const WalletSend = (props: WalletSendPropsType) => {
   const txSignContext = useContext(TxSignContext);
   const txDataContext = useContext(TxDataContext);
   const [displayBoxes, setDisplayBoxes] = useState(false);
+  const { setSendViaNode } = useContext(TxSignContext);
   const handleNext = () => {
     if (step === STEPS_COUNTS) {
-      txSignContext.handle();
+      txSignContext.handle(false);
     } else {
       setStep(step + 1);
     }
   };
+
+  useEffect(() => {
+    if (!setSendViaNode) return;
+
+    setSendViaNode(() => {
+      // txSignContext.handle(true);
+      alert('Sending via node is not implemented yet.');
+    });
+
+    return () => setSendViaNode(undefined);
+  }, [setSendViaNode]);
 
   const handlePrev = () => {
     if (step !== 1) {

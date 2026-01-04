@@ -14,6 +14,7 @@ interface SuccessSendPropsType {
   networkType: string;
   msg: string;
   isSuccess: boolean;
+  // sendViaNode: () => void;
 }
 
 const SuccessSend = (props: SuccessSendPropsType) => {
@@ -65,6 +66,13 @@ const SuccessSend = (props: SuccessSendPropsType) => {
       </Typography>
       <Box display="flex" mt={2}>
         <Button
+          onClick={() => {
+            if (props.isSuccess) {
+              props.handleClose();
+            } else {
+              // props.sendViaNode();
+            }
+          }}
           variant="text"
           color="primary"
           fullWidth={false}

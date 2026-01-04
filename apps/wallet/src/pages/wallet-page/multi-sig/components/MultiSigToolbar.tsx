@@ -104,7 +104,7 @@ const MultiSigToolbar = () => {
 
   const publishAction = async () => {
     if (context.signed) {
-      await submitContext.submit(context.signed);
+      await submitContext.submit(context.signed, false);
     } else {
       console.error('Unknown error occurred');
     }

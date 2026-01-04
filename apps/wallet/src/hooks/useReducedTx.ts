@@ -29,6 +29,7 @@ const useReducedTx = () => {
             txDataContext.tx,
             txDataContext.boxes,
             txDataContext.dataBoxes,
+            false,
           ).then((reduced) => {
             txSignContext.setReducedTx(reduced);
             setNetworkType(txDataContext.networkType);

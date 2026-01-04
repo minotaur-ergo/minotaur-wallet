@@ -206,9 +206,12 @@ const getReduced = async (
   tx: wasm.UnsignedTransaction,
   boxes: Array<wasm.ErgoBox>,
   dataBoxes: Array<wasm.ErgoBox> = [],
+  forceNode: boolean,
 ) => {
   const chain = getChain(networkType);
-  const context = await chain.getNetwork().getContext();
+  const context = forceNode
+    ? await chain.getNodeNetwork().getContext()
+    : await chain.getNetwork().getContext();
   const inputBoxes = wasm.ErgoBoxes.empty();
   const dataInputBoxes = wasm.ErgoBoxes.empty();
   boxes.forEach((box) => inputBoxes.add(box));
@@ -287,6 +290,7 @@ const signNormalWalletTx = async (
   tx: wasm.UnsignedTransaction,
   boxes: Array<wasm.ErgoBox>,
   dataBoxes: Array<wasm.ErgoBox> = [],
+  forceNode: boolean,
 ): Promise<wasm.Transaction> => {
   const prover = await getProver(wallet, password);
   const inputBoxes = wasm.ErgoBoxes.empty();
@@ -294,7 +298,9 @@ const signNormalWalletTx = async (
   const dataInputBoxes = wasm.ErgoBoxes.empty();
   dataBoxes.forEach((box) => dataInputBoxes.add(box));
   const chain = getChain(wallet.networkType);
-  const context = await chain.getNetwork().getContext();
+  const context = forceNode
+    ? await chain.getNodeNetwork().getContext()
+    : await chain.getNetwork().getContext();
   return prover.sign_transaction(context, tx, inputBoxes, dataInputBoxes);
 };
 

@@ -113,7 +113,10 @@ const ColdSigningRequestInternal = (props: ColdSigningRequestPropsType) => {
         walletContext.wallet &&
         error === '' &&
         txSignContext.signed === '' ? (
-          <Button disabled={hasError} onClick={() => txSignContext.handle()}>
+          <Button
+            disabled={hasError}
+            onClick={() => txSignContext.handle(false)}
+          >
             <SignButtonLabel wallet={walletContext.wallet} />
           </Button>
         ) : undefined

@@ -21,8 +21,10 @@ interface TxSignContextType {
   ) => unknown;
   setReducedTx: (tx: wasm.ReducedTransaction | undefined) => unknown;
   networkType: string;
-  handle: () => unknown;
+  handle: (forceNode: boolean) => unknown;
   signed: string;
+  sendViaNode?: () => void;
+  setSendViaNode?: (fn?: () => void) => void;
 }
 
 const TxSignContext = createContext<TxSignContextType>({

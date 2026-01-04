@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import * as wasm from '@minotaur-ergo/ergo-lib';
 
 interface TxSubmitContextType {
-  submit: (signed: wasm.Transaction) => unknown;
+  submit: (signed: wasm.Transaction, forceNode: boolean) => unknown;
 }
 
 const TxSubmitContext = createContext<TxSubmitContextType>({

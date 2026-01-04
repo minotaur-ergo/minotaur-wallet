@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
@@ -29,6 +29,7 @@ interface TxSignContextHandlerPropsType {
   children: React.ReactNode;
   close?: () => unknown;
   denySubmit?: boolean;
+  // sendViaNode: () => void;
 }
 
 const TxSignContextHandlerInternal = (
@@ -46,6 +47,11 @@ const TxSignContextHandlerInternal = (
   const qrCodeContext = useContext(QrCodeContext);
   const submitContext = useContext(TxSubmitContext);
   const signer = useSignerWallet(props.wallet);
+  const sendViaNodeRef = useRef<() => void>();
+
+  const setSendViaNode = useCallback((fn?: () => void) => {
+    sendViaNodeRef.current = fn;
+  }, []);
   const setTransactionDetail = (
     tx: wasm.UnsignedTransaction | undefined,
     boxes: Array<wasm.ErgoBox>,
@@ -66,7 +72,7 @@ const TxSignContextHandlerInternal = (
     }
   };
 
-  const handleNormalReducedTx = () => {
+  const handleNormalReducedTx = (forceNode: boolean) => {
     if (reduced) {
       return signNormalWalletReducedTx(props.wallet, password, reduced).then(
         (signed) => {
@@ -79,14 +85,14 @@ const TxSignContextHandlerInternal = (
               }),
             );
           } else {
-            submitContext.submit(signed);
+            submitContext.submit(signed, forceNode);
           }
         },
       );
     }
   };
 
-  const handleNormalTx = () => {
+  const handleNormalTx = (forceNode: boolean) => {
     if (tx) {
       props.setStatus(StatusEnum.SIGNING);
       return signNormalWalletTx(
@@ -95,11 +101,18 @@ const TxSignContextHandlerInternal = (
         tx,
         boxes,
         dataBoxes,
-      ).then(submitContext.submit);
+        forceNode,
+      ).then((signed) => {
+        submitContext.submit(signed, forceNode);
+      });
     }
   };
 
-  const handle = async () => {
+  const handle = async (forceNode: boolean) => {
+    console.log(forceNode);
+    console.log(tx);
+    console.log(props.status);
+    console.log(props.wallet.type);
     if (tx && props.status === StatusEnum.WAITING) {
       switch (props.wallet.type) {
         case WalletType.Normal:
@@ -107,9 +120,9 @@ const TxSignContextHandlerInternal = (
             reduced &&
             reduced.unsigned_tx().id().to_str() === tx.id().to_str()
           ) {
-            await handleNormalReducedTx();
+            await handleNormalReducedTx(forceNode);
           } else {
-            await handleNormalTx();
+            await handleNormalTx(forceNode);
           }
           break;
         case WalletType.ReadOnly:
@@ -148,6 +161,8 @@ const TxSignContextHandlerInternal = (
         setPassword,
         setTx: setTransactionDetail,
         signed: signedStr,
+        sendViaNode: sendViaNodeRef.current,
+        setSendViaNode,
       }}
     >
       <TxDataContextHandler
@@ -185,6 +200,7 @@ const TxSignContextHandler = (props: TxSignContextHandlerPropsType) => {
       status={status}
       setStatus={setStatus}
       close={close}
+      // sendViaNode={props.sendViaNode}
     >
       <TxSignContextHandlerInternal
         close={close}

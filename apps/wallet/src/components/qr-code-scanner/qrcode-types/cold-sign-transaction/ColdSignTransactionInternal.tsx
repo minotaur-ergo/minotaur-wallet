@@ -83,7 +83,7 @@ const ColdSignTransactionInternal = (props: ColdSignTransactionPropsType) => {
 
   const submit = () => {
     if (tx) {
-      context.submit(tx);
+      context.submit(tx, false);
     }
   };
 

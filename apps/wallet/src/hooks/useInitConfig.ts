@@ -103,12 +103,12 @@ const useInitConfig = () => {
           }
         });
         getChain(MAIN_NET_LABEL).init(
-          config.network.mainnet.sync === 'Node',
+          // config.network.mainnet.sync === 'Node',
           config.network.mainnet.explorerUrl,
           config.network.mainnet.nodeUrl,
         );
         getChain(TEST_NET_LABEL).init(
-          config.network.testnet.sync === 'Node',
+          // config.network.testnet.sync === 'Node',
           config.network.testnet.explorerUrl,
           config.network.testnet.nodeUrl,
         );
