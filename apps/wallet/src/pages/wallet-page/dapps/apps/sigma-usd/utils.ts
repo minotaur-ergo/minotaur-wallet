@@ -96,7 +96,7 @@ export const sellToken = async (
     throw Error('Insufficient token');
   }
   const userAddress = wasm.Address.from_base58(await props.getDefaultAddress());
-  const height = await props.chain.getNetwork().getHeight();
+  const height = await props.chain.getExplorerNetwork().getHeight();
   const { totalErg, tokens, inputs } = getTotalTokens(
     bank.getBox(),
     boxes.boxes,
@@ -153,7 +153,7 @@ export const buyToken = async (
     throw Error('Insufficient Erg');
   }
   const userAddress = wasm.Address.from_base58(await props.getDefaultAddress());
-  const height = await props.chain.getNetwork().getHeight();
+  const height = await props.chain.getExplorerNetwork().getHeight();
   const { totalErg, tokens, inputs } = getTotalTokens(
     bank.getBox(),
     boxes.boxes,

@@ -24,7 +24,7 @@ const useBoxes = (chain: ChainTypeInterface) => {
     if (!loading) {
       setLoading(true);
       chain
-        .getNetwork()
+        .getExplorerNetwork()
         .getHeight()
         .then((height) => {
           setHeight(height);
@@ -35,7 +35,7 @@ const useBoxes = (chain: ChainTypeInterface) => {
   }, [loading, chain]);
   useEffect(() => {
     const process = async () => {
-      const network = chain.getNetwork();
+      const network = chain.getExplorerNetwork();
       const currentHeight = height;
       setBoxesLoading(true);
       const bankBoxes = await network.getUnspentBoxByTokenId(

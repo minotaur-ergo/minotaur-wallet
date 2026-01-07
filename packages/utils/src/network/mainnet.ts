@@ -17,7 +17,7 @@ class MainnetChain implements ChainTypeInterface {
     MainnetChain.ergoNodeNetwork = new ErgoNodeNetwork(explorerUrl, nodeUrl);
   };
 
-  getNetwork = () => {
+  getExplorerNetwork = () => {
     return MainnetChain.ergoExplorerNetwork;
   };
 

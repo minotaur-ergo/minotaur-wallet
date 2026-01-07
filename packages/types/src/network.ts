@@ -54,7 +54,7 @@ interface ChainTypeInterface {
   readonly label: string;
 
   init: (explorerUrl: string, nodeUrl: string) => void;
-  getNetwork: () => AbstractNetwork;
+  getExplorerNetwork: () => AbstractNetwork;
   getNodeNetwork: () => AbstractNetwork;
   getExplorerFront: () => string;
   fakeContext: () => wasm.ErgoStateContext;

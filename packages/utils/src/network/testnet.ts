@@ -17,7 +17,7 @@ class TestnetChain implements ChainTypeInterface {
     TestnetChain.ergoNodeNetwork = new ErgoNodeNetwork(explorerUrl, nodeUrl);
   };
 
-  getNetwork = () => {
+  getExplorerNetwork = () => {
     return TestnetChain.ergoExplorerNetwork;
   };
 

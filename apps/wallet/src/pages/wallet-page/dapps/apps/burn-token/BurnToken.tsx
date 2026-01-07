@@ -19,7 +19,7 @@ const BurnToken = (props: DAppPropsType) => {
     if (isValid && !burning) {
       setBurning(true);
       const address = await props.getDefaultAddress();
-      const height = await props.chain.getNetwork().getHeight();
+      const height = await props.chain.getExplorerNetwork().getHeight();
       const selectedTokens = Object.entries(amounts).map((item) => ({
         tokenId: item[0],
         balance: item[1].amount,

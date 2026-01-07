@@ -15,7 +15,7 @@ export const airdrop = async (
 ) => {
   try {
     const address = await props.getDefaultAddress();
-    const height = await props.chain.getNetwork().getHeight();
+    const height = await props.chain.getExplorerNetwork().getHeight();
     const airdrops = BigInt(addresses.length);
     const selectedTokens = Object.entries(amounts).map((item) => ({
       tokenId: item[0],

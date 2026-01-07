@@ -30,7 +30,7 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
     usedSetStatus(StatusEnum.SENDING);
     const network = forceNode
       ? getChain(props.wallet.networkType).getNodeNetwork()
-      : getChain(props.wallet.networkType).getNetwork();
+      : getChain(props.wallet.networkType).getExplorerNetwork();
     return network
       .sendTx(signed)
       .then(() => {
