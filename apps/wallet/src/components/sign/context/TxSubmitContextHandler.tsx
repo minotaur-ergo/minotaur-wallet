@@ -28,7 +28,7 @@ const TxSubmitContextHandler = (props: TxSubmitContextHandlerPropsType) => {
   const submitTx = (signed: wasm.Transaction) => {
     usedSetStatus(StatusEnum.SENDING);
     return getChain(props.wallet.networkType)
-      .getExplorerNetwork()
+      .getNetwork()
       .sendTx(signed)
       .then(() => {
         usedSetStatus(StatusEnum.SENT);

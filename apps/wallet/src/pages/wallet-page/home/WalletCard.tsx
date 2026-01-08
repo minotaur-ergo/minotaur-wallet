@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
-import { getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL, StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
   Box,

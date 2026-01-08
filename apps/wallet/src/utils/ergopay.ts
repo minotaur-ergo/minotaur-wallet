@@ -76,7 +76,7 @@ const fetchBoxesFromNetwork = async (
   boxes: Array<wasm.ErgoBox | undefined>,
   wallet: StateWallet,
 ): Promise<Array<wasm.ErgoBox>> => {
-  const network = getChain(wallet.networkType).getExplorerNetwork();
+  const network = getChain(wallet.networkType).getNetwork();
   const res: Array<wasm.ErgoBox> = [];
   for (let index = 0; index < boxIds.length; index++) {
     const localBox = boxes[index];

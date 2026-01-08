@@ -2,5 +2,5 @@
 'minotaur-wallet': minor
 ---
 
-Add support for syncing via a node or explorer using a custom URL.
-Add Network Settings page for both Mainnet and Testnet.
+Add support for node
+Allow select Backend between node and explorer

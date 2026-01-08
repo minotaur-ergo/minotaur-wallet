@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, WalletType } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL, WalletType } from '@minotaur-ergo/types';
 import { Button, Grid } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -28,7 +26,6 @@ type WalletValueKeys =
 const WalletRestore = () => {
   const context = useContext(MessageContext);
   const navigate = useNavigate();
-  const network = useSelector((state: GlobalStateType) => state.config.network);
   const [step, setStep] = useState(1);
   const [hasError, setHasError] = useState(true);
   const [restoring, setRestoring] = useState(false);
@@ -52,9 +49,6 @@ const WalletRestore = () => {
         values.mnemonicPassphrase,
         values.network,
         values.password,
-        (values.network === MAIN_NET_LABEL
-          ? network.mainnet.sync
-          : network.testnet.sync) === 'Node',
         values.readOnlyWalletId === -1 ? undefined : values.readOnlyWalletId,
       )
         .then(() => {

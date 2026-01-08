@@ -1,6 +1,7 @@
 import {
   BoxInfo,
   ConfigType,
+  DEFAULT_ADDRESS_PREFIX,
   MultiSigDataHint,
   MultiSigHintType,
   SpendDetail,
@@ -8,11 +9,7 @@ import {
   TxInfo,
   WalletType,
 } from '@minotaur-ergo/types';
-import {
-  createEmptyArray,
-  DEFAULT_ADDRESS_PREFIX,
-  sliceToChunksString,
-} from '@minotaur-ergo/utils';
+import { createEmptyArray, sliceToChunksString } from '@minotaur-ergo/utils';
 import { DataSource, Like, Repository } from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';

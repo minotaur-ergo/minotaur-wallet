@@ -19,7 +19,7 @@ const useTransactionData = (txId: string, wallet: StateWallet) => {
         setLoading(true);
         const chain = getChain(wallet.networkType);
         chain
-          .getExplorerNetwork()
+          .getNetwork()
           .getTransaction(processingTxId)
           .then((tx) => {
             setLoadedTx(processingTxId);

@@ -50,7 +50,7 @@ const GlobalSettings = () => {
   const saveUseActiveWallet = (useActiveWallet: boolean) => {
     ConfigDbAction.getInstance()
       .setConfig(
-        ConfigType.useActiveWallet,
+        ConfigType.UseActiveWallet,
         useActiveWallet ? 'true' : 'false',
         activePinType,
       )

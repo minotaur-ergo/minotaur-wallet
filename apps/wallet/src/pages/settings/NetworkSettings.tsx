@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
-import { getChain, MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
+import {
+  BackendUrlGenerator,
+  ConfigType,
+  EXPLORER_NETWORK,
+  GlobalStateType,
+  MAIN_NET_LABEL,
+  NETWORK_BACKEND,
+  NODE_NETWORK,
+  TEST_NET_LABEL,
+} from '@minotaur-ergo/types';
 import { Box, Stack, Tab, Tabs } from '@mui/material';
 
 import { ConfigDbAction } from '@/action/db';
@@ -10,83 +18,54 @@ import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import SolitarySelectField from '@/components/solitary/SolitarySelectField';
 import SolitaryTextField from '@/components/solitary/SolitaryTextField';
 import AppFrame from '@/layouts/AppFrame';
-import {
-  setExplorerUrl,
-  setNodeUrl,
-  setSyncWithNode,
-} from '@/store/reducer/config';
-
-type NetworkType = 'MAINNET' | 'TESTNET';
+import { setBackend, setExplorerUrl, setNodeUrl } from '@/store/reducer/config';
 
 const NetworkSettings = () => {
-  const [tab, setTab] = useState<NetworkType>('MAINNET');
+  const [tab, setTab] = useState<string>(MAIN_NET_LABEL);
+  const backends = [EXPLORER_NETWORK, NODE_NETWORK];
+
   const dispatch = useDispatch();
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
-  const network = useSelector((state: GlobalStateType) => state.config.network);
 
-  const saveSyncWithNode = (sync?: 'Node' | 'Explorer', url?: string) => {
-    const isMainnet: boolean = tab === 'MAINNET';
-    ConfigDbAction.getInstance()
-      .setConfig(
-        getConfigType(!!url),
-        url ? url : sync === 'Node' ? 'Node' : 'Explorer',
+  const config = useSelector((state: GlobalStateType) => state.config.network);
+  const network = useMemo(
+    () => (tab === MAIN_NET_LABEL ? config.mainnet : config.testnet),
+    [config, tab],
+  );
+  const setUrl = useCallback(
+    async (backend: string, url: string) => {
+      await ConfigDbAction.getInstance().setConfig(
+        BackendUrlGenerator(tab, backend),
+        url,
         activePinType,
-      )
-      .then(() => {
-        getChain(isMainnet ? MAIN_NET_LABEL : TEST_NET_LABEL).init(
-          isMainnet ? network.mainnet.explorerUrl : network.testnet.explorerUrl,
-          isMainnet ? network.mainnet.nodeUrl : network.testnet.nodeUrl,
-        );
-        dispatch(
-          url
-            ? setNodeUrl({
-                network: isMainnet ? 'MAINNET' : 'TESTNET',
-                nodeUrl: url,
-              })
-            : setSyncWithNode({
-                network: isMainnet ? 'MAINNET' : 'TESTNET',
-                sync: sync || 'Explorer',
-              }),
-        );
-      });
-  };
+      );
+      const dispatchFn = backend === NODE_NETWORK ? setNodeUrl : setExplorerUrl;
+      dispatch(dispatchFn({ network: tab, url }));
+    },
+    [activePinType, dispatch, tab],
+  );
 
-  const saveExplorerUrl = (url: string) => {
-    const isMainnet: boolean = tab === 'MAINNET';
-    ConfigDbAction.getInstance()
-      .setConfig(ConfigType.TestnetExplorerUrl, url, activePinType)
-      .then(() => {
-        getChain(isMainnet ? MAIN_NET_LABEL : TEST_NET_LABEL).init(
-          isMainnet ? network.mainnet.explorerUrl : network.testnet.explorerUrl,
-          isMainnet ? network.mainnet.nodeUrl : network.testnet.nodeUrl,
-        );
-        dispatch(
-          setExplorerUrl({
-            network: isMainnet ? 'MAINNET' : 'TESTNET',
-            explorerUrl: url,
-          }),
-        );
-      });
-  };
-
-  const getConfigType = (isUrl: boolean): ConfigType => {
-    const isMainnet: boolean = tab === 'MAINNET';
-    return isUrl
-      ? isMainnet
-        ? ConfigType.MainnetNodeUrl
-        : ConfigType.TestnetNodeUrl
-      : isMainnet
-        ? ConfigType.MainnetSync
-        : ConfigType.TestnetSync;
-  };
-
+  const setDataBackend = useCallback(
+    async (backend: string) => {
+      await ConfigDbAction.getInstance().setConfig(
+        tab === MAIN_NET_LABEL
+          ? ConfigType.MainnetBackend
+          : ConfigType.TestnetBackend,
+        backend,
+        activePinType,
+      );
+      const backendValue =
+        backend === EXPLORER_NETWORK
+          ? NETWORK_BACKEND.EXPLORER
+          : NETWORK_BACKEND.NODE;
+      dispatch(setBackend({ backend: backendValue, network: tab }));
+    },
+    [activePinType, dispatch, tab],
+  );
   return (
-    <AppFrame
-      title={`${tab === 'MAINNET' ? 'Mainnet' : 'Testnet'} Network Settings`}
-      navigation={<BackButtonRouter />}
-    >
+    <AppFrame title={`Network Settings`} navigation={<BackButtonRouter />}>
       <Box mx={2}>
         <Tabs
           value={tab}
@@ -117,42 +96,22 @@ const NetworkSettings = () => {
             },
           }}
         >
-          <Tab tabIndex={0} value="MAINNET" label="Mainnet" />
-          <Tab tabIndex={1} value="TESTNET" label="Testnet" />
+          <Tab tabIndex={0} value={MAIN_NET_LABEL} label={MAIN_NET_LABEL} />
+          <Tab tabIndex={1} value={TEST_NET_LABEL} label={TEST_NET_LABEL} />
         </Tabs>
         <Stack spacing={2}>
-          <SolitaryTextField
-            value={
-              tab === 'MAINNET'
-                ? network.mainnet.explorerUrl
-                : network.testnet.explorerUrl
-            }
-            label={`Explorer URL`}
-            onChange={(address) => {
-              saveExplorerUrl(address);
-            }}
-          />
-          <SolitaryTextField
-            value={
-              tab === 'MAINNET'
-                ? network.mainnet.nodeUrl
-                : network.testnet.nodeUrl
-            }
-            label={`Node URL`}
-            onChange={(address) => {
-              saveSyncWithNode(undefined, address);
-            }}
-          />
+          {backends.map((item) => (
+            <SolitaryTextField
+              value={item === NODE_NETWORK ? network.node : network.explorer}
+              label={`${item} URL`}
+              onChange={(url) => setUrl(item, url)}
+            />
+          ))}
           <SolitarySelectField
-            key={tab}
-            label="Sync Source"
-            value={
-              tab === 'MAINNET' ? network.mainnet.sync : network.testnet.sync
-            }
-            options={[{ value: 'Explorer' }, { value: 'Node' }]}
-            onChange={(network) => {
-              saveSyncWithNode(network === 'Node' ? 'Node' : 'Explorer');
-            }}
+            label="Type"
+            value={network.backend}
+            options={[{ value: EXPLORER_NETWORK }, { value: NODE_NETWORK }]}
+            onChange={setDataBackend}
           />
         </Stack>
       </Box>

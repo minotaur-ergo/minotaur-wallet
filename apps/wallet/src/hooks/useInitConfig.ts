@@ -1,7 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
-import { getChain, MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
+import {
+  ConfigType,
+  EXPLORER_NETWORK,
+  GlobalStateType,
+  MAIN_NET_LABEL,
+  NETWORK_BACKEND,
+  TEST_NET_LABEL,
+} from '@minotaur-ergo/types';
+import { setUrl } from '@minotaur-ergo/utils';
 
 import {
   AddressDbAction,
@@ -58,50 +65,56 @@ const useInitConfig = () => {
           useActiveWallet: true,
           network: {
             mainnet: {
-              sync: 'Explorer',
-              explorerUrl: DEFAULT_EXPLORER.mainnet,
-              nodeUrl: DEFAULT_NODE.mainnet,
+              backend: NETWORK_BACKEND.EXPLORER,
+              explorer: DEFAULT_EXPLORER.mainnet,
+              node: DEFAULT_NODE.mainnet,
             },
             testnet: {
-              sync: 'Explorer',
-              explorerUrl: DEFAULT_EXPLORER.testnet,
-              nodeUrl: DEFAULT_NODE.testnet,
+              backend: NETWORK_BACKEND.EXPLORER,
+              explorer: DEFAULT_EXPLORER.testnet,
+              node: DEFAULT_NODE.testnet,
             },
           },
         };
         configs.forEach((item) => {
-          if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
-            config.display = 'simple';
-          } else if (item.key === ConfigType.Currency) {
-            config.currency = item.value;
-          } else if (item.key === ConfigType.ActiveWallet) {
-            config.activeWallet = parseInt(item.value);
-          } else if (item.key === ConfigType.useActiveWallet) {
-            config.useActiveWallet = item.value !== 'false';
-          } else if (item.key === ConfigType.MainnetExplorerUrl) {
-            config.network.mainnet.explorerUrl = item.value;
-          } else if (item.key === ConfigType.TestnetExplorerUrl) {
-            config.network.testnet.explorerUrl = item.value;
-          } else if (item.key === ConfigType.MainnetSync) {
-            config.network.mainnet.sync =
-              item.value === 'Node' ? 'Node' : 'Explorer';
-          } else if (item.key === ConfigType.TestnetSync) {
-            config.network.testnet.sync =
-              item.value === 'Node' ? 'Node' : 'Explorer';
-          } else if (item.key === ConfigType.MainnetNodeUrl) {
-            config.network.mainnet.nodeUrl = item.value;
-          } else if (item.key === ConfigType.TestnetNodeUrl) {
-            config.network.testnet.nodeUrl = item.value;
+          switch (item.key) {
+            case ConfigType.DisplayMode:
+              config.display = item.value === 'simple' ? 'simple' : 'advanced';
+              break;
+            case ConfigType.Currency:
+              config.currency = item.value;
+              break;
+            case ConfigType.UseActiveWallet:
+              config.useActiveWallet = item.value !== 'false';
+              break;
+            case ConfigType.MainnetBackend:
+              config.network.mainnet.backend =
+                item.value === EXPLORER_NETWORK
+                  ? NETWORK_BACKEND.EXPLORER
+                  : NETWORK_BACKEND.NODE;
+              break;
+            case ConfigType.MainnetNodeUrl:
+              config.network.mainnet.node = item.value;
+              break;
+            case ConfigType.MainnetExplorerUrl:
+              config.network.mainnet.explorer = item.value;
+              break;
+            case ConfigType.TestnetBackend:
+              config.network.testnet.backend =
+                item.value === EXPLORER_NETWORK
+                  ? NETWORK_BACKEND.EXPLORER
+                  : NETWORK_BACKEND.NODE;
+              break;
+            case ConfigType.TestnetNodeUrl:
+              config.network.testnet.node = item.value;
+              break;
+            case ConfigType.TestnetExplorerUrl:
+              config.network.testnet.explorer = item.value;
+              break;
           }
         });
-        getChain(MAIN_NET_LABEL).init(
-          config.network.mainnet.explorerUrl,
-          config.network.mainnet.nodeUrl,
-        );
-        getChain(TEST_NET_LABEL).init(
-          config.network.testnet.explorerUrl,
-          config.network.testnet.nodeUrl,
-        );
+        setUrl(MAIN_NET_LABEL, config.network.mainnet);
+        setUrl(TEST_NET_LABEL, config.network.testnet);
         dispatch(setConfig(config));
       });
   } else if (!initialized) {

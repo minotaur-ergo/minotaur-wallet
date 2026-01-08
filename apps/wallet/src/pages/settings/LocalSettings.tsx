@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet, WalletType } from '@minotaur-ergo/types';
-import { WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
+import {
+  StateWallet,
+  WALLET_FLAG_ENUM,
+  WalletType,
+} from '@minotaur-ergo/types';
 import { VisibilityOutlined } from '@mui/icons-material';
 import { Box, Stack } from '@mui/material';
 

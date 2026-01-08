@@ -21,7 +21,7 @@ const IssueToken = (props: DAppPropsType) => {
   const [hasError, setHasError] = useState(false);
   const issueToken = async () => {
     const address = await props.getDefaultAddress();
-    const height = await props.chain.getExplorerNetwork().getHeight();
+    const height = await props.chain.getNetwork().getHeight();
     const box_value =
       BigInt(wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str()) + fee;
     const coveringBox = await props.getCoveringForErgAndToken(box_value, []);

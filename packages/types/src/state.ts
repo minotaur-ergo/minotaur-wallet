@@ -1,4 +1,6 @@
+import { MAIN_NET_LABEL, TEST_NET_LABEL } from './const';
 import { TokenBalance, WalletType } from './db';
+import { EXPLORER_NETWORK, NETWORK_BACKEND, NODE_NETWORK } from './network';
 
 export interface StateWallet {
   id: number;
@@ -116,18 +118,36 @@ export interface WalletStateType {
   showBalanceChart: boolean;
 }
 
-export enum ConfigType {
-  DisplayMode = 'DISPLAY_DETAIL',
-  Currency = 'CURRENCY',
-  ActiveWallet = 'ACTIVE_WALLET',
-  useActiveWallet = 'USE_ACTIVE_WALLET',
-  MainnetExplorerUrl = 'MAINNET_EXPLORER_URL',
-  MainnetSync = 'MAINNET_SYNC',
-  MainnetNodeUrl = 'MAINNET_NODE_URL',
-  TestnetExplorerUrl = 'TESTNET_EXPLORER_URL',
-  TestnetSync = 'TESTNET_SYNC',
-  TestnetNodeUrl = 'TESTNET_NODE_URL',
-}
+export const BackendUrlGenerator = (network: string, backend: string) => {
+  const parts = [network, backend, 'URL'];
+  return parts
+    .map((item) => item.replace(/[ _-]/g, '').toUpperCase())
+    .join('_');
+};
+
+const MAINNET_NODE_URL_KEY = BackendUrlGenerator(MAIN_NET_LABEL, NODE_NETWORK);
+const TESTNET_NODE_URL_KEY = BackendUrlGenerator(TEST_NET_LABEL, NODE_NETWORK);
+const MAINNET_EXPLORER_URL_KEY = BackendUrlGenerator(
+  MAIN_NET_LABEL,
+  EXPLORER_NETWORK,
+);
+const TESTNET_EXPLORER_URL_KEY = BackendUrlGenerator(
+  TEST_NET_LABEL,
+  EXPLORER_NETWORK,
+);
+
+export const ConfigType = {
+  DisplayMode: 'DISPLAY_DETAIL',
+  Currency: 'CURRENCY',
+  ActiveWallet: 'ACTIVE_WALLET',
+  UseActiveWallet: 'USE_ACTIVE_WALLET',
+  MainnetBackend: 'MAINNET_BACKEND',
+  MainnetNodeUrl: MAINNET_NODE_URL_KEY,
+  MainnetExplorerUrl: MAINNET_EXPLORER_URL_KEY,
+  TestnetBackend: 'TESTNET_BACKEND',
+  TestnetNodeUrl: TESTNET_NODE_URL_KEY,
+  TestnetExplorerUrl: TESTNET_EXPLORER_URL_KEY,
+} as const;
 
 export type DisplayType = 'simple' | 'advanced';
 
@@ -149,9 +169,9 @@ export interface TokenValue {
 }
 
 export interface NetworkSettingType {
-  sync: 'Node' | 'Explorer';
-  explorerUrl: string;
-  nodeUrl: string;
+  node: string;
+  explorer: string;
+  backend: NETWORK_BACKEND;
 }
 
 export interface ConfigStateType {

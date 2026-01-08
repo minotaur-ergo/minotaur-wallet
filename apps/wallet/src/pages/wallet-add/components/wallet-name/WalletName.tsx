@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL, TEST_NET_LABEL } from '@minotaur-ergo/types';
 import {
   Box,
   TextField,

@@ -2,5 +2,6 @@
 '@minotaur-ergo/types': minor
 ---
 
-Introduce structured network configuration types for Mainnet and Testnet, including sync mode, explorer URL, and node URL.
-Add `init()` method to `ChainTypeInterface`.
+Add constants
+Add default explorer and node url for mainnet and testnet
+Add `setURL` method to `ChainTypeInterface`

@@ -27,6 +27,7 @@ export const DEFAULT_NODE = {
   mainnet: 'http://213.239.193.208:9053',
   testnet: 'http://213.239.193.208:9052',
 };
+
 export const DEFAULT_EXPLORER = {
   mainnet: 'https://api.ergoplatform.com',
   testnet: 'https://api-testnet.ergoplatform.com',

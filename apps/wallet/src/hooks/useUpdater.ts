@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
 
 import { syncWallet } from '@/action/sync';
 import store from '@/store';
@@ -26,7 +25,6 @@ const useUpdater = () => {
     (state: GlobalStateType) => state.config.activeWallet,
   );
   const refresh = useSelector((state: GlobalStateType) => state.wallet.refresh);
-  const network = useSelector((state: GlobalStateType) => state.config.network);
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
 
   useEffect(() => {
@@ -45,12 +43,7 @@ const useUpdater = () => {
       const wallet =
         filteredActive.length === 0 ? filtered[0] : filteredActive[0];
       if (wallet) {
-        syncWallet(
-          wallet,
-          (wallet.networkType === MAIN_NET_LABEL
-            ? network.mainnet.sync
-            : network.testnet.sync) === 'Node',
-        )
+        syncWallet(wallet)
           .then(() => {
             store.dispatch(addUpdatedWallets(wallet.id));
             setLoading(false);
@@ -65,15 +58,7 @@ const useUpdater = () => {
         setLoading(false);
       }
     }
-  }, [
-    activeWallet,
-    loading,
-    initialized,
-    wallets,
-    updatedWallets,
-    network.mainnet.sync,
-    network.testnet.sync,
-  ]);
+  }, [activeWallet, loading, initialized, wallets, updatedWallets]);
   useEffect(() => {
     if (!loading && refresh) {
       store.dispatch(clearUpdatedWallets());

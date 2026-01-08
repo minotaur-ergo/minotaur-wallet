@@ -1,8 +1,11 @@
 import {
   ConfigStateType,
   DisplayType,
+  MAIN_NET_LABEL,
+  NETWORK_BACKEND,
   NetworkSettingType,
 } from '@minotaur-ergo/types';
+import { setUrl } from '@minotaur-ergo/utils';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -19,14 +22,14 @@ export const configInitialState: ConfigStateType = {
   useActiveWallet: true,
   network: {
     mainnet: {
-      sync: 'Explorer',
-      explorerUrl: DEFAULT_EXPLORER.mainnet,
-      nodeUrl: DEFAULT_NODE.mainnet,
+      backend: NETWORK_BACKEND.EXPLORER,
+      explorer: DEFAULT_EXPLORER.mainnet,
+      node: DEFAULT_NODE.mainnet,
     },
     testnet: {
-      sync: 'Explorer',
-      explorerUrl: DEFAULT_EXPLORER.testnet,
-      nodeUrl: DEFAULT_NODE.testnet,
+      backend: NETWORK_BACKEND.EXPLORER,
+      explorer: DEFAULT_EXPLORER.testnet,
+      node: DEFAULT_NODE.testnet,
     },
   },
   pin: {
@@ -88,44 +91,38 @@ const configSlice = createSlice({
       state.currency = action.payload.currency;
       state.symbol = getCurrencySymbol(action.payload.currency);
     },
-    setExplorerUrl: (
-      state,
-      action: PayloadAction<{
-        network: 'MAINNET' | 'TESTNET';
-        explorerUrl: string;
-      }>,
-    ) => {
-      if (action.payload.network === 'MAINNET') {
-        state.network.mainnet.explorerUrl = action.payload.explorerUrl;
-      } else {
-        state.network.testnet.explorerUrl = action.payload.explorerUrl;
-      }
-    },
-    setSyncWithNode: (
-      state,
-      action: PayloadAction<{
-        network: 'MAINNET' | 'TESTNET';
-        sync: 'Node' | 'Explorer';
-      }>,
-    ) => {
-      if (action.payload.network === 'MAINNET') {
-        state.network.mainnet.sync = action.payload.sync;
-      } else {
-        state.network.testnet.sync = action.payload.sync;
-      }
-    },
     setNodeUrl: (
       state,
-      action: PayloadAction<{
-        network: 'MAINNET' | 'TESTNET';
-        nodeUrl: string;
-      }>,
+      action: PayloadAction<{ network: string; url: string }>,
     ) => {
-      if (action.payload.network === 'MAINNET') {
-        state.network.mainnet.nodeUrl = action.payload.nodeUrl;
-      } else {
-        state.network.testnet.nodeUrl = action.payload.nodeUrl;
-      }
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.node = action.payload.url;
+      setUrl(action.payload.network, network);
+    },
+    setExplorerUrl: (
+      state,
+      action: PayloadAction<{ network: string; url: string }>,
+    ) => {
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.explorer = action.payload.url;
+      setUrl(action.payload.network, network);
+    },
+    setBackend: (
+      state,
+      action: PayloadAction<{ network: string; backend: NETWORK_BACKEND }>,
+    ) => {
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.backend = action.payload.backend;
+      setUrl(action.payload.network, network);
     },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
@@ -171,9 +168,9 @@ export const {
   setPrice,
   setDisplay,
   setCurrency,
-  setExplorerUrl,
-  setSyncWithNode,
+  setBackend,
   setNodeUrl,
+  setExplorerUrl,
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,
