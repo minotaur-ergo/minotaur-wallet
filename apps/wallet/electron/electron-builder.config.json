@@ -18,8 +18,7 @@
   },
   "mac": {
     "category": "your.app.category.type",
-    "target": "dmg",
-    "icon": "assets/appIcon.icns"
+    "target": "dmg"
   },
   "linux": {
     "target": ["snap", "AppImage"]
