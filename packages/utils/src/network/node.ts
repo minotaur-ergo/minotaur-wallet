@@ -115,7 +115,7 @@ class ErgoNodeNetwork extends BaseNetwork {
         for (const tx of chunk.items ?? []) {
           await processTransactionInput(tx, address, spendBox);
         }
-      } while (chunk.total ?? 0 > offset);
+      } while ((chunk.total ?? 0) > offset);
 
       // update height
       await proceedToHeight();

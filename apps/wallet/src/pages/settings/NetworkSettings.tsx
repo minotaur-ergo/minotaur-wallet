@@ -108,6 +108,7 @@ const NetworkSettings = () => {
             />
           ))}
           <SolitarySelectField
+            key={tab}
             label="Type"
             value={network.backend}
             options={[{ value: EXPLORER_NETWORK }, { value: NODE_NETWORK }]}
