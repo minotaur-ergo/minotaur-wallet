@@ -1,9 +1,3 @@
-import type { CapacitorElectronConfig } from '@capacitor-community/electron';
-import {
-  CapacitorSplashScreen,
-  CapElectronEventEmitter,
-  setupCapacitorElectronPlugins,
-} from '@capacitor-community/electron';
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
 import {
@@ -18,6 +12,12 @@ import {
 import electronIsDev from 'electron-is-dev';
 import electronServe from 'electron-serve';
 import windowStateKeeper from 'electron-window-state';
+import type { CapacitorElectronConfig } from 'minotaurelectron7';
+import {
+  CapacitorSplashScreen,
+  CapElectronEventEmitter,
+  setupCapacitorElectronPlugins,
+} from 'minotaurelectron7';
 import { join } from 'path';
 
 // Define components for a watcher to detect when the webapp is changed so we can reload in Dev mode.

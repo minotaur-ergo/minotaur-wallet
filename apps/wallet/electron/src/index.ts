@@ -1,12 +1,12 @@
 import type { CapacitorElectronConfig } from '@capacitor-community/electron';
-import {
-  getCapacitorElectronConfig,
-  setupElectronDeepLinking,
-} from '@capacitor-community/electron';
 import type { MenuItemConstructorOptions } from 'electron';
 import { app, ipcMain, MenuItem, shell } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import unhandled from 'electron-unhandled';
+import {
+  getCapacitorElectronConfig,
+  setupElectronDeepLinking,
+} from 'minotaurelectron7';
 
 import createMenuTemplate from './menuTemplate';
 // import { autoUpdater } from 'electron-updater';
