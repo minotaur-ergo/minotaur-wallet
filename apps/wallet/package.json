@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@capacitor-community/electron": "^5.0.1",
-    "@capacitor-community/sqlite": "5.6.1",
+    "@capacitor-community/sqlite": "^7.0.3",
     "@capacitor-mlkit/barcode-scanning": "^7.5.0",
     "@capacitor/android": "^7.0.0",
     "@capacitor/app": "^7.0.0",

@@ -26,6 +26,9 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
       if (await checkPermission()) {
         await BarcodeScanner.addListener('barcodesScanned', async (result) => {
           const boxPosition = getCameraBoxBoundary();
+          if (result.barcodes.length === 0) {
+            return;
+          }
           const cornerPoints = result.barcodes[0].cornerPoints;
           if (cornerPoints) {
             const xs = cornerPoints.map((item) => item[0]);
