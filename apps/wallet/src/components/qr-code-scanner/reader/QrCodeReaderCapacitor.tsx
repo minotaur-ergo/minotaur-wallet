@@ -24,9 +24,9 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
   const start = async () => {
     if (!started) {
       if (await checkPermission()) {
-        await BarcodeScanner.addListener('barcodeScanned', async (result) => {
+        await BarcodeScanner.addListener('barcodesScanned', async (result) => {
           const boxPosition = getCameraBoxBoundary();
-          const cornerPoints = result.barcode.cornerPoints;
+          const cornerPoints = result.barcodes[0].cornerPoints;
           if (cornerPoints) {
             const xs = cornerPoints.map((item) => item[0]);
             const ys = cornerPoints.map((item) => item[1]);
@@ -38,7 +38,7 @@ const QrCodeReaderCapacitor = (props: QrCodePropsType) => {
             ) {
               return;
             }
-            props.handleScan(result.barcode.rawValue);
+            props.handleScan(result.barcodes[0].rawValue);
           }
         });
         document.body.classList.add('barcode-scanner-active');
