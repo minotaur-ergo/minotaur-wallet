@@ -1,17 +1,12 @@
 import { ErgoStateContext, NetworkPrefix } from '@minotaur-ergo/ergo-lib';
-import { ChainTypeInterface } from '@minotaur-ergo/types';
+import { TEST_NET_LABEL } from '@minotaur-ergo/types';
 
-import { TEST_NET_LABEL } from '../const';
+import { BaseChain } from './base';
 import { fakeContext } from './context';
-import ExplorerNetwork from './explorer';
 
-class TestnetChain implements ChainTypeInterface {
+class TestnetChain extends BaseChain {
   readonly label = TEST_NET_LABEL;
   readonly prefix = NetworkPrefix.Testnet;
-
-  getNetwork = () => {
-    return new ExplorerNetwork('https://api-testnet.ergoplatform.com');
-  };
 
   getExplorerFront(): string {
     return 'https://testnet.ergoplatform.com';

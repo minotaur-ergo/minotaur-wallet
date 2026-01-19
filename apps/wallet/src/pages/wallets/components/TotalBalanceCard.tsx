@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { GlobalStateType, MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
 
 import BalanceDisplay from '@/components/balance-display/BalanceDisplay';

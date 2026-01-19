@@ -1,6 +1,15 @@
-import { ConfigStateType, DisplayType } from '@minotaur-ergo/types';
+import {
+  ConfigStateType,
+  DisplayType,
+  MAIN_NET_LABEL,
+  NETWORK_BACKEND,
+  NetworkSettingType,
+} from '@minotaur-ergo/types';
+import { setUrl } from '@minotaur-ergo/utils';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { DEFAULT_EXPLORER, DEFAULT_NODE } from '@/utils/const';
 
 export const configInitialState: ConfigStateType = {
   currency: '',
@@ -11,6 +20,18 @@ export const configInitialState: ConfigStateType = {
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
   useActiveWallet: true,
+  network: {
+    mainnet: {
+      backend: NETWORK_BACKEND.EXPLORER,
+      explorer: DEFAULT_EXPLORER.mainnet,
+      node: DEFAULT_NODE.mainnet,
+    },
+    testnet: {
+      backend: NETWORK_BACKEND.EXPLORER,
+      explorer: DEFAULT_EXPLORER.testnet,
+      node: DEFAULT_NODE.testnet,
+    },
+  },
   pin: {
     hasPin: false,
     activePinType: '',
@@ -38,9 +59,17 @@ export type PinPayload = {
   locked?: boolean;
 };
 
+export type NetworkPayload = {
+  network: {
+    mainnet: NetworkSettingType;
+    testnet: NetworkSettingType;
+  };
+};
+
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
-  ActiveWalletPayload & { pinType: string };
+  ActiveWalletPayload &
+  NetworkPayload & { pinType: string };
 
 export type PricePayload = {
   current: number;
@@ -62,6 +91,39 @@ const configSlice = createSlice({
       state.currency = action.payload.currency;
       state.symbol = getCurrencySymbol(action.payload.currency);
     },
+    setNodeUrl: (
+      state,
+      action: PayloadAction<{ network: string; url: string }>,
+    ) => {
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.node = action.payload.url;
+      setUrl(action.payload.network, network);
+    },
+    setExplorerUrl: (
+      state,
+      action: PayloadAction<{ network: string; url: string }>,
+    ) => {
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.explorer = action.payload.url;
+      setUrl(action.payload.network, network);
+    },
+    setBackend: (
+      state,
+      action: PayloadAction<{ network: string; backend: NETWORK_BACKEND }>,
+    ) => {
+      const network =
+        action.payload.network === MAIN_NET_LABEL
+          ? state.network.mainnet
+          : state.network.testnet;
+      network.backend = action.payload.backend;
+      setUrl(action.payload.network, network);
+    },
     setActiveWallet: (state, action: PayloadAction<ActiveWalletPayload>) => {
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet =
@@ -76,6 +138,8 @@ const configSlice = createSlice({
       state.activeWallet = action.payload.activeWallet;
       state.useActiveWallet = action.payload.useActiveWallet ?? true;
       state.loadedPinType = action.payload.pinType;
+      state.network.mainnet = action.payload.network.mainnet;
+      state.network.testnet = action.payload.network.testnet;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -104,6 +168,9 @@ export const {
   setPrice,
   setDisplay,
   setCurrency,
+  setBackend,
+  setNodeUrl,
+  setExplorerUrl,
   setActiveWallet,
   setConfig,
   setMultiSigLoadedTime,

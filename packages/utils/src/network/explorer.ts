@@ -1,24 +1,18 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
-  AbstractNetwork,
   BalanceInfo,
   BoxInfo,
   SpendDetail,
   TokenInfo,
 } from '@minotaur-ergo/types';
-import ergoExplorerClientFactory, { V1 } from '@rosen-clients/ergo-explorer';
+import ergoExplorerClientFactory from '@rosen-clients/ergo-explorer';
 import JSONBigInt from 'json-bigint';
 
 import { JsonBI } from '../json';
-import { serializeBox } from '../wasm';
+import { BaseNetwork } from './baseNetwork';
+import { processTransactionInput, processTransactionOutput } from './process';
 
-const getBoxId = (box: { boxId: string } | { id: string }) => {
-  if (Object.prototype.hasOwnProperty.call(box, 'boxId'))
-    return (box as { boxId: string }).boxId;
-  return (box as { id: string }).id;
-};
-
-class ErgoExplorerNetwork extends AbstractNetwork {
+class ErgoExplorerNetwork extends BaseNetwork {
   private readonly client;
   private static MAX_ALLOWED_TX_PER_PAGE = 100;
 
@@ -39,25 +33,15 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     return data.total;
   };
 
-  getContext = async (): Promise<wasm.ErgoStateContext> => {
+  getLastHeaders = async (count: number) => {
     const headers = (
-      await this.client.v1.getApiV1BlocksHeaders({
-        offset: 0,
-        limit: 10,
-      })
+      await this.client.v1.getApiV1BlocksHeaders({ offset: 0, limit: count })
     ).items;
-    if (headers) {
-      const blockHeaders = wasm.BlockHeaders.from_json(
-        headers.map((item) => JsonBI.stringify(item)),
-      );
-      const pre_header = wasm.PreHeader.from_block_header(blockHeaders.get(0));
-      return new wasm.ErgoStateContext(
-        pre_header,
-        blockHeaders,
-        wasm.Parameters.default_parameters(),
-      );
-    }
-    throw Error('Unknown error occurred');
+    if (!headers) throw new Error('Not found headers');
+    return headers.map((item) => ({
+      ...item,
+      powSolutions: { ...item.powSolutions, d: parseInt(item.powSolutions.d) },
+    }));
   };
 
   sendTx = async (tx: wasm.Transaction): Promise<{ txId: string }> => {
@@ -97,47 +81,6 @@ class ErgoExplorerNetwork extends AbstractNetwork {
     const boxInfo = await this.client.v1.getApiV1BoxesP1(boxId);
     if (boxInfo !== undefined) {
       return wasm.ErgoBox.from_json(JsonBI.stringify(boxInfo));
-    }
-  };
-
-  protected processTransactionInput = async (
-    tx: V1.TransactionInfo | V1.TransactionInfo1,
-    address: string,
-    spendBox: (boxId: string, details: SpendDetail) => Promise<unknown>,
-  ) => {
-    for (const input of tx.inputs ?? []) {
-      if (input.address === address) {
-        await spendBox(getBoxId(input), {
-          height: tx.inclusionHeight,
-          timestamp: parseInt(tx.timestamp.toString()),
-          tx: tx.id,
-          index: input.index,
-        });
-      }
-    }
-  };
-
-  protected processTransactionOutput = async (
-    tx: V1.TransactionInfo | V1.TransactionInfo1,
-    address: string,
-    insertOrUpdateBox: (box: BoxInfo) => Promise<unknown>,
-  ) => {
-    for (const output of tx.outputs ?? []) {
-      if (output.address === address) {
-        await insertOrUpdateBox({
-          address: output.address,
-          boxId: getBoxId(output),
-          create: {
-            index: output.index,
-            tx: tx.id,
-            height: tx.inclusionHeight,
-            timestamp: parseInt(tx.timestamp.toString()),
-          },
-          serialized: serializeBox(
-            wasm.ErgoBox.from_json(JsonBI.stringify(output)),
-          ),
-        });
-      }
     }
   };
 
@@ -181,14 +124,10 @@ class ErgoExplorerNetwork extends AbstractNetwork {
               header.items[0].id,
             );
             for (const tx of block.block.blockTransactions ?? []) {
-              await this.processTransactionOutput(
-                tx,
-                address,
-                insertOrUpdateBox,
-              );
+              await processTransactionOutput(tx, address, insertOrUpdateBox);
             }
             for (const tx of block.block.blockTransactions ?? []) {
-              await this.processTransactionInput(tx, address, spendBox);
+              await processTransactionInput(tx, address, spendBox);
             }
             await proceedToHeight(toHeight);
           }
@@ -205,10 +144,10 @@ class ErgoExplorerNetwork extends AbstractNetwork {
             );
           }
           for (const tx of chunk.items ?? []) {
-            await this.processTransactionOutput(tx, address, insertOrUpdateBox);
+            await processTransactionOutput(tx, address, insertOrUpdateBox);
           }
           for (const tx of chunk.items ?? []) {
-            await this.processTransactionInput(tx, address, spendBox);
+            await processTransactionInput(tx, address, spendBox);
           }
           await proceedToHeight(toHeight);
         }
