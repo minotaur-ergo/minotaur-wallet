@@ -55,6 +55,32 @@ const generateMultiSigAddressFromPublicKeys = (
   }
 };
 
+const deriveMultiSigWalletAddressFromXPubs = (
+  extended_keys: Array<string>,
+  requiredSign: number,
+  prefix: wasm.NetworkPrefix,
+  version: number,
+  index: number,
+) => {
+  const pub_keys = extended_keys.map((key) => {
+    const pub = bip32.fromBase58(key);
+    const derived1 = pub.derive(index);
+    return derived1.publicKey.toString('hex');
+  });
+  const address = generateMultiSigAddressFromPublicKeys(
+    pub_keys,
+    requiredSign,
+    prefix,
+    version,
+  );
+  const path = calcPathFromIndex(index);
+  return {
+    address: address,
+    path: path,
+    index: index,
+  };
+};
+
 const deriveMultiSigWalletAddress = async (
   wallet: StateWallet,
   index?: number,
@@ -71,24 +97,13 @@ const deriveMultiSigWalletAddress = async (
       : index;
   const extended_keys = [...keys.map((item) => item.extended_key)];
   if (walletKey) extended_keys.push(walletKey.extended_public_key);
-  const pub_keys = extended_keys.map((key) => {
-    const pub = bip32.fromBase58(key);
-    const derived1 = pub.derive(usedIndex);
-    return derived1.publicKey.toString('hex');
-  });
-  const chain = getChain(wallet.networkType);
-  const address = generateMultiSigAddressFromPublicKeys(
-    pub_keys,
+  return deriveMultiSigWalletAddressFromXPubs(
+    extended_keys,
     wallet.requiredSign,
-    chain.prefix,
+    getChain(wallet.networkType).prefix,
     wallet.version,
+    usedIndex,
   );
-  const path = calcPathFromIndex(usedIndex);
-  return {
-    address: address,
-    path: path,
-    index: usedIndex,
-  };
 };
 
 const deriveNormalWalletAddress = async (
@@ -182,6 +197,7 @@ export {
   deriveNewAddress,
   deriveNormalWalletAddress,
   deriveMultiSigWalletAddress,
+  deriveMultiSigWalletAddressFromXPubs,
   generateMultiSigAddressFromPublicKeys,
   addWalletAddresses,
   getWalletAddressSecret,

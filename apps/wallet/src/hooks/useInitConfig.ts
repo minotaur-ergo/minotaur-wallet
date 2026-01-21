@@ -1,6 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ConfigType, GlobalStateType } from '@minotaur-ergo/types';
+import {
+  ConfigType,
+  EXPLORER_NETWORK,
+  GlobalStateType,
+  MAIN_NET_LABEL,
+  NETWORK_BACKEND,
+  TEST_NET_LABEL,
+} from '@minotaur-ergo/types';
+import { setUrl } from '@minotaur-ergo/utils';
 
 import {
   AddressDbAction,
@@ -11,6 +19,7 @@ import {
 import { getInitializeData } from '@/action/initialize';
 import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
+import { DEFAULT_EXPLORER, DEFAULT_NODE } from '@/utils/const';
 import {
   addressEntityToAddressState,
   walletEntityToWalletState,
@@ -54,18 +63,58 @@ const useInitConfig = () => {
           activeWallet: -1,
           pinType: activePinType,
           useActiveWallet: true,
+          network: {
+            mainnet: {
+              backend: NETWORK_BACKEND.EXPLORER,
+              explorer: DEFAULT_EXPLORER.mainnet,
+              node: DEFAULT_NODE.mainnet,
+            },
+            testnet: {
+              backend: NETWORK_BACKEND.EXPLORER,
+              explorer: DEFAULT_EXPLORER.testnet,
+              node: DEFAULT_NODE.testnet,
+            },
+          },
         };
         configs.forEach((item) => {
-          if (item.key === ConfigType.DisplayMode && item.value === 'simple') {
-            config.display = 'simple';
-          } else if (item.key === ConfigType.Currency) {
-            config.currency = item.value;
-          } else if (item.key === ConfigType.ActiveWallet) {
-            config.activeWallet = parseInt(item.value);
-          } else if (item.key === ConfigType.useActiveWallet) {
-            config.useActiveWallet = item.value !== 'false';
+          switch (item.key) {
+            case ConfigType.DisplayMode:
+              config.display = item.value === 'simple' ? 'simple' : 'advanced';
+              break;
+            case ConfigType.Currency:
+              config.currency = item.value;
+              break;
+            case ConfigType.UseActiveWallet:
+              config.useActiveWallet = item.value !== 'false';
+              break;
+            case ConfigType.MainnetBackend:
+              config.network.mainnet.backend =
+                item.value === EXPLORER_NETWORK
+                  ? NETWORK_BACKEND.EXPLORER
+                  : NETWORK_BACKEND.NODE;
+              break;
+            case ConfigType.MainnetNodeUrl:
+              config.network.mainnet.node = item.value;
+              break;
+            case ConfigType.MainnetExplorerUrl:
+              config.network.mainnet.explorer = item.value;
+              break;
+            case ConfigType.TestnetBackend:
+              config.network.testnet.backend =
+                item.value === EXPLORER_NETWORK
+                  ? NETWORK_BACKEND.EXPLORER
+                  : NETWORK_BACKEND.NODE;
+              break;
+            case ConfigType.TestnetNodeUrl:
+              config.network.testnet.node = item.value;
+              break;
+            case ConfigType.TestnetExplorerUrl:
+              config.network.testnet.explorer = item.value;
+              break;
           }
         });
+        setUrl(MAIN_NET_LABEL, config.network.mainnet);
+        setUrl(TEST_NET_LABEL, config.network.testnet);
         dispatch(setConfig(config));
       });
   } else if (!initialized) {

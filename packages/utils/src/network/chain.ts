@@ -1,4 +1,8 @@
-import { ChainTypeInterface } from '@minotaur-ergo/types';
+import {
+  ChainTypeInterface,
+  NETWORK_BACKEND,
+  NetworkSettingType,
+} from '@minotaur-ergo/types';
 
 import { MainnetChain } from './mainnet';
 import { TestnetChain } from './testnet';
@@ -17,4 +21,10 @@ const getChain = (networkType: string) => {
   return availableNetworks[0];
 };
 
-export { availableNetworks, getChain };
+const setUrl = (networkLabel: string, config: NetworkSettingType) => {
+  const url =
+    config.backend === NETWORK_BACKEND.NODE ? config.node : config.explorer;
+  getChain(networkLabel).setUrl(url, config.backend);
+};
+
+export { availableNetworks, getChain, setUrl };

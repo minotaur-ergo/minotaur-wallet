@@ -2,13 +2,13 @@ import {
   AddressBalance,
   AddressBalanceMap,
   AddressBalancePayload,
+  DEFAULT_ADDRESS_PREFIX,
   InitializeAllPayload,
   StateAddress,
   StateWallet,
   TokenValue,
   WalletStateType,
 } from '@minotaur-ergo/types';
-import { DEFAULT_ADDRESS_PREFIX } from '@minotaur-ergo/utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const walletInitialState: WalletStateType = {
@@ -22,6 +22,9 @@ export const walletInitialState: WalletStateType = {
   refresh: false,
   updatedWallets: [],
   tokenValues: new Map(),
+  balanceHistory: {},
+  loadingBalanceHistory: false,
+  showBalanceChart: true,
 };
 
 const updateWalletBalance = (
@@ -134,6 +137,15 @@ const walletSlice = createSlice({
     setTokenValues(state, action: PayloadAction<Map<string, TokenValue>>) {
       state.tokenValues = action.payload;
     },
+    setBalanceHistory(state, action: PayloadAction<Record<number, number[]>>) {
+      state.balanceHistory = action.payload;
+    },
+    setLoadingBalanceHistory(state, action: PayloadAction<boolean>) {
+      state.loadingBalanceHistory = action.payload;
+    },
+    setShowBalanceChart(state, action: PayloadAction<boolean>) {
+      state.showBalanceChart = action.payload;
+    },
     invalidateWallets(state) {
       state.walletsValid = false;
       state.addressesValid = false;
@@ -168,6 +180,9 @@ export const {
   setAddresses,
   setBalances,
   setTokenValues,
+  setBalanceHistory,
+  setLoadingBalanceHistory,
+  setShowBalanceChart,
   addUpdatedWallets,
   clearUpdatedWallets,
   forceRefresh,

@@ -22,3 +22,13 @@ export const SIGN_ACTION = 'sign';
 export const PUBLISH_ACTION = 'publish';
 
 export const ADDRESS_PLACE_HOLDER = '#P2PK_ADDRESS#';
+
+export const DEFAULT_NODE = {
+  mainnet: 'http://213.239.193.208:9053',
+  testnet: 'http://213.239.193.208:9052',
+};
+
+export const DEFAULT_EXPLORER = {
+  mainnet: 'https://api.ergoplatform.com',
+  testnet: 'https://api-testnet.ergoplatform.com',
+};

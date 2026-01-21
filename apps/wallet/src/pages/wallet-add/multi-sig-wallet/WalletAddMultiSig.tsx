@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createEmptyArray, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
+import { createEmptyArray } from '@minotaur-ergo/utils';
 import { Button, CircularProgress, Grid } from '@mui/material';
 
 import { createMultiSigWallet } from '@/action/wallet';
@@ -87,6 +88,7 @@ const WalletAddMultiSig = () => {
         })
         .catch((exp) => {
           context.insert(exp, 'error');
+          setCreating(false);
         });
     }
   };

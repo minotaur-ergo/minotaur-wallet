@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { GlobalStateType } from '@minotaur-ergo/types';
 
 import Splash from '@/components/splash/Splash';
+import useBalanceChart from '@/hooks/useBalanceChart';
 import useInitConfig from '@/hooks/useInitConfig';
 import usePriceUpdate from '@/hooks/usePriceUpdate';
 import useTokenPrice from '@/hooks/useTokenPrice';
@@ -14,6 +15,7 @@ import Home from '@/pages/home/Home';
 import WalletImport from '@/pages/import/WalletImport';
 import AppHoneyPin from '@/pages/settings/AppHoneyPin';
 import AppPin from '@/pages/settings/AppPin';
+import NetworkSettings from '@/pages/settings/NetworkSettings';
 import Settings from '@/pages/settings/Settings';
 import WalletAddMultiSig from '@/pages/wallet-add/multi-sig-wallet/WalletAddMultiSig';
 import WalletAddNew from '@/pages/wallet-add/new-wallet/WalletAddNew';
@@ -33,6 +35,7 @@ const AppRouter = () => {
   useUpdater();
   usePriceUpdate();
   useTokenPrice();
+  useBalanceChart();
   const { hasPin, locked } = useSelector(
     (state: GlobalStateType) => state.config.pin,
   );
@@ -55,6 +58,10 @@ const AppRouter = () => {
           <Route path={RouteMap.Settings} element={<Settings />} />
           <Route path={RouteMap.Pin} element={<AppPin />} />
           <Route path={RouteMap.HoneyPin} element={<AppHoneyPin />} />
+          <Route
+            path={RouteMap.NetworkSettings}
+            element={<NetworkSettings />}
+          />
           <Route
             path={RouteMap.WalletAddMultiSig}
             element={<WalletAddMultiSig />}

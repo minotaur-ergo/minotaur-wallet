@@ -1,6 +1,7 @@
 import {
   BoxInfo,
   ConfigType,
+  DEFAULT_ADDRESS_PREFIX,
   MultiSigDataHint,
   MultiSigHintType,
   SpendDetail,
@@ -8,11 +9,7 @@ import {
   TxInfo,
   WalletType,
 } from '@minotaur-ergo/types';
-import {
-  createEmptyArray,
-  DEFAULT_ADDRESS_PREFIX,
-  sliceToChunksString,
-} from '@minotaur-ergo/utils';
+import { createEmptyArray, sliceToChunksString } from '@minotaur-ergo/utils';
 import { DataSource, Like, Repository } from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
@@ -486,6 +483,23 @@ class BoxDbAction {
       .where('box_id = :boxId', { boxId })
       .execute();
   };
+  spendBoxBatch = (boxes: { boxId: string; spend: SpendDetail }[]) => {
+    const queryBuilder = this.repository.createQueryBuilder();
+
+    boxes.forEach((box) => {
+      queryBuilder
+        .update()
+        .set({
+          spend_tx_id: box.spend.tx,
+          spend_timestamp: box.spend.timestamp,
+          spend_index: box.spend.index,
+          spend_height: box.spend.height,
+        })
+        .where('box_id = :boxId', { boxId: box.boxId });
+    });
+
+    queryBuilder.execute();
+  };
   deleteBoxByBoxId = (id: number) => {
     return this.repository
       .createQueryBuilder()
@@ -667,6 +681,20 @@ class BoxDbAction {
       })
       .orderBy(order, direction)
       .getMany();
+  };
+
+  getBoxes = async () => {
+    return this.repository.find({
+      relations: ['address', 'address.wallet'],
+      where: {
+        address: {
+          network_type: 'Main Net',
+        },
+      },
+      order: {
+        id: 'ASC',
+      },
+    });
   };
 
   updateBoxDetailForTx = async (txId: string, info: TxInfo) => {

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { StateWallet } from '@minotaur-ergo/types';
-import { getChain, MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL, StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -15,6 +15,7 @@ import {
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
+import BalanceChart from '@/pages/wallets/components/BalanceChart';
 import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface WalletCardPropsType {
@@ -134,26 +135,10 @@ const WalletCard = (props: WalletCardPropsType) => {
           </Typography>
         ) : null}
         <Box sx={{ height: 56 }} />
-        {/*<Button*/}
-        {/*  sx={{*/}
-        {/*    position: 'absolute',*/}
-        {/*    right: 0,*/}
-        {/*    bottom: '12%',*/}
-        {/*    color: '#00000066',*/}
-        {/*    backgroundColor: theme.palette.secondary.main + '66',*/}
-        {/*    borderBottomLeftRadius: 20,*/}
-        {/*    borderTopLeftRadius: 20,*/}
-        {/*    borderBottomRightRadius: 0,*/}
-        {/*    borderTopRightRadius: 0,*/}
-        {/*    p: 1*/}
-        {/*  }}*/}
-        {/*  // startIcon={<ArrowDropDownIcon />}*/}
-        {/*  variant="text"*/}
-        {/*  fullWidth={false}*/}
-        {/*>*/}
-        {/*  Mon.*/}
-        {/*</Button>*/}
       </CardContent>
+      {props.wallet.networkType === MAIN_NET_LABEL ? (
+        <BalanceChart walletId={props.wallet.id} />
+      ) : null}
     </Card>
   );
 };

@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { WalletType } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL } from '@minotaur-ergo/utils';
+import { MAIN_NET_LABEL, WalletType } from '@minotaur-ergo/types';
 import { Button, CircularProgress, Grid } from '@mui/material';
 import * as bip39 from 'bip39';
 
@@ -74,6 +73,7 @@ const WalletAddNew = () => {
         })
         .catch((exp) => {
           context.insert(exp, 'error');
+          setCreating(false);
         });
     }
   };
