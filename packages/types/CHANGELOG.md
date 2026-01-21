@@ -1,5 +1,15 @@
 # @minotaur-ergo/types
 
+## 1.4.0
+
+### Minor Changes
+
+- Add `showBalanceChart` to `WalletStateType`.
+- Add constants
+- Add default explorer and node url for mainnet and testnet
+- Add `setURL` method to `ChainTypeInterface`
+- Add `balanceHistory` which contains each wallet's balance during last year.
+
 ## 1.3.0
 
 ### Minor Changes
