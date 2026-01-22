@@ -1,0 +1,35 @@
+{
+  "name": "@minotaur-ergo/capacitor-electron",
+  "version": "1.0.0",
+  "description": "Capacitor community support for the Electron platform!",
+  "main": "dist/core/index.js",
+  "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "npm run build-platform && npm run build-platform-types",
+    "clean": "rm -rf dist",
+    "coverage": "npm run test -- --coverage",
+    "dev": "tsc --watch",
+    "build-platform": "node ./build.js",
+    "build-platform-types": "tsc ./src/electron-platform/index.ts --outDir ./dist/core --declaration --emitDeclarationOnly --esModuleInterop"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "7.4.5",
+    "@types/events": "^3.0.0",
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^18.16.8",
+    "electron": "^26.2.2",
+    "esbuild": "^0.17.18",
+    "is-ci": "^3.0.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@capacitor/core": "7.4.5",
+    "@ionic/utils-fs": "~3.1.6",
+    "events": "~3.3.0",
+    "fs-extra": "~11.1.1"
+  }
+}
