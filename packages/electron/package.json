@@ -2,8 +2,7 @@
   "name": "@minotaur-ergo/electron",
   "version": "1.0.0",
   "description": "Capacitor community support for the Electron platform!",
-  "main": "dist/core/index.js",
-  "type": "module",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "src"
@@ -20,6 +19,7 @@
     "@capacitor/cli": "7.4.5",
     "@types/events": "^3.0.0",
     "@types/fs-extra": "^11.0.1",
+    "@types/mime-types": "^3.0.1",
     "@types/node": "^18.16.8",
     "electron": "^26.2.2",
     "esbuild": "^0.17.18",

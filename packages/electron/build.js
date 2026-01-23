@@ -1,4 +1,5 @@
-import esbuild from 'esbuild';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const esbuild = require('esbuild');
 
 async function buildPlatformCore() {
   await esbuild.build({
@@ -8,7 +9,7 @@ async function buildPlatformCore() {
     platform: 'node',
     target: 'node16',
     minify: true,
-    external: ['electron', 'fs', 'path', 'mime-types', 'events'],
+    external: ['electron', 'fs', 'path', 'events'],
   });
 }
 

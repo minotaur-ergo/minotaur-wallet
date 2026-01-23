@@ -3,7 +3,7 @@
     "baseUrl": "./src",
     "target": "ES2020",
     "composite": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["ES2020"],
     "declaration": true,
@@ -15,5 +15,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist"]
 }
