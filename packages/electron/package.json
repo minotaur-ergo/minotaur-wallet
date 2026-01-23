@@ -1,5 +1,5 @@
 {
-  "name": "@minotaur-ergo/capacitor-electron",
+  "name": "@minotaur-ergo/electron",
   "version": "1.0.0",
   "description": "Capacitor community support for the Electron platform!",
   "main": "dist/core/index.js",
@@ -14,7 +14,7 @@
     "coverage": "npm run test -- --coverage",
     "dev": "tsc --watch",
     "build-platform": "node ./build.js",
-    "build-platform-types": "tsc ./src/electron-platform/index.ts --outDir ./dist/core --declaration --emitDeclarationOnly --esModuleInterop"
+    "build-platform-types": "tsc ./src/index.ts --outDir ./dist --declaration --emitDeclarationOnly --esModuleInterop"
   },
   "devDependencies": {
     "@capacitor/cli": "7.4.5",

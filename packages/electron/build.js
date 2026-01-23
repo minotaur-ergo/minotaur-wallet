@@ -2,9 +2,9 @@ import esbuild from 'esbuild';
 
 async function buildPlatformCore() {
   await esbuild.build({
-    entryPoints: ['src/electron-platform/index.ts'],
+    entryPoints: ['src/index.ts'],
     bundle: true,
-    outfile: 'dist/core/index.js',
+    outfile: 'dist/index.js',
     platform: 'node',
     target: 'node16',
     minify: true,
