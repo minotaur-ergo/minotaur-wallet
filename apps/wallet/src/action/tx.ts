@@ -165,8 +165,7 @@ const generateTx = async (
     throw Error('Not enough erg or tokens: ' + boxes.covering.join(', '));
   }
   const selectedBoxes = boxes.boxes;
-  const chain = getChain(wallet.networkType);
-  const network = chain.getNetwork();
+  const network = getChain(wallet.networkType).getNetwork();
   const height = await network.getHeight();
   const candidates = generateCandidates(height, receivers);
   const selectedAddresses = wallet.addresses
@@ -207,8 +206,7 @@ const getReduced = async (
   boxes: Array<wasm.ErgoBox>,
   dataBoxes: Array<wasm.ErgoBox> = [],
 ) => {
-  const chain = getChain(networkType);
-  const context = await chain.getNetwork().getContext();
+  const context = await getChain(networkType).getNetwork().getContext();
   const inputBoxes = wasm.ErgoBoxes.empty();
   const dataInputBoxes = wasm.ErgoBoxes.empty();
   boxes.forEach((box) => inputBoxes.add(box));
@@ -293,8 +291,7 @@ const signNormalWalletTx = async (
   boxes.forEach((box) => inputBoxes.add(box));
   const dataInputBoxes = wasm.ErgoBoxes.empty();
   dataBoxes.forEach((box) => dataInputBoxes.add(box));
-  const chain = getChain(wallet.networkType);
-  const context = await chain.getNetwork().getContext();
+  const context = await getChain(wallet.networkType).getNetwork().getContext();
   return prover.sign_transaction(context, tx, inputBoxes, dataInputBoxes);
 };
 

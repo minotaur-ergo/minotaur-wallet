@@ -38,7 +38,7 @@ const DangerousSettings = (props: DangerousSettingsPropsType) => {
         <ActionButton
           onClick={() => setConfirm(true)}
           label="Remove wallet"
-          helperText="Some description about this option goes here."
+          helperText="Permanently delete this wallet from your device. This action cannot be undone. Make sure you have backed up your recovery phrase."
           icon={<DeleteOutlineOutlinedIcon />}
         />
         <Confirm

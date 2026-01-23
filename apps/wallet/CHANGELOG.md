@@ -1,5 +1,23 @@
 # minotaur-wallet
 
+## 3.4.0
+
+### Minor Changes
+
+- Add support for node
+- Allow select Backend between node and explorer
+- Hide chart if there was error in fetching Erg price during last year.
+- Show balance chart for monthly or weekly period in wallet homepage.
+
+### Patch Changes
+
+- Fix check duplicate wallet for multi-sig wallets
+- Fix description for delete wallet
+- Updated dependencies
+  - @minotaur-ergo/icons@1.5.0
+  - @minotaur-ergo/utils@2.0.0
+  - @minotaur-ergo/types@1.4.0
+
 ## 3.3.0
 
 ### Minor Changes

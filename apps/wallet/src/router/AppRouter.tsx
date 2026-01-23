@@ -15,6 +15,7 @@ import Home from '@/pages/home/Home';
 import WalletImport from '@/pages/import/WalletImport';
 import AppHoneyPin from '@/pages/settings/AppHoneyPin';
 import AppPin from '@/pages/settings/AppPin';
+import NetworkSettings from '@/pages/settings/NetworkSettings';
 import Settings from '@/pages/settings/Settings';
 import WalletAddMultiSig from '@/pages/wallet-add/multi-sig-wallet/WalletAddMultiSig';
 import WalletAddNew from '@/pages/wallet-add/new-wallet/WalletAddNew';
@@ -57,6 +58,10 @@ const AppRouter = () => {
           <Route path={RouteMap.Settings} element={<Settings />} />
           <Route path={RouteMap.Pin} element={<AppPin />} />
           <Route path={RouteMap.HoneyPin} element={<AppHoneyPin />} />
+          <Route
+            path={RouteMap.NetworkSettings}
+            element={<NetworkSettings />}
+          />
           <Route
             path={RouteMap.WalletAddMultiSig}
             element={<WalletAddMultiSig />}

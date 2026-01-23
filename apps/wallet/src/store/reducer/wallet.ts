@@ -2,13 +2,13 @@ import {
   AddressBalance,
   AddressBalanceMap,
   AddressBalancePayload,
+  DEFAULT_ADDRESS_PREFIX,
   InitializeAllPayload,
   StateAddress,
   StateWallet,
   TokenValue,
   WalletStateType,
 } from '@minotaur-ergo/types';
-import { DEFAULT_ADDRESS_PREFIX } from '@minotaur-ergo/utils';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const walletInitialState: WalletStateType = {

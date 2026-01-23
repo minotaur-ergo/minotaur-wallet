@@ -1,8 +1,7 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
-import { BoxContent, TokenBalanceBigInt } from '@minotaur-ergo/types';
+import { BoxContent, ENCODING, TokenBalanceBigInt } from '@minotaur-ergo/types';
 
 import { createEmptyArrayWithIndex } from './array';
-import { ENCODING } from './const';
 import { getChain } from './network';
 
 const serializeBox = (box: wasm.ErgoBox) =>

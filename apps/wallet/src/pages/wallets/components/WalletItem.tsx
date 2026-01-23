@@ -5,10 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import {
   ConfigType,
   GlobalStateType,
+  MAIN_NET_LABEL,
   TokenBalance,
+  WALLET_FLAG_ENUM,
   WalletType,
 } from '@minotaur-ergo/types';
-import { MAIN_NET_LABEL, WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
 import { Star, StarBorder } from '@mui/icons-material';
 import {
   Box,

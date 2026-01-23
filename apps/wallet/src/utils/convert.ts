@@ -2,9 +2,10 @@ import {
   ExportWallet,
   StateAddress,
   StateWallet,
+  WALLET_FLAG_ENUM,
   WalletType,
 } from '@minotaur-ergo/types';
-import { getNewAddressName, WALLET_FLAG_ENUM } from '@minotaur-ergo/utils';
+import { getNewAddressName } from '@minotaur-ergo/utils';
 
 import { MultiSigDbAction } from '@/action/db';
 import Address from '@/db/entities/Address';

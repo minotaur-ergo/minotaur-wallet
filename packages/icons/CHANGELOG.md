@@ -1,5 +1,13 @@
 # @minotaur-ergo/icons
 
+## 1.5.0
+
+### Minor Changes
+
+- Add USE icon
+- Add rsNIGHT icon
+- Add DORT icon
+
 ## 1.4.0
 
 ### Minor Changes

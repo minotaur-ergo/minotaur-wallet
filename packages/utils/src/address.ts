@@ -40,8 +40,7 @@ const findWalletAddresses = async (
   networkType: string,
 ) => {
   const addresses: DerivedWalletAddress[] = [];
-  const chain = getChain(networkType);
-  const network = chain.getNetwork();
+  const network = getChain(networkType).getNetwork();
   const firstAddress = await derive(0);
   addresses.push({
     address: firstAddress.address,

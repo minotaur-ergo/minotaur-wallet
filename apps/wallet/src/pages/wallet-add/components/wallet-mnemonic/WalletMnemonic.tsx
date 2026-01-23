@@ -44,7 +44,7 @@ const WalletMnemonic = (props: WalletMnemonicPropsType) => {
         Do not store it electronically.
       </Alert>
       <Typography>
-        You can choose different mnemonic lengths. 24-words mnemonic is
+        You can choose different mnemonic lengths. 24-word mnemonic is
         recommended. The more mnemonic words, the more secure.{' '}
       </Typography>
       <InAdvancedMode>

@@ -1,6 +1,6 @@
 {
   "name": "minotaur-wallet",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -35,9 +35,9 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@minotaur-ergo/ergo-lib": "0.28.0",
-    "@minotaur-ergo/icons": "^1.4.0",
-    "@minotaur-ergo/types": "^1.3.0",
-    "@minotaur-ergo/utils": "^1.3.0",
+    "@minotaur-ergo/icons": "^1.5.0",
+    "@minotaur-ergo/types": "^1.4.0",
+    "@minotaur-ergo/utils": "^2.0.0",
     "@minotaur-ergo/electron": "1.0.0",
     "@mui/icons-material": "^5.16.14",
     "@mui/material": "^5.16.14",

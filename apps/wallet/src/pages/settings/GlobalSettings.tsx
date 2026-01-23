@@ -50,7 +50,7 @@ const GlobalSettings = () => {
   const saveUseActiveWallet = (useActiveWallet: boolean) => {
     ConfigDbAction.getInstance()
       .setConfig(
-        ConfigType.useActiveWallet,
+        ConfigType.UseActiveWallet,
         useActiveWallet ? 'true' : 'false',
         activePinType,
       )
@@ -63,6 +63,7 @@ const GlobalSettings = () => {
         );
       });
   };
+
   const navigate = useNavigate();
   const hasPin = useSelector(
     (state: GlobalStateType) => state.config.pin.hasPin,
@@ -113,6 +114,11 @@ const GlobalSettings = () => {
             uncheckedDescription="No"
             value={useActiveWallet}
             onChange={saveUseActiveWallet}
+          />
+          <ActionButton
+            label="Network Settings"
+            helperText="Choose how the wallet connects to the Mainnet and Testnet networks."
+            onClick={() => navigate(getRoute(RouteMap.NetworkSettings, {}))}
           />
         </Stack>
       </Box>

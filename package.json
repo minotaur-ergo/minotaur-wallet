@@ -14,7 +14,7 @@
     "prepare": "husky install",
     "release": "npm run release --workspaces",
     "type-check": "npm run type-check --workspaces",
-    "version": "npx changeset version && npm i",
+    "version": "npx changeset version && npm i && npx changeset --empty",
     "prettify": "npm run prettify --workspaces",
     "test": "npm run test --workspaces",
     "coverage": "npm run coverage --workspaces"
