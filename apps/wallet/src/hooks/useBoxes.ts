@@ -29,7 +29,7 @@ const useBoxes = (
   const boxIds = getBoxIds();
   useEffect(() => {
     if (!loading && tx) {
-      const newBoxIds = JSON.stringify(boxIds.sort());
+      const newBoxIds = JSON.stringify([...boxIds].sort());
       if (loadedBoxIds !== newBoxIds) {
         setLoading(true);
         getInternalBoxes(boxIds).then((boxes) => {
