@@ -33,6 +33,7 @@ interface MnemonicRestorePropsType {
 export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
   const [selected, setSelected] = useState('');
   const [extended, setExtended] = useState(props.mnemonicPassphrase !== '');
+  const [samePassPhrase, setSamePassPhrase] = useState<boolean>(true);
   const [convert, setConvert] = useState(false);
   const mnemonicWords = props.mnemonic.split(' ');
 
@@ -80,7 +81,9 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
   const filteredWords = words.filter((item) => item.indexOf(selected) === 0);
   useEffect(() => {
     if (validate.valid && (!validate.exists || convert)) {
-      props.setHasError(extended && props.mnemonicPassphrase === '');
+      props.setHasError(
+        extended && (props.mnemonicPassphrase === '' || !samePassPhrase),
+      );
     } else {
       props.setHasError(true);
     }
@@ -160,6 +163,8 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
         password={props.mnemonicPassphrase}
         extended={extended}
         setExtended={setExtended}
+        samePassPhrase={samePassPhrase}
+        setSamePassPhrase={setSamePassPhrase}
       />
       {validate.exists ? (
         <Alert severity="info" icon={' '} sx={{ my: 2 }}>

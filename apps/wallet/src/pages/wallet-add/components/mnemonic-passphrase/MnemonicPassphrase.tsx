@@ -11,19 +11,30 @@ interface MnemonicPassPhrasePropsType {
   password: string;
   extended: boolean;
   setExtended: (extended: boolean) => unknown;
+  samePassPhrase: boolean;
+  setSamePassPhrase: (same: boolean) => unknown;
 }
 
 const MnemonicPassphrase = (props: MnemonicPassPhrasePropsType) => {
   const [passwordConfirm, setPasswordConfirm] = useState(props.password);
+
   useEffect(() => {
-    props.setError(props.password !== passwordConfirm || props.password === '');
+    props.setSamePassPhrase(props.password === passwordConfirm);
   });
+
   return (
     <InAdvancedMode>
       <FormControlLabel
         control={
           <Switch
-            onChange={(event) => props.setExtended(event.target.checked)}
+            checked={props.extended}
+            onChange={(event) => {
+              props.setExtended(event.target.checked);
+              if (!event.target.checked) {
+                props.setPassword('');
+                setPasswordConfirm('');
+              }
+            }}
           />
         }
         label="Extend mnemonic using extra password"
@@ -39,9 +50,7 @@ const MnemonicPassphrase = (props: MnemonicPassPhrasePropsType) => {
             password={passwordConfirm}
             label="Confirm mnemonic passphrase"
             setPassword={setPasswordConfirm}
-            helperText={
-              props.password !== passwordConfirm ? 'passwords are not same' : ''
-            }
+            helperText={props.samePassPhrase ? '' : 'passwords are not same'}
           />
         </React.Fragment>
       ) : null}
