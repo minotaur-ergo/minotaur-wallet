@@ -73,13 +73,15 @@ const WalletItem = (props: PropsType) => {
 
   const toggleFavorite = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    WalletDbAction.getInstance()
-      .setFlagOnWallet(
-        parseInt(props.id),
-        WALLET_FLAG_ENUM.FAVORITE,
-        props.favorite,
-      )
-      .then(() => null);
+    setTimeout(() => {
+      WalletDbAction.getInstance()
+        .setFlagOnWallet(
+          parseInt(props.id),
+          WALLET_FLAG_ENUM.FAVORITE,
+          props.favorite,
+        )
+        .then(() => null);
+    }, 200);
   };
   return (
     <Card>
