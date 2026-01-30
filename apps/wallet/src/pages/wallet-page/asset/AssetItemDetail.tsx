@@ -6,6 +6,8 @@ import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import DisplayProperty from '@/components/display-property/DisplayProperty';
 
+import AssetItemDescription from './AssetItemDescription';
+
 interface AssetItemDetailPropsType {
   name?: string;
   id: string;
@@ -35,7 +37,8 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
           <CloseIcon />
         </IconButton>
       </Box>
-      <Typography sx={{ mt: 1 }}>{props.description}</Typography>
+
+      <AssetItemDescription description={props.description} />
 
       <Stack spacing={2} sx={{ mt: 3 }}>
         <DisplayProperty label="Emission amount" value={props.emissionAmount} />
