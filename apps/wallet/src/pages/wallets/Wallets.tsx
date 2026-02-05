@@ -68,7 +68,7 @@ const Wallets = () => {
         <React.Fragment>
           <SubHeading title="Favorites" disableTopGutter />
           <Stack spacing={2}>
-            {favoriteWallets.map((item, index) => (
+            {favoriteWallets.map((item) => (
               <WalletItem
                 id={`${item.id}`}
                 name={item.name}
@@ -76,7 +76,7 @@ const Wallets = () => {
                 net={item.networkType}
                 tokensCount={item.tokens.length}
                 amount={BigInt(item.balance)}
-                key={index}
+                key={item.id}
                 archived={item.archived}
                 favorite={item.favorite}
                 tokensBalance={item.tokens}
@@ -87,7 +87,7 @@ const Wallets = () => {
         </React.Fragment>
       )}
       <Stack spacing={2}>
-        {otherWallets.map((item, index) => (
+        {otherWallets.map((item) => (
           <WalletItem
             id={`${item.id}`}
             name={item.name}
@@ -95,7 +95,7 @@ const Wallets = () => {
             net={item.networkType}
             tokensCount={item.tokens.length}
             amount={BigInt(item.balance)}
-            key={index}
+            key={item.id}
             archived={item.archived}
             favorite={item.favorite}
             tokensBalance={item.tokens}
