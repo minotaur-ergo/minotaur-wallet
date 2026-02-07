@@ -80,20 +80,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
       >
         <AssetItemDetail
           id={props.id}
-          logo={details.logo}
-          name={details.name}
-          description={details.description}
-          emissionAmount={
-            details.emissionAmount > 0n ? (
-              <TokenAmountDisplay
-                amount={details.emissionAmount}
-                decimal={details.decimal}
-              />
-            ) : (
-              '?'
-            )
-          }
-          txId={details.txId}
+          network_type={props.networkType}
           handleClose={() => setShowDetail(false)}
         />
       </Drawer>
