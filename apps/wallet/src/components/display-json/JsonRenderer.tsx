@@ -1,6 +1,5 @@
 import React from 'react';
 
-import ArrayElement from '@/components/display-json/ArrayElement';
 import BooleanElement from '@/components/display-json/BooleanElement';
 import JsonElement from '@/components/display-json/JsonElement';
 import StringElement from '@/components/display-json/StringElement';
@@ -10,13 +9,6 @@ import { Data, RendererPropsType } from './type';
 const JsonRenderer = (props: RendererPropsType) => {
   return (
     <React.Fragment>
-      {Array.isArray(props.data) && (
-        <ArrayElement
-          data={props.data}
-          renderer={JsonRenderer}
-          level={props.level}
-        />
-      )}
       {typeof props.data === 'object' && (
         <JsonElement
           data={props.data as { [key: string]: Data }}
