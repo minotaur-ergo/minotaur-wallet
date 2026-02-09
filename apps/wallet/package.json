@@ -48,7 +48,7 @@
     "@zxing/library": "^0.21.1",
     "bip39": "^3.1.0",
     "bs58": "^6.0.0",
-    "capacitor-plugin-safe-area": "^2.0.6",
+    "capacitor-plugin-safe-area": "^4.0.3",
     "clipboardy": "^4.0.0",
     "notistack": "^3.0.1",
     "patch-package": "^8.0.0",
@@ -78,6 +78,7 @@
     "typescript": "^5.5.2",
     "vite": "^5.3.1",
     "vite-plugin-mkcert": "^1.17.8",
+    "vite-plugin-node-polyfills": "^0.25.0",
     "vite-plugin-wasm": "^3.3.0"
   },
   "engines": {
