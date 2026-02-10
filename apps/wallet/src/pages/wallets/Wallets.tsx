@@ -22,6 +22,9 @@ const Wallets = () => {
   const wallets: Array<StateWallet> = useSelector(
     (state: GlobalStateType) => state.wallet.wallets,
   );
+  const { activeWallet, useActiveWallet } = useSelector(
+    (state: GlobalStateType) => state.config,
+  );
   const [favoriteWallets, otherWallets] = useMemo(() => {
     const filteredWalletsByArchive = wallets.filter(
       (row) => showArchived || !row.archived,
@@ -31,11 +34,22 @@ const Wallets = () => {
       filteredWalletsByArchive.filter((row) => !row.favorite),
     ];
   }, [showArchived, wallets]);
+  const showBackBtn = () => {
+    if (
+      wallets.length > 0 &&
+      activeWallet &&
+      activeWallet !== -1 &&
+      useActiveWallet
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <AppFrame
       title="My Wallets"
-      navigation={<BackButtonRouter />}
+      navigation={showBackBtn() ? <BackButtonRouter /> : undefined}
       actions={
         <React.Fragment>
           <HomeAction>
