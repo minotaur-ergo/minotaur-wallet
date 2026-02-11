@@ -34,7 +34,8 @@ const Wallets = () => {
       filteredWalletsByArchive.filter((row) => !row.favorite),
     ];
   }, [showArchived, wallets]);
-  const showBackBtn = () => {
+
+  const showBackBtn = useMemo(() => {
     if (
       wallets.length > 0 &&
       activeWallet &&
@@ -44,12 +45,12 @@ const Wallets = () => {
       return true;
     }
     return false;
-  };
+  }, [wallets, activeWallet, useActiveWallet]);
 
   return (
     <AppFrame
       title="My Wallets"
-      navigation={showBackBtn() ? <BackButtonRouter /> : undefined}
+      navigation={showBackBtn ? <BackButtonRouter /> : undefined}
       actions={
         <React.Fragment>
           <HomeAction>
