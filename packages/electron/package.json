@@ -1,6 +1,6 @@
 {
   "name": "@minotaur-ergo/electron",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Capacitor community support for the Electron platform!",
   "main": "dist/index.js",
   "files": [
