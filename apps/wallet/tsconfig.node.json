@@ -11,6 +11,7 @@
     { "path": "../../packages/icons" },
     { "path": "../../packages/ergo-lib" },
     { "path": "../../packages/types" },
-    { "path": "../../packages/utils" }
+    { "path": "../../packages/utils" },
+    { "path": "../../packages/electron" }
   ]
 }

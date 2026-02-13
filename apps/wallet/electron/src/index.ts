@@ -1,8 +1,8 @@
-import type { CapacitorElectronConfig } from '@capacitor-community/electron';
+import type { CapacitorElectronConfig } from '@minotaur-ergo/electron';
 import {
   getCapacitorElectronConfig,
   setupElectronDeepLinking,
-} from '@capacitor-community/electron';
+} from '@minotaur-ergo/electron';
 import type { MenuItemConstructorOptions } from 'electron';
 import { app, ipcMain, MenuItem, shell } from 'electron';
 import electronIsDev from 'electron-is-dev';
