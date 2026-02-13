@@ -84,6 +84,9 @@ const useInitConfig = () => {
             case ConfigType.Currency:
               config.currency = item.value;
               break;
+            case ConfigType.ActiveWallet:
+              config.activeWallet = parseInt(item.value);
+              break;
             case ConfigType.UseActiveWallet:
               config.useActiveWallet = item.value !== 'false';
               break;
