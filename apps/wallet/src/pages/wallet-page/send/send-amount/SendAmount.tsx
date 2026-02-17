@@ -88,7 +88,10 @@ const SendAmount = (props: SendAmountPropsType) => {
           ))}
         </Select>
         <FormHelperText sx={{ fontSize: '1rem' }}>
-          <ErgAmountDisplay amount={generatorContext.total} />
+          <ErgAmountDisplay
+            amount={generatorContext.total}
+            showBalances={true}
+          />
           &nbsp;Erg available
         </FormHelperText>
       </FormControl>

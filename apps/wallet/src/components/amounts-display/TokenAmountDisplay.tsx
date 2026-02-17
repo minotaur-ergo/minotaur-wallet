@@ -6,6 +6,7 @@ interface TokenAmountDisplayPropsType {
   amount: bigint;
   decimal: number;
   displayDecimal?: number;
+  hide: boolean;
 }
 
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
@@ -21,7 +22,9 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
     props.displayDecimal === undefined
       ? decimalPart.replace(/0+$/, '')
       : decimalPart.substring(0, Math.min(props.displayDecimal, props.decimal));
-  return (
+  return props.hide ? (
+    '*****'
+  ) : (
     <React.Fragment>
       <span>{valuePart}</span>
       {decimalPartTrimmed.length > 0 ? (

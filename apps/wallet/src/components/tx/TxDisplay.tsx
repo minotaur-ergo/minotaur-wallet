@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
-import { StateWallet } from '@minotaur-ergo/types';
+import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 import { getValueColor } from '@minotaur-ergo/utils';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, Typography } from '@mui/material';
@@ -20,6 +21,9 @@ interface TxDisplayPropsType {
 }
 
 const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
+  const hideBalances = useSelector(
+    (state: GlobalStateType) => state.config.hideBalances,
+  );
   const txId = tx.id().to_str();
   const { mapped } = useIssuedAndBurntTokens(tx, boxes);
   const { txValues } = useTxValues(tx, boxes, wallet);
@@ -34,6 +38,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
       >
         <ErgAmount
           amount={txValues.total > 0 ? txValues.total : -txValues.total}
+          showBalances={!hideBalances}
         />
         <Typography component="span" ml={1}>
           ERG

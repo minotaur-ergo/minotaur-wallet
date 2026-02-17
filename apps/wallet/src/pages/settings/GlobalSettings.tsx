@@ -19,6 +19,8 @@ import {
   setActiveWallet,
   setCurrency,
   setDisplay,
+  setHideAssetsValues,
+  setHideBalances,
 } from '@/store/reducer/config';
 
 const GlobalSettings = () => {
@@ -28,9 +30,13 @@ const GlobalSettings = () => {
   const displayMode = useSelector(
     (state: GlobalStateType) => state.config.display,
   );
-  const { useActiveWallet, activeWallet, currency } = useSelector(
-    (state: GlobalStateType) => state.config,
-  );
+  const {
+    useActiveWallet,
+    activeWallet,
+    currency,
+    hideBalances,
+    hideAssetsValues,
+  } = useSelector((state: GlobalStateType) => state.config);
   const dispatch = useDispatch();
   const saveCurrency = (currency: string) => {
     currency = currency.split(' ')[0];
@@ -63,6 +69,28 @@ const GlobalSettings = () => {
         );
       });
   };
+  const saveHideBalances = (hideBalances: boolean) => {
+    ConfigDbAction.getInstance()
+      .setConfig(
+        ConfigType.HideBalances,
+        hideBalances ? 'true' : 'false',
+        activePinType,
+      )
+      .then(() => {
+        dispatch(setHideBalances(hideBalances));
+      });
+  };
+  const saveHideAssetsValues = (hideAssetsValues: boolean) => {
+    ConfigDbAction.getInstance()
+      .setConfig(
+        ConfigType.HideAssetsValues,
+        hideAssetsValues ? 'true' : 'false',
+        activePinType,
+      )
+      .then(() => {
+        dispatch(setHideAssetsValues(hideAssetsValues));
+      });
+  };
 
   const navigate = useNavigate();
   const hasPin = useSelector(
@@ -78,6 +106,20 @@ const GlobalSettings = () => {
       <Box mb={2}>
         <Heading title="Global Settings" />
         <Stack spacing={2}>
+          <SolitarySwitchField
+            label="Hide Balances"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={hideBalances}
+            onChange={saveHideBalances}
+          />
+          <SolitarySwitchField
+            label="Hide Assets Values"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={hideAssetsValues}
+            onChange={saveHideAssetsValues}
+          />
           <SolitarySelectField
             label="Currency conversion"
             showSearch={true}

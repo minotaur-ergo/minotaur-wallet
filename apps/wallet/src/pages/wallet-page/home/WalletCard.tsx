@@ -20,6 +20,8 @@ import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface WalletCardPropsType {
   wallet: StateWallet;
+  showBalances: boolean;
+  setShowBalances: (show: boolean) => void;
 }
 
 const WalletCard = (props: WalletCardPropsType) => {
@@ -96,14 +98,19 @@ const WalletCard = (props: WalletCardPropsType) => {
           mt={1}
         >
           <Typography sx={{ fontSize: '2rem', fontWeight: 500 }}>
-            <ErgAmountDisplay amount={BigInt(props.wallet.balance)} />
-            <Typography
-              component="span"
-              color="text.secondary"
-              style={{ fontSize: '1.4rem' }}
-            >
-              ERG
-            </Typography>
+            <ErgAmountDisplay
+              amount={BigInt(props.wallet.balance)}
+              showBalances={props.showBalances}
+            />
+            {props.showBalances ? (
+              <Typography
+                component="span"
+                color="text.secondary"
+                style={{ fontSize: '1.4rem' }}
+              >
+                ERG
+              </Typography>
+            ) : undefined}
           </Typography>
           {props.wallet.networkType === MAIN_NET_LABEL ? (
             <Button
@@ -131,6 +138,9 @@ const WalletCard = (props: WalletCardPropsType) => {
             <BalanceDisplay
               amount={BigInt(props.wallet.balance)}
               tokenBalances={props.wallet.tokens}
+              showBalances={props.showBalances}
+              setShowBalances={props.setShowBalances}
+              iconColor={theme.palette.text.secondary}
             />
           </Typography>
         ) : null}

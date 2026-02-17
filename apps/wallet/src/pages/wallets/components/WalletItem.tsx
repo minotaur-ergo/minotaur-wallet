@@ -53,6 +53,9 @@ const WalletItem = (props: PropsType) => {
   const activePinType = useSelector(
     (state: GlobalStateType) => state.config.pin.activePinType,
   );
+  const hideBalances = useSelector(
+    (state: GlobalStateType) => state.config.hideBalances,
+  );
   const navigate = useNavigate();
   const amount = props.amount ? props.amount : 0n;
   const color = WalletColorMap[props.type];
@@ -140,14 +143,15 @@ const WalletItem = (props: PropsType) => {
           </Box>
           <Box flexGrow={1}>
             <Typography>
-              <ErgAmountDisplay amount={amount} />
-              <small>&nbsp;ERG</small>
+              <ErgAmountDisplay amount={amount} showBalances={!hideBalances} />
+              {hideBalances ? undefined : <small>&nbsp;ERG</small>}
             </Typography>
             <Typography variant="body2" color="textSecondary">
               {props.net === MAIN_NET_LABEL ? (
                 <BalanceDisplay
                   amount={amount}
                   tokenBalances={props.tokensBalance}
+                  showBalances={!hideBalances}
                 />
               ) : (
                 <span>&nbsp;</span>

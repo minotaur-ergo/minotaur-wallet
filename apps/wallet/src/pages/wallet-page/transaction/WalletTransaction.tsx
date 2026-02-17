@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { StateWallet } from '@minotaur-ergo/types';
+import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 import { Button, Stack } from '@mui/material';
 
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
@@ -14,6 +15,9 @@ interface TransactionPropsType {
 }
 
 const WalletTransaction = (props: TransactionPropsType) => {
+  const hideBalances = useSelector(
+    (state: GlobalStateType) => state.config.hideBalances,
+  );
   const [limit, setLimit] = useState(10);
   const { transactions, total } = useWalletTransaction(props.wallet, limit);
   const increaseLimit = () => {
@@ -23,7 +27,12 @@ const WalletTransaction = (props: TransactionPropsType) => {
     <AppFrame title="WalletTransaction" navigation={<BackButtonRouter />}>
       <Stack spacing={1}>
         {transactions.map((item, index) => (
-          <TransactionItem tx={item} key={index} wallet={props.wallet} />
+          <TransactionItem
+            tx={item}
+            key={index}
+            wallet={props.wallet}
+            showBalances={!hideBalances}
+          />
         ))}
       </Stack>
       {total > transactions.length ? (

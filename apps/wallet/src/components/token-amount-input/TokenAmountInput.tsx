@@ -125,6 +125,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
               <TokenAmountDisplay
                 amount={props.total > 0n ? props.total : 0n}
                 decimal={decimal.amount}
+                hide={false}
               />
               {' ' + decimal.name} {availableLabel}
             </Typography>

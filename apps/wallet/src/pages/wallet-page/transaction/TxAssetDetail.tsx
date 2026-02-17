@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
 import { getValueColor } from '@minotaur-ergo/utils';
 import {
   Avatar,
@@ -22,6 +24,9 @@ interface TxAssetDetailPropsType {
   issueAndBurn?: boolean;
 }
 const TxAssetDetail = (props: TxAssetDetailPropsType) => {
+  const hideBalances = useSelector(
+    (state: GlobalStateType) => state.config.hideBalances,
+  );
   const details = useAssetDetail(props.id, props.networkType);
   const [showDetail, setShowDetail] = useState(false);
   if (props.amount === 0n) return null;
@@ -49,10 +54,11 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
             <React.Fragment>
               <Typography component="span">{details.name}</Typography>
               <Typography component="span" color={color}>
-                {props.amount > 0 ? '+' : ''}
+                {hideBalances ? undefined : props.amount > 0 ? '+' : ''}
                 <TokenAmountDisplay
                   amount={props.amount}
                   decimal={details.decimal}
+                  hide={hideBalances}
                 />
               </Typography>
             </React.Fragment>

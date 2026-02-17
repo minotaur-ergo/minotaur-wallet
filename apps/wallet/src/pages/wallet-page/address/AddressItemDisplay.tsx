@@ -1,4 +1,10 @@
-import { ChainTypeInterface, StateAddress } from '@minotaur-ergo/types';
+import { useSelector } from 'react-redux';
+
+import {
+  ChainTypeInterface,
+  GlobalStateType,
+  StateAddress,
+} from '@minotaur-ergo/types';
 import { Stars } from '@mui/icons-material';
 import { Box, Card, CardActionArea, Typography } from '@mui/material';
 
@@ -13,13 +19,19 @@ interface AddressItemDisplayPropsType {
 }
 
 const AddressItemDisplay = (props: AddressItemDisplayPropsType) => {
+  const hideBalances = useSelector(
+    (state: GlobalStateType) => state.config.hideBalances,
+  );
   return (
     <Card>
       <CardActionArea onClick={props.onClick} sx={{ p: 2 }}>
         <Box display="flex">
           <Typography sx={{ flexGrow: 1 }}>{props.address.name}</Typography>
           <Typography>
-            <ErgAmountDisplay amount={BigInt(props.address.balance)} />{' '}
+            <ErgAmountDisplay
+              amount={BigInt(props.address.balance)}
+              showBalances={!hideBalances}
+            />{' '}
             <small>ERG</small>
           </Typography>
         </Box>
