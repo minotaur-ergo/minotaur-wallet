@@ -41,6 +41,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                 amount={txValues.total}
                 id={''}
                 networkType={props.wallet.networkType}
+                showValue={true}
               />
             ) : null}
             {Object.entries(txValues.tokens).map(([tokenId, value]) =>
@@ -50,6 +51,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                   amount={value}
                   networkType={props.wallet.networkType}
                   key={tokenId}
+                  showValue={true}
                 />
               ) : null,
             )}
@@ -66,6 +68,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
               id={''}
               amount={-txValues.total}
               networkType={props.wallet.networkType}
+              showValue={true}
             />
           ) : null}
           {Object.entries(txValues.tokens).map(([tokenId, value]) =>
@@ -75,6 +78,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                 amount={-value}
                 networkType={props.wallet.networkType}
                 key={tokenId}
+                showValue={true}
               />
             ) : null,
           )}
