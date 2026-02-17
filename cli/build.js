@@ -1,0 +1,15 @@
+import { execSync } from 'child_process';
+
+const packagesInOrder = [
+  'packages/icons',
+  'packages/ergo-lib',
+  'packages/types',
+  'packages/utils',
+];
+
+for (const pkg of packagesInOrder) {
+  console.log(`\n🔨 Building ${pkg}...`);
+  execSync(`npm run build -w ${pkg}`, {
+    stdio: 'inherit',
+  });
+}

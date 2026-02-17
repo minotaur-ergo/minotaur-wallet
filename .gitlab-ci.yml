@@ -29,7 +29,7 @@ build:
         - '**/node_modules'
         - '**/dist'
   script:
-    - ./cli/build.sh
+    - node ./cli/build.js
 
 type_check:
   stage: type_check
