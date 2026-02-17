@@ -26,11 +26,11 @@
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "depcheck": "^1.4.7",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.9",
-    "prettier": "^3.2.4"
+    "prettier": "^3.3.2"
   },
   "dependencies": {
     "@actions/core": "^3.0.0",
