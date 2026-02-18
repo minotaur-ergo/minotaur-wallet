@@ -42,8 +42,12 @@ jobs:
       - name: Prepare repo
         uses: ./.github/actions/prepare
         with:
-          package_json_paths: 'apps/wallet/package.json'
           node-version: '20.19'
+
+      - name: Prepare repo
+        uses: './.github/actions/build-native'
+        with:
+          package_json_paths: 'apps/wallet/package.json'
 
       - name: Remove icns from assets
         if: matrix.platform != 'MacOS'

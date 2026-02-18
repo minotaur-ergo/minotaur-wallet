@@ -1,4 +1,4 @@
-name: Build for Windows, Linux And MacOs
+name: Release required packages
 
 on:
   push:
@@ -10,13 +10,13 @@ env:
   CI: false
 
 jobs:
-  android:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Build Minotaur App
+      - name: Prepare App
         uses: ./.github/actions/prepare
         with:
           working-directory: '.'

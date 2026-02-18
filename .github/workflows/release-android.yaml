@@ -22,6 +22,10 @@ jobs:
         uses: './.github/actions/prepare'
         with:
           node-version: 22.18
+
+      - name: Prepare repo
+        uses: './.github/actions/build-native'
+        with:
           package_json_paths: 'apps/wallet/package.json'
 
       - name: Setup Java

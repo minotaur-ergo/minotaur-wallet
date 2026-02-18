@@ -1,0 +1,49 @@
+name: Build App for native platforms Environment
+
+inputs:
+  working-directory:
+    description: 'Working directory for the build'
+    required: false
+    default: '.'
+  version_prefix:
+    description: 'Prefix used in changelog for version sections'
+    required: false
+    default: '## '
+  error_on_failure:
+    description: 'Whether to stop pipeline if extract changelog failed or not (true/false)'
+    required: false
+    default: 'true'
+  changelog_path:
+    description: 'Path to the changelog file'
+    required: false
+    default: 'apps/wallet/CHANGELOG.md'
+  package_json_paths:
+    description: 'Comma-separated list of package.json file paths to update with extracted version'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Extract version information
+      id: extract-version
+      shell: bash
+      run: node ./cli/extract_info.js
+      env:
+        INPUT_VERSION_PREFIX: ${{ inputs.version_prefix }}
+        INPUT_ERROR_ON_FAILURE: ${{ inputs.error_on_failure }}
+        INPUT_CHANGELOG_PATH: ${{ inputs.changelog_path }}
+        INPUT_PACKAGE_JSON_PATHS: ${{ inputs.package_json_paths }}
+
+    - name: Copy icons to public dir
+      shell: bash
+      run: npm run copy:icons
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Update version in all package.json
+      shell: bash
+      run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
+
+    - name: Build Minotaur JS app and update capacitor
+      shell: bash
+      run: npm run sync --prefix apps/wallet/
