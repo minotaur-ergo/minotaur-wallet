@@ -17,6 +17,7 @@ interface WalletMnemonicPropsType {
 
 const WalletMnemonic = (props: WalletMnemonicPropsType) => {
   const [extended, setExtended] = useState(props.mnemonicPassphrase !== '');
+  const [samePassPhrase, setSamePassPhrase] = useState<boolean>(true);
   const words = props.mnemonic.split(' ');
   const handleChange = (_event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number' && newValue !== words.length) {
@@ -24,7 +25,9 @@ const WalletMnemonic = (props: WalletMnemonicPropsType) => {
     }
   };
   useEffect(() => {
-    if (!extended) {
+    if (extended) {
+      props.setHasError(props.mnemonicPassphrase === '' || !samePassPhrase);
+    } else {
       props.setHasError(false);
       props.setMnemonicPassphrase('');
     }
@@ -66,6 +69,8 @@ const WalletMnemonic = (props: WalletMnemonicPropsType) => {
         password={props.mnemonicPassphrase}
         extended={extended}
         setExtended={setExtended}
+        samePassPhrase={samePassPhrase}
+        setSamePassPhrase={setSamePassPhrase}
       />
     </Box>
   );

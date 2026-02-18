@@ -21,10 +21,12 @@ const BalanceChart = ({ walletId }: BalanceChartProps) => {
   const history = useSelector(
     (state: GlobalStateType) => state.wallet.balanceHistory[walletId],
   );
-  const [loading, showChart] = useSelector((state: GlobalStateType) => [
-    state.wallet.loadingBalanceHistory,
-    state.wallet.showBalanceChart,
-  ]);
+  const loading = useSelector(
+    (state: GlobalStateType) => state.wallet.loadingBalanceHistory,
+  );
+  const showChart = useSelector(
+    (state: GlobalStateType) => state.wallet.showBalanceChart,
+  );
   const [mode, setMode] = useState('monthly');
 
   const monthlyData = useMemo(() => {

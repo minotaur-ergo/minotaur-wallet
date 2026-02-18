@@ -1,9 +1,13 @@
 name: Build for Windows, Linux And MacOs
+
 on:
   push:
     tags:
       - 'v*.*.*'
       - 'desktop-v*.*.*'
+
+permissions:
+  contents: write
 
 env:
   CI: false
@@ -16,14 +20,18 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: linux
+            suffix: ''
             extension: AppImage
           - os: windows-latest
             platform: Windows
+            suffix: ''
             extension: exe
           - os: macos-15-intel
+            suffix: ''
             platform: MacOS
             extension: dmg
           - os: macos-latest
+            suffix: '-arm64'
             platform: MacOS
             extension: dmg
     runs-on: ${{ matrix.os }}
@@ -31,50 +39,28 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Prepare repo
+        uses: ./.github/actions/prepare
         with:
-          node-version: 20.*
+          node-version: '20.19'
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Prepare repo
+        uses: './.github/actions/build-native'
         with:
-          python-version: '3.10.11'
-
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.1.0
-
-      - name: Update package.json files
-        shell: bash
-        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
-
-      - name: Install app dependencies
-        shell: bash
-        run: npm install
-
-      - name: Build packages
-        shell: bash
-        run: ./cli/build.sh
-
-      - name: Copy icons to public dir
-        shell: bash
-        run: npm run copyIcons --prefix apps/wallet
-
-      - name: Build Minotaur JS app and update capacitor
-        shell: bash
-        run: npm run sync:electron --prefix apps/wallet/
+          package_json_paths: 'apps/wallet/package.json'
 
       - name: Remove icns from assets
         if: matrix.platform != 'MacOS'
         run: rm apps/wallet/electron/assets/appIcon.icns
 
       - name: Build Electron
+        id: build_app
         working-directory: ./apps/wallet/electron
         run: npm i; npm run electron:make
 
-      - name: Upload Executable File to release
-        uses: softprops/action-gh-release@v1
+      - name: Release
+        uses: './.github/actions/release'
         with:
-          files: ./apps/wallet/electron/dist/minotaur*.${{ matrix.extension }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          extension: ${{ matrix.extension }}
+          suffix: ${{ matrix.suffix }}
+          input_file: './apps/wallet/electron/dist'

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Box, Card, Chip, Container, Grid } from '@mui/material';
 
@@ -17,7 +17,14 @@ const ConfirmMnemonic = (props: ConfirmMnemonicPropsType) => {
     mnemonic: '',
     indexes: [],
   });
-  const mnemonicWords = props.mnemonic.split(' ');
+  const mnemonicWords = useMemo(
+    () => props.mnemonic.split(' '),
+    [props.mnemonic],
+  );
+  const mnemonicWordsSorted = useMemo(
+    () => [...mnemonicWords.sort()],
+    [mnemonicWords],
+  );
   const createdWords = created.mnemonic
     .split(' ')
     .filter((item) => item !== '');
@@ -76,7 +83,7 @@ const ConfirmMnemonic = (props: ConfirmMnemonicPropsType) => {
         </Grid>
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', my: 2 }}>
-            {mnemonicWords.sort().map((word, index) => (
+            {mnemonicWordsSorted.map((word, index) => (
               <CustomChip
                 key={index}
                 word={word}

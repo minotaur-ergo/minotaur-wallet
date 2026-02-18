@@ -5,6 +5,9 @@ on:
       - 'v*.*.*'
       - 'android-v*.*.*'
 
+permissions:
+  contents: write
+
 env:
   CI: false
 
@@ -12,42 +15,24 @@ jobs:
   android:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Prepare repo
+        uses: './.github/actions/prepare'
         with:
-          node-version: 20.*
+          node-version: 22.18
+
+      - name: Prepare repo
+        uses: './.github/actions/build-native'
+        with:
+          package_json_paths: 'apps/wallet/package.json'
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
-
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.1.0
-
-      - name: Update package.json files
-        shell: bash
-        run: node cli/update_version.js '${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}'
-
-      - name: Install app dependencies
-        shell: bash
-        run: npm install
-
-      - name: Build packages
-        shell: bash
-        run: ./cli/build.sh
-
-      - name: Copy icons to public dir
-        shell: bash
-        run: npm run copyIcons --prefix apps/wallet
-
-      - name: Build Minotaur JS app and update capacitor
-        shell: bash
-        run: npm run sync --prefix apps/wallet/
+          java-version: '21'
 
       - name: Setup Android build environment
         uses: android-actions/setup-android@v3
@@ -88,12 +73,12 @@ jobs:
           keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
-      - name: move apk to root directory
-        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} minotaur-${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}.apk
+      - name: Move file to root directory
+        shell: bash
+        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} ./apps/wallet/android/minotaur-${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}.apk
 
-      - name: Upload Apk File to release
-        uses: softprops/action-gh-release@v1
+      - name: Release
+        uses: './.github/actions/release'
         with:
-          files: minotaur*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          extension: 'apk'
+          input_file: './apps/wallet/android/'

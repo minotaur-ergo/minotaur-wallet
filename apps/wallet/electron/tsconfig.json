@@ -11,6 +11,10 @@
     "typeRoots": ["./node_modules/@types"],
     "allowJs": true,
     "skipLibCheck": true,
-    "rootDir": "."
-  }
+    "rootDir": ".",
+    "paths": {
+      "@minotaur-ergo/electron": ["../../../packages/electron/src/index.ts"]
+    }
+  },
+  "references": [{ "path": "../../../packages/electron" }]
 }

@@ -22,6 +22,9 @@ const Wallets = () => {
   const wallets: Array<StateWallet> = useSelector(
     (state: GlobalStateType) => state.wallet.wallets,
   );
+  const { activeWallet, useActiveWallet } = useSelector(
+    (state: GlobalStateType) => state.config,
+  );
   const [favoriteWallets, otherWallets] = useMemo(() => {
     const filteredWalletsByArchive = wallets.filter(
       (row) => showArchived || !row.archived,
@@ -32,10 +35,22 @@ const Wallets = () => {
     ];
   }, [showArchived, wallets]);
 
+  const showBackBtn = useMemo(() => {
+    if (
+      wallets.length > 0 &&
+      activeWallet &&
+      activeWallet !== -1 &&
+      useActiveWallet
+    ) {
+      return true;
+    }
+    return false;
+  }, [wallets, activeWallet, useActiveWallet]);
+
   return (
     <AppFrame
       title="My Wallets"
-      navigation={<BackButtonRouter />}
+      navigation={showBackBtn ? <BackButtonRouter /> : undefined}
       actions={
         <React.Fragment>
           <HomeAction>
@@ -68,7 +83,7 @@ const Wallets = () => {
         <React.Fragment>
           <SubHeading title="Favorites" disableTopGutter />
           <Stack spacing={2}>
-            {favoriteWallets.map((item, index) => (
+            {favoriteWallets.map((item) => (
               <WalletItem
                 id={`${item.id}`}
                 name={item.name}
@@ -76,7 +91,7 @@ const Wallets = () => {
                 net={item.networkType}
                 tokensCount={item.tokens.length}
                 amount={BigInt(item.balance)}
-                key={index}
+                key={item.id}
                 archived={item.archived}
                 favorite={item.favorite}
                 tokensBalance={item.tokens}
@@ -87,7 +102,7 @@ const Wallets = () => {
         </React.Fragment>
       )}
       <Stack spacing={2}>
-        {otherWallets.map((item, index) => (
+        {otherWallets.map((item) => (
           <WalletItem
             id={`${item.id}`}
             name={item.name}
@@ -95,7 +110,7 @@ const Wallets = () => {
             net={item.networkType}
             tokensCount={item.tokens.length}
             amount={BigInt(item.balance)}
-            key={index}
+            key={item.id}
             archived={item.archived}
             favorite={item.favorite}
             tokensBalance={item.tokens}
