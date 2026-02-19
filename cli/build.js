@@ -5,6 +5,7 @@ const packagesInOrder = [
   'packages/ergo-lib',
   'packages/types',
   'packages/utils',
+  'packages/electron',
 ];
 
 for (const pkg of packagesInOrder) {
