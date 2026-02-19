@@ -12,7 +12,6 @@ import TransactionItem from '../transaction/TransactionItem';
 
 interface RecentTransactionsPropsType {
   wallet: StateWallet;
-  showBalances: boolean;
 }
 
 const RecentTransactions = (props: RecentTransactionsPropsType) => {
@@ -30,12 +29,7 @@ const RecentTransactions = (props: RecentTransactionsPropsType) => {
       {transactions.length > 0 ? (
         <Stack spacing={1}>
           {transactions.map((item, index) => (
-            <TransactionItem
-              tx={item}
-              key={index}
-              wallet={props.wallet}
-              showBalances={props.showBalances}
-            />
+            <TransactionItem tx={item} key={index} wallet={props.wallet} />
           ))}
         </Stack>
       ) : loading ? (

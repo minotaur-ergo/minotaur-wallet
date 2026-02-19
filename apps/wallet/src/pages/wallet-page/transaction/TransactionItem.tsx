@@ -17,7 +17,6 @@ import { getRoute, RouteMap } from '@/router/routerMap';
 interface TransactionItemPropsType {
   tx: WalletTransactionType;
   wallet: StateWallet;
-  showBalances: boolean;
 }
 
 const TransactionItem = (props: TransactionItemPropsType) => {
@@ -60,12 +59,8 @@ const TransactionItem = (props: TransactionItemPropsType) => {
           <Box display="flex">
             <Typography sx={{ flexGrow: 1 }}>{values.title}</Typography>
             <Typography color={values.color}>
-              {props.showBalances ? values.sign : undefined}
-              <ErgAmountDisplay
-                amount={amount}
-                showBalances={props.showBalances}
-              />
-              {props.showBalances ? <small>ERG</small> : undefined}
+              {values.sign}
+              <ErgAmountDisplay amount={amount} /> <small>ERG</small>
             </Typography>
           </Box>
           <Typography variant="body2" color="textSecondary">

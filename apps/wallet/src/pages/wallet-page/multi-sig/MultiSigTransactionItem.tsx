@@ -1,7 +1,6 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { StateWallet } from '@minotaur-ergo/types';
 import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
@@ -20,9 +19,6 @@ interface MultiSigTransactionItemPropsType {
 }
 
 const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
-  const hideBalances = useSelector(
-    (state: GlobalStateType) => state.config.hideBalances,
-  );
   const navigate = useNavigate();
   const theme = useTheme();
   const requiredSign = props.wallet.requiredSign;
@@ -68,31 +64,17 @@ const MultiSigTransactionItem = (props: MultiSigTransactionItemPropsType) => {
         {props.tokensIn > 0 || props.ergIn > 0n ? (
           <Typography variant="body2" color="textSecondary">
             Income:
-            <ErgAmountDisplay
-              amount={props.ergIn}
-              showBalances={!hideBalances}
-            />
-            {!hideBalances && (
-              <>
-                <small>ERG</small>{' '}
-                {props.tokensIn ? ` And ${props.tokensIn} Tokens` : null}
-              </>
-            )}
+            <ErgAmountDisplay amount={props.ergIn} />
+            <small>ERG</small>{' '}
+            {props.tokensIn ? ` And ${props.tokensIn} Tokens` : null}
           </Typography>
         ) : null}
         {props.tokensOut > 0 || props.ergOut > 0n ? (
           <Typography variant="body2" color="textSecondary">
             Spent:
-            <ErgAmountDisplay
-              amount={props.ergOut}
-              showBalances={!hideBalances}
-            />
-            {!hideBalances && (
-              <>
-                <small>ERG</small>{' '}
-                {props.tokensOut ? ` And ${props.tokensOut} Tokens` : null}
-              </>
-            )}
+            <ErgAmountDisplay amount={props.ergOut} />
+            <small>ERG</small>{' '}
+            {props.tokensOut ? ` And ${props.tokensOut} Tokens` : null}
           </Typography>
         ) : null}
         <DisplayId variant="body2" color="textSecondary" id={props.txId} />

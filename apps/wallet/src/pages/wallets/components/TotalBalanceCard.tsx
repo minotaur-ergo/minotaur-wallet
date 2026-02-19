@@ -10,9 +10,6 @@ import Rate from './Rate';
 const TotalBalanceCard = () => {
   const theme = useTheme();
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
-  const hideBalances = useSelector(
-    (state: GlobalStateType) => state.config.hideBalances,
-  );
   const totalErg = wallets
     .filter((item) => item.networkType === MAIN_NET_LABEL)
     .map((item) => BigInt(item.balance))
@@ -85,7 +82,6 @@ const TotalBalanceCard = () => {
               .filter((w) => w.networkType === MAIN_NET_LABEL)
               .map((w) => w.tokens)
               .flat()}
-            showBalances={!hideBalances}
           />
         </Typography>
         <Typography

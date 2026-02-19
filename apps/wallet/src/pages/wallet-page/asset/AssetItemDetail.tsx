@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
-import { GlobalStateType } from '@minotaur-ergo/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
 
@@ -20,9 +18,6 @@ interface AssetItemDetailPropsType {
 }
 
 const AssetItemDetail = (props: AssetItemDetailPropsType) => {
-  const hideAssetsValues = useSelector(
-    (state: GlobalStateType) => state.config.hideAssetsValues,
-  );
   const details = useAssetDetail(props.id, props.network_type);
   return (
     <React.Fragment>
@@ -53,7 +48,6 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
             <TokenAmountDisplay
               amount={details.emissionAmount}
               decimal={details.decimal}
-              hide={hideAssetsValues}
             />
           }
         />
@@ -64,7 +58,6 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
               <TokenAmountDisplay
                 amount={props.balance}
                 decimal={details.decimal}
-                hide={hideAssetsValues}
               />
             }
           />

@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { GlobalStateType } from '@minotaur-ergo/types';
 import { Avatar, Box, Typography } from '@mui/material';
 
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
@@ -16,9 +13,6 @@ interface AssetRowPropsType {
 }
 
 const AssetRow = (props: AssetRowPropsType) => {
-  const hideAssetsValue = useSelector(
-    (state: GlobalStateType) => state.config.hideAssetsValues,
-  );
   const details = useAssetDetail(props.id, props.networkType);
   return (
     <div style={{ width: props.width, flexGrow: 1 }}>
@@ -32,7 +26,6 @@ const AssetRow = (props: AssetRowPropsType) => {
             <TokenAmountDisplay
               amount={BigInt(props.amount)}
               decimal={details.decimal}
-              hide={props.showValue ? !props.showValue : hideAssetsValue}
             />
           </Typography>
         ) : undefined}
