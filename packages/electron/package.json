@@ -20,7 +20,7 @@
     "@types/events": "^3.0.0",
     "@types/fs-extra": "^11.0.1",
     "@types/mime-types": "^3.0.1",
-    "@types/node": "^20.17.10",
+    "@types/node": "^18.16.8",
     "electron": "^26.2.2",
     "esbuild": "^0.17.18",
     "is-ci": "^3.0.1",
