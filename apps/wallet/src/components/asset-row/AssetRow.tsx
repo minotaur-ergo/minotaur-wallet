@@ -9,7 +9,6 @@ interface AssetRowPropsType {
   networkType: string;
   amount?: bigint | string;
   width?: string;
-  showValue?: boolean;
 }
 
 const AssetRow = (props: AssetRowPropsType) => {
