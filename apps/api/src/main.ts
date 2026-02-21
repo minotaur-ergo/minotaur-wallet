@@ -4,12 +4,11 @@ import Fastify from 'fastify';
 import { AppDataSource } from './database/data-source.js';
 import registerRoutes from './routes';
 
-const fastify = Fastify({
-  logger: true,
-}).withTypeProvider<TypeBoxTypeProvider>();
-
 // Start server
 const start = async () => {
+  const fastify = Fastify({
+    logger: true,
+  }).withTypeProvider<TypeBoxTypeProvider>();
   try {
     // Initialize database
     await AppDataSource.initialize();
