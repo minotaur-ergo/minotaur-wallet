@@ -14,8 +14,8 @@
     "preprocess": "npx madge --circular --extensions ts --extensions tsx .",
     "prettify": "prettier --ignore-unknown --write .",
     "preview": "vite preview",
-    "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync electron && npx cap update electron",
-    "sync:electron": "npm run clean && npm run build && cap sync electron && npx cap update electron",
+    "sync": "npm run clean && npm run build && npx cap sync && npx cap update && cap sync @minotaur-ergo/electron && npx cap update @minotaur-ergo/electron",
+    "sync:electron": "npm run clean && npm run build && cap sync @minotaur-ergo/electron && npx cap update @minotaur-ergo/electron",
     "test": "echo 'no test'",
     "type-check": "tsc"
   },
