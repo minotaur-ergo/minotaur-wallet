@@ -114,9 +114,9 @@ export async function doUpdate(
   for (const electronPlugin of pluginMap) {
     // FIX: Check if .default exists, otherwise use the base object
     // This handles both v7 (ESM-style CJS) and older plugins
-    outStr += `  ${electronPlugin.name}: ${electronPlugin.name}.default || ${electronPlugin.name},\n`;
+    outStr += `  ${electronPlugin.name}:\n    ${electronPlugin.name}.default || ${electronPlugin.name},\n`;
   }
-  outStr += '}';
+  outStr += '};\n';
 
   writeFileSync(
     join(capacitorElectronRuntimeFilePath, 'electron-plugins.js'),
