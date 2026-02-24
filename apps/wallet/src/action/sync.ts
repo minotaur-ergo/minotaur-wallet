@@ -65,12 +65,12 @@ const syncInfo = async (network: AbstractNetwork, address: Address) => {
       if (BigInt(oldBalance.amount) !== info.nanoErgs) {
         return true;
       }
-      const sortedNewTokens = [...info.tokens].sort((a, b) =>
-        a.id.localeCompare(b.id),
-      );
-      const sortedOldTokens = [...oldBalance.tokens].sort((a, b) =>
-        a.tokenId.localeCompare(b.tokenId),
-      );
+      const sortedNewTokens = [...info.tokens]
+        .filter((item) => item.amount === 0n)
+        .sort((a, b) => a.id.localeCompare(b.id));
+      const sortedOldTokens = [...oldBalance.tokens]
+        .filter((item) => BigInt(item.balance) === 0n)
+        .sort((a, b) => a.tokenId.localeCompare(b.tokenId));
       if (sortedNewTokens.length !== sortedOldTokens.length) return true;
       for (let index = 0; index < sortedNewTokens.length; index++) {
         if (sortedNewTokens[index].id !== sortedOldTokens[index].tokenId)
