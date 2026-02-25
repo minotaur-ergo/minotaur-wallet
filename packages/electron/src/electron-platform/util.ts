@@ -15,6 +15,7 @@ let config: CapacitorElectronConfig = {};
 export const CapElectronEventEmitter = new CapElectronEmitter();
 
 export function deepMerge(target: any, _objects: any[] = []): any {
+  // Credit for origanal function: Josh Cole(saikojosh)[https://github.com/saikojosh]
   const quickCloneArray = function (input: any) {
     return input.map(cloneValue);
   };
