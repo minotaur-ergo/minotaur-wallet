@@ -1,14 +1,22 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
+import { GlobalStateType } from '@minotaur-ergo/types';
 import { commaSeparate, createEmptyArray } from '@minotaur-ergo/utils';
+import { Typography } from '@mui/material';
 
 interface TokenAmountDisplayPropsType {
   amount: bigint;
   decimal: number;
   displayDecimal?: number;
+  isBalance?: boolean;
+  sign?: string;
 }
 
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
+  const { hideBalances, hideAssetsValues } = useSelector(
+    (state: GlobalStateType) => state.config,
+  );
   const amount_str =
     createEmptyArray(props.decimal, '0').join('') + props.amount.toString();
   const valuePart = commaSeparate(
@@ -21,8 +29,17 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
     props.displayDecimal === undefined
       ? decimalPart.replace(/0+$/, '')
       : decimalPart.substring(0, Math.min(props.displayDecimal, props.decimal));
-  return (
+  return (props.isBalance ? hideBalances : hideAssetsValues) ? (
+    <Typography
+      fontSize={12}
+      component="span"
+      style={{ display: 'inline-block', marginRight: 4 }}
+    >
+      ✻ ✻ ✻ ✻
+    </Typography>
+  ) : (
     <React.Fragment>
+      {props.sign}
       <span>{valuePart}</span>
       {decimalPartTrimmed.length > 0 ? (
         <React.Fragment>
