@@ -148,6 +148,7 @@ const WalletItem = (props: PropsType) => {
                 <BalanceDisplay
                   amount={amount}
                   tokenBalances={props.tokensBalance}
+                  showToggle={false}
                 />
               ) : (
                 <span>&nbsp;</span>

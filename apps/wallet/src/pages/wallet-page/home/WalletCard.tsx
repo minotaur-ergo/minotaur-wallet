@@ -131,6 +131,7 @@ const WalletCard = (props: WalletCardPropsType) => {
             <BalanceDisplay
               amount={BigInt(props.wallet.balance)}
               tokenBalances={props.wallet.tokens}
+              showToggle={true}
             />
           </Typography>
         ) : null}
