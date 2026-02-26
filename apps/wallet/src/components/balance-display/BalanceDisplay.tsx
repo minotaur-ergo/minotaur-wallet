@@ -15,7 +15,7 @@ import { setHideBalances } from '@/store/reducer/config';
 interface BalanceDisplayPropsType {
   amount: bigint;
   tokenBalances: Array<TokenBalance>;
-  showToggle: boolean;
+  showToggle?: boolean;
 }
 
 const BalanceDisplay = (props: BalanceDisplayPropsType) => {

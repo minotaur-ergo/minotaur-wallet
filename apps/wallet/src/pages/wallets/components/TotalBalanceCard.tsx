@@ -78,7 +78,6 @@ const TotalBalanceCard = () => {
         >
           <BalanceDisplay
             amount={totalErg}
-            showToggle={false}
             tokenBalances={wallets
               .filter((w) => w.networkType === MAIN_NET_LABEL)
               .map((w) => w.tokens)
