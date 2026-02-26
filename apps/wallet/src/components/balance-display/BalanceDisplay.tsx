@@ -45,12 +45,9 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
   );
 
   const displayValue = () => {
-    if (hideBalances) {
-      return '*****';
-    }
     return symbol?.direction === 'l'
-      ? `${symbol.symbol} ${value.toLocaleString()}`
-      : `${value.toLocaleString()} ${symbol.symbol}`;
+      ? `${symbol.symbol} ${hideBalances ? ' ✻ ✻ ✻ ✻ ' : value.toLocaleString()}`
+      : `${hideBalances ? ' ✻ ✻ ✻ ✻ ' : value.toLocaleString()} ${symbol.symbol}`;
   };
 
   return displayValue();

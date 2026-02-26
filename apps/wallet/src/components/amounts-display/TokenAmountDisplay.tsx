@@ -30,8 +30,12 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
       ? decimalPart.replace(/0+$/, '')
       : decimalPart.substring(0, Math.min(props.displayDecimal, props.decimal));
   return (props.isBalance ? hideBalances : hideAssetsValues) ? (
-    <Typography component="span" style={{ display: 'inline-block' }}>
-      *****
+    <Typography
+      fontSize={12}
+      component="span"
+      style={{ display: 'inline-block', marginRight: 4 }}
+    >
+      ✻ ✻ ✻ ✻
     </Typography>
   ) : (
     <React.Fragment>
