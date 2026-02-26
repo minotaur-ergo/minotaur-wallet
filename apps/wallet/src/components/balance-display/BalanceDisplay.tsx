@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
   GlobalStateType,
@@ -7,27 +7,16 @@ import {
   TokenValue,
 } from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-
-import { setHideBalances } from '@/store/reducer/config';
 
 interface BalanceDisplayPropsType {
   amount: bigint;
   tokenBalances: Array<TokenBalance>;
-  showToggle?: boolean;
 }
 
 const BalanceDisplay = (props: BalanceDisplayPropsType) => {
-  const dispatch = useDispatch();
   const { price: ergPrice, hideBalances } = useSelector(
     (state: GlobalStateType) => state.config,
   );
-
-  const iconSx = {
-    color: 'text.secondary',
-    fontSize: 20,
-  };
 
   const tokenValues = useSelector(
     (state: GlobalStateType) => state.wallet.tokenValues,
@@ -64,28 +53,7 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
       : `${value.toLocaleString()} ${symbol.symbol}`;
   };
 
-  const toggleShowBalances = () => {
-    dispatch(setHideBalances(!hideBalances));
-  };
-
-  return (
-    <>
-      {displayValue()}
-      {props.showToggle && (
-        <IconButton
-          onClick={toggleShowBalances}
-          size="large"
-          style={{ marginBottom: hideBalances ? 10 : 4 }}
-        >
-          {hideBalances ? (
-            <Visibility style={iconSx} />
-          ) : (
-            <VisibilityOff style={iconSx} />
-          )}
-        </IconButton>
-      )}
-    </>
-  );
+  return displayValue();
 };
 
 export default BalanceDisplay;

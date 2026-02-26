@@ -60,7 +60,8 @@ const TransactionItem = (props: TransactionItemPropsType) => {
             <Typography sx={{ flexGrow: 1 }}>{values.title}</Typography>
             <Typography color={values.color}>
               {values.sign}
-              <ErgAmountDisplay amount={amount} /> <small>ERG</small>
+              <ErgAmountDisplay sign={values.sign} amount={amount} />
+              <small>ERG</small>
             </Typography>
           </Box>
           <Typography variant="body2" color="textSecondary">

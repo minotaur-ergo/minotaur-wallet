@@ -16,6 +16,7 @@ interface ErgAmountPropsType {
   tokenId: 'erg' | string;
   availableLabel?: string;
   setHasError?: (isValid: boolean) => void;
+  isBalance?: boolean;
 }
 
 const TokenAmountInput = (props: ErgAmountPropsType) => {
@@ -125,6 +126,7 @@ const TokenAmountInput = (props: ErgAmountPropsType) => {
               <TokenAmountDisplay
                 amount={props.total > 0n ? props.total : 0n}
                 decimal={decimal.amount}
+                isBalance={props.isBalance}
               />
               {' ' + decimal.name} {availableLabel}
             </Typography>
