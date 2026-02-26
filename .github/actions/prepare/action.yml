@@ -1,0 +1,33 @@
+name: Prepare Environment
+
+inputs:
+  node-version:
+    description: 'Node.js version'
+    required: true
+  working-directory:
+    description: 'Working directory for the build'
+    required: false
+    default: '.'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10.11'
+
+    - name: Install app dependencies
+      shell: bash
+      run: npm install
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Build packages
+      shell: bash
+      run: node ./cli/build.js
+      working-directory: ${{ inputs.working-directory }}

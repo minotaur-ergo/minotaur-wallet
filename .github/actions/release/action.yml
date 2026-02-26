@@ -1,0 +1,57 @@
+name: Prepare Environment
+
+inputs:
+  input_file:
+    description: 'Input file dir'
+    required: true
+  suffix:
+    description: 'Output file suffix'
+    required: false
+    default: ''
+  extension:
+    description: 'File extension'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Find output file
+      shell: bash
+      run: |
+        shopt -s nullglob
+
+        for f in ${{ inputs.input_file }}/*; do
+          name="$(basename "$f")"
+          if [[ "$name" =~ ^minotaur.*.${{ inputs.extension }}$ ]]; then
+            file="$f"
+            break
+          fi
+        done
+
+        if [[ -z "$file" ]]; then
+          echo "No matching file found"
+          exit 1
+        fi
+
+        echo "Found: $file"
+        echo "FILE=$file" >> $GITHUB_ENV
+
+    - name: Calculate output file
+      shell: bash
+      run: |
+        echo "RELEASE_FILE=minotaur-${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ inputs.suffix }}.${{ inputs.extension }}" >> $GITHUB_ENV
+
+    - name: Move build file to root directory
+      shell: bash
+      run: |
+        mv "$FILE" "$RELEASE_FILE"
+
+    - name: Upload Apk File to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ${{ env.RELEASE_FILE }}
+        body: ${{ env.CHANGE_LOG }}
+        prerelease: true
+        name: Minotaur v${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,9 +1,9 @@
-import type { CapacitorElectronConfig } from '@capacitor-community/electron';
+import type { CapacitorElectronConfig } from '@minotaur-ergo/electron';
 import {
   CapacitorSplashScreen,
   CapElectronEventEmitter,
   setupCapacitorElectronPlugins,
-} from '@capacitor-community/electron';
+} from '@minotaur-ergo/electron';
 import chokidar from 'chokidar';
 import type { MenuItemConstructorOptions } from 'electron';
 import {

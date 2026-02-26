@@ -1,0 +1,45 @@
+{
+  "name": "@minotaur-ergo/electron",
+  "version": "0.1.0",
+  "description": "Capacitor community support for the Electron platform!",
+  "main": "dist/electron-platform/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && npm run build-platform-types && npm run build-platform",
+    "capacitor:copy": "node dist/cli-scripts/cap-scripts.js copy",
+    "capacitor:update": "node dist/cli-scripts/cap-scripts.js update",
+    "capacitor:sync": "node dist/cli-scripts/cap-scripts.js sync",
+    "capacitor:open": "node dist/cli-scripts/cap-scripts.js open",
+    "build-platform": "node ./build.js",
+    "build-platform-types": "tsc ./src/electron-platform/index.ts --outDir ./dist/electron-platform --declaration --emitDeclarationOnly --esModuleInterop"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.5",
+    "@types/events": "^3.0.0",
+    "@types/fs-extra": "^11.0.1",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^18.16.8",
+    "@typescript-eslint/eslint-plugin": "^5.59.5",
+    "@typescript-eslint/parser": "^5.59.5",
+    "commitizen": "^4.3.0",
+    "electron": "^26.2.2",
+    "esbuild": "^0.17.18",
+    "is-ci": "^3.0.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.5",
+    "@ionic/utils-fs": "~3.1.6",
+    "chalk": "^4.1.2",
+    "electron-is-dev": "~2.0.0",
+    "events": "~3.3.0",
+    "fs-extra": "~11.1.1",
+    "keyv": "^4.5.2",
+    "mime-types": "~2.1.35",
+    "ora": "^5.4.1"
+  }
+}
