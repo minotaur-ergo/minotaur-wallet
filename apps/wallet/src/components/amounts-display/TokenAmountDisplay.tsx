@@ -10,7 +10,6 @@ interface TokenAmountDisplayPropsType {
   decimal: number;
   displayDecimal?: number;
   isBalance?: boolean;
-  sign?: string;
 }
 
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
@@ -39,7 +38,6 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
     </Typography>
   ) : (
     <React.Fragment>
-      {props.sign}
       <span>{valuePart}</span>
       {decimalPartTrimmed.length > 0 ? (
         <React.Fragment>

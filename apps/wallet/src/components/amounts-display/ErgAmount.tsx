@@ -3,7 +3,6 @@ import TokenAmountDisplay from './TokenAmountDisplay';
 interface ErgAmountDisplayPropsType {
   amount: bigint;
   displayDecimal?: number;
-  sign?: string;
 }
 
 const ErgAmountDisplay = (props: ErgAmountDisplayPropsType) => {
@@ -13,7 +12,6 @@ const ErgAmountDisplay = (props: ErgAmountDisplayPropsType) => {
       decimal={9}
       displayDecimal={props.displayDecimal}
       isBalance={true}
-      sign={props.sign}
     />
   );
 };

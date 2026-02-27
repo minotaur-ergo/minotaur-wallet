@@ -16,6 +16,13 @@ enum BoxStatus {
   INVALID = 'invalid',
   AVAILABLE = 'available',
 }
+
+enum TxStatus {
+  IN = 'in',
+  OUT = 'out',
+  NONE = 'none',
+}
+
 interface BoxSpendDetail {
   boxId: string;
   status: BoxStatus;
@@ -35,6 +42,6 @@ interface SpendDetail {
   index: number;
 }
 
-export { BoxStatus };
+export { BoxStatus, TxStatus };
 
 export type { TotalSpent, TokenSpent, TokenType, BoxSpendDetail, SpendDetail };
