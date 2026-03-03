@@ -10,6 +10,7 @@ interface TransactionResultPropsType {
   tx: WalletTransactionType;
   amount: bigint;
   txType: TxStatus;
+  withBg?: boolean;
 }
 
 const TransactionResult = (props: TransactionResultPropsType) => {
@@ -30,10 +31,15 @@ const TransactionResult = (props: TransactionResultPropsType) => {
         display: 'flex',
         alignItems: 'center',
         gap: 0.4,
+        borderRadius: props.withBg ? '4px' : 0,
+        p: props.withBg ? '4px' : 0,
         color: result < 0n ? 'error.main' : 'success.main',
         fontWeight: 700,
         flexShrink: 0,
       }}
+      bgcolor={
+        props.withBg ? (result < 0n ? '#F0DBDB' : '#D4F0D4') : 'transparent'
+      }
     >
       {result < 0n ? (
         <TrendingDownIcon sx={iconSx} />
@@ -42,9 +48,12 @@ const TransactionResult = (props: TransactionResultPropsType) => {
       )}
       <Typography
         component="span"
+        ml={0.5}
         sx={{
           fontSize: 14,
-          fontWeight: 700,
+          fontWeight: 400,
+          lineHeight: '16px',
+          letterSpacing: '0.16px',
           color: 'inherit',
         }}
       >

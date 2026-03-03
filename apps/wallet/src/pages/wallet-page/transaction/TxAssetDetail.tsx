@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 
-import { getValueColor } from '@minotaur-ergo/utils';
+import { dottedText, getValueColor } from '@minotaur-ergo/utils';
 import {
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from '@mui/material';
+  AddBoxOutlined,
+  LocalFireDepartment,
+  MoveToInbox,
+  Outbox,
+} from '@mui/icons-material';
+import { Avatar, Box, Chip, ListItem, Typography } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
-import DisplayId from '@/components/display-id/DisplayId';
 import useAssetDetail from '@/hooks/useAssetDetail';
 import AssetItemDetail from '@/pages/wallet-page/asset/AssetItemDetail';
 
@@ -26,52 +25,131 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   const [showDetail, setShowDetail] = useState(false);
   if (props.amount === 0n) return null;
   const color = getValueColor(props.amount);
-  const getLabel = () =>
-    props.amount > 0
-      ? props.issueAndBurn
-        ? 'Issued'
-        : 'Received'
-      : props.issueAndBurn
-        ? 'Burnt'
-        : 'Sent';
+  const isPositive = props.amount > 0n;
+  const getStatus = () => {
+    if (isPositive && props.issueAndBurn) {
+      return {
+        label: 'Issued',
+        icon: AddBoxOutlined,
+        chipColor: '#D4ECDD',
+        textColor: '#1E7A45',
+      };
+    }
+    if (isPositive && !props.issueAndBurn) {
+      return {
+        label: 'Received',
+        icon: MoveToInbox,
+        chipColor: '#D4ECDD',
+        textColor: '#1E7A45',
+      };
+    }
+    if (!isPositive && props.issueAndBurn) {
+      return {
+        label: 'Burnt',
+        icon: LocalFireDepartment,
+        chipColor: '#F0DBDB',
+        textColor: '#C62828',
+      };
+    }
+    return {
+      label: 'Sent',
+      icon: Outbox,
+      chipColor: '#F0DBDB',
+      textColor: '#C62828',
+    };
+  };
+  const status = getStatus();
+  const StatusIcon = status.icon;
   return (
     <React.Fragment>
       <ListItem
         disableGutters
         disablePadding
         onClick={() => setShowDetail(true)}
+        sx={{
+          mt: 1,
+          py: 1,
+          px: 0.5,
+          borderRadius: 1,
+          cursor: 'pointer',
+        }}
       >
-        <ListItemAvatar>
-          <Avatar alt={details.name} src={details.logoPath ?? '/'} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <React.Fragment>
-              <Typography component="span">{details.name}</Typography>
-              <Typography component="span" color={color}>
-                {props.amount > 0 ? '+' : ''}
-                <TokenAmountDisplay
-                  amount={props.amount}
-                  decimal={details.decimal}
-                />
-              </Typography>
-            </React.Fragment>
-          }
-          primaryTypographyProps={{
+        <Box
+          sx={{
+            width: '100%',
             display: 'flex',
-            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: 1.5,
           }}
-          secondary={
-            <DisplayId
-              id={props.id}
-              endAdornment={
-                <Typography color={color} ml={3}>
-                  {getLabel()}
-                </Typography>
-              }
+        >
+          <Avatar
+            alt={details.name}
+            src={details.logoPath ?? '/'}
+            sx={{ width: 36, height: 36, bgcolor: '#BDBDBD' }}
+          >
+            {details.name?.[0] ?? 'T'}
+          </Avatar>
+
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            <Typography
+              sx={{
+                fontSize: 16,
+                fontWeight: 500,
+                lineHeight: '22px',
+                color: 'text.primary',
+              }}
+            >
+              {details.name}
+            </Typography>
+            <Typography
+              sx={{
+                mt: 0.5,
+                fontSize: 12,
+                lineHeight: '16px',
+                color: '#616161',
+              }}
+            >
+              {dottedText(props.id, 10)}
+            </Typography>
+            <Chip
+              icon={<StatusIcon sx={{ fontSize: 14 }} />}
+              label={status.label}
+              size="small"
+              sx={{
+                'mt': 0.75,
+                'height': 22,
+                'borderRadius': '4px',
+                'bgcolor': status.chipColor,
+                'color': status.textColor,
+                '& .MuiChip-icon': { color: 'inherit', ml: 0.75, mr: -0.5 },
+                '& .MuiChip-label': {
+                  px: 1,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  lineHeight: '16px',
+                },
+              }}
             />
-          }
-        />
+          </Box>
+
+          <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+            <Typography
+              sx={{
+                fontSize: 16,
+                fontWeight: 500,
+                lineHeight: '22px',
+                color,
+              }}
+            >
+              <TokenAmountDisplay
+                amount={props.amount}
+                decimal={details.decimal}
+                tokenId={props.id}
+                showMonetaryValue={true}
+              />
+            </Typography>
+          </Box>
+        </Box>
       </ListItem>
       <Drawer
         anchor="bottom"
