@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { ChainTypeInterface, TokenAmount } from '@minotaur-ergo/types';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Box, IconButton } from '@mui/material';
 
 import TokenAmountInput from '@/components/token-amount-input/TokenAmountInput';
 
@@ -35,16 +37,39 @@ const FillAmounts = (props: FillAmountsPropsType) => {
   };
   return props.tokenIds.map((row) => {
     return (
-      <TokenAmountInput
+      <Box
         key={row}
-        network_type={props.chain.label}
-        amount={props.amounts[row].amount}
-        setAmount={(newAmount) => setAmount(row, newAmount)}
-        total={getTotal(row)}
-        tokenId={row}
-        setHasError={(hasError) => setAmountError(row, hasError)}
-        availableLabel={props.availableLabel}
-      />
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 0.75,
+        }}
+      >
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <TokenAmountInput
+            network_type={props.chain.label}
+            amount={props.amounts[row].amount}
+            setAmount={(newAmount) => setAmount(row, newAmount)}
+            total={getTotal(row)}
+            tokenId={row}
+            setHasError={(hasError) => setAmountError(row, hasError)}
+            availableLabel={props.availableLabel}
+          />
+        </Box>
+        <IconButton
+          aria-label="delete token"
+          sx={{
+            'mt': 1,
+            'color': 'text.secondary',
+            'p': 1,
+            '& .MuiSvgIcon-root': {
+              fontSize: 26,
+            },
+          }}
+        >
+          <DeleteOutlineIcon />
+        </IconButton>
+      </Box>
     );
   });
 };

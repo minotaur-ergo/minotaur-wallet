@@ -53,7 +53,17 @@ const SelectTokens = (props: SelectTokensPropsType) => {
         newAmounts[token.id].total = token.amount;
       }
     });
-    setName(name ? name : keys.length > 1 ? 'Multiple Tokens' : '');
+    setName(
+      name
+        ? name
+        : keys.length > 1
+          ? keys.length > 1
+            ? keys
+                .map((key) => tokens.find((t) => t.id === key)?.name)
+                .join(', ')
+            : ''
+          : '',
+    );
     props.setTokenIds(keys);
     props.setAmounts(newAmounts);
   };
