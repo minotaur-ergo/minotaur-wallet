@@ -67,6 +67,7 @@ const AirDrop = (props: DAppPropsType) => {
             amounts={amounts}
             setAmounts={setAmounts}
             tokenIds={selectedTokenIds}
+            setTokenIds={setSelectedTokenIds}
             chain={props.chain}
             totalCalculator={(amount) => amount / divisor}
             availableLabel="allowed each"

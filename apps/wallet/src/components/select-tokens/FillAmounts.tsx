@@ -11,6 +11,7 @@ interface FillAmountsPropsType {
   setAmounts: React.Dispatch<React.SetStateAction<TokenAmount>>;
   tokenIds: Array<string>;
   chain: ChainTypeInterface;
+  setTokenIds: React.Dispatch<React.SetStateAction<Array<string>>>;
   totalCalculator?: (amount: bigint) => bigint;
   availableLabel?: string;
 }
@@ -29,12 +30,23 @@ const FillAmounts = (props: FillAmountsPropsType) => {
       [tokenId]: { ...oldValue[tokenId], hasError },
     }));
   };
+
   const getTotal = (tokenId: string) => {
     if (props.totalCalculator) {
       return props.totalCalculator(props.amounts[tokenId].total);
     }
     return props.amounts[tokenId].total;
   };
+
+  const removeToken = (tokenId: string) => {
+    props.setTokenIds(props.tokenIds.filter((t) => t !== tokenId));
+    props.setAmounts((oldValue) => {
+      const newValue = { ...oldValue };
+      delete newValue[tokenId];
+      return newValue;
+    });
+  };
+
   return props.tokenIds.map((row) => {
     return (
       <Box
@@ -57,6 +69,7 @@ const FillAmounts = (props: FillAmountsPropsType) => {
           />
         </Box>
         <IconButton
+          onClick={() => removeToken(row)}
           aria-label="delete token"
           sx={{
             'mt': 1,

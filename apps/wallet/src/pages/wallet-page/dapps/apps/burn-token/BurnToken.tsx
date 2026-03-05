@@ -133,7 +133,7 @@ const BurnToken = (props: DAppPropsType) => {
     let isAmountsValid = true;
     let hasValue = true;
     Object.values(amounts).forEach((amount) => {
-      if (!amount.amount) {
+      if (amount.hasError || !amount.amount) {
         hasValue = false;
       } else {
         total += amount.amount;
@@ -175,6 +175,7 @@ const BurnToken = (props: DAppPropsType) => {
           amounts={amounts}
           setAmounts={setAmounts}
           tokenIds={selectedTokenIds}
+          setTokenIds={setSelectedTokenIds}
           chain={props.chain}
         />
       </Stack>
