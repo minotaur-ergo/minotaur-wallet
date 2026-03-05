@@ -147,8 +147,7 @@ export const ConfigType = {
   TestnetBackend: 'TESTNET_BACKEND',
   TestnetNodeUrl: TESTNET_NODE_URL_KEY,
   TestnetExplorerUrl: TESTNET_EXPLORER_URL_KEY,
-  HideBalances: 'HIDE_BALANCES',
-  HideAssetsValues: 'HIDE_ASSETS_VALUES',
+  HideValues: 'HIDE_VALUES',
 } as const;
 
 export type DisplayType = 'simple' | 'advanced';
@@ -191,8 +190,7 @@ export interface ConfigStateType {
   multiSigLoadedTime: number;
   loadedPinType: string;
   pin: PinConfig;
-  hideBalances: boolean;
-  hideAssetsValues: boolean;
+  hideValues: boolean;
 }
 
 export interface GlobalStateType {

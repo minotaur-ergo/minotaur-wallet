@@ -12,7 +12,6 @@ const ErgAmountDisplay = (props: ErgAmountDisplayPropsType) => {
       amount={props.amount}
       decimal={9}
       displayDecimal={props.displayDecimal}
-      isBalance={true}
       sign={props.sign}
     />
   );

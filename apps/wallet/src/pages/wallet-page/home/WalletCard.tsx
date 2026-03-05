@@ -1,11 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  GlobalStateType,
-  MAIN_NET_LABEL,
-  StateWallet,
-} from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL, StateWallet } from '@minotaur-ergo/types';
 import { getChain } from '@minotaur-ergo/utils';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import {
@@ -22,7 +17,6 @@ import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import BalanceChart from '@/pages/wallets/components/BalanceChart';
 import { getRoute, RouteMap } from '@/router/routerMap';
-import { setHideBalances } from '@/store/reducer/config';
 
 interface WalletCardPropsType {
   wallet: StateWallet;
@@ -30,17 +24,10 @@ interface WalletCardPropsType {
 
 const WalletCard = (props: WalletCardPropsType) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const gotoBuy = () => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
   };
   const theme = useTheme();
-  const hideBalances = useSelector(
-    (state: GlobalStateType) => state.config.hideBalances,
-  );
-  const toggleShowBalances = () => {
-    dispatch(setHideBalances(!hideBalances));
-  };
 
   return (
     <Card
@@ -109,10 +96,7 @@ const WalletCard = (props: WalletCardPropsType) => {
           justifyContent="space-between"
           mt={1}
         >
-          <Typography
-            onClick={toggleShowBalances}
-            sx={{ fontSize: '2rem', fontWeight: 500 }}
-          >
+          <Typography sx={{ fontSize: '2rem', fontWeight: 500 }}>
             <ErgAmountDisplay amount={BigInt(props.wallet.balance)} />
             <Typography
               component="span"
@@ -144,7 +128,7 @@ const WalletCard = (props: WalletCardPropsType) => {
           ) : undefined}
         </Box>
         {props.wallet.networkType === MAIN_NET_LABEL ? (
-          <Typography onClick={toggleShowBalances} color="text.secondary">
+          <Typography color="text.secondary">
             <BalanceDisplay
               amount={BigInt(props.wallet.balance)}
               tokenBalances={props.wallet.tokens}

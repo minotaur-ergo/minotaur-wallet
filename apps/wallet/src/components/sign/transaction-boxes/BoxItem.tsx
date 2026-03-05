@@ -33,13 +33,19 @@ const BoxItem = (props: BoxItemPropsType) => {
           showAddress={true}
           customAddresses={props.wallet?.addresses ?? []}
         />
-        <AssetRow id="" amount={props.amount} networkType={props.networkType} />
+        <AssetRow
+          id=""
+          amount={props.amount}
+          networkType={props.networkType}
+          forceDisplay={true}
+        />
         {props.tokens.map((token) => (
           <AssetRow
             key={token.tokenId}
             id={token.tokenId}
             amount={token.balance}
             networkType={props.networkType}
+            forceDisplay={true}
           />
         ))}
       </Stack>
