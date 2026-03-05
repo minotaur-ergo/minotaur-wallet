@@ -9,11 +9,13 @@ import Rate from './Rate';
 
 const TotalBalanceCard = () => {
   const theme = useTheme();
+
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
   const totalErg = wallets
     .filter((item) => item.networkType === MAIN_NET_LABEL)
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
+
   const totalErgLastWeek = totalErg;
   return (
     <Card
@@ -74,7 +76,7 @@ const TotalBalanceCard = () => {
         <Typography
           textAlign="center"
           fontWeight={600}
-          sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
+          sx={{ color: '#fff', fontSize: 28, my: 1 }}
         >
           <BalanceDisplay
             amount={totalErg}

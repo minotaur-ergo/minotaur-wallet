@@ -28,6 +28,7 @@ const WalletCard = (props: WalletCardPropsType) => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
   };
   const theme = useTheme();
+
   return (
     <Card
       sx={{

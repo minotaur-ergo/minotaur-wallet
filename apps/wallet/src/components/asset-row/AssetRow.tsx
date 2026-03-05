@@ -9,6 +9,7 @@ interface AssetRowPropsType {
   networkType: string;
   amount?: bigint | string;
   width?: string;
+  forceDisplay?: boolean;
 }
 
 const AssetRow = (props: AssetRowPropsType) => {
@@ -25,6 +26,7 @@ const AssetRow = (props: AssetRowPropsType) => {
             <TokenAmountDisplay
               amount={BigInt(props.amount)}
               decimal={details.decimal}
+              forceDisplay={props.forceDisplay}
             />
           </Typography>
         ) : undefined}

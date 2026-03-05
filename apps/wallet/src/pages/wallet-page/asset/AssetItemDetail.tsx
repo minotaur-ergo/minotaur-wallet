@@ -48,6 +48,7 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
             <TokenAmountDisplay
               amount={details.emissionAmount}
               decimal={details.decimal}
+              forceDisplay={true}
             />
           }
         />

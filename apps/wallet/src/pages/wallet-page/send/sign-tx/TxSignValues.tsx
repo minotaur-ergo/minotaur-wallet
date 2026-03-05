@@ -41,6 +41,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                 amount={txValues.total}
                 id={''}
                 networkType={props.wallet.networkType}
+                forceDisplay={true}
               />
             ) : null}
             {Object.entries(txValues.tokens).map(([tokenId, value]) =>

@@ -19,6 +19,7 @@ import {
   setActiveWallet,
   setCurrency,
   setDisplay,
+  setHideValues,
 } from '@/store/reducer/config';
 
 const GlobalSettings = () => {
@@ -28,7 +29,7 @@ const GlobalSettings = () => {
   const displayMode = useSelector(
     (state: GlobalStateType) => state.config.display,
   );
-  const { useActiveWallet, activeWallet, currency } = useSelector(
+  const { useActiveWallet, activeWallet, currency, hideValues } = useSelector(
     (state: GlobalStateType) => state.config,
   );
   const dispatch = useDispatch();
@@ -63,6 +64,17 @@ const GlobalSettings = () => {
         );
       });
   };
+  const saveHideValues = (hideValues: boolean) => {
+    ConfigDbAction.getInstance()
+      .setConfig(
+        ConfigType.HideValues,
+        hideValues ? 'true' : 'false',
+        activePinType,
+      )
+      .then(() => {
+        dispatch(setHideValues(hideValues));
+      });
+  };
 
   const navigate = useNavigate();
   const hasPin = useSelector(
@@ -78,6 +90,13 @@ const GlobalSettings = () => {
       <Box mb={2}>
         <Heading title="Global Settings" />
         <Stack spacing={2}>
+          <SolitarySwitchField
+            label="Hide Values"
+            checkedDescription="Yes"
+            uncheckedDescription="No"
+            value={hideValues}
+            onChange={saveHideValues}
+          />
           <SolitarySelectField
             label="Currency conversion"
             showSearch={true}
