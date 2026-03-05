@@ -46,7 +46,7 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
   );
   const decimalPartTrimmed = useMemo(() => {
     if (showBalance) {
-      props.displayDecimal === undefined
+      return props.displayDecimal === undefined
         ? decimalPart.replace(/0+$/, '')
         : decimalPart.substring(
             0,
