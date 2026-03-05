@@ -185,6 +185,9 @@ const BurnToken = (props: DAppPropsType) => {
           left: 16,
           right: 16,
           bottom: 16,
+          zIndex: 1000,
+          bgcolor: 'background.paper',
+          borderRadius: 1,
         }}
       >
         <Button

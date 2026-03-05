@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NetworkPrefix } from '@minotaur-ergo/ergo-lib';
 import { Add, DeleteOutlineOutlined } from '@mui/icons-material';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, Button, IconButton, Typography } from '@mui/material';
 
 import AddressInput from '@/components/address-input/AddressInput';
 import { readClipBoard } from '@/utils/clipboard';
@@ -63,6 +63,9 @@ const Addresses = (props: AddressesPropsType) => {
   }, [errors, props]);
   return (
     <React.Fragment>
+      <Typography color="text.secondary" fontSize={14} fontWeight={600}>
+        Recipient Addresses
+      </Typography>
       {props.addresses.map((address, index) => (
         <Box display="flex" sx={{ alignItems: 'center' }}>
           <AddressInput
