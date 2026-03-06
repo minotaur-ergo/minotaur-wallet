@@ -52,6 +52,7 @@ const BoxAssetRow = (props: BoxAssetRowPropsType) => {
         decimal={details.decimal}
         tokenId={props.id}
         showMonetaryValue={true}
+        forceDisplay={true}
       />
     </Box>
   );

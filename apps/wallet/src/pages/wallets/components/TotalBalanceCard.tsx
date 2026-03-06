@@ -1,19 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { GlobalStateType, MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { Box, Card, CardContent, Typography, useTheme } from '@mui/material';
 
 import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
-import { setHideBalances } from '@/store/reducer/config';
 
 import Rate from './Rate';
 
 const TotalBalanceCard = () => {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const hideBalances = useSelector(
-    (state: GlobalStateType) => state.config.hideBalances,
-  );
 
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
   const totalErg = wallets
@@ -21,9 +16,6 @@ const TotalBalanceCard = () => {
     .map((item) => BigInt(item.balance))
     .reduce((a, b) => a + b, 0n);
 
-  const toggleShowBalances = () => {
-    dispatch(setHideBalances(!hideBalances));
-  };
   const totalErgLastWeek = totalErg;
   return (
     <Card
@@ -84,8 +76,7 @@ const TotalBalanceCard = () => {
         <Typography
           textAlign="center"
           fontWeight={600}
-          sx={{ color: '#fff', fontSize: '2rem', my: 1 }}
-          onClick={toggleShowBalances}
+          sx={{ color: '#fff', fontSize: 28, my: 1 }}
         >
           <BalanceDisplay
             amount={totalErg}

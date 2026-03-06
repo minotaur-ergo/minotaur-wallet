@@ -20,8 +20,7 @@ export const configInitialState: ConfigStateType = {
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
   useActiveWallet: true,
-  hideBalances: false,
-  hideAssetsValues: false,
+  hideValues: false,
   network: {
     mainnet: {
       backend: NETWORK_BACKEND.EXPLORER,
@@ -44,8 +43,7 @@ export const configInitialState: ConfigStateType = {
 
 export type DisplayPayload = {
   display: DisplayType;
-  hideBalances?: boolean;
-  hideAssetsValues?: boolean;
+  hideValues?: boolean;
 };
 
 export type CurrencyPayload = {
@@ -135,13 +133,9 @@ const configSlice = createSlice({
           ? state.useActiveWallet
           : action.payload.useActiveWallet;
     },
-    setHideBalances: (state, action: PayloadAction<boolean>) => {
-      state.hideBalances =
-        action.payload === undefined ? state.hideBalances : action.payload;
-    },
-    setHideAssetsValues: (state, action: PayloadAction<boolean>) => {
-      state.hideAssetsValues =
-        action.payload === undefined ? state.hideAssetsValues : action.payload;
+    setHideValues: (state, action: PayloadAction<boolean>) => {
+      state.hideValues =
+        action.payload === undefined ? state.hideValues : action.payload;
     },
     setConfig: (state, action: PayloadAction<ConfigPayload>) => {
       state.display = action.payload.display;
@@ -152,8 +146,7 @@ const configSlice = createSlice({
       state.loadedPinType = action.payload.pinType;
       state.network.mainnet = action.payload.network.mainnet;
       state.network.testnet = action.payload.network.testnet;
-      state.hideBalances = action.payload.hideBalances ?? false;
-      state.hideAssetsValues = action.payload.hideAssetsValues ?? false;
+      state.hideValues = action.payload.hideValues ?? false;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -186,8 +179,7 @@ export const {
   setNodeUrl,
   setExplorerUrl,
   setActiveWallet,
-  setHideBalances,
-  setHideAssetsValues,
+  setHideValues,
   setConfig,
   setMultiSigLoadedTime,
   setPinConfig,

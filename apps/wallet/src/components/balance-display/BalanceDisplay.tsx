@@ -1,10 +1,7 @@
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  GlobalStateType,
-  SymbolType,
-  TokenBalance,
-} from '@minotaur-ergo/types';
+import { GlobalStateType, TokenBalance } from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
 
 import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
@@ -12,30 +9,40 @@ import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 interface BalanceDisplayPropsType {
   amount: bigint;
   tokenBalances: Array<TokenBalance>;
-  showValue?: boolean;
+  forceDisplay?: boolean;
 }
 
 const BalanceDisplay = (props: BalanceDisplayPropsType) => {
-  const { price: ergPrice, hideBalances } = useSelector(
-    (state: GlobalStateType) => state.config,
+  const {
+    price: ergPrice,
+    hideValues,
+    symbol,
+  } = useSelector((state: GlobalStateType) => state.config);
+
+  const [balanceOverride, setBalanceOverride] = useState(false);
+
+  const showBalance = useMemo(
+    () => !hideValues || balanceOverride || props.forceDisplay,
+    [hideValues, balanceOverride, props.forceDisplay],
   );
-  const shouldHide =
-    props.showValue !== undefined ? !props.showValue : hideBalances;
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
+  const switchDisplay = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    if (hideValues) {
+      setBalanceOverride(!balanceOverride);
+    }
+  };
 
   const totalTokensInErg = useTokensTotalInErg(props.tokenBalances);
 
   const value = ergPriceCurrency(props.amount + totalTokensInErg, ergPrice);
 
-  const displayValue = () => {
-    return symbol?.direction === 'l'
-      ? `${symbol.symbol} ${shouldHide ? ' ✻ ✻ ✻ ✻ ' : value.toLocaleString()}`
-      : `${shouldHide ? ' ✻ ✻ ✻ ✻ ' : value.toLocaleString()} ${symbol.symbol}`;
-  };
-
-  return displayValue();
+  return (
+    <span onClick={switchDisplay}>
+      {symbol?.direction === 'l'
+        ? `${symbol.symbol} ${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '}`
+        : `${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '} ${symbol.symbol}`}
+    </span>
+  );
 };
 
 export default BalanceDisplay;

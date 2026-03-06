@@ -11,6 +11,7 @@ interface TransactionResultPropsType {
   amount: bigint;
   txType: TxStatus;
   withBg?: boolean;
+  forceDisplay?: boolean;
 }
 
 const TransactionResult = (props: TransactionResultPropsType) => {
@@ -60,6 +61,7 @@ const TransactionResult = (props: TransactionResultPropsType) => {
         <BalanceDisplay
           amount={result < 0n ? -result : result}
           tokenBalances={[]}
+          forceDisplay={props.forceDisplay}
         />
       </Typography>
     </Box>

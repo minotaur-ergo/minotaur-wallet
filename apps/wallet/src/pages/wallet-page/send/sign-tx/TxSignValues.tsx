@@ -40,6 +40,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
           <Typography fontSize="2rem" textAlign="center">
             <ErgAmountDisplay
               amount={txValues.total > 0 ? txValues.total : -txValues.total}
+              forceDisplay={true}
             />
             <Typography component="span" ml={1} color="text.secondary">
               ERG
@@ -62,6 +63,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
               amount={txValues.total}
               txType={valuesDirection.outgoing ? TxStatus.OUT : TxStatus.IN}
               withBg={true}
+              forceDisplay={true}
             />
           </Box>
           {Object.entries(txValues.tokens).filter(
