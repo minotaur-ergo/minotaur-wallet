@@ -121,7 +121,12 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
       {(props.showMonetaryValue ?? false) && (
         <Typography
           component="span"
-          sx={{ mt: 0.1, fontSize: 14, lineHeight: '16px', color: '#616161' }}
+          sx={{
+            mt: 0.1,
+            fontSize: 14,
+            lineHeight: '16px',
+            color: 'text.secondary',
+          }}
         >
           <BalanceDisplay
             amount={props.tokenId ? 0n : props.amount}
