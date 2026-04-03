@@ -14,6 +14,7 @@ interface TokenAmountDisplayPropsType {
   tokenId?: string;
   showMonetaryValue?: boolean;
   forceDisplay?: boolean;
+  disableToggle?: boolean;
 }
 
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
@@ -75,6 +76,7 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
       : [];
   }, [props.tokenId, props.amount]);
   const switchDisplay = (e: React.MouseEvent<HTMLElement>) => {
+    if (props.disableToggle) return;
     e.stopPropagation();
     if (!showBalanceConfig) {
       setBalanceOverride(!balanceOverride);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet, TxStatus } from '@minotaur-ergo/types';
@@ -8,9 +8,9 @@ import { Avatar, Box, IconButton, Typography } from '@mui/material';
 
 import { openTxInBrowser } from '@/action/tx';
 import ErgAmount from '@/components/amounts-display/ErgAmount';
+import TransactionResult from '@/components/tx/TransactionResult';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import useTxValues from '@/hooks/useTxValues';
-import TransactionResult from '@/pages/wallet-page/transaction/TransactionResult';
 import TxAssetDetail from '@/pages/wallet-page/transaction/TxAssetDetail';
 
 interface TxDisplayPropsType {
@@ -25,6 +25,12 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
   const { mapped } = useIssuedAndBurntTokens(tx, boxes);
   const { txValues } = useTxValues(tx, boxes, wallet);
   const openTx = () => openTxInBrowser(wallet.networkType, txId ?? '');
+  const tokensCount = useMemo(
+    () =>
+      Object.entries(txValues.tokens).filter(([_, balance]) => balance !== 0n)
+        .length,
+    [txValues.tokens],
+  );
   return (
     <React.Fragment>
       <Box>
@@ -85,8 +91,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
           </IconButton>
         </Typography>
       </div>
-      {Object.entries(txValues.tokens).filter(([_, balance]) => balance !== 0n)
-        .length > 0 && (
+      {tokensCount > 0 && (
         <Typography variant="body2" color="textSecondary">
           Tokens{' '}
           <Box
@@ -106,11 +111,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
               color: 'textSecondary',
             }}
           >
-            {
-              Object.entries(txValues.tokens).filter(
-                ([_, balance]) => balance !== 0n,
-              ).length
-            }
+            {tokensCount}
           </Box>
         </Typography>
       )}

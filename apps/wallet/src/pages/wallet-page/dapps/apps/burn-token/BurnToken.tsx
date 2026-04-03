@@ -9,7 +9,7 @@ import FillAmounts from '@/components/select-tokens/FillAmounts';
 import SelectTokens from '@/components/select-tokens/SelectTokens';
 import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 
-import { BurnConfirmSheet } from './BurnConfirm';
+import BurnConfirm from './BurnConfirm';
 
 const fee = BigInt(1000000);
 
@@ -58,9 +58,9 @@ const BurnToken = (props: DAppPropsType) => {
     if (coveringBox.covered) {
       const boxes = coveringBox.boxes;
       const remainingTokens: { [id: string]: bigint } = {};
-      selectedTokens.forEach(
-        (item) => (remainingTokens[item.tokenId] = -item.balance),
-      );
+      selectedTokens.forEach((item) => {
+        remainingTokens[item.tokenId] = -item.balance;
+      });
       const totalErg: bigint =
         createEmptyArrayWithIndex(boxes.len())
           .map((index) => {
@@ -150,7 +150,7 @@ const BurnToken = (props: DAppPropsType) => {
 
   return (
     <Box sx={{ pb: 10 }}>
-      <BurnConfirmSheet
+      <BurnConfirm
         open={showConfirm}
         onConfirm={() => {
           setShowConfirm(false);

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -16,31 +17,13 @@ import {
 
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
+import TransactionResult from '@/components/tx/TransactionResult';
 import { getRoute, RouteMap } from '@/router/routerMap';
-
-import TransactionResult from './TransactionResult';
 
 interface TransactionItemPropsType {
   tx: WalletTransactionType;
   wallet: StateWallet;
 }
-
-const formatTransactionDate = (date: Date) => {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  }).formatToParts(date);
-
-  const getPart = (type: string) =>
-    parts.find((part) => part.type === type)?.value ?? '';
-
-  return `${getPart('day')} ${getPart('month')} ${getPart('year')}, ${getPart('hour')}:${getPart('minute')}:${getPart('second')} ${getPart('dayPeriod')}`;
-};
 
 const TransactionItem = (props: TransactionItemPropsType) => {
   const theme = useTheme();
@@ -83,6 +66,25 @@ const TransactionItem = (props: TransactionItemPropsType) => {
       }),
     );
   };
+
+  const formattedDate = useMemo(
+    () =>
+      props.tx.date
+        .toLocaleString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: '2-digit',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })
+        .replace(',', '')
+        .replace(',', ''),
+    [props.tx.date],
+  );
+
   return (
     <Card
       elevation={0}
@@ -113,7 +115,7 @@ const TransactionItem = (props: TransactionItemPropsType) => {
                 letterSpacing: '0.16px',
               }}
             >
-              {formatTransactionDate(props.tx.date)}
+              {formattedDate}
             </Typography>
 
             {props.tx.tokens.size > 0 ? (

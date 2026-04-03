@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { dottedText, getValueColor } from '@minotaur-ergo/utils';
 import {
@@ -23,10 +23,8 @@ interface TxAssetDetailPropsType {
 const TxAssetDetail = (props: TxAssetDetailPropsType) => {
   const details = useAssetDetail(props.id, props.networkType);
   const [showDetail, setShowDetail] = useState(false);
-  if (props.amount === 0n) return null;
-  const color = getValueColor(props.amount);
-  const isPositive = props.amount > 0n;
-  const getStatus = () => {
+  const status = useMemo(() => {
+    const isPositive = props.amount > 0n;
     if (isPositive && props.issueAndBurn) {
       return {
         label: 'Issued',
@@ -57,8 +55,9 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
       chipColor: '#F0DBDB',
       textColor: '#C62828',
     };
-  };
-  const status = getStatus();
+  }, [props.amount, props.issueAndBurn]);
+  if (props.amount === 0n) return null;
+  const color = getValueColor(props.amount);
   const StatusIcon = status.icon;
   return (
     <React.Fragment>

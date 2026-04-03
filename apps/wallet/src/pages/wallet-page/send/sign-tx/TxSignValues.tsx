@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { ErgoBox } from '@minotaur-ergo/ergo-lib';
 import * as wasm from '@minotaur-ergo/ergo-lib';
@@ -8,10 +8,9 @@ import { Avatar, Box, Typography } from '@mui/material';
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import AssetRow from '@/components/asset-row/AssetRow';
 import UnBalancedTokensAmount from '@/components/token-amount/UnBalancedTokensAmount';
+import TransactionResult from '@/components/tx/TransactionResult';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
 import useTxValues from '@/hooks/useTxValues';
-
-import TransactionResult from '../../transaction/TransactionResult';
 
 interface WalletSignNormalPropsType {
   tx: wasm.UnsignedTransaction | wasm.Transaction;
@@ -25,6 +24,22 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
     props.tx,
     props.boxes,
     props.wallet,
+  );
+  const tokensCount = useMemo(
+    () =>
+      Object.entries(txValues.tokens).filter(([_, balance]) => balance !== 0n)
+        .length,
+    [txValues.tokens],
+  );
+  const tokensMap = useMemo(
+    () =>
+      new Map<string, bigint>(
+        Object.entries(txValues.tokens).map(([tokenId, balance]) => [
+          tokenId,
+          -balance,
+        ]),
+      ),
+    [txValues.tokens],
   );
   return (
     <Box>
@@ -53,12 +68,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                 ergOut: 0n,
                 txId: '',
                 date: new Date(),
-                tokens: new Map<string, bigint>(
-                  Object.entries(txValues.tokens).map(([tokenId, balance]) => [
-                    tokenId,
-                    -balance,
-                  ]),
-                ),
+                tokens: tokensMap,
               }}
               amount={txValues.total}
               txType={valuesDirection.outgoing ? TxStatus.OUT : TxStatus.IN}
@@ -66,9 +76,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
               forceDisplay={true}
             />
           </Box>
-          {Object.entries(txValues.tokens).filter(
-            ([_, balance]) => balance !== 0n,
-          ).length > 0 && (
+          {tokensCount > 0 && (
             <Box display="flex" alignItems="center" mb={1}>
               <Typography fontSize={14} color="textSecondary" fontWeight={600}>
                 Tokens
@@ -83,11 +91,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
                 }}
               >
                 <Typography fontSize={12} color="text.secondary">
-                  {
-                    Object.entries(txValues.tokens).filter(
-                      ([_, value]) => value !== 0n,
-                    ).length
-                  }
+                  {tokensCount}
                 </Typography>
               </Box>
             </Box>

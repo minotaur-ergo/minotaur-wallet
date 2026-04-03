@@ -9,7 +9,7 @@ type BurnConfirmSheetProps = {
   value: bigint;
 };
 
-export function BurnConfirmSheet(props: BurnConfirmSheetProps) {
+const BurnConfirm = (props: BurnConfirmSheetProps) => {
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -47,7 +47,11 @@ export function BurnConfirmSheet(props: BurnConfirmSheetProps) {
         Are you sure you want to burn these tokens? You will permanently destroy
         assets with a current value of{' '}
         <Box component="span" sx={{ fontWeight: 700 }}>
-          <BalanceDisplay amount={props.value} tokenBalances={[]} />
+          <BalanceDisplay
+            amount={props.value}
+            tokenBalances={[]}
+            forceDisplay={true}
+          />
         </Box>
         .
       </Typography>
@@ -84,4 +88,6 @@ export function BurnConfirmSheet(props: BurnConfirmSheetProps) {
       </Stack>
     </SwipeableDrawer>
   );
-}
+};
+
+export default BurnConfirm;

@@ -57,13 +57,15 @@ const SelectTokens = (props: SelectTokensPropsType) => {
     }
   });
   useEffect(() => {
-    if (tokens.length > 0 && props.tokenIds.length > 0) {
-      setName(
-        props.tokenIds
-          .map((key) => tokens.find((t) => t.id === key)?.name)
-          .join(', '),
-      );
+    if (props.tokenIds.length === 0) {
+      setName('');
+      return;
     }
+    const namesById = new Map(tokens.map((t) => [t.id, t.name]));
+    const selectedNames = props.tokenIds
+      .map((key) => namesById.get(key))
+      .filter((n): n is string => Boolean(n));
+    setName(selectedNames.join(', '));
   }, [props.tokenIds, tokens]);
   return (
     <FormControl>
