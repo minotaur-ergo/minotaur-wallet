@@ -15,9 +15,10 @@ import { Box, Button, Divider, IconButton, Typography } from '@mui/material';
 
 import { WalletDbAction } from '@/action/db';
 import AddressCopyable from '@/components/address-copyable/AddressCopyable';
+import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import AssetRow from '@/components/asset-row/AssetRow';
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import QRCodeSVG from '@/components/display-qrcode/QrCodeSVG';
-import Heading from '@/components/heading/Heading';
 import ListController from '@/components/list-controller/ListController';
 
 interface AddressViewCardPropsType {
@@ -52,9 +53,43 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
           <Close />
         </IconButton>
       </Box>
+      <Typography fontSize="2rem" textAlign="center">
+        <ErgAmountDisplay amount={BigInt(props.address.balance)} />
+        <Typography component="span" color="text.secondary" ml={1}>
+          ERG
+        </Typography>
+      </Typography>
+      <Typography
+        fontSize={16}
+        fontWeight={400}
+        color="textSecondary"
+        textAlign="center"
+      >
+        <BalanceDisplay
+          amount={BigInt(props.address.balance)}
+          tokenBalances={[]}
+        />
+      </Typography>
       {props.address.tokens.length > 0 ? (
         <React.Fragment>
-          <Heading title="Tokens" />
+          <Box display="flex" alignItems="center" mb={1}>
+            <Typography fontSize={14} color="textSecondary" fontWeight={600}>
+              Tokens
+            </Typography>
+            <Box
+              sx={{
+                ml: 1,
+                px: 0.75,
+                py: 0.5,
+                borderRadius: '4px',
+                bgcolor: '#0000000F',
+              }}
+            >
+              <Typography fontSize={12} color="text.secondary">
+                {props.address.tokens.length}
+              </Typography>
+            </Box>
+          </Box>
           <ListController
             loading={false}
             error={false}

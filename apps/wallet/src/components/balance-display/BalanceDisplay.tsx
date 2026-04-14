@@ -1,12 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  GlobalStateType,
-  TokenBalance,
-  TokenValue,
-} from '@minotaur-ergo/types';
+import { GlobalStateType, TokenBalance } from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
+
+import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 
 interface BalanceDisplayPropsType {
   amount: bigint;
@@ -20,9 +18,7 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
     hideValues,
     symbol,
   } = useSelector((state: GlobalStateType) => state.config);
-  const tokenValues = useSelector(
-    (state: GlobalStateType) => state.wallet.tokenValues,
-  );
+
   const [balanceOverride, setBalanceOverride] = useState(false);
 
   const showBalance = useMemo(
@@ -35,25 +31,10 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
       setBalanceOverride(!balanceOverride);
     }
   };
-  const totalTokensInErg = useMemo(() => {
-    return props.tokenBalances
-      .map((t) => {
-        const tv: TokenValue = tokenValues.get(t.tokenId) || {
-          valueInErg: 0,
-          decimal: 0,
-        };
-        return BigInt(
-          Math.round(tv.valueInErg * 10 ** 9) *
-            Math.round(Number(t.balance) / 10 ** tv.decimal),
-        );
-      })
-      .reduce((a, b) => a + b, 0n);
-  }, [props.tokenBalances, tokenValues]);
 
-  const value = useMemo(
-    () => ergPriceCurrency(props.amount + (totalTokensInErg || 0n), ergPrice),
-    [props.amount, totalTokensInErg, ergPrice],
-  );
+  const totalTokensInErg = useTokensTotalInErg(props.tokenBalances);
+
+  const value = ergPriceCurrency(props.amount + totalTokensInErg, ergPrice);
 
   return (
     <span onClick={switchDisplay}>

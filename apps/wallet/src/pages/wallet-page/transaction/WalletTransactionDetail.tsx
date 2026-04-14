@@ -26,7 +26,7 @@ const WalletTransactionDetails = (props: TransactionDetailsPropsType) => {
   const [displayBoxes, setDisplayBoxes] = useState(false);
   return (
     <AppFrame
-      title="Transaction"
+      title="Transaction Details"
       navigation={<BackButtonRouter />}
       actions={
         tx ? (

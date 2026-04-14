@@ -1,15 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType } from '@minotaur-ergo/types';
+import { GlobalStateType, TokenBalance } from '@minotaur-ergo/types';
 import { commaSeparate, createEmptyArray } from '@minotaur-ergo/utils';
+import { Box, Typography } from '@mui/material';
+
+import BalanceDisplay from '../balance-display/BalanceDisplay';
 
 interface TokenAmountDisplayPropsType {
   amount: bigint;
   decimal: number;
   displayDecimal?: number;
-  sign?: string;
+  tokenId?: string;
+  showMonetaryValue?: boolean;
   forceDisplay?: boolean;
+  disableToggle?: boolean;
 }
 
 const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
@@ -25,7 +30,9 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
     () =>
       showBalance
         ? createEmptyArray(props.decimal, '0').join('') +
-          props.amount.toString()
+          (props.amount >= 0n
+            ? props.amount.toString()
+            : (-props.amount).toString())
         : '',
     [props.amount, props.decimal, showBalance],
   );
@@ -55,29 +62,82 @@ const TokenAmountDisplay = (props: TokenAmountDisplayPropsType) => {
     }
     return '';
   }, [props.displayDecimal, props.decimal, decimalPart, showBalance]);
-  const sign = useMemo(
-    () => (showBalance ? props.sign : ''),
-    [showBalance, props.sign],
-  );
+  const tokenBalances: TokenBalance[] = useMemo(() => {
+    return props.tokenId
+      ? [
+          {
+            tokenId: props.tokenId,
+            balance:
+              props.amount >= 0n
+                ? props.amount.toString()
+                : (-props.amount).toString(),
+          },
+        ]
+      : [];
+  }, [props.tokenId, props.amount]);
   const switchDisplay = (e: React.MouseEvent<HTMLElement>) => {
+    if (props.disableToggle) return;
     e.stopPropagation();
     if (!showBalanceConfig) {
       setBalanceOverride(!balanceOverride);
     }
   };
   return (
-    <React.Fragment>
-      {sign}
-      <span onClick={switchDisplay}>{valuePart}</span>
-      {decimalPartTrimmed.length > 0 ? (
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        textAlign: 'right',
+      }}
+    >
+      <Typography
+        component="span"
+        sx={{
+          fontSize: 'inherit',
+          fontWeight: 'inherit',
+          lineHeight: 'inherit',
+          color: 'inherit',
+        }}
+      >
         <React.Fragment>
-          .
-          <span onClick={switchDisplay} style={{ fontSize: '60%' }}>
-            {decimalPartTrimmed}
+          <span
+            onClick={switchDisplay}
+            style={{
+              fontSize: showBalance ? 'inherit' : '60%',
+            }}
+          >
+            {valuePart}
           </span>
+          {decimalPartTrimmed.length > 0 ? (
+            <React.Fragment>
+              .
+              <span onClick={switchDisplay} style={{ fontSize: '60%' }}>
+                {decimalPartTrimmed}
+              </span>
+            </React.Fragment>
+          ) : null}
         </React.Fragment>
-      ) : null}
-    </React.Fragment>
+      </Typography>
+      {(props.showMonetaryValue ?? false) && (
+        <Typography
+          component="span"
+          sx={{
+            mt: 0.1,
+            fontSize: 14,
+            lineHeight: '16px',
+            color: 'text.secondary',
+          }}
+        >
+          <BalanceDisplay
+            amount={props.tokenId ? 0n : props.amount}
+            tokenBalances={tokenBalances}
+            forceDisplay={props.forceDisplay}
+          />
+        </Typography>
+      )}
+    </Box>
   );
 };
 

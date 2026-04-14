@@ -102,6 +102,7 @@ const WalletCard = (props: WalletCardPropsType) => {
               component="span"
               color="text.secondary"
               style={{ fontSize: '1.4rem' }}
+              ml={1}
             >
               ERG
             </Typography>

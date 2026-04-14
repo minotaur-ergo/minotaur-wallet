@@ -48,11 +48,13 @@ const TransactionBoxes = (props: TransactionBoxesPropsType) => {
         </IconButton>
       </Box>
 
-      <Typography variant="h2">Transaction Inputs</Typography>
+      <Typography variant="h2" color="textSecondary">
+        Transaction Inputs
+      </Typography>
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
         These elements spent in transaction
       </Typography>
-      <Stack spacing={1}>
+      <Stack spacing={2}>
         {inputBoxes.map((item, index) => (
           <BoxItem
             tokens={item.tokens}
@@ -65,13 +67,13 @@ const TransactionBoxes = (props: TransactionBoxesPropsType) => {
         ))}
       </Stack>
 
-      <Typography variant="h2" sx={{ mt: 3 }}>
+      <Typography variant="h2" color="textSecondary" sx={{ mt: 3 }}>
         Transaction Outputs
       </Typography>
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
         These elements will be created in transaction
       </Typography>
-      <Stack spacing={1}>
+      <Stack spacing={2}>
         {outputBoxes.map((item, index) => (
           <BoxItem
             tokens={item.tokens}

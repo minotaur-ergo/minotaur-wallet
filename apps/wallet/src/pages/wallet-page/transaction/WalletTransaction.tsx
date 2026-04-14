@@ -20,7 +20,7 @@ const WalletTransaction = (props: TransactionPropsType) => {
     setLimit(limit + 5);
   };
   return (
-    <AppFrame title="WalletTransaction" navigation={<BackButtonRouter />}>
+    <AppFrame title="Wallet Transactions" navigation={<BackButtonRouter />}>
       <Stack spacing={1}>
         {transactions.map((item, index) => (
           <TransactionItem tx={item} key={index} wallet={props.wallet} />
