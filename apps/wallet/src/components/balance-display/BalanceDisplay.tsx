@@ -1,45 +1,48 @@
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  GlobalStateType,
-  SymbolType,
-  TokenBalance,
-  TokenValue,
-} from '@minotaur-ergo/types';
+import { GlobalStateType, TokenBalance } from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
+
+import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 
 interface BalanceDisplayPropsType {
   amount: bigint;
   tokenBalances: Array<TokenBalance>;
+  forceDisplay?: boolean;
 }
 
 const BalanceDisplay = (props: BalanceDisplayPropsType) => {
-  const ergPrice = useSelector((state: GlobalStateType) => state.config.price);
-  const tokenValues = useSelector(
-    (state: GlobalStateType) => state.wallet.tokenValues,
+  const {
+    price: ergPrice,
+    hideValues,
+    symbol,
+  } = useSelector((state: GlobalStateType) => state.config);
+
+  const [balanceOverride, setBalanceOverride] = useState(false);
+
+  const showBalance = useMemo(
+    () => !hideValues || balanceOverride || props.forceDisplay,
+    [hideValues, balanceOverride, props.forceDisplay],
   );
-  const totalTokensInErg = props.tokenBalances
-    .map((t) => {
-      const tv: TokenValue = tokenValues.get(t.tokenId) || {
-        valueInErg: 0,
-        decimal: 0,
-      };
-      return BigInt(
-        Math.round(tv.valueInErg * 10 ** 9) *
-          Math.round(Number(t.balance) / 10 ** tv.decimal),
-      );
-    })
-    .reduce((a, b) => a + b, 0n);
-  const value = ergPriceCurrency(
-    props.amount + (totalTokensInErg || 0n),
-    ergPrice,
+  const switchDisplay = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    if (hideValues) {
+      setBalanceOverride(!balanceOverride);
+    }
+  };
+
+  const totalTokensInErg = useTokensTotalInErg(props.tokenBalances);
+
+  const value = ergPriceCurrency(props.amount + totalTokensInErg, ergPrice);
+
+  return (
+    <span onClick={switchDisplay}>
+      {symbol?.direction === 'l'
+        ? `${symbol.symbol} ${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '}`
+        : `${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '} ${symbol.symbol}`}
+    </span>
   );
-  const symbol: SymbolType = useSelector(
-    (state: GlobalStateType) => state.config.symbol,
-  );
-  return symbol?.direction === 'l'
-    ? `${symbol.symbol} ${value.toLocaleString()}`
-    : `${value.toLocaleString()} ${symbol.symbol}`;
 };
 
 export default BalanceDisplay;

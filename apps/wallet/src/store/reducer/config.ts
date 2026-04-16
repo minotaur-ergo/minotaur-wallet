@@ -20,6 +20,7 @@ export const configInitialState: ConfigStateType = {
   multiSigLoadedTime: Date.now(),
   loadedPinType: '-',
   useActiveWallet: true,
+  hideValues: false,
   network: {
     mainnet: {
       backend: NETWORK_BACKEND.EXPLORER,
@@ -42,6 +43,7 @@ export const configInitialState: ConfigStateType = {
 
 export type DisplayPayload = {
   display: DisplayType;
+  hideValues?: boolean;
 };
 
 export type CurrencyPayload = {
@@ -131,6 +133,10 @@ const configSlice = createSlice({
           ? state.useActiveWallet
           : action.payload.useActiveWallet;
     },
+    setHideValues: (state, action: PayloadAction<boolean>) => {
+      state.hideValues =
+        action.payload === undefined ? state.hideValues : action.payload;
+    },
     setConfig: (state, action: PayloadAction<ConfigPayload>) => {
       state.display = action.payload.display;
       state.currency = action.payload.currency;
@@ -140,6 +146,7 @@ const configSlice = createSlice({
       state.loadedPinType = action.payload.pinType;
       state.network.mainnet = action.payload.network.mainnet;
       state.network.testnet = action.payload.network.testnet;
+      state.hideValues = action.payload.hideValues ?? false;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -172,6 +179,7 @@ export const {
   setNodeUrl,
   setExplorerUrl,
   setActiveWallet,
+  setHideValues,
   setConfig,
   setMultiSigLoadedTime,
   setPinConfig,

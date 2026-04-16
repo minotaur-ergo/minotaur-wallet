@@ -28,6 +28,7 @@ const WalletCard = (props: WalletCardPropsType) => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
   };
   const theme = useTheme();
+
   return (
     <Card
       sx={{
@@ -101,6 +102,7 @@ const WalletCard = (props: WalletCardPropsType) => {
               component="span"
               color="text.secondary"
               style={{ fontSize: '1.4rem' }}
+              ml={1}
             >
               ERG
             </Typography>

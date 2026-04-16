@@ -13,7 +13,9 @@
     "skipLibCheck": true,
     "rootDir": ".",
     "paths": {
-      "@minotaur-ergo/electron": ["../../../packages/electron/src/index.ts"]
+      "@minotaur-ergo/electron": [
+        "../../../packages/electron/src/electron-platform/index.ts"
+      ]
     }
   },
   "references": [{ "path": "../../../packages/electron" }]

@@ -40,20 +40,11 @@ const SelectTokens = (props: SelectTokensPropsType) => {
         hasError: true,
       };
     });
-    const searchKey = keys.length === 1 ? keys[0] : undefined;
-    const foundToken = tokens.filter((token) => token.id === searchKey);
-    const name =
-      foundToken.length > 0
-        ? foundToken[0].name
-        : searchKey
-          ? searchKey.substring(0, 5) + '...'
-          : null;
     tokens.forEach((token) => {
       if (keys.includes(token.id)) {
         newAmounts[token.id].total = token.amount;
       }
     });
-    setName(name ? name : keys.length > 1 ? 'Multiple Tokens' : '');
     props.setTokenIds(keys);
     props.setAmounts(newAmounts);
   };
@@ -65,6 +56,17 @@ const SelectTokens = (props: SelectTokensPropsType) => {
       });
     }
   });
+  useEffect(() => {
+    if (props.tokenIds.length === 0) {
+      setName('');
+      return;
+    }
+    const namesById = new Map(tokens.map((t) => [t.id, t.name]));
+    const selectedNames = props.tokenIds
+      .map((key) => namesById.get(key))
+      .filter((n): n is string => Boolean(n));
+    setName(selectedNames.join(', '));
+  }, [props.tokenIds, tokens]);
   return (
     <FormControl>
       <InputLabel id="selected-token-to-burn">Token</InputLabel>

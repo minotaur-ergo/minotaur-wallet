@@ -63,6 +63,7 @@ const useInitConfig = () => {
           activeWallet: -1,
           pinType: activePinType,
           useActiveWallet: true,
+          hideValues: false,
           network: {
             mainnet: {
               backend: NETWORK_BACKEND.EXPLORER,
@@ -113,6 +114,9 @@ const useInitConfig = () => {
               break;
             case ConfigType.TestnetExplorerUrl:
               config.network.testnet.explorer = item.value;
+              break;
+            case ConfigType.HideValues:
+              config.hideValues = item.value === 'true';
               break;
           }
         });

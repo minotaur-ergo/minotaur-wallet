@@ -4,6 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
 
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
+import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import CopyToClipboardIcon from '@/components/copy-to-clipboard/CopyToClipboardIcon';
 import DisplayProperty from '@/components/display-property/DisplayProperty';
 import useAssetDetail from '@/hooks/useAssetDetail';
@@ -48,6 +49,7 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
             <TokenAmountDisplay
               amount={details.emissionAmount}
               decimal={details.decimal}
+              forceDisplay={true}
             />
           }
         />
@@ -58,6 +60,22 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
               <TokenAmountDisplay
                 amount={props.balance}
                 decimal={details.decimal}
+              />
+            }
+          />
+        ) : null}
+        {props.balance ? (
+          <DisplayProperty
+            label="Value"
+            value={
+              <BalanceDisplay
+                amount={0n}
+                tokenBalances={[
+                  {
+                    tokenId: props.id,
+                    balance: props.balance.toString(),
+                  },
+                ]}
               />
             }
           />
