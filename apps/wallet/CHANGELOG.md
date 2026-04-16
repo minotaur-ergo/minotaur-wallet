@@ -1,5 +1,34 @@
 # minotaur-wallet
 
+## 4.0.0
+
+### Major Changes
+
+- Update Capacitor Packages to version 7.
+
+### Minor Changes
+
+- Add a warning when burning tokens that have monetary value.
+- Add a new setting that allows users to hide all values. You can also see hidden values by clicking on them.
+- Add copy-to-clipboard for mnemonics with confirmation toast.
+- Add statistics to the AirDrop page.
+- Display the monetary value of assets.
+- Display JSON description for assets.
+- Introduced a new design for transactions.
+
+### Patch Changes
+
+- Fix a bug in display transaction when one or more box of transaction does not belong to this wallet
+- Fix pass phrase display bug in Restore Wallet.
+- Fix performance issue on add new wallet page
+- Fix star wallet animation bug.
+- Fix problem in sync wallet when some tokens are burnt
+- Hide back button in Wallets page when there is no wallet or `Display last active wallet on load` is disabled.
+- Updated dependencies
+  - @minotaur-ergo/types@1.5.0
+  - @minotaur-ergo/electron@0.2.0
+  - @minotaur-ergo/utils@2.0.1
+
 ## 3.4.0
 
 ### Minor Changes

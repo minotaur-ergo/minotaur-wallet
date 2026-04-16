@@ -1,5 +1,12 @@
 # @minotaur-ergo/types
 
+## 1.5.0
+
+### Minor Changes
+
+- add TxStatus enum.
+- Add HideValues config types.
+
 ## 1.4.0
 
 ### Minor Changes
