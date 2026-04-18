@@ -11,6 +11,9 @@ inputs:
   extension:
     description: 'File extension'
     required: true
+  github_token:
+    description: 'github token for release'
+    required: true
 
 runs:
   using: composite
@@ -54,4 +57,4 @@ runs:
         prerelease: true
         name: Minotaur v${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
