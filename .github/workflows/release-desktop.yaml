@@ -64,3 +64,4 @@ jobs:
           extension: ${{ matrix.extension }}
           suffix: ${{ matrix.suffix }}
           input_file: './apps/wallet/electron/dist'
+          github_token: ${{ secrets.GITHUB_TOKEN }}

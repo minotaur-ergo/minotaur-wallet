@@ -82,3 +82,4 @@ jobs:
         with:
           extension: 'apk'
           input_file: './apps/wallet/android/'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
