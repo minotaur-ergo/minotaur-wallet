@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
-
-import { TxStatus, WalletTransactionType } from '@minotaur-ergo/types';
+import { TxStatus } from '@minotaur-ergo/types';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Typography } from '@mui/material';
 
 import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
-import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 
 interface TransactionResultPropsType {
-  tx: WalletTransactionType;
+  totalTokensInErg: bigint;
   amount: bigint;
   txType: TxStatus;
   withBg?: boolean;
@@ -17,19 +14,9 @@ interface TransactionResultPropsType {
 }
 
 const TransactionResult = (props: TransactionResultPropsType) => {
-  const tokenList = useMemo(
-    () =>
-      Array.from(props.tx.tokens.entries()).map(([tokenId, balance]) => ({
-        tokenId,
-        balance,
-      })),
-    [props.tx.tokens],
-  );
-
-  const totalTokensInErg = useTokensTotalInErg(tokenList);
-
   const result =
-    totalTokensInErg + props.amount * (props.txType === TxStatus.IN ? 1n : -1n);
+    props.totalTokensInErg +
+    props.amount * (props.txType === TxStatus.IN ? 1n : -1n);
 
   const iconSx = { fontSize: 16 };
 
