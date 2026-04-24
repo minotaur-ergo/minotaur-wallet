@@ -19,6 +19,7 @@ dependencies {
     implementation project(':capacitor-status-bar')
     implementation project(':capacitor-toast')
     implementation project(':capacitor-plugin-safe-area')
+    implementation project(':capawesome-capacitor-android-edge-to-edge-support')
 
 }
 
