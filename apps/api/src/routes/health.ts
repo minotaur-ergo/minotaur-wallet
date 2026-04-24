@@ -1,6 +1,7 @@
-import { FastifySeverInstance } from './types';
+import { FastifyWithZod } from '@rosen-bridge/fastify-enhanced';
+import z from 'zod';
 
-const registerHealth = (fastify: FastifySeverInstance) => {
+const registerHealth = (fastify: FastifyWithZod) => {
   // Health check route
   fastify.get(
     '/health',
@@ -9,13 +10,7 @@ const registerHealth = (fastify: FastifySeverInstance) => {
         description: 'Health check endpoint',
         tags: ['health'],
         response: {
-          200: {
-            type: 'object',
-            properties: {
-              status: { type: 'string' },
-              timestamp: { type: 'string' },
-            },
-          },
+          200: HealthResponseSchema,
         },
       },
     },
@@ -26,6 +21,17 @@ const registerHealth = (fastify: FastifySeverInstance) => {
       };
     },
   );
+};
+
+const HealthResponseSchema = {
+  content: {
+    'application/json': {
+      schema: z.object({
+        status: z.string(),
+        timestamp: z.string(),
+      }),
+    },
+  },
 };
 
 export default registerHealth;

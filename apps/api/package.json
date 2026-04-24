@@ -11,14 +11,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@fastify/swagger": "^8.14.0",
-    "@fastify/swagger-ui": "^4.0.0",
-    "@fastify/type-provider-typebox": "^4.0.0",
     "@minotaur-ergo/utils": "^2.0.1",
-    "fastify": "^4.26.2",
+    "@rosen-bridge/fastify-enhanced": "^3.0.0",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.6",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "^20.17.10",
