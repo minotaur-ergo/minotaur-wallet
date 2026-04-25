@@ -1,14 +1,16 @@
-import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import Fastify from 'fastify';
+import { makeFastify } from '@rosen-bridge/fastify-enhanced';
 
 import { AppDataSource } from './database/data-source.js';
 import registerRoutes from './routes';
 
 // Start server
 const start = async () => {
-  const fastify = Fastify({
-    logger: true,
-  }).withTypeProvider<TypeBoxTypeProvider>();
+  const fastify = await makeFastify({
+    path: '/swagger',
+    title: 'Minotaur API ESM',
+    description: 'ESM API server with Fastify and TypeORM',
+    version: '1.0.0',
+  });
   try {
     // Initialize database
     await AppDataSource.initialize();

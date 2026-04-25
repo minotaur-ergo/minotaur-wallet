@@ -1,9 +1,8 @@
-import registerHealth from './health';
-import registerSwagger from './swagger';
-import { FastifySeverInstance } from './types';
+import { FastifyWithZod } from '@rosen-bridge/fastify-enhanced';
 
-const registerRoutes = async (fastify: FastifySeverInstance) => {
-  await registerSwagger(fastify);
+import registerHealth from './health';
+
+const registerRoutes = async (fastify: FastifyWithZod) => {
   registerHealth(fastify);
 };
 
