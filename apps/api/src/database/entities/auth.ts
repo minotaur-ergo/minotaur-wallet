@@ -30,7 +30,7 @@ export class Auth {
   })
   updatedAt: Date = new Date();
 
-  @Column({ name: 'user_id' })
+  @Column({ type: 'int', name: 'user_id' })
   userId: number = 0;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', eager: true })

@@ -38,7 +38,7 @@ export class Box {
   })
   updatedAt: Date = new Date();
 
-  @Column({ name: 'tx_id' })
+  @Column({ type: 'int', name: 'tx_id' })
   txId: number = 0;
 
   @ManyToOne(() => Tx, { onDelete: 'CASCADE' })

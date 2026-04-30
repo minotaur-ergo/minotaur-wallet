@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   MultiSigBriefRow,
@@ -9,32 +9,37 @@ import {
   StateWallet,
 } from '@minotaur-ergo/types';
 import { GlobalStateType } from '@minotaur-ergo/types';
-import { ContentPasteOutlined, QrCodeScanner } from '@mui/icons-material';
-import { Fab } from '@mui/material';
+import { Tab, Tabs } from '@mui/material';
 
 import { fetchMultiSigBriefRow } from '@/action/multi-sig/store';
 import { verifyAndSaveData } from '@/action/multi-sig/verify';
 import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
-import FabStack from '@/components/fab-stack/FabStack';
-import ListController from '@/components/list-controller/ListController';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import AppFrame from '@/layouts/AppFrame';
 import { getRoute, RouteMap } from '@/router/routerMap';
 import { readClipBoard } from '@/utils/clipboard';
 
-import MultiSigTransactionItem from './MultiSigTransactionItem';
+import MultiSigCommunicationManualTab from './MultiSigCommunicationManualTab';
+import MultiSigCommunicationServerTab from './MultiSigCommunicationServerTab';
 
 interface MultiSigCommunicationPropsType {
   wallet: StateWallet;
 }
 
+const MANUAL_TAB = 'manual';
+const SERVER_TAB = 'server';
+
 const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<Array<MultiSigBriefRow>>([]);
   const [loading, setLoading] = useState(false);
   const [reading, setReading] = useState(false);
   const [loadedTime, setLoadedTime] = useState(0);
+  const [tab, setTab] = useState<string>(
+    searchParams.get('tab') === SERVER_TAB ? SERVER_TAB : MANUAL_TAB,
+  );
   const message = useContext(MessageContext);
   const navigate = useNavigate();
   const scanContext = useContext(QrCodeContext);
@@ -102,44 +107,70 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
     }
     setReading(false);
   };
+
+  const handleTabChange = (value: string) => {
+    setTab(value);
+    setSearchParams(
+      (params) => {
+        if (value === SERVER_TAB) {
+          params.set('tab', SERVER_TAB);
+        } else {
+          params.delete('tab');
+        }
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
   return (
     <AppFrame title="Multi-sig Communication" navigation={<BackButtonRouter />}>
       <React.Fragment>
-        <ListController
-          loading={loading}
-          error={false}
-          errorDescription={''}
-          errorTitle={''}
-          data={items}
-          render={(row) => (
-            <MultiSigTransactionItem
-              wallet={props.wallet}
-              txId={row.txId}
-              ergIn={row.ergIn}
-              ergOut={row.ergOut}
-              signs={row.signed}
-              commitments={row.committed}
-              tokensIn={row.tokensIn}
-              tokensOut={row.tokensOut}
-            />
-          )}
-          divider={false}
-          emptyTitle="There is no transaction in progress!"
-          emptyDescription="You can add transaction using botton below to start signing process"
-          emptyIcon="folder"
-        />
-        <FabStack direction="row-reverse" spacing={2}>
-          <Fab disabled={reading} onClick={readingQrCode} color="primary">
-            <QrCodeScanner />
-          </Fab>
-          <Fab
-            disabled={reading}
-            onClick={handlePasteNewTransaction}
-            color="primary"
-          >
-            <ContentPasteOutlined />
-          </Fab>
-        </FabStack>
+        <Tabs
+          value={tab}
+          onChange={(_, value) => handleTabChange(value)}
+          variant="fullWidth"
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{
+            'minHeight': 40,
+            'mb': 2,
+            'borderBottom': '1px solid',
+            'borderColor': 'divider',
+            '& .MuiTab-root': {
+              flex: 1,
+              minHeight: 40,
+              textTransform: 'none',
+              fontWeight: 500,
+              fontSize: 15,
+              lineHeight: '16px',
+              letterSpacing: '0.16px',
+            },
+          }}
+          TabIndicatorProps={{
+            sx: {
+              height: 2,
+              borderRadius: 2,
+              bottom: 0,
+            },
+          }}
+        >
+          <Tab value={MANUAL_TAB} label="Manual" />
+          <Tab value={SERVER_TAB} label="Server" />
+        </Tabs>
+
+        {tab === MANUAL_TAB ? (
+          <MultiSigCommunicationManualTab
+            wallet={props.wallet}
+            items={items}
+            loading={loading}
+            reading={reading}
+            onReadQrCode={readingQrCode}
+            onPasteNewTransaction={handlePasteNewTransaction}
+          />
+        ) : (
+          <MultiSigCommunicationServerTab wallet={props.wallet} />
+        )}
       </React.Fragment>
     </AppFrame>
   );

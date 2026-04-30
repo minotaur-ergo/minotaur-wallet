@@ -17,6 +17,7 @@ import WalletDApps from './dapps/WalletDApps';
 import WalletDAppViewPage from './dapps/WalletDAppViewPage';
 import WalletHome from './home/WalletHome';
 import MultiSigCommunication from './multi-sig/MultiSigCommunication';
+import MultiSigRegisterServer from './multi-sig/MultiSigRegisterServer';
 import MultiSigTransactionPage from './multi-sig/MultiSigTransactionPage';
 import WalletSendPage from './send/WalletSendPage';
 import WalletTransaction from './transaction/WalletTransaction';
@@ -45,6 +46,10 @@ const WalletPage = () => {
       <Route
         path={WalletPageSuffix.WalletMultiSig}
         element={<MultiSigCommunication wallet={wallet} />}
+      />
+      <Route
+        path={WalletPageSuffix.WalletMultiSigRegisterServer}
+        element={<MultiSigRegisterServer wallet={wallet} />}
       />
       <Route
         path={WalletPageSuffix.WalletMultiSigTxView}

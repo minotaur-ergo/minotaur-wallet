@@ -1,5 +1,7 @@
-import { bip32 } from '@minotaur-ergo/utils';
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const bip32 = require('bip32');
 
 @Entity('users')
 @Unique(['chainCode', 'keyData'])

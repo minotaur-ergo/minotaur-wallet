@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "ESM API server with Fastify and TypeORM",
   "main": "dist/main.js",
-  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/main.js",
-    "dev": "tsc --watch & node --watch dist/main.js",
+    "build": "tsup src/main.ts --format esm --clean --minify",
+    "start": "node dist/main.mjs",
+    "dev": "tsx watch src/main.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -15,6 +14,7 @@
     "@rosen-bridge/fastify-enhanced": "^3.0.0",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.6",
+    "tsup": "^8.5.1",
     "typeorm": "^0.3.20",
     "zod": "^3.21.4"
   },

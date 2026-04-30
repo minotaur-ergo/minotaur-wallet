@@ -44,10 +44,10 @@ export class Tx {
   })
   updatedAt: Date = new Date();
 
-  @Column({ name: 'wallet_id' })
+  @Column({ type: 'int', name: 'wallet_id' })
   walletId: number = 0;
 
-  @Column({ name: 'creator_id' })
+  @Column({ type: 'int', name: 'creator_id' })
   creatorId: number = 0;
 
   @ManyToOne(() => Wallet, { eager: true, onDelete: 'CASCADE' })
