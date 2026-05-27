@@ -48,9 +48,10 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
         setSelectedType(undefined);
         setData('');
         if (props.callbackRequired) {
-          messageContext.insert('Invalid QR code', 'error');
+          props.callback(props.scanned);
           props.close();
         } else {
+          messageContext.insert('Invalid QR code', 'error');
           setInvalidQrCode(true);
         }
       } else {
