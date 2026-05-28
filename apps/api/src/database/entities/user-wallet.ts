@@ -4,12 +4,14 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
 import { User } from './user';
 import { Wallet } from './wallet';
 
 @Entity('user_wallets')
+@Unique(['userId', 'walletId'])
 export class UserWallet {
   @PrimaryGeneratedColumn()
   id: number = 0;
