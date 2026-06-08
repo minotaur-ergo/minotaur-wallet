@@ -1,7 +1,7 @@
-import { CapacitorHttp } from '@capacitor/core';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 
 import { OptionsType } from '@/components/solitary/SolitarySelectField';
+import { CapacitorHttp } from '@/plugins/http';
 
 const getCurrencies = async (): Promise<OptionsType[]> => {
   const res = await CapacitorHttp.get({

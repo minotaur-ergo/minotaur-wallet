@@ -1,4 +1,3 @@
-import { CapacitorHttp } from '@capacitor/core';
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
   ErgoPayResponse,
@@ -8,6 +7,7 @@ import {
 import { createEmptyArray, getChain } from '@minotaur-ergo/utils';
 
 import { BoxDbAction } from '@/action/db';
+import { CapacitorHttp } from '@/plugins/http';
 
 import { ADDRESS_PLACE_HOLDER } from './const';
 

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
 import { toDay } from '@minotaur-ergo/utils/src/date';
 
+import { CapacitorHttp } from '@/plugins/http';
 import { setShowBalanceChart } from '@/store/reducer/wallet';
 
 const useErgoPrice = (currency: string) => {

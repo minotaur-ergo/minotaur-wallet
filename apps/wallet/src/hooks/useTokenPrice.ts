@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
 import { GlobalStateType, TokenValue } from '@minotaur-ergo/types';
 
 import { deserialize } from '@/action/box';
 import { BoxDbAction } from '@/action/db';
+import { CapacitorHttp } from '@/plugins/http';
 import { setTokenValues } from '@/store/reducer/wallet';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 

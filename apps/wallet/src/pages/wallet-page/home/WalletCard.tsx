@@ -16,6 +16,7 @@ import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import BalanceDisplay from '@/components/balance-display/BalanceDisplay';
 import { WalletTypeLabel } from '@/db/entities/Wallet';
 import BalanceChart from '@/pages/wallets/components/BalanceChart';
+import { CapacitorHttp } from '@/plugins/http';
 import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface WalletCardPropsType {
@@ -26,6 +27,11 @@ const WalletCard = (props: WalletCardPropsType) => {
   const navigate = useNavigate();
   const gotoBuy = () => {
     navigate(getRoute(RouteMap.WalletBuy, { id: props.wallet.id }));
+  };
+  const cors = () => {
+    CapacitorHttp.get({
+      url: 'http://localhost:8000',
+    });
   };
   const theme = useTheme();
 
@@ -77,7 +83,12 @@ const WalletCard = (props: WalletCardPropsType) => {
       <CardContent>
         <Box display="flex" alignItems="end">
           <Box flexGrow={1}>
-            <Typography variant="body2" color="textSecondary">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              onClick={cors}
+              style={{ cursor: 'pointer' }}
+            >
               Current Balance
             </Typography>
           </Box>

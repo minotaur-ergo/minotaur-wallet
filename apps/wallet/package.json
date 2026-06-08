@@ -8,7 +8,7 @@
     "clean": "rimraf ./dist",
     "copyIcons": "node bin/copy-icons.js",
     "coverage": "npm run test -- --coverage",
-    "dev": "vite --host",
+    "dev": "node proxy/dev-with-proxy.js",
     "postinstall": "patch-package && npm run copyIcons",
     "lint": "npm run prettify && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preprocess": "npx madge --circular --extensions ts --extensions tsx .",
