@@ -95,7 +95,7 @@ const parseResponseData = (
   return text;
 };
 
-const sendNodeHttpRequest = (
+const sendHttpRequest = (
   targetUrl: URL,
   options: HttpOptions,
 ): Promise<{
@@ -108,7 +108,6 @@ const sendNodeHttpRequest = (
     const body = normalizeBody(options);
     const transport = targetUrl.protocol === 'https:' ? https : http;
 
-    // Electron makes this request from Node, so browser CORS does not apply.
     const upstream = transport.request(
       targetUrl,
       {
@@ -147,12 +146,11 @@ const sendNodeHttpRequest = (
 const httpRequest = (options: HttpOptions) => {
   const targetUrl = new URL(appendParams(options.url, options.params));
 
-  // Only proxy normal HTTP URLs. This avoids exposing local files or custom protocols.
   if (!['http:', 'https:'].includes(targetUrl.protocol)) {
     throw new Error('Only http and https URLs are allowed');
   }
 
-  return sendNodeHttpRequest(targetUrl, options);
+  return sendHttpRequest(targetUrl, options);
 };
 
 // Graceful handling of unhandled errors.

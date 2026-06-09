@@ -90,7 +90,6 @@ const sendUpstreamRequest = (targetUrl, options) =>
     const body = normalizeBody(options);
     const transport = targetUrl.protocol === 'https:' ? https : http;
 
-    // The local dev proxy makes this request from Node, so browser CORS does not apply.
     const upstream = transport.request(
       targetUrl,
       {
@@ -141,7 +140,6 @@ const server = http.createServer(async (request, response) => {
     const options = JSON.parse(await readRequestBody(request));
     const targetUrl = new URL(appendParams(options.url, options.params));
 
-    // Keep this proxy limited to normal HTTP URLs.
     if (!['http:', 'https:'].includes(targetUrl.protocol)) {
       writeJson(response, 400, {
         error: 'Only http and https URLs are allowed',
