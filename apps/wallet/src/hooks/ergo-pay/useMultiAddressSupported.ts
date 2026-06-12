@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import {
   MultiAddressSupportedEnum,
   MultipleAddressResponse,
 } from '@minotaur-ergo/types';
 
-import { CapacitorHttp } from '@/plugins/http';
 import { ADDRESS_PLACE_HOLDER } from '@/utils/const';
 import { getUrl } from '@/utils/ergopay';
 

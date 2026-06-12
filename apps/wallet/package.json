@@ -35,6 +35,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@minotaur-ergo/electron": "0.2.0",
+    "@minotaur-ergo/http": "1.0.0",
     "@minotaur-ergo/ergo-lib": "0.28.0",
     "@minotaur-ergo/icons": "^1.5.0",
     "@minotaur-ergo/types": "^1.5.0",

@@ -1,0 +1,57 @@
+{
+  "name": "@minotaur-ergo/http",
+  "version": "1.0.0",
+  "description": "A native HTTP plugin for CORS-free requests and file transfers",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./electron/dist/plugin.js": "./electron/dist/plugin.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "npm run build:web && npm run build:electron",
+    "build:web": "tsc",
+    "build:electron": "tsc --project electron/tsconfig.json",
+    "prepack": "npm run build",
+    "ios:build": "cd ios && pod install && cd ..",
+    "clean": "rm -rf ./dist ./electron/dist ./tsconfig.tsbuildinfo ./electron/tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@capacitor/android": "7.4.5",
+    "@capacitor/core": "^7.4.5",
+    "@capacitor/filesystem": "7.1.6",
+    "@capacitor/ios": "7.4.5"
+  },
+  "devDependencies": {
+    "prettier-plugin-java": "^1.1.1",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist/",
+    "ios/Plugin/",
+    "android/src/main/",
+    "android/build.gradle",
+    "android/proguard-rules.pro",
+    "electron/dist/",
+    "electron/package.json",
+    "MinotaurErgoHttp.podspec"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    },
+    "electron": {
+      "src": "electron"
+    }
+  }
+}

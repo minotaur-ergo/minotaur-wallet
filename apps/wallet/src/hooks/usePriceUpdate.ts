@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import { GlobalStateType } from '@minotaur-ergo/types';
 
-import { CapacitorHttp } from '@/plugins/http';
 import { setPrice } from '@/store/reducer/config';
 import { PRICE_REFRESH_INTERVAL } from '@/utils/const';
 
