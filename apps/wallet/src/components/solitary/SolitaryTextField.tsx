@@ -36,7 +36,7 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
   };
   useEffect(() => {
     if (newValue !== value) setNewValue(value);
-  }, [value]);
+  }, [value, newValue]);
 
   return (
     <Fragment>
