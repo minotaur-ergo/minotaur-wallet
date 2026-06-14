@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: '20.19'
 
-      - name: Prepare repo
+      - name: Prebuild project
         uses: './.github/actions/build-native'
         with:
           package_json_paths: 'apps/wallet/package.json'
