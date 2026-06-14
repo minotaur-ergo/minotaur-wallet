@@ -31,3 +31,6 @@ project(':capacitor-toast').projectDir = new File('../../../node_modules/@capaci
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../../../node_modules/capacitor-plugin-safe-area/android')
+
+include ':capawesome-capacitor-android-edge-to-edge-support'
+project(':capawesome-capacitor-android-edge-to-edge-support').projectDir = new File('../../../node_modules/@capawesome/capacitor-android-edge-to-edge-support/android')

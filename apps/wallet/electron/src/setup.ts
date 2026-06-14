@@ -26,6 +26,10 @@ const reloadWatcher = {
   ready: false,
   watcher: null,
 };
+
+const MAX_WIDTH = 600;
+const MIN_WIDTH = 400;
+const MIN_HEIGHT = 500;
 export function setupReloadWatcher(
   electronCapacitorApp: ElectronCapacitorApp,
 ): void {
@@ -128,12 +132,16 @@ export class ElectronCapacitorApp {
       show: true,
       x: this.mainWindowState.x,
       y: this.mainWindowState.y,
-      width: this.mainWindowState.width,
-      height: this.mainWindowState.height,
-      maxWidth: electronIsDev ? 620 : null,
-      minWidth: 480,
-      minHeight: 400,
+      width: Math.max(
+        Math.min(this.mainWindowState.width, MAX_WIDTH),
+        MIN_WIDTH,
+      ),
+      height: Math.max(this.mainWindowState.height, MIN_HEIGHT),
+      maxWidth: MAX_WIDTH,
+      minWidth: MIN_WIDTH,
+      minHeight: MIN_HEIGHT,
       maximizable: false,
+      fullscreenable: false,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: true,
@@ -143,6 +151,12 @@ export class ElectronCapacitorApp {
       },
     });
     this.mainWindowState.manage(this.MainWindow);
+    this.MainWindow.on('maximize', () => {
+      this.MainWindow.unmaximize();
+    });
+    this.MainWindow.on('enter-full-screen', () => {
+      this.MainWindow.setFullScreen(false);
+    });
 
     if (this.CapacitorFileConfig.backgroundColor) {
       this.MainWindow.setBackgroundColor(

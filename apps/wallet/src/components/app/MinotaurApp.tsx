@@ -3,8 +3,11 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
 import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support';
 import { SafeArea } from 'capacitor-plugin-safe-area';
 
+import { useDeviceTheme } from '@/hooks/useDeviceTheme';
 import AppRouter from '@/router/AppRouter';
 import BackButtonHandler from '@/router/BackButtonHandler';
 import store from '@/store';
@@ -17,13 +20,24 @@ import createStyle from './safe-area-style';
 
 const MinotaurApp = () => {
   const [style, setStyle] = useState('');
+  const deviceTheme = useDeviceTheme();
   useEffect(() => {
-    if (Capacitor.getPlatform() === 'ios') {
+    const setBackgroundColor = async (color: string, style: Style) => {
+      await EdgeToEdge.setBackgroundColor({ color });
+      await StatusBar.setStyle({ style });
+    };
+    const platform = Capacitor.getPlatform();
+    if (platform === 'ios') {
       SafeArea.getSafeAreaInsets().then((inset) => {
         setStyle(createStyle(inset.insets.top, inset.insets.bottom));
       });
+    } else if (platform === 'android') {
+      setBackgroundColor(
+        deviceTheme === 'dark' ? '#000000' : '#FFFFFF',
+        deviceTheme === 'dark' ? Style.Dark : Style.Light,
+      );
     }
-  }, []);
+  }, [deviceTheme]);
   return (
     <AppTheme>
       <MessageHandler>

@@ -18,6 +18,7 @@ import {
 import ErgAmountDisplay from '@/components/amounts-display/ErgAmount';
 import DisplayId from '@/components/display-id/DisplayId';
 import TransactionResult from '@/components/tx/TransactionResult';
+import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 import { getRoute, RouteMap } from '@/router/routerMap';
 
 interface TransactionItemPropsType {
@@ -29,12 +30,25 @@ const TransactionItem = (props: TransactionItemPropsType) => {
   const theme = useTheme();
   const erg_in = props.tx.ergIn;
   const erg_out = props.tx.ergOut;
+  const tokenList = useMemo(
+    () =>
+      Array.from(props.tx.tokens.entries()).map(([tokenId, balance]) => ({
+        tokenId,
+        balance,
+      })),
+    [props.tx.tokens],
+  );
+  const totalTokensInErg = useTokensTotalInErg(tokenList);
   const txType =
     erg_in > erg_out
       ? TxStatus.IN
       : erg_in < erg_out
         ? TxStatus.OUT
-        : TxStatus.NONE;
+        : totalTokensInErg > 0n
+          ? TxStatus.IN
+          : totalTokensInErg < 0n
+            ? TxStatus.OUT
+            : TxStatus.NONE;
   const amount = txType === TxStatus.IN ? erg_in - erg_out : erg_out - erg_in;
   const values =
     txType === TxStatus.IN
@@ -52,9 +66,9 @@ const TransactionItem = (props: TransactionItemPropsType) => {
             textColor: theme.palette.error.main,
           }
         : {
-            title: '--',
+            title: 'None',
             color: theme.palette.warning.main,
-            bgColor: theme.palette.warning.light,
+            bgColor: '#F0DBDB',
             textColor: theme.palette.warning.main,
           };
   const navigate = useNavigate();
@@ -181,7 +195,11 @@ const TransactionItem = (props: TransactionItemPropsType) => {
               />
             </Box>
 
-            <TransactionResult tx={props.tx} amount={amount} txType={txType} />
+            <TransactionResult
+              totalTokensInErg={totalTokensInErg}
+              amount={amount}
+              txType={txType}
+            />
           </Box>
         </CardContent>
       </CardActionArea>

@@ -10,6 +10,7 @@ import { openTxInBrowser } from '@/action/tx';
 import ErgAmount from '@/components/amounts-display/ErgAmount';
 import TransactionResult from '@/components/tx/TransactionResult';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
+import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 import useTxValues from '@/hooks/useTxValues';
 import TxAssetDetail from '@/pages/wallet-page/transaction/TxAssetDetail';
 
@@ -31,6 +32,15 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
         .length,
     [txValues.tokens],
   );
+  const tokenList = useMemo(
+    () =>
+      Array.from(Object.entries(txValues.tokens)).map(([tokenId, balance]) => ({
+        tokenId,
+        balance: -balance,
+      })),
+    [txValues.tokens],
+  );
+  const totalTokensInErg = useTokensTotalInErg(tokenList);
   return (
     <React.Fragment>
       <Box>
@@ -54,18 +64,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
         </Typography>
         <Box display="flex" justifyContent="center" mb={2}>
           <TransactionResult
-            tx={{
-              ergIn: 0n,
-              ergOut: 0n,
-              txId: txId,
-              date: new Date(),
-              tokens: new Map<string, bigint>(
-                Object.entries(txValues.tokens).map(([tokenId, balance]) => [
-                  tokenId,
-                  -balance,
-                ]),
-              ),
-            }}
+            totalTokensInErg={totalTokensInErg}
             amount={-txValues.total}
             txType={TxStatus.IN}
             withBg={true}

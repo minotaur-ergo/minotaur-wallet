@@ -10,6 +10,7 @@ import AssetRow from '@/components/asset-row/AssetRow';
 import UnBalancedTokensAmount from '@/components/token-amount/UnBalancedTokensAmount';
 import TransactionResult from '@/components/tx/TransactionResult';
 import useIssuedAndBurntTokens from '@/hooks/useIssuedAndBurntTokens';
+import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 import useTxValues from '@/hooks/useTxValues';
 
 interface WalletSignNormalPropsType {
@@ -31,16 +32,15 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
         .length,
     [txValues.tokens],
   );
-  const tokensMap = useMemo(
+  const tokenList = useMemo(
     () =>
-      new Map<string, bigint>(
-        Object.entries(txValues.tokens).map(([tokenId, balance]) => [
-          tokenId,
-          -balance,
-        ]),
-      ),
+      Array.from(Object.entries(txValues.tokens)).map(([tokenId, balance]) => ({
+        tokenId,
+        balance: -balance,
+      })),
     [txValues.tokens],
   );
+  const totalTokensInErg = useTokensTotalInErg(tokenList);
   return (
     <Box>
       {valuesDirection.outgoing ? (
@@ -63,13 +63,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
           </Typography>
           <Box display="flex" justifyContent="center" mb={2}>
             <TransactionResult
-              tx={{
-                ergIn: 0n,
-                ergOut: 0n,
-                txId: '',
-                date: new Date(),
-                tokens: tokensMap,
-              }}
+              totalTokensInErg={totalTokensInErg}
               amount={txValues.total}
               txType={valuesDirection.outgoing ? TxStatus.OUT : TxStatus.IN}
               withBg={true}

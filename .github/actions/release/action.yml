@@ -55,6 +55,6 @@ runs:
         files: ${{ env.RELEASE_FILE }}
         body: ${{ env.CHANGE_LOG }}
         prerelease: true
-        name: Minotaur v${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}
+        name: v${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.PATCH }}${{ env.PRE_RELEASE }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
