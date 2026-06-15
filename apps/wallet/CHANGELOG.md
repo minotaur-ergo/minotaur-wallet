@@ -1,5 +1,20 @@
 # minotaur-wallet
 
+## 4.1.0
+
+### Minor Changes
+
+- Consider token values in transaction evaluation when ERG inputs and outputs are equal.
+- Add @capawesome/capacitor-android-edge-to-edge-support package.
+- Set color of status bar and navigation bar based on mobile theme.
+
+### Patch Changes
+
+- Hide `Copy phrase` button in Restore Wallet page.
+- Fix multi-sig wallet creation using base64 or hex encoded xPub.
+- Fix a bug in the scanning process.
+- Fix url edit in network tabs.
+
 ## 4.0.0
 
 ### Major Changes
