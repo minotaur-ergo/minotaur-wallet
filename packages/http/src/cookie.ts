@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpCookie, HttpCookieOptions } from './definitions';
+import type { HttpCookie, HttpCookieOptions } from './definitions';
 import { decode, encode } from './utils';
 
 /**
@@ -10,7 +9,7 @@ import { decode, encode } from './utils';
  */
 export const setCookie = (
   key: string,
-  value: any,
+  value: string,
   options: HttpCookieOptions = {},
 ): void => {
   // Safely Encoded Key/Value
@@ -34,7 +33,7 @@ export const setCookie = (
  */
 export const getCookies = (): HttpCookie[] => {
   const output: HttpCookie[] = [];
-  const map: any = {};
+  const map: Record<string, string> = {};
   if (!document.cookie) {
     return output;
   }
@@ -48,7 +47,7 @@ export const getCookies = (): HttpCookie[] => {
     map[k] = v;
   }
 
-  const entries: [string, any][] = Object.entries(map);
+  const entries = Object.entries(map);
   for (const [key, value] of entries) {
     output.push({
       key,

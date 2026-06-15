@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable no-case-declarations */
 import type {
+  HttpData,
   HttpHeaders,
   HttpOptions,
   HttpParams,
@@ -111,7 +110,7 @@ export const buildRequestInit = (
   else if (type.includes('application/x-www-form-urlencoded')) {
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(options.data || {})) {
-      params.set(key, value as any);
+      params.set(key, String(value));
     }
     output.body = params.toString();
   } else if (type.includes('multipart/form-data')) {
@@ -165,13 +164,14 @@ export const request = async (options: HttpOptions): Promise<HttpResponse> => {
     responseType = 'json';
   }
 
-  let data: any;
+  let data: HttpData;
   switch (responseType) {
     case 'arraybuffer':
-    case 'blob':
+    case 'blob': {
       const blob = await response.blob();
       data = await readBlobAsBase64(blob);
       break;
+    }
     case 'json':
       data = await response.json();
       break;

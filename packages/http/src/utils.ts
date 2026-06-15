@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Read in a Blob value and return it as a base64 string
  * @param blob The blob value to convert to a base64 string
@@ -13,7 +12,7 @@ export const readBlobAsBase64 = async (blob: Blob): Promise<string> =>
       ); // remove prefix "data:application/pdf;base64,"
       resolve(base64StringWithoutTags);
     };
-    reader.onerror = (error: any) => reject(error);
+    reader.onerror = () => reject(reader.error);
     reader.readAsDataURL(blob);
   });
 

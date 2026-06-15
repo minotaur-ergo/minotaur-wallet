@@ -50,7 +50,7 @@ PODS:
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
   - IONFilesystemLib (1.0.1)
-  - MinotaurErgoHttp (1.0.0):
+  - MinotaurErgoHttp (0.0.0):
     - Capacitor
   - MLImage (1.0.0-beta6)
   - MLKitBarcodeScanning (6.0.0):
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
-  MinotaurErgoHttp: 97d560646e5c74540ed80dab6b152f36758ee0ef
+  MinotaurErgoHttp: d92a6d97530106a7d2631fcc2bc6ae19c63fce34
   MLImage: 0ad1c5f50edd027672d8b26b0fee78a8b4a0fc56
   MLKitBarcodeScanning: 0a3064da0a7f49ac24ceb3cb46a5bc67496facd2
   MLKitCommon: 07c2c33ae5640e5380beaaa6e4b9c249a205542d

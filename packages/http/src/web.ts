@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-constant-condition */
 import { WebPlugin } from '@capacitor/core';
 
 import * as Cookie from './cookie';
@@ -73,8 +70,7 @@ export class HttpWeb extends WebPlugin implements HttpPlugin {
    * Gets all HttpCookies as a Map
    */
   public getCookiesMap = async (
-    // @ts-ignore
-    options: HttpMultiCookiesOptions,
+    _options: HttpMultiCookiesOptions,
   ): Promise<HttpCookieMap> => {
     const cookies = Cookie.getCookies();
     const output: HttpCookieMap = {};
@@ -92,8 +88,7 @@ export class HttpWeb extends WebPlugin implements HttpPlugin {
   public getCookies = async (
     options: HttpMultiCookiesOptions,
   ): Promise<HttpGetCookiesResult> => {
-    // @ts-ignore
-    const { url } = options;
+    const { url: _url } = options;
 
     const cookies = Cookie.getCookies();
     return { cookies };
@@ -130,8 +125,7 @@ export class HttpWeb extends WebPlugin implements HttpPlugin {
    * Clears out cookies by setting them to expire immediately
    */
   public clearCookies = async (
-    // @ts-ignore
-    options: HttpMultiCookiesOptions,
+    _options: HttpMultiCookiesOptions,
   ): Promise<void> => Cookie.clearCookies();
 
   /**
@@ -184,7 +178,7 @@ export class HttpWeb extends WebPlugin implements HttpPlugin {
         response.headers.get('content-length') || '0',
         10,
       );
-
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
 

@@ -1,14 +1,18 @@
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import https from 'node:https';
+import { createRequire } from 'node:module';
 import { URL } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json');
 
 const HOST = process.env.MINOTAUR_HTTP_PROXY_HOST ?? '127.0.0.1';
 const PORT = Number(process.env.MINOTAUR_HTTP_PROXY_PORT ?? 3001);
 const ALLOWED_ORIGIN = process.env.MINOTAUR_HTTP_PROXY_ORIGIN ?? '*';
 const USER_AGENT =
   process.env.MINOTAUR_HTTP_USER_AGENT ??
-  'MinotaurWallet/4.0.0 (https://github.com/minotaur-ergo/minotaur)';
+  `MinotaurWallet/${version} (https://github.com/minotaur-ergo/minotaur)`;
 
 const readRequestBody = (request) =>
   new Promise((resolve, reject) => {
@@ -29,6 +33,24 @@ const writeJson = (response, status, data) => {
     'Content-Type': 'application/json',
   });
   response.end(JSON.stringify(data));
+};
+
+const serializeProxyError = (error) => {
+  const isObject = error !== null && typeof error === 'object';
+  const upstreamResponse = isObject ? error.response : undefined;
+  const hasUpstreamResponse =
+    upstreamResponse !== null && typeof upstreamResponse === 'object';
+
+  return {
+    error: error instanceof Error ? error.message : String(error),
+    ...(isObject && error.code ? { code: String(error.code) } : {}),
+    response: hasUpstreamResponse
+      ? (upstreamResponse.data ?? upstreamResponse.body ?? null)
+      : null,
+    status: hasUpstreamResponse
+      ? (upstreamResponse.status ?? upstreamResponse.statusCode ?? 500)
+      : 500,
+  };
 };
 
 const appendParams = (url, params) => {
@@ -149,9 +171,7 @@ const server = http.createServer(async (request, response) => {
 
     writeJson(response, 200, await sendUpstreamRequest(targetUrl, options));
   } catch (error) {
-    writeJson(response, 500, {
-      error: error instanceof Error ? error.message : `${error}`,
-    });
+    writeJson(response, 500, serializeProxyError(error));
   }
 });
 

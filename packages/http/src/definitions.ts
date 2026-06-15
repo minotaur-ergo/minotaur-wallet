@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PluginListenerHandle } from '@capacitor/core';
 import { Directory } from '@capacitor/filesystem';
+
+export type HttpData = ReturnType<typeof JSON.parse>;
 
 export type HttpResponseType =
   | 'arraybuffer'
@@ -42,7 +43,7 @@ export interface HttpOptions {
   url: string;
   method?: string;
   params?: HttpParams;
-  data?: any;
+  data?: HttpData;
   headers?: HttpHeaders;
   /**
    * How long to wait to read additional data. Resets each time new
@@ -82,7 +83,7 @@ export interface HttpHeaders {
 }
 
 export interface HttpResponse {
-  data: any;
+  data: HttpData;
   status: number;
   headers: HttpHeaders;
   url: string;
@@ -138,7 +139,7 @@ export interface HttpCookie {
 }
 
 export interface HttpCookieMap {
-  [key: string]: any;
+  [key: string]: string;
 }
 
 export interface HttpCookieOptions {
