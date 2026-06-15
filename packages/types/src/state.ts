@@ -148,6 +148,7 @@ export const ConfigType = {
   TestnetNodeUrl: TESTNET_NODE_URL_KEY,
   TestnetExplorerUrl: TESTNET_EXPLORER_URL_KEY,
   HideValues: 'HIDE_VALUES',
+  DisplayArchived: 'DISPLAY_ARCHIVED',
 } as const;
 
 export type DisplayType = 'simple' | 'advanced';
@@ -191,6 +192,7 @@ export interface ConfigStateType {
   loadedPinType: string;
   pin: PinConfig;
   hideValues: boolean;
+  displayArchived: boolean;
 }
 
 export interface GlobalStateType {
