@@ -27,6 +27,7 @@ jobs:
         uses: './.github/actions/build-native'
         with:
           package_json_paths: 'apps/wallet/package.json'
+          working-directory: 'apps/wallet'
 
       - name: Setup Java
         uses: actions/setup-java@v4

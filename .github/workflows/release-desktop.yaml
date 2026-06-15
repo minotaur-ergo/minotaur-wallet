@@ -48,6 +48,7 @@ jobs:
         uses: './.github/actions/build-native'
         with:
           package_json_paths: 'apps/wallet/package.json'
+          working-directory: 'apps/wallet'
 
       - name: Remove icns from assets
         if: matrix.platform != 'MacOS'
