@@ -4,16 +4,23 @@
 
 ### Minor Changes
 
-- Consider token values in transaction evaluation when ERG inputs and outputs are equal.
 - Add @capawesome/capacitor-android-edge-to-edge-support package.
+- Add displayArchive in `ConfigType` and state `ConfigType`.
+- Change the update process to sync active wallet first.
+- Consider token values in transaction evaluation when ERG inputs and outputs are equal.
 - Set color of status bar and navigation bar based on mobile theme.
 
 ### Patch Changes
 
-- Hide `Copy phrase` button in Restore Wallet page.
-- Fix multi-sig wallet creation using base64 or hex encoded xPub.
+- Fix a bug in convert to normal wallet.
 - Fix a bug in the scanning process.
+- Fix multi-sig wallet creation using base64 or hex encoded xPub.
+- Fix set active wallet bug
 - Fix url edit in network tabs.
+- Hide `Copy phrase` button in Restore Wallet page.
+- Updated dependencies
+  - @minotaur-ergo/types@1.6.0
+  - @minotaur-ergo/utils@2.0.2
 
 ## 4.0.0
 
