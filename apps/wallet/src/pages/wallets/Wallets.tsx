@@ -1,24 +1,32 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { ConfigType, GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 import { Add } from '@mui/icons-material';
 import { FormControlLabel, IconButton, Stack, Switch } from '@mui/material';
 
+import { ConfigDbAction } from '@/action/db';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import Heading from '@/components/heading/Heading';
 import SubHeading from '@/components/heading/SubHeading';
 import HomeAction from '@/components/home-action/HomeAction';
 import AppFrame from '@/layouts/AppFrame';
 import { getRoute, RouteMap } from '@/router/routerMap';
+import store from '@/store';
+import { setDisplayArchived } from '@/store/reducer/config';
 
 import TotalBalanceCard from './components/TotalBalanceCard';
 import WalletItem from './components/WalletItem';
 
 const Wallets = () => {
   const navigate = useNavigate();
-  const [showArchived, setShowArchived] = useState(false);
+  const showArchived = useSelector(
+    (state: GlobalStateType) => state.config.displayArchived,
+  );
+  const activePinType = useSelector(
+    (state: GlobalStateType) => state.config.loadedPinType,
+  );
   const wallets: Array<StateWallet> = useSelector(
     (state: GlobalStateType) => state.wallet.wallets,
   );
@@ -36,17 +44,28 @@ const Wallets = () => {
   }, [showArchived, wallets]);
 
   const showBackBtn = useMemo(() => {
-    if (
+    return !!(
       wallets.length > 0 &&
       activeWallet &&
       activeWallet !== -1 &&
       useActiveWallet
-    ) {
-      return true;
-    }
-    return false;
+    );
   }, [wallets, activeWallet, useActiveWallet]);
-
+  const setShowArchived = useCallback(
+    (newState: boolean) => {
+      if (newState !== showArchived) {
+        store.dispatch(setDisplayArchived(newState));
+        ConfigDbAction.getInstance()
+          .setConfig(
+            ConfigType.DisplayArchived,
+            newState ? 'true' : 'false',
+            activePinType,
+          )
+          .then(() => null);
+      }
+    },
+    [showArchived, activePinType],
+  );
   return (
     <AppFrame
       title="My Wallets"

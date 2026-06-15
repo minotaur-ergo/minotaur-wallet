@@ -1,5 +1,5 @@
 {
-  "name": "@minotaur/api",
+  "name": "@minotaur-ergo/api",
   "version": "0.0.0",
   "description": "ESM API server with Fastify and TypeORM",
   "main": "dist/main.js",
@@ -11,7 +11,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@minotaur-ergo/utils": "^2.0.1",
+    "@minotaur-ergo/utils": "^2.0.2",
     "@rosen-bridge/fastify-enhanced": "^3.0.0",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.6",
