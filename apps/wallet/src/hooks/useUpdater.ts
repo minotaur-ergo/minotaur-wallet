@@ -30,19 +30,14 @@ const useUpdater = () => {
   useEffect(() => {
     setTimeout(() => setLoading(false), 10000);
   }, []);
-
   useEffect(() => {
     if (!loading && initialized) {
       setLoading(true);
-      const filtered = wallets.filter(
-        (item) => updatedWallets.indexOf(item.id) === -1,
-      );
-      const filteredActive = filtered.filter(
-        (item) => item.id !== activeWallet,
-      );
-      const wallet =
-        filteredActive.length === 0 ? filtered[0] : filteredActive[0];
-      if (wallet) {
+      const remaining = wallets
+        .filter((item) => updatedWallets.indexOf(item.id) === -1)
+        .sort((a, _) => (activeWallet === a.id ? -1 : 0));
+      if (remaining.length > 0) {
+        const wallet = remaining[0];
         syncWallet(wallet)
           .then(() => {
             store.dispatch(addUpdatedWallets(wallet.id));
@@ -58,7 +53,7 @@ const useUpdater = () => {
         setLoading(false);
       }
     }
-  }, [activeWallet, loading, initialized, wallets, updatedWallets]);
+  }, [activeWallet, initialized, loading, updatedWallets, wallets]);
   useEffect(() => {
     if (!loading && refresh) {
       store.dispatch(clearUpdatedWallets());

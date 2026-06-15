@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Routes, useParams } from 'react-router-dom';
 
-import { GlobalStateType, StateWallet } from '@minotaur-ergo/types';
+import { ConfigType, GlobalStateType, StateWallet } from '@minotaur-ergo/types';
 
+import { ConfigDbAction } from '@/action/db';
 import ChangeWalletPassword from '@/pages/settings/ChangeWalletPassword';
 import BuyErg from '@/pages/wallet-page/buy-erg/BuyErg';
 import WalletTransactionDetails from '@/pages/wallet-page/transaction/WalletTransactionDetail';
 import { WalletPageSuffix } from '@/router/routerMap';
+import store from '@/store';
+import { setActiveWallet } from '@/store/reducer/config';
 
 import WalletSettings from '../settings/Settings';
 import WalletExtendedPublicKey from '../settings/WalletExtendedPublicKey';
@@ -24,7 +27,13 @@ import WalletTransaction from './transaction/WalletTransaction';
 const WalletPage = () => {
   const { id } = useParams();
   const [wallet, setWallet] = useState<StateWallet | undefined>();
+  const pinType = useSelector(
+    (state: GlobalStateType) => state.config.loadedPinType,
+  );
   const wallets = useSelector((state: GlobalStateType) => state.wallet.wallets);
+  const activeWallet = useSelector(
+    (state: GlobalStateType) => state.config.activeWallet,
+  );
   useEffect(() => {
     const selected = wallets.filter((item) => `${item.id}` === id);
     if (selected.length > 0) {
@@ -37,6 +46,16 @@ const WalletPage = () => {
       }
     }
   }, [wallets, id, wallet]);
+  useEffect(() => {
+    if (wallet && activeWallet !== wallet.id) {
+      store.dispatch(setActiveWallet({ activeWallet: wallet.id }));
+      ConfigDbAction.getInstance().setConfig(
+        ConfigType.ActiveWallet,
+        wallet.id.toString(),
+        pinType,
+      );
+    }
+  }, [wallet, activeWallet, pinType]);
   if (wallet === undefined) {
     return null;
   }
