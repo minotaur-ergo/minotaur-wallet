@@ -17,7 +17,12 @@ import {
   WalletDbAction,
 } from '@/action/db';
 import { getInitializeData } from '@/action/initialize';
-import { ConfigPayload, setConfig, setPinConfig } from '@/store/reducer/config';
+import {
+  ConfigPayload,
+  setConfig,
+  setDisplayArchived,
+  setPinConfig,
+} from '@/store/reducer/config';
 import { initialize, setAddresses, setWallets } from '@/store/reducer/wallet';
 import { DEFAULT_EXPLORER, DEFAULT_NODE } from '@/utils/const';
 import {
@@ -117,6 +122,9 @@ const useInitConfig = () => {
               break;
             case ConfigType.HideValues:
               config.hideValues = item.value === 'true';
+              break;
+            case ConfigType.DisplayArchived:
+              dispatch(setDisplayArchived(item.value === 'true'));
               break;
           }
         });

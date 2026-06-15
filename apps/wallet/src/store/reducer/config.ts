@@ -21,6 +21,7 @@ export const configInitialState: ConfigStateType = {
   loadedPinType: '-',
   useActiveWallet: true,
   hideValues: false,
+  displayArchived: false,
   network: {
     mainnet: {
       backend: NETWORK_BACKEND.EXPLORER,
@@ -71,7 +72,7 @@ export type NetworkPayload = {
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
   ActiveWalletPayload &
-  NetworkPayload & { pinType: string };
+  NetworkPayload & { pinType: string; displayArchived?: boolean };
 
 export type PricePayload = {
   current: number;
@@ -147,6 +148,7 @@ const configSlice = createSlice({
       state.network.mainnet = action.payload.network.mainnet;
       state.network.testnet = action.payload.network.testnet;
       state.hideValues = action.payload.hideValues ?? false;
+      state.displayArchived = action.payload.displayArchived ?? false;
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -166,6 +168,9 @@ const configSlice = createSlice({
     setMultiSigLoadedTime: (state, action: PayloadAction<number>) => {
       state.multiSigLoadedTime = action.payload;
     },
+    setDisplayArchived: (state, action: PayloadAction<boolean>) => {
+      state.displayArchived = action.payload;
+    },
   },
 });
 
@@ -183,4 +188,5 @@ export const {
   setConfig,
   setMultiSigLoadedTime,
   setPinConfig,
+  setDisplayArchived,
 } = configSlice.actions;
