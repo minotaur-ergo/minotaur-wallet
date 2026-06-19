@@ -41,6 +41,7 @@ const AddressItemDisplay = (props: AddressItemDisplayPropsType) => {
             <BalanceDisplay
               amount={BigInt(props.address.balance)}
               tokenBalances={[]}
+              networkType={props.chain.label}
             />
           </Typography>
         </Box>

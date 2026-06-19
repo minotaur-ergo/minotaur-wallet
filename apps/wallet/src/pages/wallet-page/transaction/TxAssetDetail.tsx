@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
+import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { dottedText, getValueColor } from '@minotaur-ergo/utils';
 import {
   AddBoxOutlined,
@@ -144,7 +145,7 @@ const TxAssetDetail = (props: TxAssetDetailPropsType) => {
                 amount={props.amount}
                 decimal={details.decimal}
                 tokenId={props.id}
-                showMonetaryValue={true}
+                showMonetaryValue={props.networkType === MAIN_NET_LABEL}
               />
             </Typography>
           </Box>

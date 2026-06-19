@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   ConfigType,
   GlobalStateType,
-  MAIN_NET_LABEL,
   TokenBalance,
   WALLET_FLAG_ENUM,
   WalletType,
@@ -144,14 +143,11 @@ const WalletItem = (props: PropsType) => {
               <small>&nbsp;ERG</small>
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {props.net === MAIN_NET_LABEL ? (
-                <BalanceDisplay
-                  amount={amount}
-                  tokenBalances={props.tokensBalance}
-                />
-              ) : (
-                <span>&nbsp;</span>
-              )}
+              <BalanceDisplay
+                amount={amount}
+                tokenBalances={props.tokensBalance}
+                networkType={props.net}
+              />
             </Typography>
           </Box>
           <Box mr={2}>

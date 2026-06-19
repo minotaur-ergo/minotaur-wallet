@@ -68,6 +68,7 @@ const AddressViewCard = (props: AddressViewCardPropsType) => {
         <BalanceDisplay
           amount={BigInt(props.address.balance)}
           tokenBalances={[]}
+          networkType={props.chain.label}
         />
       </Typography>
       {props.address.tokens.length > 0 ? (
