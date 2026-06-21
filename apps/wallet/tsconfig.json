@@ -34,6 +34,7 @@
     { "path": "../../packages/ergo-lib" },
     { "path": "../../packages/types" },
     { "path": "../../packages/utils" },
-    { "path": "../../packages/electron" }
+    { "path": "../../packages/electron" },
+    { "path": "../../packages/http" }
   ]
 }

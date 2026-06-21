@@ -8,7 +8,8 @@ const perPackage = (resolver) => (files) => {
       while (directory && directory !== process.cwd()) {
         if (
           fs.existsSync(path.join(directory, 'package.json')) &&
-          !directory.endsWith('apps/wallet/electron')
+          !directory.endsWith('apps/wallet/electron') &&
+          !directory.endsWith('packages/http/electron')
         ) {
           packages.add(resolver(directory, file));
           break;

@@ -15,8 +15,12 @@
     "paths": {
       "@minotaur-ergo/electron": [
         "../../../packages/electron/src/electron-platform/index.ts"
-      ]
+      ],
+      "@minotaur-ergo/http": ["../../../packages/http/src/index.ts"]
     }
   },
-  "references": [{ "path": "../../../packages/electron" }]
+  "references": [
+    { "path": "../../../packages/electron" },
+    { "path": "../../../packages/http" }
+  ]
 }

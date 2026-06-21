@@ -50,6 +50,8 @@ PODS:
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
   - IONFilesystemLib (1.0.1)
+  - MinotaurErgoHttp (0.0.0):
+    - Capacitor
   - MLImage (1.0.0-beta6)
   - MLKitBarcodeScanning (6.0.0):
     - MLKitCommon (~> 12.0)
@@ -94,6 +96,7 @@ DEPENDENCIES:
   - "CapacitorStatusBar (from `../../../../node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../../../node_modules/@capacitor/toast`)"
   - GoogleMLKit/BarcodeScanning
+  - MinotaurErgoHttp (from `../../../../packages/http`)
 
 SPEC REPOS:
   trunk:
@@ -137,6 +140,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/@capacitor/status-bar"
   CapacitorToast:
     :path: "../../../../node_modules/@capacitor/toast"
+  MinotaurErgoHttp:
+    :path: "../../../../packages/http"
 
 SPEC CHECKSUMS:
   Capacitor: a5bf59e09f9dd82694fdcca4d107b4d215ac470f
@@ -157,6 +162,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
+  MinotaurErgoHttp: d92a6d97530106a7d2631fcc2bc6ae19c63fce34
   MLImage: 0ad1c5f50edd027672d8b26b0fee78a8b4a0fc56
   MLKitBarcodeScanning: 0a3064da0a7f49ac24ceb3cb46a5bc67496facd2
   MLKitCommon: 07c2c33ae5640e5380beaaa6e4b9c249a205542d
@@ -166,6 +172,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: 1ed2c8dcbf074c4ea772afd9c22635f95db90d17
+PODFILE CHECKSUM: dda6b33ece004103017ca602bd2a9a8947281495
 
 COCOAPODS: 1.16.2
