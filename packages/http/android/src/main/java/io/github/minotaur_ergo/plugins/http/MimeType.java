@@ -1,4 +1,4 @@
-package com.getcapacitor.plugin.http;
+package io.github.minotaur_ergo.plugins.http;
 
 enum MimeType {
     APPLICATION_JSON("application/json"),

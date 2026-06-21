@@ -1,4 +1,4 @@
-package com.getcapacitor.plugin.http;
+package io.github.minotaur_ergo.plugins.http;
 
 import com.getcapacitor.JSObject;
 import java.io.File;

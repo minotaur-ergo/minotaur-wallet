@@ -17,7 +17,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    namespace "com.getcapacitor.plugin.http"
+    namespace "io.github.minotaur_ergo.plugins.http"
     compileSdk project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 35
     defaultConfig {
         minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 23

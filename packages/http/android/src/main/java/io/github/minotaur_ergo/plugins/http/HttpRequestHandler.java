@@ -1,7 +1,7 @@
-package com.getcapacitor.plugin.http;
+package io.github.minotaur_ergo.plugins.http;
 
-import static com.getcapacitor.plugin.http.MimeType.APPLICATION_JSON;
-import static com.getcapacitor.plugin.http.MimeType.APPLICATION_VND_API_JSON;
+import static io.github.minotaur_ergo.plugins.http.MimeType.APPLICATION_JSON;
+import static io.github.minotaur_ergo.plugins.http.MimeType.APPLICATION_VND_API_JSON;
 
 import android.content.Context;
 import android.text.TextUtils;
