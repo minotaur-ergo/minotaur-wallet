@@ -199,6 +199,7 @@ const TransactionItem = (props: TransactionItemPropsType) => {
               totalTokensInErg={totalTokensInErg}
               amount={amount}
               txType={txType}
+              networkType={props.wallet.networkType}
             />
           </Box>
         </CardContent>
