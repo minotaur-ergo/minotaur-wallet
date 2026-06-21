@@ -35,14 +35,14 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
     setOpen(false);
   };
   useEffect(() => {
-    if (newValue !== value) setNewValue(value);
-  }, [value, newValue]);
+    setNewValue(value);
+  }, [value]);
 
   return (
     <Fragment>
       <TextField
         label={label}
-        value={value}
+        value={newValue}
         helperText={helperText}
         InputProps={{
           endAdornment: (
