@@ -1,5 +1,11 @@
 # @minotaur-ergo/types
 
+## 1.7.0
+
+### Minor Changes
+
+- Add wallet networkType to DAppPropsType.
+
 ## 1.6.0
 
 ### Minor Changes

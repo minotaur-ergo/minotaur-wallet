@@ -1,5 +1,23 @@
 # minotaur-wallet
 
+## 4.2.0
+
+### Minor Changes
+
+- Support http requests for android.
+- Use the http plugin for network requests.
+- Do not display monetary values for testnet wallets.
+
+### Patch Changes
+
+- Fix editing network backend url bug prevents edit.
+- Improved handling of unavailable token valuation data.
+- Updated dependencies
+  - @minotaur-ergo/http@1.0.0
+  - @minotaur-ergo/types@1.7.0
+  - @minotaur-ergo/electron@0.3.0
+  - @minotaur-ergo/utils@2.0.3
+
 ## 4.1.0
 
 ### Minor Changes
