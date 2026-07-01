@@ -1,3 +1,4 @@
+import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { dottedText } from '@minotaur-ergo/utils';
 import { Avatar, Box, Typography } from '@mui/material';
 
@@ -51,7 +52,7 @@ const BoxAssetRow = (props: BoxAssetRowPropsType) => {
         amount={props.amount}
         decimal={details.decimal}
         tokenId={props.id}
-        showMonetaryValue={true}
+        showMonetaryValue={props.networkType === MAIN_NET_LABEL}
         forceDisplay={true}
       />
     </Box>

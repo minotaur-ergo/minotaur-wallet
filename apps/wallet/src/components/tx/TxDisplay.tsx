@@ -68,6 +68,7 @@ const TxDisplay = ({ tx, boxes, wallet, date }: TxDisplayPropsType) => {
             amount={-txValues.total}
             txType={TxStatus.IN}
             withBg={true}
+            networkType={wallet.networkType}
           />
         </Box>
       </Box>

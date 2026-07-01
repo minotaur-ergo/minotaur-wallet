@@ -11,7 +11,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@minotaur-ergo/utils": "^2.0.2",
+    "@minotaur-ergo/utils": "^2.0.3",
     "@rosen-bridge/fastify-enhanced": "^3.0.0",
     "reflect-metadata": "^0.2.1",
     "sqlite3": "^5.1.6",

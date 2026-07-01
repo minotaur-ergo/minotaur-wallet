@@ -1,6 +1,6 @@
 {
   "name": "@minotaur-ergo/electron",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Capacitor community support for the Electron platform!",
   "main": "dist/electron-platform/index.js",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && npm run build-platform-types && npm run build-platform",
+    "build": "npm run build-platform-types && npm run build-platform",
     "capacitor:copy": "node dist/cli-scripts/cap-scripts.js copy",
     "capacitor:update": "node dist/cli-scripts/cap-scripts.js update",
     "capacitor:sync": "node dist/cli-scripts/cap-scripts.js sync",

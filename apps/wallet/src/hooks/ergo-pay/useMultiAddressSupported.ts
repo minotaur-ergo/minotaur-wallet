@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { CapacitorHttp } from '@capacitor/core';
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import {
   MultiAddressSupportedEnum,
   MultipleAddressResponse,
