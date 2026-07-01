@@ -1,5 +1,13 @@
 # @minotaur-ergo/utils
 
+## 2.0.3
+
+### Patch Changes
+
+- Fix get transaction detail via node bug.
+- Updated dependencies
+  - @minotaur-ergo/types@1.7.0
+
 ## 2.0.2
 
 ### Patch Changes
