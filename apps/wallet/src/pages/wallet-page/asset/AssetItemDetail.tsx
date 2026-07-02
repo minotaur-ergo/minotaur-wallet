@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, Box, IconButton, Stack, Typography } from '@mui/material';
 
@@ -64,7 +65,7 @@ const AssetItemDetail = (props: AssetItemDetailPropsType) => {
             }
           />
         ) : null}
-        {props.balance ? (
+        {props.network_type === MAIN_NET_LABEL && props.balance ? (
           <DisplayProperty
             label="Value"
             value={

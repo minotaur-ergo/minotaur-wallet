@@ -1,5 +1,11 @@
 # @minotaur-ergo/types
 
+## 1.6.0
+
+### Minor Changes
+
+- StoreArchive type and config type
+
 ## 1.5.0
 
 ### Minor Changes

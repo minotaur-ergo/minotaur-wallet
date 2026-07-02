@@ -1,3 +1,4 @@
+import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { Avatar, Box, Typography } from '@mui/material';
 
 import TokenAmountDisplay from '@/components/amounts-display/TokenAmountDisplay';
@@ -39,7 +40,7 @@ const AssetRow = (props: AssetRowPropsType) => {
               amount={BigInt(props.amount)}
               decimal={details.decimal}
               tokenId={props.id}
-              showMonetaryValue={true}
+              showMonetaryValue={props.networkType === MAIN_NET_LABEL}
             />
           </Typography>
         ) : undefined}

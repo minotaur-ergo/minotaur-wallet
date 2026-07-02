@@ -119,6 +119,7 @@ const WalletRestore = () => {
           mnemonic={values.mnemonic}
           mnemonicPassphrase={values.mnemonicPassphrase}
           networkType={values.network}
+          readOnlyWalletId={values.readOnlyWalletId}
           setHasError={setHasError}
           setMnemonic={(mnemonic) => setParam('mnemonic', mnemonic)}
           setMnemonicPassphrase={(mnemonicPassphrase) =>

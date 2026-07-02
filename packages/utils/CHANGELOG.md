@@ -1,5 +1,12 @@
 # @minotaur-ergo/utils
 
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @minotaur-ergo/types@1.6.0
+
 ## 2.0.1
 
 ### Patch Changes

@@ -68,6 +68,7 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
               txType={valuesDirection.outgoing ? TxStatus.OUT : TxStatus.IN}
               withBg={true}
               forceDisplay={true}
+              networkType={props.wallet.networkType}
             />
           </Box>
           {tokensCount > 0 && (

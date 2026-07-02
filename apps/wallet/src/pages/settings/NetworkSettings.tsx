@@ -102,6 +102,7 @@ const NetworkSettings = () => {
         <Stack spacing={2}>
           {backends.map((item) => (
             <SolitaryTextField
+              key={item}
               value={item === NODE_NETWORK ? network.node : network.explorer}
               label={`${item} URL`}
               onChange={(url) => setUrl(item, url)}

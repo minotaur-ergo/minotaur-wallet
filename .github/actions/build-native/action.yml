@@ -37,7 +37,7 @@ runs:
 
     - name: Copy icons to public dir
       shell: bash
-      run: npm run copy:icons
+      run: npm run copyIcons
       working-directory: ${{ inputs.working-directory }}
 
     - name: Update version in all package.json

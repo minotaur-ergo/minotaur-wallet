@@ -1,4 +1,4 @@
-import { CapacitorHttp } from '@capacitor/core';
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import { getCurrencySymbol } from '@minotaur-ergo/utils/src/currency';
 
 import { OptionsType } from '@/components/solitary/SolitarySelectField';

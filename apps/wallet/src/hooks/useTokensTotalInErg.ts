@@ -20,7 +20,7 @@ export const useTokensTotalInErg = (tokens: TokenInput[]): bigint => {
         valueInErg: 0,
         decimal: 0,
       };
-
+      if (!tv.valueInErg) return 0n;
       return BigInt(
         Math.round(tv.valueInErg * 10 ** 9) *
           Math.round(Number(t.balance) / 10 ** tv.decimal),

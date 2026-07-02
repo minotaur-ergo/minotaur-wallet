@@ -6,6 +6,7 @@ const packagesInOrder = [
   'packages/types',
   'packages/utils',
   'packages/electron',
+  'packages/http',
 ];
 
 for (const pkg of packagesInOrder) {

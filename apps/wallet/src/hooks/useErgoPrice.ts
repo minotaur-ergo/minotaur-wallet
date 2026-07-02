@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import { toDay } from '@minotaur-ergo/utils/src/date';
 
 import { setShowBalanceChart } from '@/store/reducer/wallet';

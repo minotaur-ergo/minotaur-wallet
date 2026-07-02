@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { GlobalStateType, TokenBalance } from '@minotaur-ergo/types';
+import {
+  GlobalStateType,
+  MAIN_NET_LABEL,
+  TokenBalance,
+} from '@minotaur-ergo/types';
 import { ergPriceCurrency } from '@minotaur-ergo/utils';
 
 import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
@@ -9,7 +13,10 @@ import { useTokensTotalInErg } from '@/hooks/useTokensTotalInErg';
 interface BalanceDisplayPropsType {
   amount: bigint;
   tokenBalances: Array<TokenBalance>;
+  networkType?: string | undefined;
   forceDisplay?: boolean;
+  before?: string;
+  after?: string;
 }
 
 const BalanceDisplay = (props: BalanceDisplayPropsType) => {
@@ -36,13 +43,15 @@ const BalanceDisplay = (props: BalanceDisplayPropsType) => {
 
   const value = ergPriceCurrency(props.amount + totalTokensInErg, ergPrice);
 
-  return (
+  return !props.networkType || props.networkType === MAIN_NET_LABEL ? (
     <span onClick={switchDisplay}>
+      {props.before}
       {symbol?.direction === 'l'
         ? `${symbol.symbol} ${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '}`
         : `${showBalance ? value.toLocaleString() : ' ✻ ✻ ✻ ✻ '} ${symbol.symbol}`}
+      {props.after}
     </span>
-  );
+  ) : null;
 };
 
 export default BalanceDisplay;

@@ -1,4 +1,4 @@
-import { TxStatus } from '@minotaur-ergo/types';
+import { MAIN_NET_LABEL, TxStatus } from '@minotaur-ergo/types';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Typography } from '@mui/material';
@@ -9,6 +9,7 @@ interface TransactionResultPropsType {
   totalTokensInErg: bigint;
   amount: bigint;
   txType: TxStatus;
+  networkType: string;
   withBg?: boolean;
   forceDisplay?: boolean;
 }
@@ -20,7 +21,7 @@ const TransactionResult = (props: TransactionResultPropsType) => {
 
   const iconSx = { fontSize: 16 };
 
-  return (
+  return props.networkType === MAIN_NET_LABEL ? (
     <Box
       sx={{
         display: 'flex',
@@ -72,7 +73,7 @@ const TransactionResult = (props: TransactionResultPropsType) => {
         />
       </Typography>
     </Box>
-  );
+  ) : null;
 };
 
 export default TransactionResult;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   Alert,
@@ -27,6 +27,7 @@ interface MnemonicRestorePropsType {
   setHasError: (hasError: boolean) => unknown;
   setMnemonic: (mnemonic: string) => unknown;
   setMnemonicPassphrase: (mnemonicPassphrase: string) => unknown;
+  readOnlyWalletId: number;
   setReadOnlyWalletId: (id: number) => unknown;
 }
 
@@ -35,7 +36,10 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
   const [extended, setExtended] = useState(props.mnemonicPassphrase !== '');
   const [samePassPhrase, setSamePassPhrase] = useState<boolean>(true);
   const [convert, setConvert] = useState(false);
-  const mnemonicWords = props.mnemonic.split(' ');
+  const mnemonicWords = useMemo(
+    () => props.mnemonic.split(' '),
+    [props.mnemonic],
+  );
 
   const validate = useMnemonicValid(
     props.mnemonic,
@@ -43,42 +47,54 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
     props.networkType,
   );
 
-  const selectElement = (element: string) => {
-    if (words.indexOf(element) !== -1) {
+  const selectElement = useCallback(
+    (element: string) => {
+      if (words.indexOf(element) !== -1) {
+        props.setMnemonic(
+          (props.mnemonic ? props.mnemonic + ' ' + element : element).trim(),
+        );
+        setSelected('');
+      }
+    },
+    [props],
+  );
+
+  const selectElements = useCallback(
+    (elements: string[]) => {
+      const valids: string[] = [];
+      const invalidIndex: number = elements.findIndex((w: string) => {
+        const found = words.includes(w);
+        if (found) valids.push(w);
+        return !found;
+      });
       props.setMnemonic(
-        (props.mnemonic ? props.mnemonic + ' ' + element : element).trim(),
+        (props.mnemonic
+          ? props.mnemonic + ' ' + valids.join(' ')
+          : valids.join(' ')
+        ).trim(),
       );
-      setSelected('');
-    }
-  };
+      if (invalidIndex !== -1) {
+        setSelected(elements.slice(invalidIndex).join(' '));
+      } else {
+        setSelected('');
+      }
+    },
+    [props],
+  );
 
-  const selectElements = (elements: string[]) => {
-    const valids: string[] = [];
-    const invalidIndex: number = elements.findIndex((w: string) => {
-      const found = words.includes(w);
-      if (found) valids.push(w);
-      return !found;
-    });
-    props.setMnemonic(
-      (props.mnemonic
-        ? props.mnemonic + ' ' + valids.join(' ')
-        : valids.join(' ')
-      ).trim(),
-    );
-    if (invalidIndex !== -1) {
-      setSelected(elements.slice(invalidIndex).join(' '));
-    } else {
-      setSelected('');
-    }
-  };
+  const handleRemoveElement = useCallback(
+    (index: number) => {
+      const mnemonicParts = props.mnemonic.split(' ');
+      mnemonicParts.splice(index, 1);
+      props.setMnemonic(mnemonicParts.join(' '));
+    },
+    [props],
+  );
 
-  const handleRemoveElement = (index: number) => {
-    const mnemonicParts = props.mnemonic.split(' ');
-    mnemonicParts.splice(index, 1);
-    props.setMnemonic(mnemonicParts.join(' '));
-  };
-
-  const filteredWords = words.filter((item) => item.indexOf(selected) === 0);
+  const filteredWords = useMemo(
+    () => words.filter((item) => item.indexOf(selected) === 0),
+    [selected],
+  );
   useEffect(() => {
     if (validate.valid && (!validate.exists || convert)) {
       props.setHasError(
@@ -87,12 +103,20 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
     } else {
       props.setHasError(true);
     }
-  });
+  }, [
+    convert,
+    extended,
+    props,
+    samePassPhrase,
+    validate.exists,
+    validate.valid,
+  ]);
 
   useEffect(() => {
-    props.setReadOnlyWalletId(validate.readOnlyWalletId ?? -1);
+    if (props.readOnlyWalletId !== validate.readOnlyWalletId) {
+      props.setReadOnlyWalletId(validate.readOnlyWalletId ?? -1);
+    }
   }, [validate, props]);
-
   return (
     <Box>
       <Typography>
@@ -174,7 +198,7 @@ export const MnemonicRestore = (props: MnemonicRestorePropsType) => {
           </Typography>
           <FormControlLabel
             control={
-              <Switch value={convert} onChange={() => setConvert(!convert)} />
+              <Switch checked={convert} onChange={() => setConvert(!convert)} />
             }
             label="Convert it to a normal wallet"
           />

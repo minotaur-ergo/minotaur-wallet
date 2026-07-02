@@ -160,6 +160,7 @@ const BurnToken = (props: DAppPropsType) => {
           setShowConfirm(false);
         }}
         value={tokensValue}
+        networkType={props.networkType}
       />
       <Stack spacing={2}>
         <SelectTokens

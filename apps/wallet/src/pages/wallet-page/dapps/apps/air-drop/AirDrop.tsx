@@ -153,8 +153,13 @@ const AirDrop = (props: DAppPropsType) => {
                 fontSize={14}
                 ml={1}
               >
-                (
-                <BalanceDisplay amount={totalToSend} tokenBalances={[]} />)
+                <BalanceDisplay
+                  amount={totalToSend}
+                  tokenBalances={[]}
+                  networkType={props.networkType}
+                  before="("
+                  after=")"
+                />
               </Typography>
             </Typography>
           </Box>
@@ -191,12 +196,13 @@ const AirDrop = (props: DAppPropsType) => {
                 fontSize={14}
                 ml={1}
               >
-                (
                 <BalanceDisplay
                   amount={totalToSend * divisor}
                   tokenBalances={[]}
+                  networkType={props.networkType}
+                  before="("
+                  after=")"
                 />
-                )
               </Typography>
             </Typography>
           </Box>

@@ -8,6 +8,7 @@ import ConfirmCopy from '@/components/copy-to-clipboard/ConfirmCopy';
 interface PropsType {
   mnemonic: string;
   hideIndex?: Array<number>;
+  showCopyButton?: boolean;
   handleClick?: (index: number) => unknown;
 }
 
@@ -68,48 +69,50 @@ const MnemonicView = (props: PropsType) => {
         ))}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={handleOpenConfirm}
-          disabled={!props.mnemonic}
-          startIcon={
-            isCopied ? (
-              <CheckRounded fontSize="small" />
-            ) : (
-              <ContentCopyRounded fontSize="small" />
-            )
-          }
-          aria-label="Copy mnemonic phrase"
-          sx={(theme) => ({
-            borderRadius: '10px',
-            textTransform: 'none',
-            fontWeight: 600,
-            px: 1.75,
-            py: 0.75,
-            minWidth: 132,
-            color: isCopied
-              ? theme.palette.success.dark
-              : theme.palette.text.secondary,
-            borderColor: isCopied
-              ? theme.palette.success.main
-              : theme.palette.divider,
-            backgroundColor: isCopied
-              ? theme.palette.success.light
-              : theme.palette.background.paper,
-            transition: theme.transitions.create(
-              ['background-color', 'border-color', 'color', 'box-shadow'],
-              { duration: theme.transitions.duration.shorter },
-            ),
-            boxShadow: isCopied
-              ? `0 0 0 1px ${theme.palette.success.main}`
-              : 'none',
-          })}
-        >
-          {isCopied ? 'Copied' : 'Copy phrase'}
-        </Button>
-      </Box>
+      {props.showCopyButton && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleOpenConfirm}
+            disabled={!props.mnemonic}
+            startIcon={
+              isCopied ? (
+                <CheckRounded fontSize="small" />
+              ) : (
+                <ContentCopyRounded fontSize="small" />
+              )
+            }
+            aria-label="Copy mnemonic phrase"
+            sx={(theme) => ({
+              borderRadius: '10px',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 1.75,
+              py: 0.75,
+              minWidth: 132,
+              color: isCopied
+                ? theme.palette.success.dark
+                : theme.palette.text.secondary,
+              borderColor: isCopied
+                ? theme.palette.success.main
+                : theme.palette.divider,
+              backgroundColor: isCopied
+                ? theme.palette.success.light
+                : theme.palette.background.paper,
+              transition: theme.transitions.create(
+                ['background-color', 'border-color', 'color', 'box-shadow'],
+                { duration: theme.transitions.duration.shorter },
+              ),
+              boxShadow: isCopied
+                ? `0 0 0 1px ${theme.palette.success.main}`
+                : 'none',
+            })}
+          >
+            {isCopied ? 'Copied' : 'Copy phrase'}
+          </Button>
+        </Box>
+      )}
 
       <ConfirmCopy
         open={isConfirmOpen}

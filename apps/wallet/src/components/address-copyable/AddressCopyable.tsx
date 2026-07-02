@@ -13,7 +13,7 @@ const AddressCopyable = (props: PropsType) => {
       <CardActionArea>
         <Alert severity="info" icon={false}>
           <Box display="flex">
-            <Typography sx={{ overflowWrap: 'anywhere' }}>
+            <Typography sx={{ overflowWrap: 'anywhere', minWidth: 0 }}>
               {props.address}
             </Typography>
             <ContentCopy />

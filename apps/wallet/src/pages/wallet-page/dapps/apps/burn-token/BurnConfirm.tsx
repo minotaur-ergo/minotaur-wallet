@@ -7,6 +7,7 @@ type BurnConfirmSheetProps = {
   onConfirm: () => void;
   onClose: () => void;
   value: bigint;
+  networkType: string;
 };
 
 const BurnConfirm = (props: BurnConfirmSheetProps) => {
@@ -51,6 +52,7 @@ const BurnConfirm = (props: BurnConfirmSheetProps) => {
             amount={props.value}
             tokenBalances={[]}
             forceDisplay={true}
+            networkType={props.networkType}
           />
         </Box>
         .

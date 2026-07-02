@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { MAIN_NET_LABEL } from '@minotaur-ergo/types';
 import { createEmptyArray } from '@minotaur-ergo/utils';
+import { getBase58ExtendedPublicKey } from '@minotaur-ergo/utils/src/xpub';
 import { Button, CircularProgress, Grid } from '@mui/material';
 
 import { createMultiSigWallet } from '@/action/wallet';
@@ -80,7 +81,7 @@ const WalletAddMultiSig = () => {
       createMultiSigWallet(
         values.name,
         parseInt(values.walletId),
-        values.xPubs,
+        values.xPubs.map((item) => getBase58ExtendedPublicKey(item)!),
         values.threshold,
       )
         .then(() => {

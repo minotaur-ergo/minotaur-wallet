@@ -74,7 +74,7 @@ class ErgoNodeNetwork extends BaseNetwork {
     }
   };
 
-  getAddressTransactions = async (
+  protected getAddressTransactions = async (
     address: string,
     limit: number,
     offset: number,

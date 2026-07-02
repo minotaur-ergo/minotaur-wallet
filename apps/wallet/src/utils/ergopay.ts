@@ -1,5 +1,5 @@
-import { CapacitorHttp } from '@capacitor/core';
 import * as wasm from '@minotaur-ergo/ergo-lib';
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import {
   ErgoPayResponse,
   InternalBoxLoadedData,

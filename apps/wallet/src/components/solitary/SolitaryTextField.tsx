@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Stack, Typography } from '@mui/material';
@@ -34,12 +34,15 @@ const SolitaryTextField: React.FC<SolitaryTextFieldPropsType> = ({
     }
     setOpen(false);
   };
+  useEffect(() => {
+    setNewValue(value);
+  }, [value]);
 
   return (
     <Fragment>
       <TextField
         label={label}
-        value={value}
+        value={newValue}
         helperText={helperText}
         InputProps={{
           endAdornment: (

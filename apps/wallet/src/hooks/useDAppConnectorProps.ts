@@ -47,6 +47,7 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
   });
   return {
     walletId: wallet.id,
+    networkType: wallet.networkType,
     getAddresses: async () => addresses.map((item) => item.address),
     getDefaultAddress: async () => addresses[0].address,
     getCoveringForErgAndToken: selectBoxesDApps(wallet),

@@ -62,7 +62,7 @@ const WalletMnemonic = (props: WalletMnemonicPropsType) => {
           sx={{ width: 'calc(100% - 16px)' }}
         />
       </InAdvancedMode>
-      <MnemonicView mnemonic={props.mnemonic} />
+      <MnemonicView mnemonic={props.mnemonic} showCopyButton={true} />
       <MnemonicPassphrase
         setPassword={props.setMnemonicPassphrase}
         setError={props.setHasError}

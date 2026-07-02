@@ -20,6 +20,7 @@ def capacitor_pods
   pod 'CapacitorFilesystem', :path => '../../../../node_modules/@capacitor/filesystem'
   pod 'CapacitorStatusBar', :path => '../../../../node_modules/@capacitor/status-bar'
   pod 'CapacitorToast', :path => '../../../../node_modules/@capacitor/toast'
+  pod 'MinotaurErgoHttp', :path => '../../../../packages/http'
   pod 'CapacitorPluginSafeArea', :path => '../../../../node_modules/capacitor-plugin-safe-area'
 end
 

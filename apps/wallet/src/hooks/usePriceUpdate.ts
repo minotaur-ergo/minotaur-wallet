@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CapacitorHttp } from '@capacitor/core';
+import { CapacitorHttp } from '@minotaur-ergo/http';
 import { GlobalStateType } from '@minotaur-ergo/types';
 
 import { setPrice } from '@/store/reducer/config';
