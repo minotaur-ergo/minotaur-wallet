@@ -164,10 +164,12 @@ class ErgoNodeNetwork extends BaseNetwork {
         id: res.id,
         inputs: (res.inputs ?? []).map((item) => ({
           boxId: item.boxId,
-          spendingProof: {
-            proofBytes: item.spendingProof ? item.spendingProof : '',
-            extension: {},
-          },
+          spendingProof: item.spendingProof
+            ? item.spendingProof
+            : {
+                proofBytes: '',
+                extension: {},
+              },
         })),
         dataInputs: res.dataInputs,
         outputs: res.outputs,
