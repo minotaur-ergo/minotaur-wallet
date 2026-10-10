@@ -5,6 +5,7 @@ import {
   BuildCircleTwoTone,
   CardGiftcardTwoTone,
   LocalFireDepartmentTwoTone,
+  SwapHorizTwoTone,
   TokenTwoTone,
 } from '@mui/icons-material';
 
@@ -12,6 +13,7 @@ import AirDrop from '@/pages/wallet-page/dapps/apps/air-drop/AirDrop';
 
 import BoxConsolidation from './box-consolidation/BoxConsolidation';
 import BurnToken from './burn-token/BurnToken';
+import ErgoDEX from './erg-dex/ErgoDex';
 import IssueToken from './issue-token/IssueToken';
 import SigmaUSD from './sigma-usd/SigmaUSD';
 import SigmaUsdReadMe from './sigma-usd/SigmaUsdReadMe';
@@ -62,5 +64,14 @@ export const apps: Array<DAppType> = [
     component: AirDrop,
     color: 'secondary.dark',
     icon: <CardGiftcardTwoTone fontSize="large" />,
+  },
+  {
+    name: 'ErgoDEX',
+    description: 'Swap tokens on Ergo Mainnet',
+    id: 'ergoDex',
+    networks: [wasm.NetworkPrefix.Mainnet],
+    component: ErgoDEX,
+    color: 'primary.main',
+    icon: <SwapHorizTwoTone fontSize="large" />,
   },
 ];
