@@ -1,0 +1,17 @@
+import * as wasm from '@minotaur-ergo/ergo-lib';
+
+export const PROXY_ADDRESS_ERG_TO_RSN =
+  '4jDxre1SHdnPdKYSbJqBcrtqdQ3dq8mNNrrhkRhHCc9FfRWxZHsBXBEGE7kJGS97pPz4mCgPmRwjHvRFCiuJSeAiCFzVQatGAucRUA1Ri8iFT8q4wMgbxS8uQfcMWeMXt8Qq7XxUZaBD4owMT1FgEbKPm4TVwrrg6jStSjnGPDpa3m21gKfzGWF3FTU6kKv3vfoUzPhV4JxczapsnPcBKQp4JPd4NpP51dMXKLpiDhGyW23bnbEegfepQkBA5kpuWPzhxTqZkERhnBSGNE2Tc5CyuyEiXJ3e7qBTpZuViTF5FuLNSi8Z5cx1jpzviHHDvVaMeMiE7TxyySmkDEW7a5XMXK3xfADAaDFZfiDA4gR8bjWNBq5r5udc8u3YqYkMbY91mEXXRJRCzRUMRXLisSHfYn6oz7GiasapvXPYRaRirbW12i5NL7PsCa9Fr8K2Chvpm2BxZu6Waeq4UnbUAxafaEXa41NU2xMvGtDmjwBR78rXQ5ErTR9ZbL4jMuKCst8D7pHqAv5wo5bWhULP57UaQbNcVo3n4FgW1qscTFH71wr8eib5PpTNQ8xeLgxNBXWV4rctdDwTX7vyPqJxZs28hoEQX1uL3r5x8Jven6nPapn2NBYJcVNDNbzjqWnuS8pH5sXuo5dj1wjxZdrZxUJXoTaoxwfYzJQPAY34ooftfLzL3UjVpe9H8jNhCktBgx4';
+
+export const PROXY_BOX_OVERHEAD = 60_000n;
+
+export const IMPLEMENTOR_FEE = (ergAmount: bigint) => (ergAmount * 5n) / 1000n;
+
+export const IMPLEMENTOR_ADDRESS =
+  '9hN2UY1ZvvWMeWRBso28vSyjrAAfGJHh2DkZpE47J7Wqr51YLAR';
+
+export const TRANSACTION_FEE = 50_000_000n;
+
+export const MINIMUM_IMPLEMENTOR_FEE = BigInt(
+  wasm.BoxValue.SAFE_USER_MIN().as_i64().to_str(),
+);

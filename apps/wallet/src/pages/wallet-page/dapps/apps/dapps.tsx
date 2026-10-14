@@ -67,7 +67,7 @@ export const apps: Array<DAppType> = [
   },
   {
     name: 'ErgoDEX',
-    description: 'Swap tokens on Ergo Mainnet',
+    description: 'Swap ERG to RSN through the MEW Finance proxy',
     id: 'ergoDex',
     networks: [wasm.NetworkPrefix.Mainnet],
     component: ErgoDEX,
