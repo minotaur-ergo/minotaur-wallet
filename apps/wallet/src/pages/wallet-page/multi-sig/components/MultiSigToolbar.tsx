@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import {
   MultiSigDataShare,
@@ -10,7 +10,7 @@ import {
   QrCodeScanner,
   ShareOutlined,
 } from '@mui/icons-material';
-import { Button, Grid } from '@mui/material';
+import { Button, CircularProgress, Grid } from '@mui/material';
 
 import { commit } from '@/action/multi-sig/commit';
 import { sign } from '@/action/multi-sig/sign';
@@ -33,12 +33,13 @@ const MultiSigToolbar = () => {
   const submitContext = useContext(TxSubmitContext);
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
+  const [processing, setProcessing] = useState(false);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
-        return 'Sign Transaction';
+        return processing ? 'Signing Transaction' : 'Sign Transaction';
       case MultiSigStateEnum.COMMITMENT:
-        return 'Generate Commitment';
+        return processing ? 'Generating Commitment' : 'Generate Commitment';
       case MultiSigStateEnum.COMPLETED:
         return 'Publish Transaction';
     }
@@ -51,34 +52,45 @@ const MultiSigToolbar = () => {
       !multiSigData.myAction.committed
     ) {
       return commit(
+        context.rowId,
         data.reduced,
         data.wallet,
         multiSigData.related,
         context.password,
-        data.boxes,
         context.hints,
-      ).then((res) => {
-        if (res.changed) {
-          context.setHints(res.hints, res.updateTime);
-          multiSigData.setNeedPassword(false);
-        }
-        return null;
-      });
+      )
+        .then((res) => {
+          if (res.changed) {
+            context.setHints(res.hints, res.updateTime);
+            multiSigData.setNeedPassword(false);
+          }
+          return null;
+        })
+        .catch((e) => {
+          console.error(e);
+          message.insert('Failed to generate commitment', 'error');
+        });
     }
   };
 
   const signAction = () => {
     if (multiSigData.related && data.reduced) {
-      sign(
+      return sign(
+        context.rowId,
         data.wallet,
         multiSigData.related,
         context.hints,
         data.reduced,
         data.boxes,
         context.password,
-      ).then((res) => {
-        context.setHints(res.hints, res.currentTime);
-      });
+      )
+        .then((res) => {
+          context.setHints(res.hints, res.currentTime);
+        })
+        .catch((e) => {
+          console.error(e);
+          message.insert('Failed to sign transaction', 'error');
+        });
     }
   };
 
@@ -121,11 +133,24 @@ const MultiSigToolbar = () => {
   const act = async () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
-        return signAction();
+        return await signAction();
       case MultiSigStateEnum.COMMITMENT:
         return await commitAction();
       case MultiSigStateEnum.COMPLETED:
         return await publishAction();
+    }
+  };
+
+  const handleAct = async () => {
+    if (processing) return;
+    setProcessing(true);
+    try {
+      // commit and sign run long synchronous wasm code on large transactions.
+      // let the browser paint the processing state before the main thread blocks.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await act();
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -167,15 +192,18 @@ const MultiSigToolbar = () => {
         {allowAction() ? (
           <Grid item xs={12}>
             <Button
-              onClick={act}
+              onClick={handleAct}
               startIcon={
-                multiSigData.state === MultiSigStateEnum.COMPLETED ? (
+                processing ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : multiSigData.state === MultiSigStateEnum.COMPLETED ? (
                   <ShareOutlined />
                 ) : null
               }
               disabled={
-                passwordInvalid &&
-                multiSigData.state !== MultiSigStateEnum.COMPLETED
+                processing ||
+                (passwordInvalid &&
+                  multiSigData.state !== MultiSigStateEnum.COMPLETED)
               }
             >
               {getLabel()}

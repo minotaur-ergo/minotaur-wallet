@@ -10,7 +10,15 @@ import {
   WalletType,
 } from '@minotaur-ergo/types';
 import { createEmptyArray, sliceToChunksString } from '@minotaur-ergo/utils';
-import { DataSource, In, Like, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  EntityTarget,
+  In,
+  Like,
+  ObjectLiteral,
+  Repository,
+} from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
 import AddressValueInfo, {
@@ -29,7 +37,7 @@ import SavedAddress from '@/db/entities/SavedAddress';
 import Wallet from '@/db/entities/Wallet';
 import store from '@/store';
 import { invalidateWallets } from '@/store/reducer/wallet';
-import { TX_CHUNK_SIZE } from '@/utils/const';
+import { DB_INSERT_BATCH_SIZE, TX_CHUNK_SIZE } from '@/utils/const';
 
 import Address from '../db/entities/Address';
 
@@ -1138,19 +1146,20 @@ class MultiStoreDbAction {
    * @param txBytes - The serialized transaction bytes as a string
    */
   public insertMultiSigTx = async (row: MultiSignRow, txBytes: string) => {
-    await this.txRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    const txChunks = sliceToChunksString(txBytes, TX_CHUNK_SIZE);
-    for (const [index, chunk] of txChunks.entries()) {
-      await this.txRepository.insert({
-        tx: row,
-        bytes: chunk,
-        idx: index,
-      });
-    }
+    await this.dataSource.transaction(async (manager) => {
+      await manager
+        .getRepository(MultiSignTx)
+        .createQueryBuilder()
+        .delete()
+        .where({ tx: row })
+        .execute();
+      const txChunks = sliceToChunksString(txBytes, TX_CHUNK_SIZE);
+      await this.insertInBatches(
+        manager,
+        MultiSignTx,
+        txChunks.map((chunk, index) => ({ tx: row, bytes: chunk, idx: index })),
+      );
+    });
   };
 
   /**
@@ -1168,17 +1177,19 @@ class MultiStoreDbAction {
     row: MultiSignRow,
     inputs: Array<string>,
   ) => {
-    await this.inputRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const input of inputs) {
-      await this.inputRepository.insert({
-        tx: row,
-        bytes: input,
-      });
-    }
+    await this.dataSource.transaction(async (manager) => {
+      await manager
+        .getRepository(MultiSignInput)
+        .createQueryBuilder()
+        .delete()
+        .where({ tx: row })
+        .execute();
+      await this.insertInBatches(
+        manager,
+        MultiSignInput,
+        inputs.map((input) => ({ tx: row, bytes: input })),
+      );
+    });
   };
 
   /**
@@ -1197,25 +1208,55 @@ class MultiStoreDbAction {
     row: MultiSignRow,
     commitments: Array<Array<MultiSigDataHint>>,
   ) => {
-    await this.hintRepository
-      .createQueryBuilder()
-      .delete()
-      .where({ tx: row })
-      .execute();
-    for (const [inputIndex, inputHint] of commitments.entries()) {
-      for (const [index, hint] of inputHint.entries()) {
-        if (hint.Commit) {
-          await this.hintRepository.insert({
-            type: hint.Type,
-            idx: index,
-            inpIdx: inputIndex,
-            commit: hint.Commit,
-            proof: hint.Proof,
-            tx: row,
-            secret: hint.Secret,
-          });
-        }
-      }
+    const hints = commitments.flatMap((inputHint, inputIndex) =>
+      inputHint
+        .map((hint, index) => ({ hint, index }))
+        .filter(({ hint }) => hint.Commit)
+        .map(({ hint, index }) => ({
+          type: hint.Type,
+          idx: index,
+          inpIdx: inputIndex,
+          commit: hint.Commit,
+          proof: hint.Proof,
+          tx: row,
+          secret: hint.Secret,
+        })),
+    );
+    await this.dataSource.transaction(async (manager) => {
+      await manager
+        .getRepository(MultiSigHint)
+        .createQueryBuilder()
+        .delete()
+        .where({ tx: row })
+        .execute();
+      await this.insertInBatches(manager, MultiSigHint, hints);
+    });
+  };
+
+  /**
+   * Inserts rows using multi-row INSERT statements of limited size.
+   *
+   * Large multi-sig transactions can have thousands of inputs, so inserting
+   * rows one by one (one native bridge call and one commit per row) is too slow.
+   * Batch size is kept small enough to stay under SQLite's bound parameter limit.
+   *
+   * @param manager - The entity manager of the running transaction
+   * @param entity - The target entity
+   * @param values - Rows to insert
+   */
+  private insertInBatches = async <T extends ObjectLiteral>(
+    manager: EntityManager,
+    entity: EntityTarget<T>,
+    values: Array<Partial<T>>,
+  ) => {
+    for (let start = 0; start < values.length; start += DB_INSERT_BATCH_SIZE) {
+      await manager
+        .createQueryBuilder()
+        .insert()
+        .into(entity)
+        .values(values.slice(start, start + DB_INSERT_BATCH_SIZE))
+        .updateEntity(false)
+        .execute();
     }
   };
 
@@ -1322,11 +1363,14 @@ class MultiStoreDbAction {
         },
       },
     });
+    const hintMap = new Map<string, MultiSigHint>();
+    hintEntities.forEach((item) => {
+      const key = `${item.inpIdx}-${item.idx}`;
+      if (!hintMap.has(key)) hintMap.set(key, item);
+    });
     return createEmptyArray(inputCount, '').map((_, inputIndex) => {
       return createEmptyArray(signerCount, '').map((_, signerIndex) => {
-        const filtered = hintEntities.find(
-          (item) => item.idx === signerIndex && item.inpIdx === inputIndex,
-        );
+        const filtered = hintMap.get(`${inputIndex}-${signerIndex}`);
         if (filtered) {
           return new MultiSigDataHintImpl(
             inputIndex,

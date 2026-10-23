@@ -2,6 +2,7 @@ declare global {
   interface Window {
     Buffer: unknown;
     SQL: unknown;
+    localforage: unknown;
     electronApi: {
       openUrl: (url: string) => unknown;
       writeFile: (filepath: string, data: string) => Promise<unknown>;
