@@ -5,6 +5,7 @@ import { QrCodeCallback } from '@minotaur-ergo/types';
 import QrCodeDetectedType from '@/components/qr-code-scanner/QrCodeDetectedType';
 import QrCodeReader from '@/components/qr-code-scanner/reader/QrCodeReader';
 import { readClipBoard } from '@/utils/clipboard';
+import { readFile } from '@/utils/file';
 
 import { QrCodeContext } from './QrCodeContext';
 
@@ -54,6 +55,15 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
     setOpen(true);
   };
 
+  const openFileCode = async () => {
+    const content = await readFile();
+    if (content) {
+      setData(content);
+      setScanning(false);
+      setOpen(true);
+    }
+  };
+
   const close = () => {
     setData('');
     setScanning(false);
@@ -64,6 +74,7 @@ const QrCodeReaderView = (props: QrCodeReaderViewPropsType) => {
       value={{
         start: startScan,
         paste: pasteCode,
+        openFile: openFileCode,
       }}
     >
       {open && scanning && (

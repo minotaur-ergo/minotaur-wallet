@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { CameraswitchOutlined } from '@mui/icons-material';
+import { CameraswitchOutlined, FileOpenOutlined } from '@mui/icons-material';
 import ContentPasteRounded from '@mui/icons-material/ContentPasteRounded';
 import { IconButton } from '@mui/material';
 
@@ -10,6 +10,7 @@ import ScannedChunkStatus from '@/components/qr-code-scanner/reader/ScannedChunk
 import useChunks from '@/hooks/useChunks';
 import AppFrame from '@/layouts/AppFrame';
 import { readClipBoard } from '@/utils/clipboard';
+import { readFile } from '@/utils/file';
 
 import CameraBox from './CameraBox';
 import ScanQrBox from './ScanQrBox';
@@ -29,6 +30,13 @@ const QrCodeReader = (props: QrCodeReaderPropsType) => {
       newData(data);
     });
   };
+  const openFile = () => {
+    readFile()
+      .then((content) => {
+        if (content) newData(content);
+      })
+      .catch((e) => console.error(e));
+  };
   const newData = useCallback((scanned: string) => {
     setScanned(scanned);
   }, []);
@@ -46,6 +54,9 @@ const QrCodeReader = (props: QrCodeReaderPropsType) => {
         <div style={{ zIndex: 1 }}>
           <IconButton onClick={readClipboard}>
             <ContentPasteRounded />
+          </IconButton>
+          <IconButton onClick={openFile}>
+            <FileOpenOutlined />
           </IconButton>
           {multipleCamera ? (
             <IconButton>

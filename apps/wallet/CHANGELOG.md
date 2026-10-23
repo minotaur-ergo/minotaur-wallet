@@ -9,6 +9,8 @@
 - Fix rescanned QR codes (ErgoPay, cold signing request, cold signed transaction, wallet import) reusing the state of the previously scanned one.
 - Improve performance of loading and displaying transactions with many inputs.
 - Display an error when loading an ErgoPay transaction fails.
+- Add a button to the QR code scanner to load the QR code content from a file.
+- Enable the download button under displayed QR codes to save the QR code content to file.
 
 ## 4.2.0
 
