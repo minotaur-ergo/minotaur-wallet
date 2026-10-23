@@ -1,6 +1,7 @@
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { Buffer } from 'buffer';
+import localforage from 'localforage';
 
 const openInBrowser = (url: string) => {
   if (Capacitor.getPlatform() === 'electron') {
@@ -10,14 +11,11 @@ const openInBrowser = (url: string) => {
   }
 };
 
-const downloadDb = () => {
+const downloadDb = async () => {
   try {
-    const content = Buffer.from(
-      JSON.parse(localStorage.minotaur)
-        .map((item: number) => ('0' + item.toString(16)).slice(-2))
-        .join(''),
-      'hex',
-    );
+    const stored = await localforage.getItem<string>('minotaur');
+    if (stored === null) return;
+    const content = Buffer.from(JSON.parse(stored) as Array<number>);
     const filename = 'db.sqlite3';
     const blob = new Blob([content], {
       type: 'octet/stream',

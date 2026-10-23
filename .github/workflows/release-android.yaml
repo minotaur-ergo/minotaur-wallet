@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 22.18
 
-      - name: Prepare repo
+      - name: Prepare packages
         uses: './.github/actions/build-native'
         with:
           package_json_paths: 'apps/wallet/package.json'

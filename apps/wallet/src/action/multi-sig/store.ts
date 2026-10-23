@@ -131,10 +131,9 @@ const updateMultiSigRow = async (
   updateTime: number,
 ) => {
   const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
-  if (row) {
-    await MultiStoreDbAction.getInstance().insertMultiSigHints(row, hints);
-    store.dispatch(setMultiSigLoadedTime(updateTime));
-  }
+  if (!row) throw Error(`multi-sig row ${rowId} not found`);
+  await MultiStoreDbAction.getInstance().insertMultiSigHints(row, hints);
+  store.dispatch(setMultiSigLoadedTime(updateTime));
 };
 
 /**

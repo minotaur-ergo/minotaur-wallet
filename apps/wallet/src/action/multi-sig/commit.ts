@@ -6,7 +6,7 @@ import {
   TxHintBag,
 } from '@minotaur-ergo/types';
 
-import { storeMultiSigRow } from '@/action/multi-sig/store';
+import { updateMultiSigRow } from '@/action/multi-sig/store';
 import { getProver } from '@/action/wallet';
 
 /**
@@ -14,22 +14,22 @@ import { getProver } from '@/action/wallet';
  *
  * This function generates new commitment data based on the wallet's prover and the transaction,
  * then updates the provided hints with this new data. If any changes are detected, it stores
- * the updated data in the database.
+ * the updated hints in the database.
  *
+ * @param rowId - The ID of the stored multi-signature row of this transaction
  * @param tx - The reduced transaction to generate commitments for
  * @param wallet - The wallet containing the transaction
  * @param signer - The wallet that will sign the transaction
  * @param password - The password to unlock the signer's private keys
- * @param boxes - The input boxes used in the transaction
  * @param hints - The existing multi-signature data hints to update
  * @returns A promise resolving to a CommitResult containing the updated hints and status information
  */
 export const commit = async (
+  rowId: number,
   tx: wasm.ReducedTransaction,
   wallet: StateWallet,
   signer: StateWallet,
   password: string,
-  boxes: Array<wasm.ErgoBox>,
   hints: MultiSigData,
 ): Promise<CommitResult> => {
   const data = hints.map((row) => row.map((item) => item.clone()));
@@ -42,10 +42,10 @@ export const commit = async (
   );
   if (changed.length > 0) {
     const currentTime = Date.now();
-    const row = await storeMultiSigRow(wallet, tx, boxes, data, currentTime);
+    await updateMultiSigRow(rowId, data, currentTime);
     return {
       hints: data,
-      rowId: row?.id,
+      rowId,
       changed: true,
       updateTime: currentTime,
     };
