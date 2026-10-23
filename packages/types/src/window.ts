@@ -6,6 +6,7 @@ declare global {
       openUrl: (url: string) => unknown;
       writeFile: (filepath: string, data: string) => Promise<unknown>;
       readFile: (filepath: string) => Promise<string>;
+      saveFile: (defaultName: string, data: string) => Promise<boolean>;
     };
   }
 }
