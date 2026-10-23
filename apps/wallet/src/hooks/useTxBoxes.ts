@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { BoxContent, StateWallet } from '@minotaur-ergo/types';
+import { getChain } from '@minotaur-ergo/utils';
+
 import {
-  boxesToContent,
-  createEmptyArrayWithIndex,
-} from '@minotaur-ergo/utils';
+  boxesToJsonMap,
+  createAddressResolver,
+  JsonBox,
+  jsonBoxToContent,
+  txToJson,
+} from '@/utils/eip12';
 
 const useTxBoxes = (
   wallet: StateWallet,
@@ -23,25 +28,21 @@ const useTxBoxes = (
       if (unsigned.id().to_str() !== txId || walletId !== wallet.id) {
         setLoading(true);
         const processingWalletId = wallet.id;
-        const inputsWasm = unsigned.inputs();
-        const inputs = createEmptyArrayWithIndex(inputsWasm.len()).map(
-          (index) => {
-            const input = inputsWasm.get(index);
-            const box = boxes.filter(
-              (item) => item.box_id().to_str() === input.box_id().to_str(),
-            );
-            if (box.length !== 0) {
-              return box[0];
-            }
-            return box[index];
-          },
+        // convert to json once to avoid wasm calls per input and token
+        const jsonTx = txToJson(unsigned);
+        const jsonBoxes = boxesToJsonMap(boxes);
+        const getAddress = createAddressResolver(
+          getChain(wallet.networkType).prefix,
         );
-        setInputBoxes(boxesToContent(wallet.networkType, inputs));
-        const outputCandidates = unsigned.output_candidates();
-        const outputs = createEmptyArrayWithIndex(outputCandidates.len()).map(
-          (index) => outputCandidates.get(index),
+        setInputBoxes(
+          jsonTx.inputs
+            .map((input) => jsonBoxes.get(input.boxId))
+            .filter((box): box is JsonBox => box !== undefined)
+            .map((box) => jsonBoxToContent(box, getAddress)),
         );
-        setOutputBoxes(boxesToContent(wallet.networkType, outputs));
+        setOutputBoxes(
+          jsonTx.outputs.map((box) => jsonBoxToContent(box, getAddress)),
+        );
         setTxId(unsigned.id().to_str());
         setWalletId(processingWalletId);
         setLoading(false);

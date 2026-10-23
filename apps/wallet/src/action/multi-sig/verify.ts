@@ -149,13 +149,15 @@ const verifyTxInputs = (
   tx: wasm.ReducedTransaction,
   boxes: Array<wasm.ErgoBox>,
 ): VerificationResponse => {
+  const boxCount = new Map<string, number>();
+  boxes.forEach((box) => {
+    const boxId = box.box_id().to_str();
+    boxCount.set(boxId, (boxCount.get(boxId) ?? 0) + 1);
+  });
   const inputs = tx.unsigned_tx().inputs();
   for (let index = 0; index < inputs.len(); index++) {
     const input = inputs.get(index);
-    if (
-      boxes.filter((item) => item.box_id().to_str() === input.box_id().to_str())
-        .length !== 1
-    ) {
+    if (boxCount.get(input.box_id().to_str()) !== 1) {
       return { valid: false, message: 'Transaction inputs are invalid' };
     }
   }
