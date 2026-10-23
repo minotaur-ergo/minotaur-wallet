@@ -4,9 +4,10 @@ import {
   setupElectronDeepLinking,
 } from '@minotaur-ergo/electron';
 import type { MenuItemConstructorOptions } from 'electron';
-import { app, ipcMain, MenuItem, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, MenuItem, shell } from 'electron';
 import electronIsDev from 'electron-is-dev';
 import unhandled from 'electron-unhandled';
+import { writeFile } from 'fs/promises';
 
 import createMenuTemplate from './menuTemplate';
 // import { autoUpdater } from 'electron-updater';
@@ -61,6 +62,22 @@ if (electronIsDev) {
   ipcMain.on('openUrl', (event, url: string) => {
     shell.openExternal(url);
   });
+  ipcMain.handle(
+    'saveFile',
+    async (event, defaultName: string, data: string): Promise<boolean> => {
+      const window = BrowserWindow.fromWebContents(event.sender);
+      const options = {
+        defaultPath: defaultName,
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+      };
+      const result = window
+        ? await dialog.showSaveDialog(window, options)
+        : await dialog.showSaveDialog(options);
+      if (result.canceled || !result.filePath) return false;
+      await writeFile(result.filePath, data, 'utf-8');
+      return true;
+    },
+  );
   // Security - Set Content-Security-Policy based on whether or not we are in dev mode.
   setupContentSecurityPolicy(myCapacitorApp.getCustomURLScheme());
   // Initialize our app, build windows, and load content.

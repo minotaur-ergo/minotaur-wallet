@@ -22,6 +22,8 @@ PODS:
     - GoogleMLKit/BarcodeScanning (= 7.0.0)
   - CapacitorPluginSafeArea (4.0.3):
     - Capacitor
+  - CapacitorShare (7.0.4):
+    - Capacitor
   - CapacitorStatusBar (7.0.4):
     - Capacitor
   - CapacitorToast (7.0.3):
@@ -93,6 +95,7 @@ DEPENDENCIES:
   - "CapacitorFilesystem (from `../../../../node_modules/@capacitor/filesystem`)"
   - "CapacitorMlkitBarcodeScanning (from `../../../../node_modules/@capacitor-mlkit/barcode-scanning`)"
   - CapacitorPluginSafeArea (from `../../../../node_modules/capacitor-plugin-safe-area`)
+  - "CapacitorShare (from `../../../../node_modules/@capacitor/share`)"
   - "CapacitorStatusBar (from `../../../../node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../../../node_modules/@capacitor/toast`)"
   - GoogleMLKit/BarcodeScanning
@@ -136,6 +139,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/@capacitor-mlkit/barcode-scanning"
   CapacitorPluginSafeArea:
     :path: "../../../../node_modules/capacitor-plugin-safe-area"
+  CapacitorShare:
+    :path: "../../../../node_modules/@capacitor/share"
   CapacitorStatusBar:
     :path: "../../../../node_modules/@capacitor/status-bar"
   CapacitorToast:
@@ -154,6 +159,7 @@ SPEC CHECKSUMS:
   CapacitorFilesystem: 2267b9183bfecb9e5b8163b79685c9efb5ed0a09
   CapacitorMlkitBarcodeScanning: ef67c921ac0d3943157a20c72744ab3d5b8a92fb
   CapacitorPluginSafeArea: 0b05430642c0da92b5f174e900ccecf39a71e2c3
+  CapacitorShare: 14b5d7f0a2c6de86dcad8995da80fb707ee32f62
   CapacitorStatusBar: 4bf126c3c01dbaca8a4e416a29c4899cf91d0626
   CapacitorToast: 2e05ea42cba2a92683d199a0e7d32e4e5094879d
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
@@ -172,6 +178,6 @@ SPEC CHECKSUMS:
   SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
-PODFILE CHECKSUM: dda6b33ece004103017ca602bd2a9a8947281495
+PODFILE CHECKSUM: cc7a9408b940ffce5848caa84fa51dc801056daa
 
 COCOAPODS: 1.15.2

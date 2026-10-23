@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import {
   ContentCopyOutlined,
@@ -21,8 +21,10 @@ import {
   Typography,
 } from '@mui/material';
 
+import MessageContext from '@/components/app/messageContext';
 import ToggleIconButton from '@/components/toggle-icon-button/ToggleIconButton';
 import { MAX_CHUNK_SIZE, QRCODE_MINIMUM_CHUNK_SIZE } from '@/utils/const';
+import { qrCodeFileName, saveFile } from '@/utils/file';
 
 import CopyToClipboard from '../copy-to-clipboard/CopyToClipboard';
 import QRCodeSVG from './QrCodeSVG';
@@ -62,6 +64,13 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
   });
   const copyValue = JSON.stringify({ [props.type]: props.value });
   const [showConfig, setShowConfig] = useState<boolean>(false);
+  const messageContext = useContext(MessageContext);
+  const download = () => {
+    saveFile(qrCodeFileName(), copyValue).catch((e) => {
+      console.error(e);
+      messageContext.insert('Failed to save QR code file', 'error');
+    });
+  };
   const startPlaying = () => {
     const timer = setInterval(() => {
       setIndex((index) => (index + 1) % maxPages);
@@ -151,7 +160,7 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
               <ContentCopyOutlined />
             </IconButton>
           </CopyToClipboard>
-          <IconButton disabled={true}>
+          <IconButton onClick={download}>
             <DownloadOutlined />
           </IconButton>
           <ToggleIconButton

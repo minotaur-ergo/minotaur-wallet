@@ -6,6 +6,7 @@ import {
   ContactsOutlined,
   ContentPasteOutlined,
   Download,
+  FileOpenOutlined,
   FileUploadOutlined,
   MoreVert,
   QrCodeScanner,
@@ -39,6 +40,10 @@ const HomeAction = (props: HomeActionPropsType) => {
   const pasteContent = () => {
     setAnchorEl(null);
     qrCodeContext.paste();
+  };
+  const openFile = () => {
+    setAnchorEl(null);
+    qrCodeContext.openFile();
   };
   const exportWallets = () => {
     setAnchorEl(null);
@@ -79,6 +84,12 @@ const HomeAction = (props: HomeActionPropsType) => {
             <ContentPasteOutlined />
           </ListItemIcon>
           Paste
+        </MenuItem>
+        <MenuItem onClick={openFile}>
+          <ListItemIcon>
+            <FileOpenOutlined />
+          </ListItemIcon>
+          Open File
         </MenuItem>
         <MenuItem onClick={exportWallets}>
           <ListItemIcon>
