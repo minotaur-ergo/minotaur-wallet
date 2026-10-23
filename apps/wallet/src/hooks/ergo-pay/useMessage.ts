@@ -123,14 +123,19 @@ const useMessage = (
       loadedTx !== (ergoPayData.reducedTx ?? '')
     ) {
       setLoading(true);
-      calculateData(wallets, wallet, ergoPayData.reducedTx, context).then(
-        (res) => {
+      calculateData(wallets, wallet, ergoPayData.reducedTx, context)
+        .then((res) => {
           if (res.tx) setLoadedTx(res.tx);
           if (res.error) setError(res.error);
           if (res.allowedWallets) setAllowedWallets(res.allowedWallets);
           setLoading(false);
-        },
-      );
+        })
+        .catch((e) => {
+          console.error(e);
+          setLoadedTx(ergoPayData.reducedTx ?? '');
+          setError(`Failed to load transaction: ${e?.message ?? e}`);
+          setLoading(false);
+        });
     }
   }, [ergoPayData, loadedTx, loading, wallet, wallets, context]);
   useEffect(() => {
@@ -151,6 +156,7 @@ const useMessage = (
     if (multiple.description.length > 0) return [...multiple.description];
     if (ergoPayData.message)
       return [...ergoPayData.message.split('\n'), errorBody];
+    if (error) return [errorBody];
     return [];
   }, [multiple.description, ergoPayData.message, error, isLoading]);
   const title = useMemo(() => {

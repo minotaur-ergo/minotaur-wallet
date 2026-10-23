@@ -48,25 +48,20 @@ const getInternalBoxes = async (
   boxIds: Array<string>,
 ): Promise<InternalBoxLoadedData> => {
   const res: InternalBoxLoadedData = {};
-  let index = 0;
-  for (const boxId of boxIds) {
-    const fetchedBoxes = await BoxDbAction.getInstance().getAllBoxById(boxId);
-    for (const box of fetchedBoxes) {
-      if (box.address && box.address.wallet) {
-        const walletId = box.address.wallet.id.toString();
-        if (!Object.prototype.hasOwnProperty.call(res, walletId)) {
-          if (index > 0) {
-            res[walletId] = createEmptyArray(index, undefined);
-          } else {
-            res[walletId] = [];
-          }
-        }
-        res[walletId].push(
-          wasm.ErgoBox.sigma_parse_bytes(Buffer.from(box.serialized, 'base64')),
-        );
+  const indexes = new Map<string, number>();
+  boxIds.forEach((boxId, index) => indexes.set(boxId, index));
+  const fetchedBoxes = await BoxDbAction.getInstance().getAllBoxesByIds(boxIds);
+  for (const box of fetchedBoxes) {
+    const index = indexes.get(box.box_id);
+    if (index !== undefined && box.address && box.address.wallet) {
+      const walletId = box.address.wallet.id.toString();
+      if (!Object.prototype.hasOwnProperty.call(res, walletId)) {
+        res[walletId] = createEmptyArray(boxIds.length, undefined);
       }
+      res[walletId][index] = wasm.ErgoBox.sigma_parse_bytes(
+        Buffer.from(box.serialized, 'base64'),
+      );
     }
-    index += 1;
   }
   return res;
 };

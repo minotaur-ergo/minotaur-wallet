@@ -10,7 +10,7 @@ import {
   WalletType,
 } from '@minotaur-ergo/types';
 import { createEmptyArray, sliceToChunksString } from '@minotaur-ergo/utils';
-import { DataSource, Like, Repository } from 'typeorm';
+import { DataSource, In, Like, Repository } from 'typeorm';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
 import AddressValueInfo, {
@@ -624,6 +624,21 @@ class BoxDbAction {
         box_id: boxId,
       },
     });
+  };
+
+  getAllBoxesByIds = async (boxIds: Array<string>): Promise<Array<Box>> => {
+    const res: Array<Box> = [];
+    // keep each query below sqlite bound variables limit
+    for (let index = 0; index < boxIds.length; index += 500) {
+      const boxes = await this.repository.find({
+        relations: ['address.wallet'],
+        where: {
+          box_id: In(boxIds.slice(index, index + 500)),
+        },
+      });
+      res.push(...boxes);
+    }
+    return res;
   };
 
   getBoxByBoxId = async (

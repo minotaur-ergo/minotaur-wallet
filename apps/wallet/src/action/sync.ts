@@ -173,6 +173,10 @@ const syncWallet = async (wallet: StateWallet) => {
   const addresses = await AddressDbAction.getInstance().getWalletAddresses(
     wallet.id,
   );
+  console.log(
+    `[sync] wallet id=${wallet.id} addresses:`,
+    addresses.map((item) => `${item.id}:${item.address}`),
+  );
   try {
     await Promise.all(
       addresses.map(async (address) => {

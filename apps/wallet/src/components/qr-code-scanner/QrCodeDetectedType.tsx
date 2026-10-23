@@ -64,6 +64,10 @@ const QrCodeDetectedType = (props: QrCodeDetectedTypePropsType) => {
   useEffect(() => {
     if (!props.open) {
       setChecked('');
+      // unmount the previously rendered component so its state (e.g. signed tx) is not reused on next scan
+      setSelectedType(undefined);
+      setData('');
+      setInvalidQrCode(false);
     }
   }, [props.open]);
   return (
