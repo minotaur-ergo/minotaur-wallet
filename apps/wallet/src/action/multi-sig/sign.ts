@@ -7,19 +7,22 @@ import {
 } from '@minotaur-ergo/types';
 import { boxArrayToBoxes, fakeContext } from '@minotaur-ergo/utils';
 
-import { storeMultiSigRow } from '@/action/multi-sig/store';
+import { updateMultiSigRow } from '@/action/multi-sig/store';
 import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
 
 /**
  * Converts an array of public key strings to a Propositions object for Ergo transactions.
  *
+ * Duplicate keys are removed. extract_hints copies the whole propositions list for
+ * every input, so passing one key per input makes it quadratic in the input count.
+ *
  * @param input - Array of public key strings in hex format
  * @returns A wasm.Propositions object containing all provided public keys
  */
 const arrayToProposition = (input: Array<string>): wasm.Propositions => {
   const output = new wasm.Propositions();
-  input.forEach((pk) => {
+  new Set(input).forEach((pk) => {
     const proposition = Uint8Array.from(Buffer.from('cd' + pk, 'hex'));
     output.add_proposition_from_byte(proposition);
   });
@@ -63,8 +66,9 @@ const generateHints = (
  *
  * This function performs partial signing of a transaction based on the provided hints and
  * wallet credentials. It extracts new hint data from the partial signature and updates
- * the hint objects. Finally, it stores the updated multi-signature data in the database.
+ * the hint objects. Finally, it stores the updated hints in the database.
  *
+ * @param rowId - The ID of the stored multi-signature row of this transaction
  * @param wallet - The multi-signature wallet that owns the transaction
  * @param signer - The wallet that will perform the signing
  * @param hints - Array of multi-signature data hints to use and update
@@ -74,6 +78,7 @@ const generateHints = (
  * @returns A promise resolving to an object containing updated hints and timestamp
  */
 export const sign = async (
+  rowId: number,
   wallet: StateWallet,
   signer: StateWallet,
   hints: Array<Array<MultiSigDataHint>>,
@@ -120,7 +125,7 @@ export const sign = async (
   });
   if (changed) {
     const currentTime = Date.now();
-    await storeMultiSigRow(wallet, tx, boxes, updatedHints, currentTime);
+    await updateMultiSigRow(rowId, updatedHints, currentTime);
     return {
       hints: updatedHints,
       currentTime,

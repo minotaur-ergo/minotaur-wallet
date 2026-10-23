@@ -16,6 +16,8 @@ export const REFRESH_INTERVAL = 2 * 60 * 1000;
 export const PRICE_REFRESH_INTERVAL = 30 * 60 * 1000;
 
 export const TX_CHUNK_SIZE = 1024;
+// rows per INSERT statement. hint table has 7 columns, keeps under SQLite 999 parameter limit
+export const DB_INSERT_BATCH_SIZE = 100;
 
 export const COMMIT_ACTION = 'commit';
 export const SIGN_ACTION = 'sign';

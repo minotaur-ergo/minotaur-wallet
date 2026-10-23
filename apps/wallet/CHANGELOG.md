@@ -11,6 +11,8 @@
 - Display an error when loading an ErgoPay transaction fails.
 - Add a button to the QR code scanner to load the QR code content from a file.
 - Enable the download button under displayed QR codes to save the QR code content to file.
+- Speed up multi-sig signing by deduplicating hint extraction propositions
+- Show progress and block repeated clicks during commit and sign
 
 ## 4.2.0
 
