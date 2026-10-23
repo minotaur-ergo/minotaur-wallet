@@ -1,5 +1,15 @@
 # minotaur-wallet
 
+## 4.2.1
+
+### Patch Changes
+
+- Send dApp change boxes to the wallet's default address instead of its first address.
+- Fix wallet sync running several times in parallel for each wallet.
+- Fix rescanned QR codes (ErgoPay, cold signing request, cold signed transaction, wallet import) reusing the state of the previously scanned one.
+- Improve performance of loading and displaying transactions with many inputs.
+- Display an error when loading an ErgoPay transaction fails.
+
 ## 4.2.0
 
 ### Minor Changes
