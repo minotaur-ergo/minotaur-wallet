@@ -37,6 +37,9 @@ jobs:
 
       - name: Setup Android build environment
         uses: android-actions/setup-android@v3
+        with:
+          # default list includes the legacy 'tools' package, no longer available in the SDK repository
+          packages: 'platform-tools'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./apps/wallet/android/gradlew
