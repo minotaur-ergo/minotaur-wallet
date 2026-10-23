@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GlobalStateType } from '@minotaur-ergo/types';
@@ -26,30 +26,41 @@ const useUpdater = () => {
   );
   const refresh = useSelector((state: GlobalStateType) => state.wallet.refresh);
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
+  // state updates are async, so `loading` alone can let several syncs start
+  const syncing = useRef(false);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 10000);
   }, []);
   useEffect(() => {
-    if (!loading && initialized) {
+    if (!loading && initialized && !syncing.current) {
+      syncing.current = true;
       setLoading(true);
       const remaining = wallets
         .filter((item) => updatedWallets.indexOf(item.id) === -1)
         .sort((a, _) => (activeWallet === a.id ? -1 : 0));
       if (remaining.length > 0) {
         const wallet = remaining[0];
+        console.log(
+          `[sync] start wallet id=${wallet.id} name=${wallet.name} at ${new Date().toISOString()}`,
+        );
         syncWallet(wallet)
           .then(() => {
+            console.log(`[sync] done wallet id=${wallet.id}`);
             store.dispatch(addUpdatedWallets(wallet.id));
-            setLoading(false);
           })
-          .catch(() => {
+          .catch((e) => {
+            console.log(`[sync] failed wallet id=${wallet.id}`, e);
+          })
+          .finally(() => {
+            syncing.current = false;
             setLoading(false);
           });
       } else {
         console.log(
           `Completed syncing process. synced ${updatedWallets.length} wallets`,
         );
+        syncing.current = false;
         setLoading(false);
       }
     }

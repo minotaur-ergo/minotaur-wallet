@@ -8,6 +8,7 @@ import {
 import { getBoxTokens, getChain } from '@minotaur-ergo/utils';
 
 import openInBrowser from '@/utils/browser';
+import { boxesToJsonMap, createAddressResolver, txToJson } from '@/utils/eip12';
 
 import { deserialize } from './box';
 import { BoxDbAction } from './db';
@@ -18,7 +19,7 @@ const newEmptyReceiver = () => ({ address: '', amount: 0n, tokens: [] });
 const receiverTokensToDict = (tokens: Array<TokenBalanceBigInt>) => {
   const res: { [tokenId: string]: bigint } = {};
   tokens.forEach((token) => {
-    if (Object.keys(res).indexOf(token.tokenId) === -1) {
+    if (!Object.prototype.hasOwnProperty.call(res, token.tokenId)) {
       res[token.tokenId] = token.balance;
     } else {
       res[token.tokenId] += token.balance;
@@ -224,46 +225,30 @@ const extractErgAndTokenSpent = (
   boxes: Array<wasm.ErgoBox>,
   tx: wasm.Transaction | wasm.UnsignedTransaction,
 ): TotalSpent => {
-  const addresses = wallet.addresses.map((item) => item.address);
-  const prefix = getChain(wallet.networkType).prefix;
-  const getBoxAddress = (box: wasm.ErgoBox | wasm.ErgoBoxCandidate) => {
-    return wasm.Address.recreate_from_ergo_tree(box.ergo_tree()).to_base58(
-      prefix,
-    );
-  };
+  const addresses = new Set(wallet.addresses.map((item) => item.address));
+  const getAddress = createAddressResolver(getChain(wallet.networkType).prefix);
+  // convert to json once to avoid wasm calls per input and token
+  const jsonTx = txToJson(tx);
+  const jsonBoxes = boxesToJsonMap(boxes);
   let totalErg = 0n;
-  let tokens: Array<TokenBalanceBigInt> = [];
-  const inputs = tx.inputs();
-  for (let index = 0; index < inputs.len(); index++) {
-    const boxId = inputs.get(index).box_id().to_str();
-    const filteredBoxes = boxes.filter(
-      (item) =>
-        item.box_id().to_str() === boxId &&
-        addresses.indexOf(getBoxAddress(item)) !== -1,
-    );
-    if (filteredBoxes.length > 0) {
-      const box = filteredBoxes[0];
-      totalErg += BigInt(box.value().as_i64().to_str());
-      tokens = [...tokens, ...getBoxTokens(box)];
+  const tokens: Array<TokenBalanceBigInt> = [];
+  jsonTx.inputs.forEach((input) => {
+    const box = jsonBoxes.get(input.boxId);
+    if (box && addresses.has(getAddress(box.ergoTree))) {
+      totalErg += BigInt(box.value);
+      box.assets.forEach((asset) =>
+        tokens.push({ tokenId: asset.tokenId, balance: BigInt(asset.amount) }),
+      );
     }
-  }
-  const outputs =
-    tx instanceof wasm.Transaction
-      ? (tx as wasm.Transaction).outputs()
-      : (tx as wasm.UnsignedTransaction).output_candidates();
-  for (let index = 0; index < outputs.len(); index++) {
-    const box = outputs.get(index);
-    if (addresses.indexOf(getBoxAddress(box)) !== -1) {
-      totalErg -= BigInt(box.value().as_i64().to_str());
-      tokens = [
-        ...tokens,
-        ...getBoxTokens(box).map((item) => ({
-          tokenId: item.tokenId,
-          balance: -item.balance,
-        })),
-      ];
+  });
+  jsonTx.outputs.forEach((box) => {
+    if (addresses.has(getAddress(box.ergoTree))) {
+      totalErg -= BigInt(box.value);
+      box.assets.forEach((asset) =>
+        tokens.push({ tokenId: asset.tokenId, balance: -BigInt(asset.amount) }),
+      );
     }
-  }
+  });
   return {
     value: totalErg,
     tokens: receiverTokensToDict(tokens),
@@ -305,13 +290,13 @@ const getTxBoxes = (
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const res: Array<wasm.ErgoBox> = [];
+  const boxMap = new Map<string, wasm.ErgoBox>();
+  boxes.forEach((box) => boxMap.set(box.box_id().to_str(), box));
   const inputs = tx.inputs();
   for (let index = 0; index < inputs.len(); index++) {
-    const filtered = boxes.filter(
-      (box) => box.box_id().to_str() === inputs.get(index).box_id().to_str(),
-    );
-    if (filtered.length === 0) throw Error('invalid boxes');
-    res.push(filtered[0]);
+    const box = boxMap.get(inputs.get(index).box_id().to_str());
+    if (box === undefined) throw Error('invalid boxes');
+    res.push(box);
   }
   return res;
 };

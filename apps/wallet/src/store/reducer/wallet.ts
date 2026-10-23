@@ -161,7 +161,9 @@ const walletSlice = createSlice({
       state.refresh = false;
     },
     addUpdatedWallets(state, action: PayloadAction<number>) {
-      state.updatedWallets.push(action.payload);
+      if (!state.updatedWallets.includes(action.payload)) {
+        state.updatedWallets.push(action.payload);
+      }
     },
     addedWallets(state) {
       state.walletsValid = false;

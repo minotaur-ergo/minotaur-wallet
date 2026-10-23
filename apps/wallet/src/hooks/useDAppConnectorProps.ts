@@ -117,7 +117,7 @@ export const useDAppConnectorProps = (wallet: StateWallet): DAppPropsType => {
         boxesToArrayBox(inputs),
         boxCandidatesToArrayBoxCandidate(outputs),
         fee,
-        wallet.addresses[0].address,
+        addresses[0].address,
         height,
       );
       return candidate ? [candidate] : [];
