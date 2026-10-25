@@ -25,7 +25,7 @@ import {
 import MessageContext from '@/components/app/messageContext';
 import ToggleIconButton from '@/components/toggle-icon-button/ToggleIconButton';
 import { MAX_CHUNK_SIZE, QRCODE_MINIMUM_CHUNK_SIZE } from '@/utils/const';
-import { ANDROID_SAVE_FOLDER, qrCodeFileName, saveFile } from '@/utils/file';
+import { qrCodeFileName, saveFile } from '@/utils/file';
 
 import CopyToClipboard from '../copy-to-clipboard/CopyToClipboard';
 import QRCodeSVG from './QrCodeSVG';
@@ -75,10 +75,7 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
     saveFile(fileName, copyValue)
       .then((saved) => {
         if (saved && Capacitor.getPlatform() === 'android') {
-          messageContext.insert(
-            `Saved to Documents/${ANDROID_SAVE_FOLDER}/${fileName}`,
-            'success',
-          );
+          messageContext.insert(`Saved to Downloads: ${fileName}`, 'success');
         }
       })
       .catch((e) => {

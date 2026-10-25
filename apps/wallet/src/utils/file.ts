@@ -23,12 +23,12 @@ const downloadInBrowser = (fileName: string, content: string) => {
   window.URL.revokeObjectURL(url);
 };
 
-// android saves into the public Documents folder, under this sub folder
-const ANDROID_SAVE_FOLDER = 'Minotaur';
+// android saves into the public Downloads folder (named Download on storage)
+const ANDROID_SAVE_FOLDER = 'Download';
 
 /**
  * Let the user choose where to store a text file.
- * electron: native save dialog. android: Documents/Minotaur folder.
+ * electron: native save dialog. android: Downloads folder.
  * ios: system share sheet (Save to Files, Drive, ...). web: browser download.
  * returns false when user canceled.
  */
@@ -41,7 +41,7 @@ const saveFile = async (fileName: string, content: string) => {
     await Filesystem.writeFile({
       path: `${ANDROID_SAVE_FOLDER}/${fileName}`,
       data: content,
-      directory: Directory.Documents,
+      directory: Directory.ExternalStorage,
       encoding: Encoding.UTF8,
       recursive: true,
     });
@@ -90,4 +90,4 @@ const readFile = () =>
     input.click();
   });
 
-export { ANDROID_SAVE_FOLDER, qrCodeFileName, readFile, saveFile };
+export { qrCodeFileName, readFile, saveFile };
