@@ -7,7 +7,9 @@ const pad = (value: number) => value.toString().padStart(2, '0');
 const qrCodeFileName = (date: Date = new Date()) =>
   `qrcode-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
     date.getDate(),
-  )}-${pad(date.getHours())}-${pad(date.getMinutes())}.json`;
+  )}-${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(
+    date.getSeconds(),
+  )}.json`;
 
 const downloadInBrowser = (fileName: string, content: string) => {
   const blob = new Blob([content], { type: 'application/json' });
@@ -21,10 +23,13 @@ const downloadInBrowser = (fileName: string, content: string) => {
   window.URL.revokeObjectURL(url);
 };
 
+// android saves into the public Documents folder, under this sub folder
+const ANDROID_SAVE_FOLDER = 'Minotaur';
+
 /**
  * Let the user choose where to store a text file.
- * electron: native save dialog. android/ios: system share sheet (Save to Files, Drive, ...).
- * web: browser download.
+ * electron: native save dialog. android: Documents/Minotaur folder.
+ * ios: system share sheet (Save to Files, Drive, ...). web: browser download.
  * returns false when user canceled.
  */
 const saveFile = async (fileName: string, content: string) => {
@@ -32,7 +37,17 @@ const saveFile = async (fileName: string, content: string) => {
   if (platform === 'electron') {
     return window.electronApi.saveFile(fileName, content);
   }
-  if (platform === 'android' || platform === 'ios') {
+  if (platform === 'android') {
+    await Filesystem.writeFile({
+      path: `${ANDROID_SAVE_FOLDER}/${fileName}`,
+      data: content,
+      directory: Directory.Documents,
+      encoding: Encoding.UTF8,
+      recursive: true,
+    });
+    return true;
+  }
+  if (platform === 'ios') {
     const file = await Filesystem.writeFile({
       path: fileName,
       data: content,
@@ -75,4 +90,4 @@ const readFile = () =>
     input.click();
   });
 
-export { qrCodeFileName, readFile, saveFile };
+export { ANDROID_SAVE_FOLDER, qrCodeFileName, readFile, saveFile };
