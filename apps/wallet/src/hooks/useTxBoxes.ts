@@ -1,58 +1,103 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { BoxContent, StateWallet } from '@minotaur-ergo/types';
 import { getChain } from '@minotaur-ergo/utils';
 
-import {
-  boxesToJsonMap,
-  createAddressResolver,
-  JsonBox,
-  jsonBoxToContent,
-  txToJson,
-} from '@/utils/eip12';
+import { createAddressResolver } from '@/utils/eip12';
 
+interface TxBoxesReader {
+  inputCount: number;
+  outputCount: number;
+  getInput: (index: number) => BoxContent | undefined;
+  getOutput: (index: number) => BoxContent;
+}
+
+const boxToContent = (
+  box: wasm.ErgoBox | wasm.ErgoBoxCandidate,
+  getAddress: (ergoTree: string) => string,
+): BoxContent => {
+  const tokens = box.tokens();
+  const balances = [];
+  for (let index = 0; index < tokens.len(); index++) {
+    const token = tokens.get(index);
+    balances.push({
+      tokenId: token.id().to_str(),
+      balance: BigInt(token.amount().as_i64().to_str()),
+    });
+  }
+  return {
+    address: getAddress(box.ergo_tree().to_base16_bytes()),
+    amount: BigInt(box.value().as_i64().to_str()),
+    tokens: balances,
+  };
+};
+
+/**
+ * Gives indexed access to the input and output boxes of a transaction.
+ *
+ * A transaction can have thousands of boxes, so a box is converted only when it
+ * is requested (e.g. when a virtualized list renders its row) and then cached.
+ */
 const useTxBoxes = (
   wallet: StateWallet,
   boxes: Array<wasm.ErgoBox>,
   tx?: wasm.Transaction | wasm.UnsignedTransaction,
-) => {
-  const [txId, setTxId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [inputBoxes, setInputBoxes] = useState<Array<BoxContent>>([]);
-  const [outputBoxes, setOutputBoxes] = useState<Array<BoxContent>>([]);
-  const [walletId, setWalletId] = useState(-1);
-  useEffect(() => {
-    if (tx && !loading) {
-      const unsigned = tx;
-      if (unsigned.id().to_str() !== txId || walletId !== wallet.id) {
-        setLoading(true);
-        const processingWalletId = wallet.id;
-        // convert to json once to avoid wasm calls per input and token
-        const jsonTx = txToJson(unsigned);
-        const jsonBoxes = boxesToJsonMap(boxes);
-        const getAddress = createAddressResolver(
-          getChain(wallet.networkType).prefix,
-        );
-        setInputBoxes(
-          jsonTx.inputs
-            .map((input) => jsonBoxes.get(input.boxId))
-            .filter((box): box is JsonBox => box !== undefined)
-            .map((box) => jsonBoxToContent(box, getAddress)),
-        );
-        setOutputBoxes(
-          jsonTx.outputs.map((box) => jsonBoxToContent(box, getAddress)),
-        );
-        setTxId(unsigned.id().to_str());
-        setWalletId(processingWalletId);
-        setLoading(false);
-      }
+): TxBoxesReader => {
+  const networkType = wallet.networkType;
+  return useMemo(() => {
+    if (!tx) {
+      return {
+        inputCount: 0,
+        outputCount: 0,
+        getInput: () => undefined,
+        getOutput: () => {
+          throw Error('transaction is not loaded');
+        },
+      };
     }
-  }, [tx, loading, txId, walletId, wallet, boxes]);
-  return {
-    inputBoxes,
-    outputBoxes,
-  };
+    const getAddress = createAddressResolver(getChain(networkType).prefix);
+    const inputs = tx.inputs();
+    const outputs = tx.output_candidates();
+    const inputCache = new Map<number, BoxContent | undefined>();
+    const outputCache = new Map<number, BoxContent>();
+    let boxMap: Map<string, wasm.ErgoBox> | undefined;
+    const findInputBox = (index: number) => {
+      const boxId = inputs.get(index).box_id().to_str();
+      // boxes are usually stored in input order, so avoid building the map
+      const sameIndexBox = boxes[index];
+      if (sameIndexBox && sameIndexBox.box_id().to_str() === boxId) {
+        return sameIndexBox;
+      }
+      if (!boxMap) {
+        boxMap = new Map(boxes.map((box) => [box.box_id().to_str(), box]));
+      }
+      return boxMap.get(boxId);
+    };
+    return {
+      inputCount: inputs.len(),
+      outputCount: outputs.len(),
+      getInput: (index: number) => {
+        if (!inputCache.has(index)) {
+          const box = findInputBox(index);
+          inputCache.set(
+            index,
+            box ? boxToContent(box, getAddress) : undefined,
+          );
+        }
+        return inputCache.get(index);
+      },
+      getOutput: (index: number) => {
+        let content = outputCache.get(index);
+        if (content === undefined) {
+          content = boxToContent(outputs.get(index), getAddress);
+          outputCache.set(index, content);
+        }
+        return content;
+      },
+    };
+  }, [tx, boxes, networkType]);
 };
 
+export type { TxBoxesReader };
 export default useTxBoxes;

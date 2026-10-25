@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -31,6 +31,8 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   const [password, setPassword] = useState('');
   const [signed, setSigned] = useState<wasm.Transaction>();
   const { txId } = useParams();
+  // unsigned_tx() copies the whole transaction in wasm, so do it once per tx
+  const unsignedTx = useMemo(() => tx?.unsigned_tx(), [tx]);
 
   const lastUpdateTime = useSelector(
     (config: GlobalStateType) => config.config.multiSigLoadedTime,
@@ -53,7 +55,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
   useEffect(() => {
     if (!loading && txId) {
       if (
-        (tx && tx.unsigned_tx().id().to_str() !== txId) ||
+        (unsignedTx && unsignedTx.id().to_str() !== txId) ||
         updateTime < lastUpdateTime
       ) {
         setLoading(true);
@@ -71,7 +73,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
         });
       }
     }
-  }, [loading, tx, txId, props.wallet, updateTime, lastUpdateTime]);
+  }, [loading, unsignedTx, txId, props.wallet, updateTime, lastUpdateTime]);
 
   if (tx) {
     return (
@@ -90,7 +92,7 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
         <TxDataContext.Provider
           value={{
             wallet: props.wallet,
-            tx: tx.unsigned_tx(),
+            tx: unsignedTx,
             reduced: tx,
             dataBoxes: dataBoxes,
             boxes: boxes,
