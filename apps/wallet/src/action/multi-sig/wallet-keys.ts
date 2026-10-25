@@ -8,12 +8,15 @@ import {
 
 import { MultiSigDbAction } from '../db';
 
-const getInputMap = async (
+// address of each box, keyed by box id
+type BoxAddressMap = { [boxId: string]: string };
+
+const getInputMap = (
   wallet: StateWallet,
   boxes: Array<wasm.ErgoBox>,
-): Promise<{ [boxId: string]: string }> => {
+): BoxAddressMap => {
   const networkPrefix = getChain(wallet.networkType).prefix;
-  const res: { [boxId: string]: string } = {};
+  const res: BoxAddressMap = {};
   createEmptyArrayWithIndex(boxes.length).forEach((index) => {
     const box = boxes[index];
     res[box.box_id().to_str()] = wasm.Address.recreate_from_ergo_tree(
@@ -63,10 +66,9 @@ const getInputPks = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
   inputs: wasm.UnsignedInputs | wasm.Inputs,
-  boxes: Array<wasm.ErgoBox>,
+  inputMap: BoxAddressMap,
 ): Promise<Array<Array<string>>> => {
   const pks = await getMultiSigWalletPublicKeys(wallet, signerWallet);
-  const inputMap = await getInputMap(wallet, boxes);
   return createEmptyArrayWithIndex(inputs.len())
     .map((index) => inputs.get(index))
     .map((box) => inputMap[box.box_id().to_str()])
@@ -77,14 +79,13 @@ const getMyInputPks = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
   inputs: wasm.UnsignedInputs,
-  boxes: Array<wasm.ErgoBox>,
+  inputMap: BoxAddressMap,
 ): Promise<Array<string>> => {
   const pks = await getMultiSigWalletMyPublicKeys(wallet, signerWallet);
-  const inputMap = await getInputMap(wallet, boxes);
   return createEmptyArrayWithIndex(inputs.len())
     .map((index) => inputs.get(index))
     .map((box) => inputMap[box.box_id().to_str()])
     .map((address) => pks[address]);
 };
 
-export { getInputPks, getMyInputPks };
+export { getInputPks, getMyInputPks, getInputMap };

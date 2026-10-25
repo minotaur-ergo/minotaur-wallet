@@ -8,10 +8,14 @@ import {
 import { dottedText, getChain } from '@minotaur-ergo/utils';
 
 import { MultiSigDataHintImpl } from '@/action/multi-sig/codec';
-import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
+import {
+  getInputMap,
+  getInputPks,
+  getMyInputPks,
+} from '@/action/multi-sig/wallet-keys';
 
 import { deserialize } from '../box';
-import { getTxBoxes } from '../tx';
+import { getValidInputBoxes } from '../tx';
 import {
   fetchMultiSigRows,
   storeMultiSigRow,
@@ -241,8 +245,9 @@ const verifyNewTx = async (
   // Verify transaction is not already being signed
 
   // Get public keys for inputs
-  const pks = await getInputPks(wallet, signer, inputs, boxes);
-  const myPks = await getMyInputPks(wallet, signer, inputs, boxes);
+  const inputMap = getInputMap(wallet, boxes);
+  const pks = await getInputPks(wallet, signer, inputs, inputMap);
+  const myPks = await getMyInputPks(wallet, signer, inputs, inputMap);
 
   // Verify wallet has not already committed
   return verifyNotCommittedNewTx(hints, pks, myPks);
@@ -292,9 +297,10 @@ const verifyExistingTx = async (
   const verifyAddress = verifyTxAddresses(inputs, sharedHints, boxes, wallet);
   if (!verifyAddress.valid) return verifyAddress;
 
+  const inputMap = getInputMap(wallet, boxes);
   // Get public keys for inputs
-  const pks = await getInputPks(wallet, signer, inputs, boxes);
-  const myPks = await getMyInputPks(wallet, signer, inputs, boxes);
+  const pks = await getInputPks(wallet, signer, inputs, inputMap);
+  const myPks = await getMyInputPks(wallet, signer, inputs, inputMap);
 
   // Verify my commitments haven't changed
   const verifyCommitments = verifyMyCommitments(sharedHints, hints, pks, myPks);
@@ -474,7 +480,7 @@ const notAvailableAddresses = (
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const prefix = getChain(wallet.networkType).prefix;
-  const boxAddresses = getTxBoxes(inputs, boxes)
+  const boxAddresses = getValidInputBoxes(inputs, boxes)
     .filter((_item, index) => commitments[index].some((item) => item !== ''))
     .map((item) =>
       wasm.Address.recreate_from_ergo_tree(item.ergo_tree()).to_base58(prefix),

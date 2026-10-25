@@ -285,7 +285,7 @@ const openTxInBrowser = (networkType: string, txId: string) => {
   openInBrowser(`${explorerFront}/en/transactions/${txId}`);
 };
 
-const getTxBoxes = (
+const getValidInputBoxes = (
   inputs: wasm.UnsignedInputs,
   boxes: Array<wasm.ErgoBox>,
 ) => {
@@ -309,7 +309,7 @@ export {
   signNormalWalletReducedTx,
   openTxInBrowser,
   getReduced,
-  getTxBoxes,
+  getValidInputBoxes,
   selectBoxes,
 };
 

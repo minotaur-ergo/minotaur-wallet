@@ -7,7 +7,7 @@ import {
   MultiSigHintType,
 } from '@minotaur-ergo/types';
 
-import { getTxBoxes } from '@/action/tx';
+import { getValidInputBoxes } from '@/action/tx';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 
@@ -29,7 +29,7 @@ const useActionAddresses = (
         .to_base16_bytes();
       if (!ergoTreeIndex.has(ergoTree)) ergoTreeIndex.set(ergoTree, index);
     });
-    return getTxBoxes(tx.inputs(), boxes).map(
+    return getValidInputBoxes(tx.inputs(), boxes).map(
       (box) => ergoTreeIndex.get(box.ergo_tree().to_base16_bytes()) ?? -1,
     );
   }, [tx, boxes, wallet]);

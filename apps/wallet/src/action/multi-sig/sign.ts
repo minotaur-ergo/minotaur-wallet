@@ -8,7 +8,11 @@ import {
 import { boxArrayToBoxes, fakeContext } from '@minotaur-ergo/utils';
 
 import { updateMultiSigRow } from '@/action/multi-sig/store';
-import { getInputPks, getMyInputPks } from '@/action/multi-sig/wallet-keys';
+import {
+  getInputMap,
+  getInputPks,
+  getMyInputPks,
+} from '@/action/multi-sig/wallet-keys';
 import { getProver } from '@/action/wallet';
 
 /**
@@ -90,11 +94,12 @@ export const sign = async (
   currentTime: number;
 }> => {
   const inputs = tx.unsigned_tx().inputs();
-  const inputPks = await getInputPks(wallet, signer, inputs, boxes);
+  const inputMap = getInputMap(wallet, boxes);
+  const inputPks = await getInputPks(wallet, signer, inputs, inputMap);
   const txHintBag = generateHints(hints, inputPks, password);
   const prover = await getProver(signer, password, wallet.addresses);
   const partialSigned = prover.sign_reduced_transaction_multi(tx, txHintBag);
-  const signedPks = await getMyInputPks(wallet, signer, inputs, boxes);
+  const signedPks = await getMyInputPks(wallet, signer, inputs, inputMap);
   const simulatedPks: Array<string> = hints
     .map((hintRow, inputIndex) => {
       return hintRow.map((hint, signerIndex) => {
@@ -162,7 +167,13 @@ export const signCompleted = async (
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const unsigned = tx.unsigned_tx();
-  const inputPks = await getInputPks(wallet, signer, unsigned.inputs(), boxes);
+  const inputMap = getInputMap(wallet, boxes);
+  const inputPks = await getInputPks(
+    wallet,
+    signer,
+    unsigned.inputs(),
+    inputMap,
+  );
   const txHintBag = generateHints(hints, inputPks);
   const prover = wasm.Wallet.from_secrets(new wasm.SecretKeys());
   return prover.sign_reduced_transaction_multi(tx, txHintBag);
