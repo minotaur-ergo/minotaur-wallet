@@ -36,6 +36,7 @@ const MultiSigToolbar = () => {
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
   const [processing, setProcessing] = useState(false);
+  const [importing, setImporting] = useState(false);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
@@ -97,6 +98,17 @@ const MultiSigToolbar = () => {
   };
 
   const processNewData = async (newContent: string) => {
+    setImporting(true);
+    try {
+      // let the browser paint the verifying state before the main thread blocks
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await verifyNewData(newContent);
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const verifyNewData = async (newContent: string) => {
     if (signer) {
       const arrivedData = JSON.parse(newContent);
       const processData =
@@ -204,6 +216,7 @@ const MultiSigToolbar = () => {
               }
               disabled={
                 processing ||
+                importing ||
                 (passwordInvalid &&
                   multiSigData.state !== MultiSigStateEnum.COMPLETED)
               }
@@ -212,7 +225,17 @@ const MultiSigToolbar = () => {
             </Button>
           </Grid>
         ) : null}
-        {needModeData() ? (
+        {needModeData() && importing ? (
+          <Grid item xs={12}>
+            <Button
+              variant="outlined"
+              disabled
+              startIcon={<CircularProgress size={20} color="inherit" />}
+            >
+              Verifying data
+            </Button>
+          </Grid>
+        ) : needModeData() ? (
           <React.Fragment>
             <Grid item xs={6}>
               <Button

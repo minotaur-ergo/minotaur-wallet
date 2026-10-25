@@ -18,6 +18,7 @@ import MessageContext from '@/components/app/messageContext';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import FabStack from '@/components/fab-stack/FabStack';
 import ListController from '@/components/list-controller/ListController';
+import LoadingPage from '@/components/loading-page/LoadingPage';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
 import AppFrame from '@/layouts/AppFrame';
@@ -34,6 +35,7 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
   const [items, setItems] = useState<Array<MultiSigBriefRow>>([]);
   const [loading, setLoading] = useState(false);
   const [reading, setReading] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [loadedTime, setLoadedTime] = useState(0);
   const message = useContext(MessageContext);
   const navigate = useNavigate();
@@ -80,6 +82,18 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
   };
 
   const processNewData = async (content: string) => {
+    setProcessing(true);
+    try {
+      // verifying runs long synchronous wasm code on large transactions.
+      // let the browser paint the loading page before the main thread blocks.
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await processContent(content);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const processContent = async (content: string) => {
     const contentJson = JSON.parse(content);
     if (QrCodeTypeEnum.MultiSigRequest in contentJson) {
       await processDataJson(
@@ -104,43 +118,50 @@ const MultiSigCommunication = (props: MultiSigCommunicationPropsType) => {
   };
   return (
     <AppFrame title="Multi-sig Communication" navigation={<BackButtonRouter />}>
-      <React.Fragment>
-        <ListController
-          loading={loading}
-          error={false}
-          errorDescription={''}
-          errorTitle={''}
-          data={items}
-          render={(row) => (
-            <MultiSigTransactionItem
-              wallet={props.wallet}
-              txId={row.txId}
-              ergIn={row.ergIn}
-              ergOut={row.ergOut}
-              signs={row.signed}
-              commitments={row.committed}
-              tokensIn={row.tokensIn}
-              tokensOut={row.tokensOut}
-            />
-          )}
-          divider={false}
-          emptyTitle="There is no transaction in progress!"
-          emptyDescription="You can add transaction using botton below to start signing process"
-          emptyIcon="folder"
+      {processing ? (
+        <LoadingPage
+          title="Verifying transaction"
+          description="This may take a while for large transactions"
         />
-        <FabStack direction="row-reverse" spacing={2}>
-          <Fab disabled={reading} onClick={readingQrCode} color="primary">
-            <QrCodeScanner />
-          </Fab>
-          <Fab
-            disabled={reading}
-            onClick={handlePasteNewTransaction}
-            color="primary"
-          >
-            <ContentPasteOutlined />
-          </Fab>
-        </FabStack>
-      </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <ListController
+            loading={loading}
+            error={false}
+            errorDescription={''}
+            errorTitle={''}
+            data={items}
+            render={(row) => (
+              <MultiSigTransactionItem
+                wallet={props.wallet}
+                txId={row.txId}
+                ergIn={row.ergIn}
+                ergOut={row.ergOut}
+                signs={row.signed}
+                commitments={row.committed}
+                tokensIn={row.tokensIn}
+                tokensOut={row.tokensOut}
+              />
+            )}
+            divider={false}
+            emptyTitle="There is no transaction in progress!"
+            emptyDescription="You can add transaction using botton below to start signing process"
+            emptyIcon="folder"
+          />
+          <FabStack direction="row-reverse" spacing={2}>
+            <Fab disabled={reading} onClick={readingQrCode} color="primary">
+              <QrCodeScanner />
+            </Fab>
+            <Fab
+              disabled={reading}
+              onClick={handlePasteNewTransaction}
+              color="primary"
+            >
+              <ContentPasteOutlined />
+            </Fab>
+          </FabStack>
+        </React.Fragment>
+      )}
     </AppFrame>
   );
 };
