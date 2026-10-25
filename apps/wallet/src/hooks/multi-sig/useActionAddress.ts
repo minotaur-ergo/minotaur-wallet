@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useMemo } from 'react';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import {
@@ -16,57 +16,61 @@ const useActionAddresses = (
 ): Array<AddressCompletionState> => {
   const context = useContext(MultiSigContext);
   const data = useContext(TxDataContext);
-  const [result, setResult] = useState<Array<AddressCompletionState>>([]);
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (!loading && data.tx) {
-      const newResult: Array<AddressCompletionState> = addresses.map(
-        (item) => ({
-          address: item.address,
-          committed: false,
-          signed: false,
-        }),
-      );
-      const boxes = getTxBoxes(data.tx, data.boxes);
-      const ergoTrees = data.wallet.addresses.map((item) =>
-        wasm.Address.from_base58(item.address).to_ergo_tree().to_base16_bytes(),
-      );
-      setLoading(true);
-      for (let index = 0; index < newResult.length; index++) {
-        let committed = true;
-        let signed = true;
-        for (let boxIndex = 0; boxIndex < boxes.length; boxIndex++) {
-          const box = boxes[boxIndex];
-          const addressIndex = ergoTrees.indexOf(
-            box.ergo_tree().to_base16_bytes(),
-          );
-          if (addressIndex !== -1 && committed) {
-            const pubKeys = addresses.map((item) => item.pubKeys[addressIndex]);
-            const myPub = pubKeys[index];
-            const sortedIndex = [...pubKeys].sort().indexOf(myPub);
-            const hint = context.hints[boxIndex][sortedIndex];
-            if (
-              hint.Commit === '' ||
-              hint.Type === MultiSigHintType.Simulated
-            ) {
-              committed = false;
-            }
-            if (hint.Proof === '' || hint.Type === MultiSigHintType.Simulated) {
-              signed = false;
-            }
-          }
-        }
-        newResult[index] = {
-          ...newResult[index],
-          committed: committed,
-          signed: signed,
-        };
+  const hints = context.hints;
+  const { tx, boxes, wallet } = data;
+  // wallet address index of each input box (-1 if not a wallet address).
+  // computed once per tx: it needs one wasm call per input box.
+  const inputAddressIndexes = useMemo(() => {
+    if (!tx) return undefined;
+    const ergoTreeIndex = new Map<string, number>();
+    wallet.addresses.forEach((item, index) => {
+      const ergoTree = wasm.Address.from_base58(item.address)
+        .to_ergo_tree()
+        .to_base16_bytes();
+      if (!ergoTreeIndex.has(ergoTree)) ergoTreeIndex.set(ergoTree, index);
+    });
+    return getTxBoxes(tx, boxes).map(
+      (box) => ergoTreeIndex.get(box.ergo_tree().to_base16_bytes()) ?? -1,
+    );
+  }, [tx, boxes, wallet]);
+  return useMemo(() => {
+    if (inputAddressIndexes === undefined) return [];
+    // position of each signer in the sorted public keys of an address,
+    // which is the hint column of that signer for inputs of that address
+    const sortedIndexes = new Map<number, Array<number>>();
+    const getSortedIndexes = (addressIndex: number) => {
+      let res = sortedIndexes.get(addressIndex);
+      if (res === undefined) {
+        const pubKeys = addresses.map((item) => item.pubKeys[addressIndex]);
+        const sorted = [...pubKeys].sort();
+        res = pubKeys.map((pubKey) => sorted.indexOf(pubKey));
+        sortedIndexes.set(addressIndex, res);
       }
-      setResult(newResult);
-      setLoading(false);
-    }
-  }, [addresses, context.hints, data, loading]);
-  return result;
+      return res;
+    };
+    return addresses.map((item, index) => {
+      let committed = true;
+      let signed = true;
+      for (
+        let boxIndex = 0;
+        boxIndex < inputAddressIndexes.length;
+        boxIndex++
+      ) {
+        const addressIndex = inputAddressIndexes[boxIndex];
+        if (addressIndex === -1) continue;
+        const hint = hints[boxIndex][getSortedIndexes(addressIndex)[index]];
+        if (hint.Commit === '' || hint.Type === MultiSigHintType.Simulated) {
+          committed = false;
+        }
+        if (hint.Proof === '' || hint.Type === MultiSigHintType.Simulated) {
+          signed = false;
+        }
+        // nothing is checked after the first missing commitment
+        if (!committed) break;
+      }
+      return { address: item.address, committed, signed };
+    });
+  }, [addresses, hints, inputAddressIndexes]);
 };
 
 export default useActionAddresses;

@@ -20,6 +20,7 @@ import MessageContext from '@/components/app/messageContext';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { MultiSigPasswordContext } from '@/components/sign/context/MultiSigPasswordContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
@@ -27,6 +28,7 @@ import { readClipBoard } from '@/utils/clipboard';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
+  const { password } = useContext(MultiSigPasswordContext);
   const data = useContext(TxDataContext);
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
@@ -56,7 +58,7 @@ const MultiSigToolbar = () => {
         data.reduced,
         data.wallet,
         multiSigData.related,
-        context.password,
+        password,
         context.hints,
       )
         .then((res) => {
@@ -82,7 +84,7 @@ const MultiSigToolbar = () => {
         context.hints,
         data.reduced,
         data.boxes,
-        context.password,
+        password,
       )
         .then((res) => {
           context.setHints(res.hints, res.currentTime);
@@ -185,7 +187,7 @@ const MultiSigToolbar = () => {
 
   const passwordInvalid =
     multiSigData.related !== undefined &&
-    !validatePassword(multiSigData.related.seed, context.password);
+    !validatePassword(multiSigData.related.seed, password);
   return (
     <React.Fragment>
       <Grid container spacing={2}>

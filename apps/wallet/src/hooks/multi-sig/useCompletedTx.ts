@@ -12,7 +12,7 @@ export const useCompletedTx = () => {
   const context = useContext(MultiSigContext);
   const contextData = useContext(TxDataContext);
   const multiDataContext = useContext(MultiSigDataContext);
-  const signed = context.signed;
+  const { hints, signed, setSigned } = context;
   const signer = useSignerWallet(contextData.wallet);
   const unsigned = contextData.tx;
   const reduced = contextData.reduced;
@@ -26,18 +26,18 @@ export const useCompletedTx = () => {
           signCompleted(
             contextData.wallet,
             signer,
-            context.hints,
+            hints,
             reduced,
             contextData.boxes,
           ).then((res) => {
-            context.setSigned(res);
+            setSigned(res);
           });
         }
       }
     }
   }, [
-    context,
-    context.signed,
+    hints,
+    setSigned,
     contextData.boxes,
     contextData.wallet,
     multiDataContext.state,

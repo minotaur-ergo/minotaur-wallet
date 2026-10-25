@@ -70,6 +70,34 @@ const fetchMultiSigRows = async (
 };
 
 /**
+ * Retrieves only the hints of a stored multi-signature transaction.
+ *
+ * Use it to refresh a transaction that is already loaded: it avoids parsing the
+ * transaction and deserializing all of its input boxes again.
+ *
+ * @param wallet - The wallet that owns the transaction
+ * @param rowId - The ID of the stored multi-signature row
+ * @param inputCount - Number of inputs in the transaction
+ * @returns The hints, or undefined if the row does not exist anymore
+ */
+const fetchMultiSigHints = async (
+  wallet: StateWallet,
+  rowId: number,
+  inputCount: number,
+) => {
+  const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
+  if (!row) return undefined;
+  const signerCount = (
+    await MultiSigDbAction.getInstance().getWalletKeys(wallet.id)
+  ).length;
+  return MultiStoreDbAction.getInstance().getHints(
+    row,
+    inputCount,
+    signerCount,
+  );
+};
+
+/**
  * Retrieves a summarized list of multi-signature transactions for a wallet.
  *
  * This function fetches all multi-signature transactions associated with the specified
@@ -176,6 +204,7 @@ const storeMultiSigRow = async (
 export {
   multiSigStoreNewTx,
   fetchMultiSigRows,
+  fetchMultiSigHints,
   fetchMultiSigBriefRow,
   storeMultiSigRow,
   updateMultiSigRow,

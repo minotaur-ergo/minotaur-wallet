@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -9,10 +9,14 @@ import {
   StateWallet,
 } from '@minotaur-ergo/types';
 
-import { fetchMultiSigRows } from '@/action/multi-sig/store';
+import {
+  fetchMultiSigHints,
+  fetchMultiSigRows,
+} from '@/action/multi-sig/store';
 
 import LoadingPage from '../../loading-page/LoadingPage';
 import { MultiSigContext } from './MultiSigContext';
+import { MultiSigPasswordContext } from './MultiSigPasswordContext';
 import { TxDataContext } from './TxDataContext';
 
 interface MultiSigContextHandlerPropsType {
@@ -38,19 +42,44 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
     (config: GlobalStateType) => config.config.multiSigLoadedTime,
   );
 
-  const setSignedChanged = (newSigned: wasm.Transaction) => {
-    if (
-      signed === undefined ||
-      signed.id().to_str() !== newSigned.id().to_str()
-    ) {
-      setSigned(newSigned);
-    }
-  };
+  const setSignedChanged = useCallback((newSigned: wasm.Transaction) => {
+    setSigned((current) =>
+      current !== undefined && current.id().to_str() === newSigned.id().to_str()
+        ? current
+        : newSigned,
+    );
+  }, []);
 
-  const storeData = (data: MultiSigData, update: number) => {
+  const storeData = useCallback((data: MultiSigData, update: number) => {
     setHints(data);
     setUpdateTime(update);
-  };
+  }, []);
+
+  // memoized so consumers do not rerun their effects on unrelated renders
+  const requiredSign = props.wallet.requiredSign;
+  const multiSigValue = useMemo(
+    () => ({
+      hints,
+      requiredSign,
+      rowId,
+      setHints: storeData,
+      signed,
+      setSigned: setSignedChanged,
+    }),
+    [hints, requiredSign, rowId, storeData, signed, setSignedChanged],
+  );
+  const passwordValue = useMemo(() => ({ password, setPassword }), [password]);
+  const txDataValue = useMemo(
+    () => ({
+      wallet: props.wallet,
+      tx: unsignedTx,
+      reduced: tx,
+      dataBoxes,
+      boxes,
+      networkType: props.wallet.networkType,
+    }),
+    [props.wallet, unsignedTx, tx, dataBoxes, boxes],
+  );
 
   useEffect(() => {
     if (!loading && txId) {
@@ -59,48 +88,52 @@ const MultiSigContextHandler = (props: MultiSigContextHandlerPropsType) => {
         updateTime < lastUpdateTime
       ) {
         setLoading(true);
-        fetchMultiSigRows(props.wallet, [txId]).then((rows) => {
-          if (rows.length > 0) {
-            const row = rows[0];
-            setTx(row.tx);
-            setBoxes(row.boxes);
-            setDataBoxes(row.dataBoxes);
-            setRowId(row.rowId);
-            setUpdateTime(Date.now());
-            setHints(row.hints);
-          }
-          setLoading(false);
-        });
+        if (unsignedTx && unsignedTx.id().to_str() === txId && rowId !== -1) {
+          // same transaction: only hints change, so keep the loaded tx and boxes
+          fetchMultiSigHints(props.wallet, rowId, boxes.length).then(
+            (newHints) => {
+              if (newHints) {
+                setUpdateTime(Date.now());
+                setHints(newHints);
+              }
+              setLoading(false);
+            },
+          );
+        } else {
+          fetchMultiSigRows(props.wallet, [txId]).then((rows) => {
+            if (rows.length > 0) {
+              const row = rows[0];
+              setTx(row.tx);
+              setBoxes(row.boxes);
+              setDataBoxes(row.dataBoxes);
+              setRowId(row.rowId);
+              setUpdateTime(Date.now());
+              setHints(row.hints);
+            }
+            setLoading(false);
+          });
+        }
       }
     }
-  }, [loading, unsignedTx, txId, props.wallet, updateTime, lastUpdateTime]);
+  }, [
+    loading,
+    unsignedTx,
+    txId,
+    rowId,
+    boxes.length,
+    props.wallet,
+    updateTime,
+    lastUpdateTime,
+  ]);
 
   if (tx) {
     return (
-      <MultiSigContext.Provider
-        value={{
-          hints,
-          password,
-          requiredSign: props.wallet.requiredSign,
-          rowId,
-          setHints: storeData,
-          setPassword,
-          signed,
-          setSigned: setSignedChanged,
-        }}
-      >
-        <TxDataContext.Provider
-          value={{
-            wallet: props.wallet,
-            tx: unsignedTx,
-            reduced: tx,
-            dataBoxes: dataBoxes,
-            boxes: boxes,
-            networkType: props.wallet.networkType,
-          }}
-        >
-          {props.children}
-        </TxDataContext.Provider>
+      <MultiSigContext.Provider value={multiSigValue}>
+        <MultiSigPasswordContext.Provider value={passwordValue}>
+          <TxDataContext.Provider value={txDataValue}>
+            {props.children}
+          </TxDataContext.Provider>
+        </MultiSigPasswordContext.Provider>
       </MultiSigContext.Provider>
     );
   }
