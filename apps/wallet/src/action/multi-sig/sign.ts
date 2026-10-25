@@ -89,12 +89,12 @@ export const sign = async (
   hints: Array<Array<MultiSigDataHint>>;
   currentTime: number;
 }> => {
-  const unsigned = tx.unsigned_tx();
-  const inputPks = await getInputPks(wallet, signer, unsigned, boxes);
+  const inputs = tx.unsigned_tx().inputs();
+  const inputPks = await getInputPks(wallet, signer, inputs, boxes);
   const txHintBag = generateHints(hints, inputPks, password);
   const prover = await getProver(signer, password, wallet.addresses);
   const partialSigned = prover.sign_reduced_transaction_multi(tx, txHintBag);
-  const signedPks = await getMyInputPks(wallet, signer, unsigned, boxes);
+  const signedPks = await getMyInputPks(wallet, signer, inputs, boxes);
   const simulatedPks: Array<string> = hints
     .map((hintRow, inputIndex) => {
       return hintRow.map((hint, signerIndex) => {
@@ -162,7 +162,7 @@ export const signCompleted = async (
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const unsigned = tx.unsigned_tx();
-  const inputPks = await getInputPks(wallet, signer, unsigned, boxes);
+  const inputPks = await getInputPks(wallet, signer, unsigned.inputs(), boxes);
   const txHintBag = generateHints(hints, inputPks);
   const prover = wasm.Wallet.from_secrets(new wasm.SecretKeys());
   return prover.sign_reduced_transaction_multi(tx, txHintBag);

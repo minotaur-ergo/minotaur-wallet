@@ -31,25 +31,20 @@ interface VerificationResponse {
  * derived in the signing wallet. If any address is not found, the transaction
  * cannot be signed.
  *
- * @param tx - The reduced transaction to verify
+ * @param inputs
  * @param hints - 2D array of hints (commitments) for each input
  * @param boxes - Array of ErgoBoxes used as inputs in the transaction
  * @param wallet - The wallet that will be used for signing
  * @returns A verification response indicating if the addresses are valid
  */
 const verifyTxAddresses = (
-  tx: wasm.ReducedTransaction,
+  inputs: wasm.UnsignedInputs,
   hints: Array<Array<string>>,
   boxes: Array<wasm.ErgoBox>,
   wallet: StateWallet,
 ): VerificationResponse => {
   // verify addresses
-  const invalidAddresses = notAvailableAddresses(
-    wallet,
-    hints,
-    tx.unsigned_tx(),
-    boxes,
-  );
+  const invalidAddresses = notAvailableAddresses(wallet, hints, inputs, boxes);
   if (invalidAddresses.length > 0) {
     const messageLines = [
       'Some addresses used in transaction are not derived.',
@@ -141,12 +136,12 @@ const verifyNotCommittedNewTx = (
  * This function ensures that every input referenced in the transaction corresponds
  * to a box in the provided list. If any input is missing, the transaction is invalid.
  *
- * @param tx - The reduced transaction to verify
+ * @param inputs
  * @param boxes - Array of ErgoBoxes that should contain all inputs
  * @returns A verification response indicating if all inputs exist in the provided boxes
  */
 const verifyTxInputs = (
-  tx: wasm.ReducedTransaction,
+  inputs: wasm.UnsignedInputs,
   boxes: Array<wasm.ErgoBox>,
 ): VerificationResponse => {
   const boxCount = new Map<string, number>();
@@ -154,7 +149,7 @@ const verifyTxInputs = (
     const boxId = box.box_id().to_str();
     boxCount.set(boxId, (boxCount.get(boxId) ?? 0) + 1);
   });
-  const inputs = tx.unsigned_tx().inputs();
+
   for (let index = 0; index < inputs.len(); index++) {
     const input = inputs.get(index);
     if (boxCount.get(input.box_id().to_str()) !== 1) {
@@ -233,21 +228,26 @@ const verifyNewTx = async (
   const tx = wasm.ReducedTransaction.sigma_parse_bytes(
     Buffer.from(sharedData.tx, 'base64'),
   );
+  const inputs = tx.unsigned_tx().inputs();
   const boxes = sharedData.boxes.map(deserialize);
-  const verifyAddress = verifyTxAddresses(tx, sharedData.hints, boxes, wallet);
+  const verifyAddress = verifyTxAddresses(
+    inputs,
+    sharedData.hints,
+    boxes,
+    wallet,
+  );
   if (!verifyAddress.valid) return verifyAddress;
 
   const notSigning = verifyNotSigningNewTx(sharedData.hints);
   if (!notSigning.valid) return notSigning;
-  const txInputsValid = verifyTxInputs(tx, boxes);
+  const txInputsValid = verifyTxInputs(inputs, boxes);
   if (!txInputsValid.valid) return txInputsValid;
 
   // Verify transaction is not already being signed
 
   // Get public keys for inputs
-  const unsigned = tx.unsigned_tx();
-  const pks = await getInputPks(wallet, signer, unsigned, boxes);
-  const myPks = await getMyInputPks(wallet, signer, unsigned, boxes);
+  const pks = await getInputPks(wallet, signer, inputs, boxes);
+  const myPks = await getMyInputPks(wallet, signer, inputs, boxes);
 
   // Verify wallet has not already committed
   return verifyNotCommittedNewTx(sharedData.hints, pks, myPks);
@@ -281,7 +281,8 @@ const verifyExistingTx = async (
   const tx = wasm.ReducedTransaction.sigma_parse_bytes(
     Buffer.from(sharedData.tx, 'base64'),
   );
-  if (txId && tx.unsigned_tx().id().to_str() !== txId) {
+  const unsigned = tx.unsigned_tx();
+  if (txId && unsigned.id().to_str() !== txId) {
     return {
       valid: false,
       message: 'This tx does not belong to selected transaction',
@@ -289,17 +290,22 @@ const verifyExistingTx = async (
   }
 
   const boxes = sharedData.boxes.map(deserialize);
-  const verifyInputs = verifyTxInputs(tx, boxes);
+  const inputs = unsigned.inputs();
+  const verifyInputs = verifyTxInputs(inputs, boxes);
   if (!verifyInputs.valid) return verifyInputs;
 
   // Verify transaction addresses
-  const verifyAddress = verifyTxAddresses(tx, sharedData.hints, boxes, wallet);
+  const verifyAddress = verifyTxAddresses(
+    inputs,
+    sharedData.hints,
+    boxes,
+    wallet,
+  );
   if (!verifyAddress.valid) return verifyAddress;
 
   // Get public keys for inputs
-  const unsigned = tx.unsigned_tx();
-  const pks = await getInputPks(wallet, signer, unsigned, boxes);
-  const myPks = await getMyInputPks(wallet, signer, unsigned, boxes);
+  const pks = await getInputPks(wallet, signer, inputs, boxes);
+  const myPks = await getMyInputPks(wallet, signer, inputs, boxes);
 
   // Verify my commitments haven't changed
   const verifyCommitments = verifyMyCommitments(
@@ -464,18 +470,18 @@ const verifyHintsProof = (
  *
  * @param wallet - The wallet state containing available addresses
  * @param commitments - 2D array of commitments for each input
- * @param tx - The unsigned transaction to check
+ * @param inputs
  * @param boxes - Array of ErgoBoxes used in the transaction
  * @returns Array of addresses that are committed but not available in the wallet
  */
 const notAvailableAddresses = (
   wallet: StateWallet,
   commitments: Array<Array<string>>,
-  tx: wasm.UnsignedTransaction,
+  inputs: wasm.UnsignedInputs,
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const prefix = getChain(wallet.networkType).prefix;
-  const boxAddresses = getTxBoxes(tx, boxes)
+  const boxAddresses = getTxBoxes(inputs, boxes)
     .filter((_item, index) => commitments[index].some((item) => item !== ''))
     .map((item) =>
       wasm.Address.recreate_from_ergo_tree(item.ergo_tree()).to_base58(prefix),

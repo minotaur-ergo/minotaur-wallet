@@ -29,7 +29,7 @@ const useActionAddresses = (
         .to_base16_bytes();
       if (!ergoTreeIndex.has(ergoTree)) ergoTreeIndex.set(ergoTree, index);
     });
-    return getTxBoxes(tx, boxes).map(
+    return getTxBoxes(tx.inputs(), boxes).map(
       (box) => ergoTreeIndex.get(box.ergo_tree().to_base16_bytes()) ?? -1,
     );
   }, [tx, boxes, wallet]);

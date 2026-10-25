@@ -62,12 +62,11 @@ const getMultiSigWalletMyPublicKeys = async (
 const getInputPks = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
-  tx: wasm.UnsignedTransaction | wasm.Transaction,
+  inputs: wasm.UnsignedInputs | wasm.Inputs,
   boxes: Array<wasm.ErgoBox>,
 ): Promise<Array<Array<string>>> => {
   const pks = await getMultiSigWalletPublicKeys(wallet, signerWallet);
   const inputMap = await getInputMap(wallet, boxes);
-  const inputs = tx.inputs();
   return createEmptyArrayWithIndex(inputs.len())
     .map((index) => inputs.get(index))
     .map((box) => inputMap[box.box_id().to_str()])
@@ -77,12 +76,11 @@ const getInputPks = async (
 const getMyInputPks = async (
   wallet: StateWallet,
   signerWallet: StateWallet,
-  tx: wasm.UnsignedTransaction,
+  inputs: wasm.UnsignedInputs,
   boxes: Array<wasm.ErgoBox>,
 ): Promise<Array<string>> => {
   const pks = await getMultiSigWalletMyPublicKeys(wallet, signerWallet);
   const inputMap = await getInputMap(wallet, boxes);
-  const inputs = tx.inputs();
   return createEmptyArrayWithIndex(inputs.len())
     .map((index) => inputs.get(index))
     .map((box) => inputMap[box.box_id().to_str()])
