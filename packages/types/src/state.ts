@@ -17,6 +17,7 @@ export interface StateWallet {
   flags: Array<string>;
   archived: boolean;
   favorite: boolean;
+  showTxDetails: boolean;
   encryptedMnemonic?: string;
 }
 

@@ -19,7 +19,7 @@ interface WalletSignNormalPropsType {
   wallet: StateWallet;
 }
 
-const TxSignValues = (props: WalletSignNormalPropsType) => {
+const TxSignValuesContent = (props: WalletSignNormalPropsType) => {
   const { issued, burnt } = useIssuedAndBurntTokens(props.tx, props.boxes);
   const { txValues, valuesDirection } = useTxValues(
     props.tx,
@@ -142,6 +142,18 @@ const TxSignValues = (props: WalletSignNormalPropsType) => {
       />
     </Box>
   );
+};
+
+// the wrapper skips the value hooks too, which walk every input and output
+const TxSignValues = (props: WalletSignNormalPropsType) => {
+  if (!props.wallet.showTxDetails) {
+    return (
+      <Typography variant="body2" color="text.secondary" textAlign="center">
+        Transaction details are hidden in wallet settings.
+      </Typography>
+    );
+  }
+  return <TxSignValuesContent {...props} />;
 };
 
 export default TxSignValues;
