@@ -38,6 +38,8 @@ const multiSigStoreNewTx = async (
 const fetchMultiSigRows = async (
   wallet: StateWallet,
   txIds?: Array<string>,
+  // deserializing every input box is slow for large transactions; skip it when unused
+  withBoxes: boolean = true,
 ): Promise<Array<MultiSigDataRow>> => {
   const rows = await MultiStoreDbAction.getInstance().getWalletRows(
     wallet.id,
@@ -62,7 +64,7 @@ const fetchMultiSigRows = async (
         Buffer.from(reducedBytes, encoding),
       ),
       dataBoxes: [],
-      boxes: inputs.map((item) => deserialize(item)),
+      boxes: withBoxes ? inputs.map((item) => deserialize(item)) : [],
       hints,
     });
   }
@@ -111,13 +113,14 @@ const fetchMultiSigHints = async (
 const fetchMultiSigBriefRow = async (
   wallet: StateWallet,
 ): Promise<Array<MultiSigBriefRow>> => {
-  return fetchMultiSigRows(wallet).then((rows) => {
+  // boxes are only needed for the ERG and token totals
+  const withBoxes = wallet.showTxDetails;
+  return fetchMultiSigRows(wallet, undefined, withBoxes).then((rows) => {
     return rows.map((row) => {
-      const transfer = extractErgAndTokenSpent(
-        wallet,
-        row.boxes,
-        row.tx.unsigned_tx(),
-      );
+      // with tx details hidden, skip walking every box; zero amounts are not shown
+      const transfer = withBoxes
+        ? extractErgAndTokenSpent(wallet, row.boxes, row.tx.unsigned_tx())
+        : { value: 0n, tokens: {} };
       return {
         rowId: row.rowId,
         committed: Math.min(

@@ -123,13 +123,15 @@ const verifyNotCommittedNewTx = (
   pks: Array<Array<string>>,
   myPks: Array<string>,
 ): VerificationResponse => {
-  const filteredRows = commitments.filter((commitmentRow, index) => {
-    const myIndexes = myPks
-      .map((item) => pks[index].indexOf(item))
-      .filter((item) => item >= 0);
-    return myIndexes.filter((index) => commitmentRow[index] !== '').length > 0;
-  });
-  return filteredRows.length > 0
+  // myPks has one entry per input, so look up each row's own keys in a set
+  // instead of scanning all of myPks for every row
+  const mine = new Set(myPks);
+  const committed = commitments.some((commitmentRow, index) =>
+    pks[index].some(
+      (pk, pkIndex) => mine.has(pk) && commitmentRow[pkIndex] !== '',
+    ),
+  );
+  return committed
     ? { valid: false, message: 'Already have my commitment' }
     : { valid: true, message: '' };
 };
