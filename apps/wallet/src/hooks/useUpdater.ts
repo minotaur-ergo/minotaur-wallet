@@ -28,12 +28,24 @@ const useUpdater = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>();
   // state updates are async, so `loading` alone can let several syncs start
   const syncing = useRef(false);
+  // skip syncing while the device has no network (e.g. an air-gapped signer)
+  const [online, setOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 10000);
   }, []);
   useEffect(() => {
-    if (!loading && initialized && !syncing.current) {
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+  useEffect(() => {
+    if (online && !loading && initialized && !syncing.current) {
       syncing.current = true;
       setLoading(true);
       const remaining = wallets
@@ -64,7 +76,7 @@ const useUpdater = () => {
         setLoading(false);
       }
     }
-  }, [activeWallet, initialized, loading, updatedWallets, wallets]);
+  }, [activeWallet, initialized, loading, online, updatedWallets, wallets]);
   useEffect(() => {
     if (!loading && refresh) {
       store.dispatch(clearUpdatedWallets());
