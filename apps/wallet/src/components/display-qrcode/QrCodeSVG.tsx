@@ -1,4 +1,5 @@
 import { QRCodeSVG as PackageQrCode } from 'qrcode.react';
+import { memo } from 'react';
 
 import { Box } from '@mui/material';
 
@@ -16,4 +17,5 @@ const QrCodeSVG = (props: QrCodeSVGPropsType) => {
   );
 };
 
-export default QrCodeSVG;
+// qrcode.react encodes again on every render, so skip renders with same value
+export default memo(QrCodeSVG);

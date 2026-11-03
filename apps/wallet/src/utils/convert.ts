@@ -26,6 +26,9 @@ export const walletEntityToWalletState = (wallet: Wallet): StateWallet => ({
   flags: wallet.flags.split('|').filter(Boolean),
   archived: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.ARCHIVE),
   favorite: wallet.flags.split('|').includes(WALLET_FLAG_ENUM.FAVORITE),
+  showTxDetails: !wallet.flags
+    .split('|')
+    .includes(WALLET_FLAG_ENUM.HIDE_TX_DETAILS),
   encryptedMnemonic: wallet.encrypted_mnemonic,
 });
 

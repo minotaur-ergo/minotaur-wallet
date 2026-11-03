@@ -285,14 +285,13 @@ const openTxInBrowser = (networkType: string, txId: string) => {
   openInBrowser(`${explorerFront}/en/transactions/${txId}`);
 };
 
-const getTxBoxes = (
-  tx: wasm.UnsignedTransaction,
+const getValidInputBoxes = (
+  inputs: wasm.UnsignedInputs,
   boxes: Array<wasm.ErgoBox>,
 ) => {
   const res: Array<wasm.ErgoBox> = [];
   const boxMap = new Map<string, wasm.ErgoBox>();
   boxes.forEach((box) => boxMap.set(box.box_id().to_str(), box));
-  const inputs = tx.inputs();
   for (let index = 0; index < inputs.len(); index++) {
     const box = boxMap.get(inputs.get(index).box_id().to_str());
     if (box === undefined) throw Error('invalid boxes');
@@ -310,7 +309,7 @@ export {
   signNormalWalletReducedTx,
   openTxInBrowser,
   getReduced,
-  getTxBoxes,
+  getValidInputBoxes,
   selectBoxes,
 };
 

@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
+import { Capacitor } from '@capacitor/core';
 import {
   ContentCopyOutlined,
   DownloadOutlined,
@@ -62,14 +63,25 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
     n: maxSteps,
     a: playing ? 1 : 0,
   });
-  const copyValue = JSON.stringify({ [props.type]: props.value });
+  // value can be megabytes, so build the copy text only when it changes
+  const copyValue = useMemo(
+    () => JSON.stringify({ [props.type]: props.value }),
+    [props.type, props.value],
+  );
   const [showConfig, setShowConfig] = useState<boolean>(false);
   const messageContext = useContext(MessageContext);
   const download = () => {
-    saveFile(qrCodeFileName(), copyValue).catch((e) => {
-      console.error(e);
-      messageContext.insert('Failed to save QR code file', 'error');
-    });
+    const fileName = qrCodeFileName();
+    saveFile(fileName, copyValue)
+      .then((saved) => {
+        if (saved && Capacitor.getPlatform() === 'android') {
+          messageContext.insert(`Saved to Downloads: ${fileName}`, 'success');
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        messageContext.insert('Failed to save QR code file', 'error');
+      });
   };
   const startPlaying = () => {
     const timer = setInterval(() => {
@@ -131,7 +143,7 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
           }
         />
       </Collapse>
-      <Collapse in={showConfig && !playing}>
+      <Collapse in={showConfig && !playing} unmountOnExit>
         <Box mt={1}>
           <Typography variant="body2">
             <Typography component="span" color="text.secondary">
@@ -143,7 +155,8 @@ const DisplayQRCode = (props: DisplayQRCodePropsType) => {
             <Slider
               valueLabelDisplay="auto"
               step={1}
-              marks
+              // one mark element per step, too many on large data
+              marks={maxPages - minPages < 50}
               min={minPages}
               onChange={handleSizeSlicer}
               value={usedPageCount}

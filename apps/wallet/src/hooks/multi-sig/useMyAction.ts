@@ -1,33 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
-import { AddressCompletionState, MultiSigMyAction } from '@minotaur-ergo/types';
+import {
+  AddressCompletionState,
+  MultiSigMyAction,
+  StateWallet,
+} from '@minotaur-ergo/types';
 
-import { TxDataContext } from '@/components/sign/context/TxDataContext';
-
-import { useSignerWallet } from './useSignerWallet';
-
-const useMyAction = (actions: Array<AddressCompletionState>) => {
-  const context = useContext(TxDataContext);
-  const signer = useSignerWallet(context.wallet);
-  const [result, setResult] = useState<MultiSigMyAction>({
-    committed: false,
-    signed: false,
-  });
-  useEffect(() => {
-    const isCommitted =
-      actions.filter(
-        (item) =>
-          item.address === signer?.addresses[0].address && item.committed,
-      ).length > 0;
-    const isSigned =
-      actions.filter(
-        (item) => item.address === signer?.addresses[0].address && item.signed,
-      ).length > 0;
-    if (isCommitted !== result.committed || isSigned !== result.signed) {
-      setResult({ committed: isCommitted, signed: isSigned });
-    }
-  }, [actions, result, signer]);
-  return result;
+// signer is passed in, so it is the same value the page waits for
+const useMyAction = (
+  actions: Array<AddressCompletionState>,
+  signer?: StateWallet,
+): MultiSigMyAction => {
+  // derived in render (not in an effect) so it always matches actions
+  return useMemo(() => {
+    const address = signer?.addresses[0]?.address;
+    return {
+      committed: actions.some(
+        (item) => item.address === address && item.committed,
+      ),
+      signed: actions.some((item) => item.address === address && item.signed),
+    };
+  }, [actions, signer]);
 };
 
 export default useMyAction;

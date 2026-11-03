@@ -20,6 +20,7 @@ import MessageContext from '@/components/app/messageContext';
 import { QrCodeContext } from '@/components/qr-code-scanner/QrCodeContext';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
+import { MultiSigPasswordContext } from '@/components/sign/context/MultiSigPasswordContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 import TxSubmitContext from '@/components/sign/context/TxSubmitContext';
 import { useSignerWallet } from '@/hooks/multi-sig/useSignerWallet';
@@ -27,6 +28,7 @@ import { readClipBoard } from '@/utils/clipboard';
 
 const MultiSigToolbar = () => {
   const context = useContext(MultiSigContext);
+  const { password } = useContext(MultiSigPasswordContext);
   const data = useContext(TxDataContext);
   const multiSigData = useContext(MultiSigDataContext);
   const scanContext = useContext(QrCodeContext);
@@ -34,6 +36,7 @@ const MultiSigToolbar = () => {
   const message = useContext(MessageContext);
   const signer = useSignerWallet(data.wallet);
   const [processing, setProcessing] = useState(false);
+  const [importing, setImporting] = useState(false);
   const getLabel = () => {
     switch (multiSigData.state) {
       case MultiSigStateEnum.SIGNING:
@@ -56,7 +59,7 @@ const MultiSigToolbar = () => {
         data.reduced,
         data.wallet,
         multiSigData.related,
-        context.password,
+        password,
         context.hints,
       )
         .then((res) => {
@@ -82,7 +85,7 @@ const MultiSigToolbar = () => {
         context.hints,
         data.reduced,
         data.boxes,
-        context.password,
+        password,
       )
         .then((res) => {
           context.setHints(res.hints, res.currentTime);
@@ -95,6 +98,17 @@ const MultiSigToolbar = () => {
   };
 
   const processNewData = async (newContent: string) => {
+    setImporting(true);
+    try {
+      // let the browser paint the verifying state before the main thread blocks
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await verifyNewData(newContent);
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const verifyNewData = async (newContent: string) => {
     if (signer) {
       const arrivedData = JSON.parse(newContent);
       const processData =
@@ -185,7 +199,7 @@ const MultiSigToolbar = () => {
 
   const passwordInvalid =
     multiSigData.related !== undefined &&
-    !validatePassword(multiSigData.related.seed, context.password);
+    !validatePassword(multiSigData.related.seed, password);
   return (
     <React.Fragment>
       <Grid container spacing={2}>
@@ -202,6 +216,7 @@ const MultiSigToolbar = () => {
               }
               disabled={
                 processing ||
+                importing ||
                 (passwordInvalid &&
                   multiSigData.state !== MultiSigStateEnum.COMPLETED)
               }
@@ -210,7 +225,17 @@ const MultiSigToolbar = () => {
             </Button>
           </Grid>
         ) : null}
-        {needModeData() ? (
+        {needModeData() && importing ? (
+          <Grid item xs={12}>
+            <Button
+              variant="outlined"
+              disabled
+              startIcon={<CircularProgress size={20} color="inherit" />}
+            >
+              Verifying data
+            </Button>
+          </Grid>
+        ) : needModeData() ? (
           <React.Fragment>
             <Grid item xs={6}>
               <Button

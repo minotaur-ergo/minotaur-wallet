@@ -141,7 +141,7 @@ const ColdSignTransactionInternal = (props: ColdSignTransactionPropsType) => {
           color="error.dark"
           description={[boxes.error, error]}
         />
-      ) : tx && boxes && usedWallet ? (
+      ) : tx && boxes.boxes.length > 0 && usedWallet ? (
         <React.Fragment>
           <TxSignValues tx={tx} boxes={boxes.boxes} wallet={usedWallet} />
           <TransactionBoxes

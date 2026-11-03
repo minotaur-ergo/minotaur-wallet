@@ -1,5 +1,4 @@
 import * as wasm from '@minotaur-ergo/ergo-lib';
-import { BoxContent } from '@minotaur-ergo/types';
 
 interface JsonAsset {
   tokenId: string;
@@ -48,17 +47,5 @@ const createAddressResolver = (prefix: wasm.NetworkPrefix) => {
   };
 };
 
-const jsonBoxToContent = (
-  box: JsonBoxCandidate,
-  getAddress: (ergoTree: string) => string,
-): BoxContent => ({
-  address: getAddress(box.ergoTree),
-  amount: BigInt(box.value),
-  tokens: box.assets.map((asset) => ({
-    tokenId: asset.tokenId,
-    balance: BigInt(asset.amount),
-  })),
-});
-
 export type { JsonAsset, JsonBox, JsonBoxCandidate, JsonTx };
-export { txToJson, boxesToJsonMap, createAddressResolver, jsonBoxToContent };
+export { txToJson, boxesToJsonMap, createAddressResolver };

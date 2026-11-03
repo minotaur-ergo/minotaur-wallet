@@ -10,9 +10,10 @@ import {
 
 import { MultiSigDbAction } from '@/action/db';
 
+// loaded is false until the signer keys of the wallet are derived
 const useMultiSigAddressHolders = (
   loadingWallet: StateWallet,
-): Array<MultiSigAddressHolder> => {
+): { holders: Array<MultiSigAddressHolder>; loaded: boolean } => {
   const [result, setResult] = useState<Array<MultiSigAddressHolder>>([]);
   const [loadedWalletData, setLoadedWalletData] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,7 +56,7 @@ const useMultiSigAddressHolders = (
       }
     }
   });
-  return result;
+  return { holders: result, loaded: loadedWalletData !== '' };
 };
 
 export default useMultiSigAddressHolders;
