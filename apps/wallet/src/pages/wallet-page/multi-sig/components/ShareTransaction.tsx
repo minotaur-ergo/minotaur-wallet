@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useMemo } from 'react';
 
 import { MultiSigDataShare } from '@minotaur-ergo/types';
 import { Box, Typography } from '@mui/material';
@@ -9,22 +9,25 @@ import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
 
 const ShareTransaction = () => {
-  const [data, setData] = useState('');
-  const context = useContext(MultiSigContext);
-  const txData = useContext(TxDataContext);
-  useEffect(() => {
-    const res: MultiSigDataShare = {
-      tx: txData.reduced
-        ? Buffer.from(txData.reduced.sigma_serialize_bytes()).toString('base64')
+  const { hints } = useContext(MultiSigContext);
+  const { reduced, boxes } = useContext(TxDataContext);
+  // tx and boxes do not change while signing, so serialize them only once
+  const serializedTx = useMemo(
+    () =>
+      reduced
+        ? Buffer.from(reduced.sigma_serialize_bytes()).toString('base64')
         : '',
-      boxes: txData.boxes.map(serialize),
-      hints: context.hints.map((row) => row.map((hint) => hint.serialize())),
+    [reduced],
+  );
+  const serializedBoxes = useMemo(() => boxes.map(serialize), [boxes]);
+  const data = useMemo(() => {
+    const res: MultiSigDataShare = {
+      tx: serializedTx,
+      boxes: serializedBoxes,
+      hints: hints.map((row) => row.map((hint) => hint.serialize())),
     };
-    const newData = JSON.stringify(res);
-    if (data !== newData) {
-      setData(newData);
-    }
-  }, [txData, context, data]);
+    return JSON.stringify(res);
+  }, [serializedTx, serializedBoxes, hints]);
   return (
     <Box my={2}>
       <Typography gutterBottom>

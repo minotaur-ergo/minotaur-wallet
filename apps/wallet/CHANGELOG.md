@@ -1,9 +1,22 @@
 # minotaur-wallet
 
-## 4.2.1
+## 4.3.0
+
+### Minor Changes
+
+- Add camera switching to the desktop and web QR code scanner and fix its camera error handling.
+- Add a "Transaction details" wallet setting, on by default. Turning it off hides the total ERG and tokens when opening a transaction to sign.
 
 ### Patch Changes
 
+- Save QR code data as a file in the Downloads folder on Android, instead of opening the share sheet.
+- Speed up importing large multi-sig transactions: check for an existing commitment in linear time, and skip loading input boxes and computing ERG and token totals in the multi-sig list when the wallet hides transaction details.
+- Load transaction boxes only when the boxes drawer is opened and virtualize the boxes list.
+- Reduce lag when showing QR codes for large data: draw slider marks only for small ranges, render the page count slider only while it is open, and stop rebuilding the copy text and QR image on every render.
+- Show a loading page while an imported multi-sig transaction is verified, and keep the transaction page loading until its signing state is known, so commitment controls no longer appear briefly by mistake.
+- Move the multi-sig signing password out of `MultiSigContextType` into a separate `MultiSigPasswordContextType`, so typing the password no longer re-renders the whole multi-sig transaction page.
+- Skip wallet sync while the device is offline, so an air-gapped signer no longer retries failed syncs in a loop.
+- Avoid recomputing multi-sig transaction data on every render of the multi-sig transaction page, and reload only the hints when the transaction is refreshed after paste or scan.
 - Send dApp change boxes to the wallet's default address instead of its first address.
 - Fix wallet sync running several times in parallel for each wallet.
 - Fix rescanned QR codes (ErgoPay, cold signing request, cold signed transaction, wallet import) reusing the state of the previously scanned one.
@@ -13,6 +26,9 @@
 - Enable the download button under displayed QR codes to save the QR code content to file.
 - Speed up multi-sig signing by deduplicating hint extraction propositions
 - Show progress and block repeated clicks during commit and sign
+- Updated dependencies
+  - @minotaur-ergo/types@1.8.0
+  - @minotaur-ergo/utils@2.0.4
 
 ## 4.2.0
 

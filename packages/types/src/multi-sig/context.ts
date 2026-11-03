@@ -19,11 +19,16 @@ export interface MultiSigContextType {
   hints: MultiSigData;
   rowId: number;
   requiredSign: number;
-  password: string;
-  setPassword: (password: string) => unknown;
   setHints: (hints: MultiSigData, updateTime: number) => unknown;
   signed?: Transaction;
   setSigned: (signed: Transaction) => unknown;
+}
+
+// kept apart from MultiSigContextType so typing the password re-renders only
+// the components that use it
+export interface MultiSigPasswordContextType {
+  password: string;
+  setPassword: (password: string) => unknown;
 }
 
 export interface MultiSigDataContextType {

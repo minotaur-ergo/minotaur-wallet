@@ -17,6 +17,7 @@ export interface StateWallet {
   flags: Array<string>;
   archived: boolean;
   favorite: boolean;
+  showTxDetails: boolean;
   encryptedMnemonic?: string;
 }
 
@@ -149,6 +150,7 @@ export const ConfigType = {
   TestnetExplorerUrl: TESTNET_EXPLORER_URL_KEY,
   HideValues: 'HIDE_VALUES',
   DisplayArchived: 'DISPLAY_ARCHIVED',
+  QrCamera: 'QR_CAMERA',
 } as const;
 
 export type DisplayType = 'simple' | 'advanced';
@@ -193,6 +195,8 @@ export interface ConfigStateType {
   pin: PinConfig;
   hideValues: boolean;
   displayArchived: boolean;
+  // camera device id used to scan QR codes on desktop; empty uses the default camera
+  qrCamera: string;
 }
 
 export interface GlobalStateType {

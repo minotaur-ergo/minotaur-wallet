@@ -38,6 +38,8 @@ const multiSigStoreNewTx = async (
 const fetchMultiSigRows = async (
   wallet: StateWallet,
   txIds?: Array<string>,
+  // deserializing every input box is slow for large transactions; skip it when unused
+  withBoxes: boolean = true,
 ): Promise<Array<MultiSigDataRow>> => {
   const rows = await MultiStoreDbAction.getInstance().getWalletRows(
     wallet.id,
@@ -62,11 +64,39 @@ const fetchMultiSigRows = async (
         Buffer.from(reducedBytes, encoding),
       ),
       dataBoxes: [],
-      boxes: inputs.map((item) => deserialize(item)),
+      boxes: withBoxes ? inputs.map((item) => deserialize(item)) : [],
       hints,
     });
   }
   return res;
+};
+
+/**
+ * Retrieves only the hints of a stored multi-signature transaction.
+ *
+ * Use it to refresh a transaction that is already loaded: it avoids parsing the
+ * transaction and deserializing all of its input boxes again.
+ *
+ * @param wallet - The wallet that owns the transaction
+ * @param rowId - The ID of the stored multi-signature row
+ * @param inputCount - Number of inputs in the transaction
+ * @returns The hints, or undefined if the row does not exist anymore
+ */
+const fetchMultiSigHints = async (
+  wallet: StateWallet,
+  rowId: number,
+  inputCount: number,
+) => {
+  const row = await MultiStoreDbAction.getInstance().getRowById(rowId);
+  if (!row) return undefined;
+  const signerCount = (
+    await MultiSigDbAction.getInstance().getWalletKeys(wallet.id)
+  ).length;
+  return MultiStoreDbAction.getInstance().getHints(
+    row,
+    inputCount,
+    signerCount,
+  );
 };
 
 /**
@@ -83,13 +113,14 @@ const fetchMultiSigRows = async (
 const fetchMultiSigBriefRow = async (
   wallet: StateWallet,
 ): Promise<Array<MultiSigBriefRow>> => {
-  return fetchMultiSigRows(wallet).then((rows) => {
+  // boxes are only needed for the ERG and token totals
+  const withBoxes = wallet.showTxDetails;
+  return fetchMultiSigRows(wallet, undefined, withBoxes).then((rows) => {
     return rows.map((row) => {
-      const transfer = extractErgAndTokenSpent(
-        wallet,
-        row.boxes,
-        row.tx.unsigned_tx(),
-      );
+      // with tx details hidden, skip walking every box; zero amounts are not shown
+      const transfer = withBoxes
+        ? extractErgAndTokenSpent(wallet, row.boxes, row.tx.unsigned_tx())
+        : { value: 0n, tokens: {} };
       return {
         rowId: row.rowId,
         committed: Math.min(
@@ -176,6 +207,7 @@ const storeMultiSigRow = async (
 export {
   multiSigStoreNewTx,
   fetchMultiSigRows,
+  fetchMultiSigHints,
   fetchMultiSigBriefRow,
   storeMultiSigRow,
   updateMultiSigRow,

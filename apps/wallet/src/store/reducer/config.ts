@@ -22,6 +22,7 @@ export const configInitialState: ConfigStateType = {
   useActiveWallet: true,
   hideValues: false,
   displayArchived: false,
+  qrCamera: '',
   network: {
     mainnet: {
       backend: NETWORK_BACKEND.EXPLORER,
@@ -72,7 +73,11 @@ export type NetworkPayload = {
 export type ConfigPayload = CurrencyPayload &
   DisplayPayload &
   ActiveWalletPayload &
-  NetworkPayload & { pinType: string; displayArchived?: boolean };
+  NetworkPayload & {
+    pinType: string;
+    displayArchived?: boolean;
+    qrCamera?: string;
+  };
 
 export type PricePayload = {
   current: number;
@@ -149,6 +154,7 @@ const configSlice = createSlice({
       state.network.testnet = action.payload.network.testnet;
       state.hideValues = action.payload.hideValues ?? false;
       state.displayArchived = action.payload.displayArchived ?? false;
+      state.qrCamera = action.payload.qrCamera ?? '';
     },
     setPinConfig: (state, action: PayloadAction<PinPayload>) => {
       state.pin.hasPin =
@@ -171,6 +177,9 @@ const configSlice = createSlice({
     setDisplayArchived: (state, action: PayloadAction<boolean>) => {
       state.displayArchived = action.payload;
     },
+    setQrCamera: (state, action: PayloadAction<string>) => {
+      state.qrCamera = action.payload;
+    },
   },
 });
 
@@ -189,4 +198,5 @@ export const {
   setMultiSigLoadedTime,
   setPinConfig,
   setDisplayArchived,
+  setQrCamera,
 } = configSlice.actions;

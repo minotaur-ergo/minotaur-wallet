@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import * as wasm from '@minotaur-ergo/ergo-lib';
 import { StateWallet } from '@minotaur-ergo/types';
@@ -15,17 +15,20 @@ interface TxDataContextHandlerPropsType {
 }
 
 const TxDataContextHandler = (props: TxDataContextHandlerPropsType) => {
+  const { tx, dataBoxes, wallet, boxes, reduced } = props;
+  const value = useMemo(
+    () => ({
+      tx,
+      dataBoxes,
+      wallet,
+      boxes,
+      reduced,
+      networkType: wallet.networkType,
+    }),
+    [tx, dataBoxes, wallet, boxes, reduced],
+  );
   return (
-    <TxDataContext.Provider
-      value={{
-        tx: props.tx,
-        dataBoxes: props.dataBoxes,
-        wallet: props.wallet,
-        boxes: props.boxes,
-        reduced: props.reduced,
-        networkType: props.wallet.networkType,
-      }}
-    >
+    <TxDataContext.Provider value={value}>
       {props.children}
     </TxDataContext.Provider>
   );

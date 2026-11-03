@@ -33,6 +33,11 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
       .setFlagOnWallet(props.wallet.id, WALLET_FLAG_ENUM.ARCHIVE, !archived)
       .then(() => null);
   };
+  const setShowTxDetails = (show: boolean) => {
+    WalletDbAction.getInstance()
+      .setFlagOnWallet(props.wallet.id, WALLET_FLAG_ENUM.HIDE_TX_DETAILS, show)
+      .then(() => null);
+  };
   return (
     <Box mb={2}>
       <Heading title="Wallet Settings" />
@@ -84,6 +89,14 @@ const LocalSettings = (props: LocalSettingsPropsType) => {
           uncheckedDescription="No"
           value={props.wallet.archived}
           onChange={setArchived}
+        />
+        <SolitarySwitchField
+          label="Transaction details"
+          checkedDescription="Show"
+          uncheckedDescription="Hide"
+          value={props.wallet.showTxDetails}
+          onChange={setShowTxDetails}
+          helperText="Show total ERG and tokens when opening a transaction to sign."
         />
         <DisplayInHoneyMode wallet={props.wallet} />
       </Stack>

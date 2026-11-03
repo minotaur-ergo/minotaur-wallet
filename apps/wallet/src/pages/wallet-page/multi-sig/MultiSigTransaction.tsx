@@ -6,7 +6,6 @@ import { Box, Typography } from '@mui/material';
 import BackButtonRouter from '@/components/back-button/BackButtonRouter';
 import { DisplaySignedTx } from '@/components/display-signed-tx/DisplaySignedTx';
 import LoadingPage from '@/components/loading-page/LoadingPage';
-import PasswordField from '@/components/password-field/PasswordField';
 import { MultiSigContext } from '@/components/sign/context/MultiSigContext';
 import { MultiSigDataContext } from '@/components/sign/context/MultiSigDataContext';
 import { TxDataContext } from '@/components/sign/context/TxDataContext';
@@ -17,6 +16,7 @@ import AppFrame from '@/layouts/AppFrame';
 import TxSignValues from '../send/sign-tx/TxSignValues';
 import ActionMenu from './components/ActionMenu';
 import AddressActionList from './components/AddressActionList';
+import MultiSigPasswordField from './components/MultiSigPasswordField';
 import MultiSigToolbar from './components/MultiSigToolbar';
 import ShareTransaction from './components/ShareTransaction';
 import StateAlert from './components/StateAlert';
@@ -79,12 +79,7 @@ const MultiSigTransaction = (props: MultiSigTransactionPropsType) => {
         ) : null}
         {needAction ? (
           multiDataContext.needPassword ? (
-            <PasswordField
-              password={txContext.password}
-              setPassword={txContext.setPassword}
-              label="Wallet Password"
-              helperText="Please enter your mnemonics passphrase to send transaction."
-            />
+            <MultiSigPasswordField />
           ) : null
         ) : txContext.signed ? (
           <DisplaySignedTx tx={txContext.signed} />

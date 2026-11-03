@@ -5,7 +5,9 @@ import { StateWallet } from '@minotaur-ergo/types';
 import { MultiSigDbAction } from '@/action/db';
 import store from '@/store';
 
-const useSignerWallet = (wallet: StateWallet) => {
+// loaded is false until the signer of this wallet is fetched.
+// wallet stays undefined after loading when this device has no signer wallet.
+const useSignerWalletState = (wallet: StateWallet) => {
   const [result, setResult] = useState<StateWallet>();
   const [loading, setLoading] = useState(false);
   const [loadedWalletId, setLoadedWalletId] = useState(-1);
@@ -25,7 +27,10 @@ const useSignerWallet = (wallet: StateWallet) => {
         });
     }
   }, [loading, wallet, loadedWalletId]);
-  return result;
+  return { wallet: result, loaded: loadedWalletId === wallet.id };
 };
 
-export { useSignerWallet };
+const useSignerWallet = (wallet: StateWallet) =>
+  useSignerWalletState(wallet).wallet;
+
+export { useSignerWallet, useSignerWalletState };

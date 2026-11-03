@@ -10,7 +10,7 @@ on:
 
 jobs:
   git-sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: git-sync
         uses: wei/git-sync@v3
