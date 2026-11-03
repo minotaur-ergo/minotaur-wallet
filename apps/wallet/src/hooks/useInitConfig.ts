@@ -126,6 +126,9 @@ const useInitConfig = () => {
             case ConfigType.DisplayArchived:
               dispatch(setDisplayArchived(item.value === 'true'));
               break;
+            case ConfigType.QrCamera:
+              config.qrCamera = item.value;
+              break;
           }
         });
         setUrl(MAIN_NET_LABEL, config.network.mainnet);

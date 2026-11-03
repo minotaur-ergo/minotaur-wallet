@@ -16,9 +16,9 @@ jobs:
   desktop:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-15-intel, macos-latest]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             platform: linux
             suffix: ''
             extension: AppImage
