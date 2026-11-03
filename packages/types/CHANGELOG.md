@@ -1,5 +1,13 @@
 # @minotaur-ergo/types
 
+## 1.8.0
+
+### Minor Changes
+
+- Add camera switching to the desktop and web QR code scanner and fix its camera error handling.
+- Add a "Transaction details" wallet setting, on by default. Turning it off hides the total ERG and tokens when opening a transaction to sign.
+- Move the multi-sig signing password out of `MultiSigContextType` into a separate `MultiSigPasswordContextType`, so typing the password no longer re-renders the whole multi-sig transaction page.
+
 ## 1.7.0
 
 ### Minor Changes
